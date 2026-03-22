@@ -20,3 +20,10 @@ function loadFromStorage() {
     products = JSON.parse(data);
   }
 }
+
+const grid = document.getElementById("productsGrid");
+const loading = document.getElementById("loading");
+
+const totalProductsEl = document.getElementById("totalProducts");
+const totalValueEl = document.getElementById("totalValue");
+const outOfStockEl = document.getElementById("outOfStock");
