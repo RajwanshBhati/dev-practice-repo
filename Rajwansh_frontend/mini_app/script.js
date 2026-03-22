@@ -212,6 +212,7 @@ function deleteProduct(id) {
   currentPage = 1;
 
   saveToStorage();
+  showToast("Product deleted successfully", "success");
 
   // re-render everything properly
   renderAll();
@@ -225,6 +226,10 @@ const closeModalBtn = document.getElementById("closeModalBtn");
 // Open modal on add button click
 addBtn.addEventListener("click", () => {
   modal.style.display = "flex";
+   document.getElementById("modalTitle").innerText = "Add Product";
+   editMode = false;
+  editId = null;
+
 });
 
 // Close modal
@@ -422,6 +427,7 @@ function editProduct(id) {
 
   // open modal
   modal.style.display = "flex";
+   document.getElementById("modalTitle").innerText = "Edit Product";
 
   // edit product details in form
   document.getElementById("productName").value = product.name;

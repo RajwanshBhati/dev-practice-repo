@@ -434,7 +434,7 @@ body {
   border-top: 8px solid #2563eb;
 
   border-radius: 50%;
-  animation: spin 1s linear infinite; /* Apply the spin animation to rotate the spinner infinitely */
+  animation: spin 5s linear infinite; /* Apply the spin animation to rotate the spinner infinitely */
 }
 
 /* Animation for the loading spinner to rotate infinitely */
