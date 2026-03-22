@@ -111,6 +111,7 @@ body {
 }
 
 .product-card {
+     
   flex: 1 1 230px;
   max-width: 260px;
   background-color: white;
@@ -119,26 +120,11 @@ body {
 
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: stretch;
 
   gap: 8px;
 }
 
-.product-card button {
-  margin-top: 10px;
-  width: 100%;
-  padding: 8px;
-  border: none;
-  border-radius: 6px;
-  background: #e53935;
-  color: white;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.product-card button:hover {
-  background: #c62828;
-}
 
 .product-card h3 {
   font-size: 18px;
@@ -154,6 +140,56 @@ body {
 .product-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 18px rgba(0,0,0,0.15);
+}
+.action-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  width: 100%;
+}
+
+
+.action-buttons button {
+  flex: 1 1 0; 
+
+  height: 34px;
+  border: none;
+  border-radius: 10px;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+
+
+.edit-btn {
+  background: #2563eb;
+  color: white;
+}
+
+.edit-btn:hover {
+  background: #1d4ed8;
+  transform: translateY(-2px);
+}
+
+
+.delete-btn {
+  background: #ef4444;
+  color: white;
+}
+
+.delete-btn:hover {
+  background: #dc2626;
+  transform: translateY(-2px);
 }
 
 .modal {

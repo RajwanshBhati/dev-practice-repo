@@ -55,8 +55,10 @@ function renderProducts(list) {
       <p>Category: ${product.category}</p>
       <p>Price: ₹${product.price}</p>
       <p>Stock: ${product.stock}</p>
-      <button onclick="editProduct(${product.id})">Edit</button>
-      <button onclick="deleteProduct(${product.id})">Delete</button>
+     <div class="action-buttons">
+      <button class="edit-btn" onclick="editProduct(${product.id})">Edit</button>
+      <button class="delete-btn" onclick="deleteProduct(${product.id})">Delete</button>
+    </div>
     `;
 
     grid.appendChild(card);
