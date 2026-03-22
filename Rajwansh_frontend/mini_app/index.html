@@ -40,6 +40,11 @@
           <option value="Atoz">Name:A to Z</option>
           <option value="ZtoA">Name: Z to A</option>
         </select>
+
+        <select id="lowStockFilter">
+          <option value="">All Stock</option>
+          <option value="low">Low Stock (< 5)</option>
+        </select>
       </div>
     </section>
 
@@ -59,29 +64,27 @@
     </main>
 
     <div id="productModal" class="modal">
-  <div class="modal-content">
+      <div class="modal-content">
+        <h2>Add Product</h2>
 
-    <h2>Add Product</h2>
+        <input type="text" id="productName" placeholder="Product Name" />
+        <input type="number" id="productPrice" placeholder="Price" />
+        <input type="number" id="productStock" placeholder="Stock" />
 
-    <input type="text" id="productName" placeholder="Product Name" />
-    <input type="number" id="productPrice" placeholder="Price" />
-    <input type="number" id="productStock" placeholder="Stock" />
+        <select id="productCategory">
+          <option value="">Select Category</option>
+          <option value="electronics">Electronics</option>
+          <option value="accessories">Accessories</option>
+          <option value="clothing">Clothing</option>
+          <option value="books">Books</option>
+        </select>
 
-    <select id="productCategory">
-      <option value="">Select Category</option>
-      <option value="electronics">Electronics</option>
-      <option value="accessories">Accessories</option>
-      <option value="clothing">Clothing</option>
-      <option value="books">Books</option>
-    </select>
-
-    <div class="modal-actions">
-      <button id="saveProductBtn">Save</button>
-      <button id="closeModalBtn">Cancel</button>
+        <div class="modal-actions">
+          <button id="saveProductBtn">Save</button>
+          <button id="closeModalBtn">Cancel</button>
+        </div>
+      </div>
     </div>
-
-  </div>
-</div>
     <script src="script.js"></script>
   </body>
 </html>

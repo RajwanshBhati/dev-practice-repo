@@ -46,6 +46,7 @@ const totalValueEl = document.getElementById("totalValue");
 const outOfStockEl = document.getElementById("outOfStock");
 const searchInput = document.getElementById("searchInput");
 const categoryFilter = document.getElementById("categoryFilter");
+const lowStockFilter = document.getElementById("lowStockFilter");
 
 function renderProducts(list) {
   grid.innerHTML = "";
@@ -178,7 +179,6 @@ closeModalBtn.addEventListener("click", () => {
 });
 
 function sortProductPrice(type) {
-
   if (type === "price-low") {
     filterProducts.sort((a, b) => a.price - b.price);
   }
@@ -204,6 +204,37 @@ const sorts = document.getElementById("sortFilter");
 sorts.addEventListener("change", (e) => {
   sortProductPrice(e.target.value);
 });
+
+function applyFilters() {
+
+  let filtered = [...products];
+
+  
+  if (searchInput.value) {
+    filtered = filtered.filter(p =>
+      p.name.toLowerCase().includes(searchInput.value.toLowerCase())
+    );
+  }
+
+ 
+  if (categoryFilter.value) {
+    filtered = filtered.filter(p =>
+      p.category === categoryFilter.value
+    );
+  }
+
+ 
+  if (lowStockFilter.value === "low") {
+    filtered = filtered.filter(p => p.stock < 5);
+  }
+
+  filterProducts = filtered;
+
+  currentPage = 1;
+  renderAll();
+}
+
+lowStockFilter.addEventListener("change", applyFilters);
 
 
 function searchProducts(query) {
