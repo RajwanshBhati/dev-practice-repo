@@ -51,7 +51,7 @@ let filterProducts = [...products];
 
 // Pagination state is used because it track current page
 let currentPage = 1;
-const itemsPerPage = 6;
+const itemsPerPage = 8;
 
 // Save products data to browser storage
 function saveToStorage() {
