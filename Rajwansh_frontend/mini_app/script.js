@@ -8,3 +8,15 @@ let products = [
   { id: 7, name: "Backpack", price: 1200, stock: 3, category: "accessories" },
   { id: 8, name: "Tablet", price: 30000, stock: 4, category: "electronics" }
 ];
+
+
+function saveToStorage() {
+  localStorage.setItem("products", JSON.stringify(products));
+}
+
+function loadFromStorage() {
+  const data = localStorage.getItem("products");
+  if (data) {
+    products = JSON.parse(data);
+  }
+}
