@@ -2,11 +2,17 @@ let products = [
   { id: 1, name: "Laptop", price: 55000, stock: 5, category: "electronics" },
   { id: 2, name: "Smartphone", price: 20000, stock: 10, category: "electronics" },
   { id: 3, name: "Headphones", price: 2000, stock: 2, category: "accessories" },
-  { id: 4, name: "T-Shirt", price: 800, stock: 15, category: "clothing" },
-  { id: 5, name: "Jeans", price: 1500, stock: 0, category: "clothing" },
-  { id: 6, name: "Book - JS Guide", price: 500, stock: 8, category: "books" },
-  { id: 7, name: "Backpack", price: 1200, stock: 3, category: "accessories" },
-  { id: 8, name: "Tablet", price: 30000, stock: 4, category: "electronics" }
+  { id: 4, name: "Smart Watch", price: 5000, stock: 0, category: "electronics" },
+  { id: 5, name: "Gaming Mouse", price: 1500, stock: 12, category: "accessories" },
+  { id: 6, name: "Keyboard", price: 2500, stock: 4, category: "electronics" },
+  { id: 7, name: "T-Shirt", price: 800, stock: 15, category: "clothing" },
+  { id: 8, name: "Jeans", price: 1500, stock: 0, category: "clothing" },
+  { id: 9, name: "Jacket", price: 3000, stock: 6, category: "clothing" },
+  { id: 10, name: "Book - JavaScript Guide", price: 500, stock: 8, category: "books" },
+  { id: 11, name: "Book - HTML & CSS", price: 400, stock: 3, category: "books" },
+  { id: 12, name: "Backpack", price: 1200, stock: 3, category: "accessories" },
+  { id: 13, name: "Tablet", price: 30000, stock: 4, category: "electronics" },
+  { id: 14, name: "Shoes", price: 2200, stock: 7, category: "clothing" }
 ];
 
 
@@ -53,8 +59,28 @@ function renderProducts(list) {
   });
 }
 
+function updateAnalytics(list) {
+
+  // Total Products should be the length of the products array
+  totalProductsEl.textContent = list.length;
+
+  // Total Inventory Value (price × stock)
+  const totalValue = list.reduce((sum, product) => {
+    return sum + (product.price * product.stock);
+  }, 0);
+
+  totalValueEl.textContent = totalValue;
+
+  //  Out of Stock Products
+  const outOfStock = list.filter(product => product.stock === 0).length;
+
+  outOfStockEl.textContent = outOfStock;
+}
+
 
 window.addEventListener("load", () => {
   loadFromStorage();
   renderProducts(products);
+
+   updateAnalytics(products);
 });
