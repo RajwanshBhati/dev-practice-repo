@@ -55,6 +55,7 @@ function renderProducts(list) {
       <p>Category: ${product.category}</p>
       <p>Price: ₹${product.price}</p>
       <p>Stock: ${product.stock}</p>
+      <button onclick="editProduct(${product.id})">Edit</button>
       <button onclick="deleteProduct(${product.id})">Delete</button>
     `;
 
@@ -194,40 +195,87 @@ saveBtn.addEventListener("click", () => {
   const stock = Number(document.getElementById("productStock").value);
   const category = document.getElementById("productCategory").value;
 
-  // apply validation 
   if (!name || !price || !stock || !category) {
     alert("Please fill all fields");
     return;
   }
 
-  // new product object
-  const newProduct = {
-    id: Date.now(),
-    name,
-    price,
-    stock,
-    category
-  };
+  // if editMode is true, we need to update the existing product instead of adding a new one
+  if (editMode) {
 
-  // add to products array
-  products.push(newProduct);
-  filterProducts.push(newProduct);
+    const index = products.findIndex(p => p.id === editId);
 
-  // save to localStorage
+    if (index !== -1) {
+      products[index] = {
+        id: editId,
+        name,
+        price,
+        stock,
+        category
+      };
+    }
+
+    editMode = false;
+    editId = null;
+
+  } else {
+
+    // if not in edit mode, we create a new product and add it to the products array
+    const newProduct = {
+      id: Date.now(),
+      name,
+      price,
+      stock,
+      category
+    };
+
+    products.push(newProduct);
+  }
+
+  // update filterProducts to reflect the changes in products array. This is important because if we are currently filtering or searching, we want the new/edited product to be included in the current view if it matches the criteria.
+  filterProducts = [...products];
+
   saveToStorage();
-
-  // update on UI
   renderProducts(filterProducts);
   updateAnalytics(filterProducts);
   loadCategories();
 
-  // reset form and close modal
+  // reset form fields
   document.getElementById("productName").value = "";
   document.getElementById("productPrice").value = "";
   document.getElementById("productStock").value = "";
   document.getElementById("productCategory").value = "";
 
   modal.style.display = "none";
+});
+let editMode = false;
+let editId = null;
+
+function editProduct(id) {
+
+  const product = products.find(p => p.id === id);
+
+  if (!product) return;
+
+  // open modal
+  modal.style.display = "flex";
+
+  // edit product details in form
+  document.getElementById("productName").value = product.name;
+  document.getElementById("productPrice").value = product.price;
+  document.getElementById("productStock").value = product.stock;
+  document.getElementById("productCategory").value = product.category;
+
+  // set edit mode
+  editMode = true;
+  editId = id;
+}
+
+closeModalBtn.addEventListener("click", () => {
+  modal.style.display = "none";
+
+  editMode = false;
+  editId = null;
 });
 
 window.addEventListener("load", () => {
