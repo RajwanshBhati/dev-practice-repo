@@ -185,6 +185,51 @@ categoryFilter.addEventListener("change", (e) => {
   filterByCategory(e.target.value);
 });
 
+const saveBtn = document.getElementById("saveProductBtn");
+
+saveBtn.addEventListener("click", () => {
+
+  const name = document.getElementById("productName").value.trim();
+  const price = Number(document.getElementById("productPrice").value);
+  const stock = Number(document.getElementById("productStock").value);
+  const category = document.getElementById("productCategory").value;
+
+  // apply validation 
+  if (!name || !price || !stock || !category) {
+    alert("Please fill all fields");
+    return;
+  }
+
+  // new product object
+  const newProduct = {
+    id: Date.now(),
+    name,
+    price,
+    stock,
+    category
+  };
+
+  // add to products array
+  products.push(newProduct);
+  filterProducts.push(newProduct);
+
+  // save to localStorage
+  saveToStorage();
+
+  // update on UI
+  renderProducts(filterProducts);
+  updateAnalytics(filterProducts);
+  loadCategories();
+
+  // reset form and close modal
+  document.getElementById("productName").value = "";
+  document.getElementById("productPrice").value = "";
+  document.getElementById("productStock").value = "";
+  document.getElementById("productCategory").value = "";
+
+  modal.style.display = "none";
+});
+
 window.addEventListener("load", () => {
   loadFromStorage();
   renderProducts(products);
