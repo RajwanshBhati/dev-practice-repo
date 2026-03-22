@@ -149,10 +149,20 @@ function updateAnalytics(list) {
 
 // Delete product by id
 function deleteProduct(id) {
+
+  // remove from master array
   products = products.filter(p => p.id !== id);
 
+  // IMPORTANT: sync filtered array
+  filterProducts = [...products];
+
+
+  currentPage = 1;
+
   saveToStorage();
- renderAll();
+
+  // re-render everything properly
+  renderAll();
 }
 
 const modal = document.getElementById("productModal");
@@ -251,15 +261,30 @@ categoryFilter.addEventListener("change", (e) => {
 
 const saveBtn = document.getElementById("saveProductBtn");
 
-saveBtn.addEventListener("click", () => {
+ saveBtn.addEventListener("click", () => {
 
   const name = document.getElementById("productName").value.trim();
   const price = Number(document.getElementById("productPrice").value);
   const stock = Number(document.getElementById("productStock").value);
   const category = document.getElementById("productCategory").value;
 
-  if (!name || !price || !stock || !category) {
-    alert("Please fill all fields");
+  if (name === "") {
+    alert("Product name cannot be empty");
+    return;
+  }
+
+  if (isNaN(price) || price <= 0) {
+    alert("Price must be greater than 0");
+    return;
+  }
+
+  if (isNaN(stock) || stock < 0) {
+    alert("Stock cannot be negative");
+    return;
+  }
+
+  if (!category) {
+    alert("Category must be selected");
     return;
   }
 
@@ -342,10 +367,35 @@ closeModalBtn.addEventListener("click", () => {
 });
 
 window.addEventListener("load", () => {
-  loadFromStorage();
-   loadCategories(); 
 
-  filterProducts = [...products];
+  // Showing loader while we load data and render the page for better UX
+  loading.style.display = "flex";
 
-   renderAll();
+  //disable filters while loading
+  searchInput.disabled = true;
+  categoryFilter.disabled = true;
+  sorts.disabled = true;
+  addBtn.disabled = true;
+
+  setTimeout(() => {
+
+    // laod data from localStorage if available, otherwise use default products array
+    loadFromStorage();
+    loadCategories();
+
+    filterProducts = [...products];
+
+    renderAll();
+
+    // hide loader after rendering is done
+    loading.style.display = "none";
+
+    // 5. enable filters after loading
+    searchInput.disabled = false;
+    categoryFilter.disabled = false;
+    sorts.disabled = false;
+    addBtn.disabled = false;
+
+  }, 1000); 
+
 });
