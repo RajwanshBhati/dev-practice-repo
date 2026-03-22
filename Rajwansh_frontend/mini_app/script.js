@@ -52,3 +52,9 @@ function renderProducts(list) {
     grid.appendChild(card);
   });
 }
+
+
+window.addEventListener("load", () => {
+  loadFromStorage();
+  renderProducts(products);
+});
