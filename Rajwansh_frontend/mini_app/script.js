@@ -90,6 +90,13 @@ const searchInput = document.getElementById("searchInput");
 const categoryFilter = document.getElementById("categoryFilter");
 const lowStockFilter = document.getElementById("lowStockFilter");
 
+// Modal elements for delete confirmation
+const deleteModal = document.getElementById("deleteModal");
+const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
+const cancelDeleteBtn = document.getElementById("cancelDeleteBtn");
+
+let deleteId = null;
+
 // Render products on UI
 function renderProducts(list) {
   grid.innerHTML = "";
@@ -111,8 +118,8 @@ function renderProducts(list) {
       <p>Price: ₹${product.price}</p>
       <p>Stock: ${product.stock}</p>
      <div class="action-buttons">
-      <button class="edit-btn" onclick="editProduct(${product.id})">Edit</button>
-      <button class="delete-btn" onclick="deleteProduct(${product.id})">Delete</button>
+      <button class="edit-btn" onclick="editProduct(${product.id})"><i class="fa-solid fa-pen-to-square"></i>Edit</button>
+      <button class="delete-btn" onclick="deleteProduct(${product.id})"><i class="fa-solid fa-trash"></i>Delete</button>
     </div>
     `;
 
@@ -203,21 +210,34 @@ function updateAnalytics(list) {
 
 // Delete product by id
 function deleteProduct(id) {
-  // remove from products array
-  products = products.filter((p) => p.id !== id);
-
-  // update filtered array
-  filterProducts = [...products];
-
-  currentPage = 1;
-
-  saveToStorage();
-  showToast("Product deleted successfully", "success");
-
-  // re-render everything properly
-  renderAll();
+  deleteId = id; // store id
+  deleteModal.style.display = "flex"; // open modal
 }
 
+confirmDeleteBtn.addEventListener("click", () => {
+  if (deleteId !== null) {
+
+    // actually delete the product from products array by filtering out the product with deleteId and then update filterProducts to reflect the changes in products array.
+    products = products.filter(p => p.id !== deleteId);
+    filterProducts = [...products];
+
+    currentPage = 1;
+
+    saveToStorage();
+    renderAll();
+
+    showToast("Product deleted successfully", "success");
+
+    deleteId = null;
+    deleteModal.style.display = "none";
+  }
+});
+
+// Cancel delete
+cancelDeleteBtn.addEventListener("click", () => {
+  deleteId = null;
+  deleteModal.style.display = "none";
+});
 // Modal elements
 const modal = document.getElementById("productModal");
 const addBtn = document.getElementById("addProductBtn");

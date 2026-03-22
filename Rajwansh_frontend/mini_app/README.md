@@ -141,6 +141,14 @@ Add Product Toast
 Validates user input to ensure correct product data before saving.
 <hr/>
 
+Delete Product Model
+
+![alt text](assets/Confirm_delete.png)
+
+It validates before delete 
+
+<hr/>
+
 Delete Product 
 
 ![alt text](assets/Delete_product.png)

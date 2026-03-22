@@ -164,6 +164,8 @@ body {
   align-items: center;
   justify-content: center;
 
+  gap: 6px;
+
   font-size: 14px;
   font-weight: 500;
 
@@ -268,6 +270,7 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 6px;
 
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
@@ -486,3 +489,56 @@ body {
     transform: translateX(0);
   }
 }
+
+/* Delete modal specific styling */
+#deleteModal .modal-content {
+  width: 320px;
+  text-align: center;
+  animation: fadeIn 0.3s ease;
+}
+
+/* Heading */
+#deleteModal h2 {
+  color: #ef4444; /* red */
+  margin-bottom: 10px;
+}
+
+/* Message */
+#deleteModal p {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+/* Buttons layout */
+#deleteModal .modal-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+/* Delete button */
+#confirmDeleteBtn {
+  flex: 1;
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+/* Cancel button */
+#cancelDeleteBtn {
+  flex: 1;
+  background: #e5e7eb;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+
+
+
