@@ -36,7 +36,7 @@ const totalProductsEl = document.getElementById("totalProducts");
 const totalValueEl = document.getElementById("totalValue");
 const outOfStockEl = document.getElementById("outOfStock");
 const searchInput = document.getElementById("searchInput");
-
+const categoryFilter = document.getElementById("categoryFilter");
 
 function renderProducts(list) {
   grid.innerHTML = "";
@@ -140,9 +140,45 @@ searchInput.addEventListener("input", (e) => {
   searchProducts(e.target.value);
 });
 
+
+function loadCategories() {
+  categoryFilter.innerHTML = `<option value="">All Categories</option>`; 
+
+  const categories = [...new Set(products.map(p => p.category))];
+
+  categories.forEach(cat => {
+    const option = document.createElement("option");
+    option.value = cat;
+    option.textContent = cat.charAt(0).toUpperCase() + cat.slice(1);
+    categoryFilter.appendChild(option);
+  });
+}
+function filterByCategory(category) {
+
+  if (category === "") {
+    filterProducts = [...products];
+  } 
+  else {
+    filterProducts = products.filter(product =>
+      product.category === category
+    );
+  }
+
+  currentPage = 1;
+
+  renderProducts(filterProducts);
+  updateAnalytics(filterProducts);
+}
+categoryFilter.addEventListener("change", (e) => {
+  filterByCategory(e.target.value);
+});
+
 window.addEventListener("load", () => {
   loadFromStorage();
   renderProducts(products);
+   loadCategories(); 
+
+  filterProducts = [...products];
 
    updateAnalytics(products);
 });
