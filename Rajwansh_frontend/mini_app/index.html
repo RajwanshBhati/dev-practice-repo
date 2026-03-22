@@ -1,16 +1,41 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Product Inventory</title>
-  <link rel="stylesheet" href="style.css"/>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
-</head>
-<body>
-
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Product Inventory</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+  <body>
     <header class="header">
-    <div class="container header-content">
-      <h1 class="logo"><i class="fa-brands fa-product-hunt"></i>Product Inventory Management</h1>
-    </div>
-  </header>    
+      <div class="container header-content">
+        <h1 class="logo">
+          <i class="fa-brands fa-product-hunt"></i>Product Inventory Management
+        </h1>
+      </div>
+    </header>
+
+    <section class="filters-section container">
+      <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Search products..." />
+        <i class="fas fa-search lol"></i>
+      </div>
+      <div class="filter-group">
+        <select id="categoryFilter">
+          <option value="">All Categories</option>
+        </select>
+        <select id="sortFilter">
+          <option value="">Sort</option>
+          <option value="price-low">Price: Low to High</option>
+          <option value="price-high">Price: High to Low</option>
+          <option value="Atoz">Name:A to Z</option>
+          <option value="ZtoA">Name: Z to A</option>
+        </select>
+      </div>
+    </section>
+  </body>
+</html>
