@@ -64,7 +64,7 @@ Shows overall analytics including total products, total inventory value, and out
 
 Search Functionality
 
-![alt text](assets/Search_Functionality.png)
+![alt text](assets/Search_function.png)
 
 Allows users to quickly find products by typing their names in the search bar.
 <hr/>
@@ -85,28 +85,28 @@ Combines category filtering with search for more precise results.
 
 Sort Low to High Filter
 
-![alt text](assets/Sort_hightolow.png)
+![alt text](assets/Low_to_High.png)
 
 Combines category filtering with search for more precise results.
 <hr/>
 
 Sort High to Low
 
-![alt text](assets/Sort_htolow.png)
+![alt text](assets/High_to_Low.png)
 
 Sorts products by price in descending order (high to low).
 <hr/>
 
 Sort A to Z
 
-![alt text](assets/Sort_AtoZ.png)
+![alt text](assets/A_to_Z.png)
 
 Sorts product names alphabetically from A to Z.
 <hr/>
 
 Sort Z to A
 
-![alt text](assets/Sort_ZtoA.png)
+![alt text](assets/Z_to_A.png)
 
 Sorts product names in reverse alphabetical order (Z to A).
 <hr/>
@@ -135,7 +135,7 @@ Validates user input to ensure correct product data before saving.
 
 Add Product Toast
 
-![alt text](assets/Add_product_toast.png)
+![alt text](assets/Add_toast.png)
 
 
 Validates user input to ensure correct product data before saving.
@@ -192,7 +192,7 @@ Stores product data in browser localStorage for persistence.
 
 Responsiveness
 
-![alt text](assets/Responsiveness.png)
+![alt text](assets/Responive.png)
 
 The application is fully responsive and adapts smoothly to different screen sizes including mobile, tablet, and desktop for a consistent user experience
 <hr/>
