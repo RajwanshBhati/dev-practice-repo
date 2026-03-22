@@ -17,6 +17,7 @@ let products = [
 
 let filterProducts = [...products];
 let currentPage = 1;
+const itemsPerPage = 6;
 
 function saveToStorage() {
   localStorage.setItem("products", JSON.stringify(products));
@@ -27,6 +28,14 @@ function loadFromStorage() {
   if (data) {
     products = JSON.parse(data);
   }
+}
+
+function renderAll() {
+  const paginatedData = paginateData(filterProducts, currentPage);
+
+  renderProducts(paginatedData);
+  renderPagination(filterProducts);
+  updateAnalytics(filterProducts);
 }
 
 const grid = document.getElementById("productsGrid");
@@ -65,6 +74,61 @@ function renderProducts(list) {
   });
 }
 
+function paginateData(data, page) {
+  const start = (page - 1) * itemsPerPage;
+  const end = start + itemsPerPage;
+  return data.slice(start, end);
+}
+
+function renderPagination(data) {
+  const pagination = document.getElementById("pagination");
+  pagination.innerHTML = "";
+
+  const totalPages = Math.ceil(data.length / itemsPerPage);
+
+  const prev = document.createElement("button");
+  prev.innerText = "Prev";
+  prev.disabled = currentPage === 1;
+
+  prev.onclick = () => {
+    if (currentPage > 1) {
+      currentPage--;
+      renderAll();
+    }
+  };
+
+  pagination.appendChild(prev);
+
+  for (let i = 1; i <= totalPages; i++) {
+    const btn = document.createElement("button");
+    btn.innerText = i;
+
+    if (i === currentPage) {
+      btn.style.background = "#333";
+      btn.style.color = "white";
+    }
+
+    btn.onclick = () => {
+      currentPage = i;
+      renderAll();
+    };
+
+    pagination.appendChild(btn);
+  }
+
+  const next = document.createElement("button");
+  next.innerText = "Next";
+  next.disabled = currentPage === totalPages;
+
+  next.onclick = () => {
+    if (currentPage < totalPages) {
+      currentPage++;
+      renderAll();
+    }
+  };
+
+  pagination.appendChild(next);
+}
 function updateAnalytics(list) {
 
   // Total Products should be the length of the products array
@@ -88,8 +152,7 @@ function deleteProduct(id) {
   products = products.filter(p => p.id !== id);
 
   saveToStorage();
-  renderProducts(products);
-  updateAnalytics(products); 
+ renderAll();
 }
 
 const modal = document.getElementById("productModal");
@@ -124,8 +187,7 @@ function sortProductPrice(type) {
 
   currentPage = 1;
 
-  renderProducts(filterProducts);
-  updateAnalytics(filterProducts);
+  renderAll();
 }
 const sorts = document.getElementById("sortFilter");
 
@@ -148,8 +210,7 @@ function searchProducts(query) {
 
   currentPage = 1;
 
-  renderProducts(filterProducts);
-  updateAnalytics(filterProducts);
+  renderAll();
 }
 searchInput.addEventListener("input", (e) => {
   searchProducts(e.target.value);
@@ -168,6 +229,7 @@ function loadCategories() {
     categoryFilter.appendChild(option);
   });
 }
+
 function filterByCategory(category) {
 
   if (category === "") {
@@ -181,8 +243,7 @@ function filterByCategory(category) {
 
   currentPage = 1;
 
-  renderProducts(filterProducts);
-  updateAnalytics(filterProducts);
+ renderAll();
 }
 categoryFilter.addEventListener("change", (e) => {
   filterByCategory(e.target.value);
@@ -282,10 +343,9 @@ closeModalBtn.addEventListener("click", () => {
 
 window.addEventListener("load", () => {
   loadFromStorage();
-  renderProducts(products);
    loadCategories(); 
 
   filterProducts = [...products];
 
-   updateAnalytics(products);
+   renderAll();
 });

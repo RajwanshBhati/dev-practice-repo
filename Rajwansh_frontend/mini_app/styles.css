@@ -276,3 +276,22 @@ body {
   background: #d1d5db;
   transform: translateY(-2px);
 }
+
+#pagination {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 20px;
+}
+
+#pagination button {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  background: white;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+#pagination button:hover {
+  background: #eee;
+}
