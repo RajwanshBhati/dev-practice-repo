@@ -73,6 +73,43 @@ body {
   border-radius: 5px;
   border: 1px solid #ccc;
 }
+@media (max-width: 480px) {
+
+  .filters-section {
+    flex-direction: column;
+    margin-left: 0;
+    gap: 12px;
+    align-items: stretch;
+
+    width: 95%;   
+    margin: 0 auto; 
+  }
+
+  .search-container {
+    width: 100%;
+  }
+
+  .search-container input {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .filter-group select {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .lol {
+    right: 10px;
+  }
+}
 
 .add-btn {
   background-color: #4CAF50;
