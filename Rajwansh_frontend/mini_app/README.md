@@ -85,7 +85,7 @@ Combines category filtering with search for more precise results.
 
 Sort Low to High Filter
 
-![alt text](image.png)
+![alt text](assets/Sort_hightolow.png)
 
 Combines category filtering with search for more precise results.
 <hr/>
@@ -113,14 +113,14 @@ Sorts product names in reverse alphabetical order (Z to A).
 
 Low Stock
 
-![alt text](image-2.png)
+![alt text](assets/Low_stock.png)
 
 Displays only products with stock less than 5 for quick inventory checks.
 <hr/>
 
 Add Product Page
 
-![alt text](image-1.png)
+![alt text](assets/Add_product.png)
 
 Form interface to add a new product with all required details.
 <hr/>
