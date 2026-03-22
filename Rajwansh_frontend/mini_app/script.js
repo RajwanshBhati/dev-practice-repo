@@ -35,6 +35,7 @@ const loading = document.getElementById("loading");
 const totalProductsEl = document.getElementById("totalProducts");
 const totalValueEl = document.getElementById("totalValue");
 const outOfStockEl = document.getElementById("outOfStock");
+const searchInput = document.getElementById("searchInput");
 
 
 function renderProducts(list) {
@@ -115,6 +116,28 @@ const sorts = document.getElementById("sortFilter");
 
 sorts.addEventListener("change", (e) => {
   sortProductPrice(e.target.value);
+});
+
+
+function searchProducts(query) {
+
+  query = query.toLowerCase().trim();
+
+  if (query === "") {
+    filterProducts = [...products];
+  } else {
+    filterProducts = products.filter(product =>
+      product.name.toLowerCase().includes(query)
+    );
+  }
+
+  currentPage = 1;
+
+  renderProducts(filterProducts);
+  updateAnalytics(filterProducts);
+}
+searchInput.addEventListener("input", (e) => {
+  searchProducts(e.target.value);
 });
 
 window.addEventListener("load", () => {
