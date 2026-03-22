@@ -59,9 +59,9 @@
    
     <!-- Analytics Section to show total products, total value and out of stock count -->
     <section class="analytics">
-      <div>Total Products: <span id="totalProducts">0</span></div>
-      <div>Total Value: ₹<span id="totalValue">0</span></div>
-      <div>Out of Stock: <span id="outOfStock">0</span></div>
+      <div class="card total-products">Total Products: <span id="totalProducts">0</span></div>
+      <div class="card total-value">Total Value: ₹<span id="totalValue">0</span></div>
+      <div class="card out-of-stock">Out of Stock: <span id="outOfStock">0</span></div>
     </section>
 
     <!-- Main Section to display products in a grid and apply pagination -->
@@ -97,6 +97,9 @@
         </div>
       </div>
     </div>
+
+    <!-- Container for displaying toast notifications -->
+    <div id="toastContainer"></div>
 
     <!-- JavaScript file that contains the logic for the application -->
     <script src="script.js"></script>

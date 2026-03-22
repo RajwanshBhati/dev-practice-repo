@@ -346,22 +346,22 @@ saveBtn.addEventListener("click", () => {
 
   // Basic validation for product details before saving
   if (name === "") {
-    alert("Product name cannot be empty");
+    showToast("Product name cannot be empty", "error");
     return;
   }
 
   if (isNaN(price) || price <= 0) {
-    alert("Price must be greater than 0");
+    showToast("Price must be greater than 0", "error");
     return;
   }
 
   if (isNaN(stock) || stock < 0) {
-    alert("Stock cannot be negative");
+    showToast("Stock cannot be negative", "error");
     return;
   }
 
   if (!category) {
-    alert("Category must be selected");
+    showToast("Category must be selected", "error");
     return;
   }
 
@@ -381,6 +381,7 @@ saveBtn.addEventListener("click", () => {
 
     editMode = false;
     editId = null;
+    showToast("Product updated successfully", "success");
   } else {
     // if not in edit mode, we create a new product and add it to the products array
     const newProduct = {
@@ -392,6 +393,8 @@ saveBtn.addEventListener("click", () => {
     };
 
     products.push(newProduct);
+    showToast("Product added successfully", "success");
+
   }
 
   // update filterProducts to reflect the changes in products array. This is important because if we are currently filtering or searching, we want the new/edited product to be included in the current view if it matches the criteria.
@@ -437,6 +440,22 @@ closeModalBtn.addEventListener("click", () => {
   editMode = false;
   editId = null;
 });
+
+// Function to show toast messages for better user experience
+function showToast(message, type = "info") {
+  const container = document.getElementById("toastContainer");
+
+  const toast = document.createElement("div");
+  toast.classList.add("toast", type);
+  toast.innerText = message;
+
+  container.appendChild(toast);
+
+  // auto remove after 3 sec
+  setTimeout(() => {
+    toast.remove();
+  }, 3000);
+}
 
 window.addEventListener("load", () => {
   // Showing loader while we load data and render the page for better UX
