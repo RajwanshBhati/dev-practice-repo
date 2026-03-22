@@ -25,20 +25,20 @@ The website includes multiple sections such as Home, About, Skills, Projects, an
 
 **Screenshot**
 
-![alt text](image.png)
+![alt text](assests/image.png)
 <hr/>
 
-![alt text](image-1.png)
+![alt text](assests/image-1.png)
 <hr/>
 
-![alt text](image-2.png)
+![alt text](assests/image-2.png)
 <hr/>
 
-![alt text](image-3.png)
+![alt text](assests/image-3.png)
 <hr/>
 
-![alt text](image-4.png)
+![alt text](assests/image-4.png)
 <hr/>
 
-![alt text](image-5.png)
+![alt text](assests/image-5.png)
 <hr/>
