@@ -1,28 +1,64 @@
+// Sample product data
 let products = [
   { id: 1, name: "Laptop", price: 55000, stock: 5, category: "electronics" },
-  { id: 2, name: "Smartphone", price: 20000, stock: 10, category: "electronics" },
+  {
+    id: 2,
+    name: "Smartphone",
+    price: 20000,
+    stock: 10,
+    category: "electronics",
+  },
   { id: 3, name: "Headphones", price: 2000, stock: 2, category: "accessories" },
-  { id: 4, name: "Smart Watch", price: 5000, stock: 0, category: "electronics" },
-  { id: 5, name: "Gaming Mouse", price: 1500, stock: 12, category: "accessories" },
+  {
+    id: 4,
+    name: "Smart Watch",
+    price: 5000,
+    stock: 0,
+    category: "electronics",
+  },
+  {
+    id: 5,
+    name: "Gaming Mouse",
+    price: 1500,
+    stock: 12,
+    category: "accessories",
+  },
   { id: 6, name: "Keyboard", price: 2500, stock: 4, category: "electronics" },
   { id: 7, name: "T-Shirt", price: 800, stock: 15, category: "clothing" },
   { id: 8, name: "Jeans", price: 1500, stock: 0, category: "clothing" },
   { id: 9, name: "Jacket", price: 3000, stock: 6, category: "clothing" },
-  { id: 10, name: "Book - JavaScript Guide", price: 500, stock: 8, category: "books" },
-  { id: 11, name: "Book - HTML & CSS", price: 400, stock: 3, category: "books" },
+  {
+    id: 10,
+    name: "Book - JavaScript Guide",
+    price: 500,
+    stock: 8,
+    category: "books",
+  },
+  {
+    id: 11,
+    name: "Book - HTML & CSS",
+    price: 400,
+    stock: 3,
+    category: "books",
+  },
   { id: 12, name: "Backpack", price: 1200, stock: 3, category: "accessories" },
   { id: 13, name: "Tablet", price: 30000, stock: 4, category: "electronics" },
-  { id: 14, name: "Shoes", price: 2200, stock: 7, category: "clothing" }
+  { id: 14, name: "Shoes", price: 2200, stock: 7, category: "clothing" },
 ];
 
+// Filtered products list used for search, sort, filters
 let filterProducts = [...products];
+
+// Pagination state is used because it track current page
 let currentPage = 1;
 const itemsPerPage = 6;
 
+// Save products data to browser storage
 function saveToStorage() {
   localStorage.setItem("products", JSON.stringify(products));
 }
 
+// Load products data from browser storage if used, otherwise use default products array
 function loadFromStorage() {
   const data = localStorage.getItem("products");
   if (data) {
@@ -30,6 +66,7 @@ function loadFromStorage() {
   }
 }
 
+// create common function call these function whenever we need to re-render the page after any action
 function renderAll() {
   const paginatedData = paginateData(filterProducts, currentPage);
 
@@ -38,24 +75,32 @@ function renderAll() {
   updateAnalytics(filterProducts);
 }
 
+// Dom elements
 const grid = document.getElementById("productsGrid");
 const loading = document.getElementById("loading");
+
+// Analytics elements to show total products, total inventory value and out of stock products
 
 const totalProductsEl = document.getElementById("totalProducts");
 const totalValueEl = document.getElementById("totalValue");
 const outOfStockEl = document.getElementById("outOfStock");
+
+// Input elements
 const searchInput = document.getElementById("searchInput");
 const categoryFilter = document.getElementById("categoryFilter");
 const lowStockFilter = document.getElementById("lowStockFilter");
 
+// Render products on UI
 function renderProducts(list) {
   grid.innerHTML = "";
 
+  // if list is empty show no products found message
   if (list.length === 0) {
     grid.innerHTML = "<p>No products found</p>";
     return;
   }
 
+  // otherwise render products
   list.forEach((product) => {
     const card = document.createElement("div");
     card.classList.add("product-card");
@@ -71,22 +116,27 @@ function renderProducts(list) {
     </div>
     `;
 
+    // append card to grid
     grid.appendChild(card);
   });
 }
 
+// Function to get paginated data based on current page and items per page
 function paginateData(data, page) {
   const start = (page - 1) * itemsPerPage;
   const end = start + itemsPerPage;
   return data.slice(start, end);
 }
 
+// Function to render pagination buttons based on total items and current page
 function renderPagination(data) {
   const pagination = document.getElementById("pagination");
   pagination.innerHTML = "";
 
+  // Calculate total pages based on data length and items per page
   const totalPages = Math.ceil(data.length / itemsPerPage);
 
+  // Prev button to go to previous page, disabled on first page
   const prev = document.createElement("button");
   prev.innerText = "Prev";
   prev.disabled = currentPage === 1;
@@ -100,6 +150,7 @@ function renderPagination(data) {
 
   pagination.appendChild(prev);
 
+  // Page number buttons
   for (let i = 1; i <= totalPages; i++) {
     const btn = document.createElement("button");
     btn.innerText = i;
@@ -117,6 +168,7 @@ function renderPagination(data) {
     pagination.appendChild(btn);
   }
 
+  // Next button to go to next page, disabled on last page
   const next = document.createElement("button");
   next.innerText = "Next";
   next.disabled = currentPage === totalPages;
@@ -130,33 +182,32 @@ function renderPagination(data) {
 
   pagination.appendChild(next);
 }
-function updateAnalytics(list) {
 
+// Update dashboard status total products, value, out of stock
+function updateAnalytics(list) {
   // Total Products should be the length of the products array
   totalProductsEl.textContent = list.length;
 
   // Total Inventory Value (price × stock)
   const totalValue = list.reduce((sum, product) => {
-    return sum + (product.price * product.stock);
+    return sum + product.price * product.stock;
   }, 0);
 
   totalValueEl.textContent = totalValue;
 
   //  Out of Stock Products
-  const outOfStock = list.filter(product => product.stock === 0).length;
+  const outOfStock = list.filter((product) => product.stock === 0).length;
 
   outOfStockEl.textContent = outOfStock;
 }
 
 // Delete product by id
 function deleteProduct(id) {
+  // remove from products array
+  products = products.filter((p) => p.id !== id);
 
-  // remove from master array
-  products = products.filter(p => p.id !== id);
-
-  // IMPORTANT: sync filtered array
+  // update filtered array
   filterProducts = [...products];
-
 
   currentPage = 1;
 
@@ -166,32 +217,30 @@ function deleteProduct(id) {
   renderAll();
 }
 
+// Modal elements
 const modal = document.getElementById("productModal");
 const addBtn = document.getElementById("addProductBtn");
 const closeModalBtn = document.getElementById("closeModalBtn");
 
+// Open modal on add button click
 addBtn.addEventListener("click", () => {
   modal.style.display = "flex";
 });
 
+// Close modal
 closeModalBtn.addEventListener("click", () => {
   modal.style.display = "none";
 });
 
+// Sorting products
 function sortProductPrice(type) {
   if (type === "price-low") {
     filterProducts.sort((a, b) => a.price - b.price);
-  }
-
-  else if (type === "price-high") {
+  } else if (type === "price-high") {
     filterProducts.sort((a, b) => b.price - a.price);
-  }
-
-  else if (type === "Atoz") {
+  } else if (type === "Atoz") {
     filterProducts.sort((a, b) => a.name.localeCompare(b.name));
-  }
-
-  else if (type === "ZtoA") {
+  } else if (type === "ZtoA") {
     filterProducts.sort((a, b) => b.name.localeCompare(a.name));
   }
 
@@ -205,27 +254,22 @@ sorts.addEventListener("change", (e) => {
   sortProductPrice(e.target.value);
 });
 
+// Apply filters based on search input, category and low stock
 function applyFilters() {
-
   let filtered = [...products];
 
-  
   if (searchInput.value) {
-    filtered = filtered.filter(p =>
-      p.name.toLowerCase().includes(searchInput.value.toLowerCase())
+    filtered = filtered.filter((p) =>
+      p.name.toLowerCase().includes(searchInput.value.toLowerCase()),
     );
   }
 
- 
   if (categoryFilter.value) {
-    filtered = filtered.filter(p =>
-      p.category === categoryFilter.value
-    );
+    filtered = filtered.filter((p) => p.category === categoryFilter.value);
   }
 
- 
   if (lowStockFilter.value === "low") {
-    filtered = filtered.filter(p => p.stock < 5);
+    filtered = filtered.filter((p) => p.stock < 5);
   }
 
   filterProducts = filtered;
@@ -234,18 +278,18 @@ function applyFilters() {
   renderAll();
 }
 
+// Add event listeners to search input, category filter and low stock filter to apply filters whenever any of these inputs change
 lowStockFilter.addEventListener("change", applyFilters);
 
-
+// Search products by name
 function searchProducts(query) {
-
   query = query.toLowerCase().trim();
 
   if (query === "") {
     filterProducts = [...products];
   } else {
-    filterProducts = products.filter(product =>
-      product.name.toLowerCase().includes(query)
+    filterProducts = products.filter((product) =>
+      product.name.toLowerCase().includes(query),
     );
   }
 
@@ -257,13 +301,13 @@ searchInput.addEventListener("input", (e) => {
   searchProducts(e.target.value);
 });
 
-
+// Load categories dynamically in category filter dropdown based on products data
 function loadCategories() {
-  categoryFilter.innerHTML = `<option value="">All Categories</option>`; 
+  categoryFilter.innerHTML = `<option value="">All Categories</option>`;
 
-  const categories = [...new Set(products.map(p => p.category))];
+  const categories = [...new Set(products.map((p) => p.category))];
 
-  categories.forEach(cat => {
+  categories.forEach((cat) => {
     const option = document.createElement("option");
     option.value = cat;
     option.textContent = cat.charAt(0).toUpperCase() + cat.slice(1);
@@ -271,34 +315,36 @@ function loadCategories() {
   });
 }
 
+// Filter products by category
 function filterByCategory(category) {
-
   if (category === "") {
     filterProducts = [...products];
-  } 
-  else {
-    filterProducts = products.filter(product =>
-      product.category === category
+  } else {
+    filterProducts = products.filter(
+      (product) => product.category === category,
     );
   }
 
   currentPage = 1;
 
- renderAll();
+  renderAll();
 }
 categoryFilter.addEventListener("change", (e) => {
   filterByCategory(e.target.value);
 });
-
+// Variables to track whether we are in edit mode and which product is being edited. This is important because when we click on edit button, we want to populate the form with existing product details and when we save, we want to update the existing product instead of adding a new one.
+let editMode = false;
+let editId = null;
+// Save product (both add and edit)
 const saveBtn = document.getElementById("saveProductBtn");
 
- saveBtn.addEventListener("click", () => {
-
+saveBtn.addEventListener("click", () => {
   const name = document.getElementById("productName").value.trim();
   const price = Number(document.getElementById("productPrice").value);
   const stock = Number(document.getElementById("productStock").value);
   const category = document.getElementById("productCategory").value;
 
+  // Basic validation for product details before saving
   if (name === "") {
     alert("Product name cannot be empty");
     return;
@@ -321,8 +367,7 @@ const saveBtn = document.getElementById("saveProductBtn");
 
   // if editMode is true, we need to update the existing product instead of adding a new one
   if (editMode) {
-
-    const index = products.findIndex(p => p.id === editId);
+    const index = products.findIndex((p) => p.id === editId);
 
     if (index !== -1) {
       products[index] = {
@@ -330,22 +375,20 @@ const saveBtn = document.getElementById("saveProductBtn");
         name,
         price,
         stock,
-        category
+        category,
       };
     }
 
     editMode = false;
     editId = null;
-
   } else {
-
     // if not in edit mode, we create a new product and add it to the products array
     const newProduct = {
       id: Date.now(),
       name,
       price,
       stock,
-      category
+      category,
     };
 
     products.push(newProduct);
@@ -367,12 +410,10 @@ const saveBtn = document.getElementById("saveProductBtn");
 
   modal.style.display = "none";
 });
-let editMode = false;
-let editId = null;
 
+// Edit product by id
 function editProduct(id) {
-
-  const product = products.find(p => p.id === id);
+  const product = products.find((p) => p.id === id);
 
   if (!product) return;
 
@@ -398,7 +439,6 @@ closeModalBtn.addEventListener("click", () => {
 });
 
 window.addEventListener("load", () => {
-
   // Showing loader while we load data and render the page for better UX
   loading.style.display = "flex";
 
@@ -409,7 +449,6 @@ window.addEventListener("load", () => {
   addBtn.disabled = true;
 
   setTimeout(() => {
-
     // laod data from localStorage if available, otherwise use default products array
     loadFromStorage();
     loadCategories();
@@ -421,12 +460,10 @@ window.addEventListener("load", () => {
     // hide loader after rendering is done
     loading.style.display = "none";
 
-    // 5. enable filters after loading
+    // enable filters after loading and rendering is done
     searchInput.disabled = false;
     categoryFilter.disabled = false;
     sorts.disabled = false;
     addBtn.disabled = false;
-
-  }, 1000); 
-
+  }, 1000);
 });

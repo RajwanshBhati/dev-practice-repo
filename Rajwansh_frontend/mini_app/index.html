@@ -3,14 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Title of the application displayed in the browser tab -->
     <title>Product Inventory</title>
+    <!-- Link to external CSS file for styling the application -->
     <link rel="stylesheet" href="styles.css" />
+    <!-- Link to Font Awesome for using icons in the application -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
     />
   </head>
   <body>
+
+    <!-- Header Section in which the logo and add product button are displayed -->
     <header class="header">
       <div class="container header-content">
         <h1 class="logo">
@@ -19,13 +24,15 @@
         <button id="addProductBtn" class="add-btn">+ Add Product</button>
       </div>
     </header>
-
+   
+    <!-- Filters Section for searching and filtering products -->
     <section class="filters-section container">
       <div class="search-container">
         <input type="text" id="searchInput" placeholder="Search products..." />
         <i class="fas fa-search lol"></i>
       </div>
       <div class="filter-group">
+        <!-- Dropdown for category filter -->
         <select id="categoryFilter">
           <option value="">All Categories</option>
           <option value="electronics">Electronics</option>
@@ -33,6 +40,7 @@
           <option value="clothing">Clothing</option>
           <option value="books">Books</option>
         </select>
+        <!-- Dropdown for sorting products -->
         <select id="sortFilter">
           <option value="">Sort</option>
           <option value="price-low">Price: Low to High</option>
@@ -40,20 +48,23 @@
           <option value="Atoz">Name:A to Z</option>
           <option value="ZtoA">Name: Z to A</option>
         </select>
-
+          
+        <!-- Dropdown for low stock filter -->
         <select id="lowStockFilter">
           <option value="">All Stock</option>
           <option value="low">Low Stock (< 5)</option>
         </select>
       </div>
     </section>
-
+   
+    <!-- Analytics Section to show total products, total value and out of stock count -->
     <section class="analytics">
       <div>Total Products: <span id="totalProducts">0</span></div>
       <div>Total Value: ₹<span id="totalValue">0</span></div>
       <div>Out of Stock: <span id="outOfStock">0</span></div>
     </section>
 
+    <!-- Main Section to display products in a grid and apply pagination -->
     <main class="main container">
       <div id="loading" class="loading">
         <div class="spinner"></div>
@@ -63,6 +74,7 @@
       <div id="pagination" class="pagination"></div>
     </main>
 
+    <!-- Modal for adding/editing product details -->
     <div id="productModal" class="modal">
       <div class="modal-content">
         <h2>Product Details</h2>
@@ -85,6 +97,8 @@
         </div>
       </div>
     </div>
+
+    <!-- JavaScript file that contains the logic for the application -->
     <script src="script.js"></script>
   </body>
 </html>

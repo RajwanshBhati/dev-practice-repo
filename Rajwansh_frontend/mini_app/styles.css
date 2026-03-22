@@ -1,43 +1,53 @@
- * {
+/*Global styles and resets for the application */
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
-html ,body{
+
+/* Set up the basic structure */
+html {
   height: 100%;
   margin: 0;
 }
 
+/* Main body styling for background and text */
 body {
-   
+  height: 100%;
+  margin: 0;
   background-color: #f7f7f7;
   color: #333;
-  overflow-x: hidden;
+  overflow-x: hidden; /* prevent horizontal scroll */
 }
+
+/* Top navigation/header section */
 .header {
   background-color: #333;
   padding: 20px 0;
   color: white;
 }
 
+/* Common container for consistent page width */
 .container {
   width: 90%;
   margin: 0 auto;
 }
 
+/* Header content layout (logo + buttons) */
 .header-content {
   display: flex;
-  justify-content: space-between; 
+  justify-content: space-between;
   align-items: center;
 }
 
+/* Logo styling */
 .logo {
   font-size: 1.5rem;
   display: flex;
   gap: 10px;
 }
 
-
+/* Filter bar section (search, category, sort) */
 .filters-section {
   display: flex;
   flex-wrap: wrap;
@@ -46,6 +56,7 @@ body {
   margin-left: 2rem;
 }
 
+/* Search input container */
 .search-container {
   display: flex;
   align-items: center;
@@ -53,6 +64,7 @@ body {
   position: relative;
 }
 
+/* Search input field styling */
 .search-container input {
   width: 100%;
   margin-left: 20px;
@@ -62,27 +74,30 @@ body {
   border-radius: 5px;
 }
 
-.lol{
+/* Search icon positioning */
+.lol {
   position: absolute;
   right: 20px;
 }
 
+/* Dropdown filters */
 .filter-group select {
   padding: 0.6rem;
   margin-left: 0.5rem;
   border-radius: 5px;
   border: 1px solid #ccc;
 }
-@media (max-width: 480px) {
 
+/* Responsive design for mobile devices */
+@media (max-width: 480px) {
   .filters-section {
     flex-direction: column;
     margin-left: 0;
     gap: 12px;
     align-items: stretch;
 
-    width: 95%;   
-    margin: 0 auto; 
+    width: 95%;
+    margin: 0 auto;
   }
 
   .search-container {
@@ -111,22 +126,24 @@ body {
   }
 }
 
+/* Add product button styling */
 .add-btn {
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
   border: none;
   padding: 10px 16px;
   border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
-  transition: 0.3s;
 }
 
+/*Hover effect for add product button when hovered*/
 .add-btn:hover {
   background-color: #45a049;
   transform: scale(1.05);
 }
 
+/* Analytics section to show total products, total value and out of stock count */
 .analytics {
   display: flex;
   justify-content: space-around;
@@ -135,15 +152,16 @@ body {
   padding: 15px;
   width: 90%;
   border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* Styling for the analytics text */
 .analytics div {
   font-size: 16px;
   font-weight: bold;
 }
 
-
+/* Main section to display products in a grid layout */
 .products-grid {
   display: flex;
   flex-wrap: wrap;
@@ -152,8 +170,8 @@ body {
   justify-content: center;
 }
 
+/* Individual product card styling */
 .product-card {
-     
   flex: 1 1 230px;
   max-width: 260px;
   background-color: white;
@@ -167,22 +185,26 @@ body {
   gap: 8px;
 }
 
-
+/* Product title styling */
 .product-card h3 {
   font-size: 18px;
   color: #333;
 }
 
+/* Product price and stock status styling */
 .product-card p {
   font-size: 14px;
   color: #666;
   margin: 2px 0;
 }
 
+/* Hover effect for product cards to give a slight lift and shadow */
 .product-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 18px rgba(0,0,0,0.15);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
 }
+
+/* Action buttons container for edit and delete buttons */
 .action-buttons {
   display: flex;
   flex-direction: row;
@@ -190,9 +212,9 @@ body {
   width: 100%;
 }
 
-
+/* Styling for edit and delete buttons within the product card */
 .action-buttons button {
-  flex: 1 1 0; 
+  flex: 1 1 0; /* make buttons take equal width */
 
   height: 34px;
   border: none;
@@ -201,52 +223,58 @@ body {
   font-size: 13px;
   font-weight: 600;
 
-  cursor: pointer;
-  transition: all 0.2s ease;
+  cursor: pointer; /* pointer cursor on hover */
+  transition: all 0.2s ease; /* smooth transition for hover effects */
 
   display: inline-flex;
   align-items: center;
   justify-content: center;
 
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
-
-
+/* Specific styling for edit button */
 .edit-btn {
   background: #2563eb;
   color: white;
 }
 
+/* Hover effect for edit button to change color and give a slight lift */
 .edit-btn:hover {
   background: #1d4ed8;
   transform: translateY(-2px);
 }
 
-
+/* Specific styling for delete button */
 .delete-btn {
   background: #ef4444;
   color: white;
 }
 
+/* Hover effect for delete button to change color and give a slight lift */
 .delete-btn:hover {
   background: #dc2626;
   transform: translateY(-2px);
 }
 
+/* Modal styling for adding/editing product details */
 .modal {
   display: none;
-  position: fixed;
+  position: fixed; /* stay in place */
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(6px);
+  backdrop-filter: blur(
+    6px
+  ); /* blur effect for background when modal is open */
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 1000; /* ensure modal is on top of other content */
 }
+
+/* Modal content styling */
 .modal-content {
   background: #ffffff;
   padding: 25px;
@@ -257,6 +285,7 @@ body {
   gap: 12px;
 }
 
+/* Modal header styling */
 .modal-content h2 {
   text-align: center;
   margin-bottom: 10px;
@@ -274,6 +303,7 @@ body {
   font-size: 14px;
 }
 
+/* Focus effect for inputs and selects in the modal */
 .modal-content input:focus,
 .modal-content select:focus {
   border-color: #4f46e5;
@@ -295,9 +325,10 @@ body {
   padding: 10px 15px;
   border-radius: 8px;
   cursor: pointer;
-  transition: 0.3s;
+  transition: 0.3s; /* smooth transition for hover effect */
 }
 
+/* Hover effect for save button to change color and give a slight lift */
 #saveProductBtn:hover {
   background: #3730a3;
   transform: translateY(-2px);
@@ -314,11 +345,13 @@ body {
   transition: 0.3s;
 }
 
+/* Hover effect for cancel button to change color and give a slight lift */
 #closeModalBtn:hover {
   background: #d1d5db;
   transform: translateY(-2px);
 }
 
+/* Pagination styling */
 #pagination {
   display: flex;
   justify-content: center;
@@ -326,6 +359,7 @@ body {
   margin: 20px;
 }
 
+/* Pagination buttons styling */
 #pagination button {
   padding: 8px 12px;
   border: 1px solid #ccc;
@@ -334,13 +368,15 @@ body {
   border-radius: 5px;
 }
 
+/* Hover effect for pagination buttons to change background color */
 #pagination button:hover {
   background: #eee;
 }
 
+/* pagination button styling */
 .loading {
   position: fixed;
-  inset: 0;  
+  inset: 0;
   background: rgba(255, 255, 255, 0.9);
 
   display: flex;
@@ -350,6 +386,7 @@ body {
 
   z-index: 9999;
 }
+
 .spinner {
   width: 80px;
   height: 80px;
@@ -358,16 +395,21 @@ body {
   border-top: 8px solid #2563eb;
 
   border-radius: 50%;
-  animation: spin 1s linear infinite;
 }
 
+/* Animation for the loading spinner to rotate infinitely */
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
+/* Apply the spin animation because it's applied to the spinner */
 .loader p {
   font-size: 18px;
   font-weight: 600;
-  color: #2563eb; 
+  color: #2563eb;
 }
