@@ -27,3 +27,28 @@ const loading = document.getElementById("loading");
 const totalProductsEl = document.getElementById("totalProducts");
 const totalValueEl = document.getElementById("totalValue");
 const outOfStockEl = document.getElementById("outOfStock");
+
+
+function renderProducts(list) {
+  grid.innerHTML = "";
+
+  if (list.length === 0) {
+    grid.innerHTML = "<p>No products found</p>";
+    return;
+  }
+
+  list.forEach((product) => {
+    const card = document.createElement("div");
+    card.classList.add("product-card");
+
+    card.innerHTML = `
+      <h3>${product.name}</h3>
+      <p>Category: ${product.category}</p>
+      <p>Price: ₹${product.price}</p>
+      <p>Stock: ${product.stock}</p>
+      <button onclick="deleteProduct(${product.id})">Delete</button>
+    `;
+
+    grid.appendChild(card);
+  });
+}
