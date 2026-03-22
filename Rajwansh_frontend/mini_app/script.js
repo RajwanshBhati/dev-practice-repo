@@ -89,6 +89,18 @@ function deleteProduct(id) {
   updateAnalytics(products); 
 }
 
+const modal = document.getElementById("productModal");
+const addBtn = document.getElementById("addProductBtn");
+const closeModalBtn = document.getElementById("closeModalBtn");
+
+addBtn.addEventListener("click", () => {
+  modal.style.display = "flex";
+});
+
+closeModalBtn.addEventListener("click", () => {
+  modal.style.display = "none";
+});
+
 function sortProductPrice(type) {
 
   if (type === "price-low") {
