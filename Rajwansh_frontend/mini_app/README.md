@@ -36,19 +36,6 @@ An analytics dashboard displays key insights such as total products, total inven
 
 <hr/>
 
-**Project Sturcture**
-
-mini_app/
-│
-├── index.html
-├── style.css
-├── script.js
-│
-├── assets/
-│
-└── README.md
-
-<hr/>
 
 **How to Run**
 
@@ -181,6 +168,12 @@ Loading Product
 
 Displays a loading spinner while products are being fetched or rendered.
 <hr/>
+
+Pagination
+
+![alt text](assets/Pagination.png)
+
+Implements pagination to display a limited number of products per page, improving performance and providing smooth navigation between pages
 
 Local Storage Store
 
