@@ -15,6 +15,8 @@ let products = [
   { id: 14, name: "Shoes", price: 2200, stock: 7, category: "clothing" }
 ];
 
+let filterProducts = [...products];
+let currentPage = 1;
 
 function saveToStorage() {
   localStorage.setItem("products", JSON.stringify(products));
@@ -77,6 +79,43 @@ function updateAnalytics(list) {
   outOfStockEl.textContent = outOfStock;
 }
 
+// Delete product by id
+function deleteProduct(id) {
+  products = products.filter(p => p.id !== id);
+
+  saveToStorage();
+  renderProducts(products);
+  updateAnalytics(products); 
+}
+
+function sortProductPrice(type) {
+
+  if (type === "price-low") {
+    filterProducts.sort((a, b) => a.price - b.price);
+  }
+
+  else if (type === "price-high") {
+    filterProducts.sort((a, b) => b.price - a.price);
+  }
+
+  else if (type === "Atoz") {
+    filterProducts.sort((a, b) => a.name.localeCompare(b.name));
+  }
+
+  else if (type === "ZtoA") {
+    filterProducts.sort((a, b) => b.name.localeCompare(a.name));
+  }
+
+  currentPage = 1;
+
+  renderProducts(filterProducts);
+  updateAnalytics(filterProducts);
+}
+const sorts = document.getElementById("sortFilter");
+
+sorts.addEventListener("change", (e) => {
+  sortProductPrice(e.target.value);
+});
 
 window.addEventListener("load", () => {
   loadFromStorage();
