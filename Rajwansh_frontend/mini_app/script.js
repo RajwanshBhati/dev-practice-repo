@@ -75,6 +75,15 @@ function renderAll() {
   updateAnalytics(filterProducts);
 }
 
+// Simulate fetching products from server with a delay to show loader
+function fetchProducts() {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(products);
+    }, 1000);
+  });
+}
+
 // Dom elements
 const grid = document.getElementById("productsGrid");
 const loading = document.getElementById("loading");
@@ -482,33 +491,31 @@ function showToast(message, type = "info") {
     toast.remove();
   }, 3000);
 }
-
-window.addEventListener("load", () => {
-  // Showing loader while we load data and render the page for better UX
+window.addEventListener("load", async () => {
   loading.style.display = "flex";
 
-  //disable filters while loading
+  // disable UI
   searchInput.disabled = true;
   categoryFilter.disabled = true;
   sorts.disabled = true;
   addBtn.disabled = true;
 
-  setTimeout(() => {
-    // laod data from localStorage if available, otherwise use default products array
-    loadFromStorage();
-    loadCategories();
+  loadFromStorage();
 
-    filterProducts = [...products];
+  // simulated API call
+  const data = await fetchProducts();
 
-    renderAll();
+  products = data;
+  filterProducts = [...products];
 
-    // hide loader after rendering is done
-    loading.style.display = "none";
+  loadCategories();
+  renderAll();
 
-    // enable filters after loading and rendering is done
-    searchInput.disabled = false;
-    categoryFilter.disabled = false;
-    sorts.disabled = false;
-    addBtn.disabled = false;
-  }, 1000);
+  loading.style.display = "none";
+
+  // enable UI
+  searchInput.disabled = false;
+  categoryFilter.disabled = false;
+  sorts.disabled = false;
+  addBtn.disabled = false;
 });
