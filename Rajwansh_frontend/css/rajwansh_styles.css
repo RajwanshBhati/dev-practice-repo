@@ -515,7 +515,90 @@ footer {
   margin: 0 5px;
 }
 
-/* hover */
-.child-footer a:hover {
-  text-decoration: underline;
+/* responsive design */
+@media (max-width: 768px) {
+
+  /* Header stack kara */
+  header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+  }
+
+  #profile-picture {
+    position: static;   
+    margin-top: 15px;
+  }
+
+  #header-name {
+    font-size: 2rem;
+  }
+
+  #header-text h2 {
+    font-size: 1rem;
+  }
+
+  /* Sections full width */
+  #about,
+  #skills,
+  #education,
+  #experience,
+  #projects,
+  #contact {
+    width: 95%;
+    padding: 15px;
+  }
+
+  /* Skills list spacing */
+  .skill-list {
+    padding-left: 15px;
+  }
+
+  /* Table responsive */
+  .edu-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  /* Navbar already handled but spacing improve */
+  .nav-l {
+    gap: 8px;
+  }
+
+  /* Form inputs full width */
+  .contact-form input,
+  .contact-form textarea,
+  .contact-form select {
+    width: 100%;
+  }
+
+  /* Buttons full width */
+  .form-btns input {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+}
+
+
+/* Small Mobile */
+@media (max-width: 480px) {
+
+  #header-name {
+    font-size: 1.7rem;
+  }
+
+  .section-title,
+  .title {
+    font-size: 1.4rem;
+  }
+
+  .project-title {
+    font-size: 1rem;
+  }
+
+  body {
+    font-size: 14px;
+  }
 }
