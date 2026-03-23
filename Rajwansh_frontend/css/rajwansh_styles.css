@@ -1,49 +1,55 @@
-/* remove default browser spacing */
+/* Reset */
 * {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;  /* makes width/height easier to manage */
+  box-sizing: border-box;
 }
 
-/* main page styling */
+/* Body */
 body {
   font-family: 'Poppins', sans-serif;
-  background-color: #121212;  /* dark background */
-  color: #f5f5f5;            
-  line-height: 1.6; /*I use this to increase the spacing between lines for better readability*/
+  background: #121212;
+  color: #f5f5f5;
+  line-height: 1.6;
 }
 
-/* header layout using flex */
+/* Common Section Style */
+section {
+  margin: 30px auto;
+  padding: 25px;
+  width: 85%;
+  background: #1e1e1e;
+  border-radius: 8px;
+}
+
+/* Common Title */
+.title,
+.section-title {
+  color: #d4af37;
+  margin-bottom: 15px;
+}
+
+/* Common HR */
+section hr {
+  margin-top: 15px;
+  height: 1px;
+  border: none;
+  background: #333;
+}
+
+/* Header */
 header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
   padding: 40px 60px;
-  background-color: #1e1e1e;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-  position: relative; /* needed for absolute positioning of image */
-  overflow: hidden;
+  background: #1e1e1e;
+  position: relative;
 }
 
-/* left side text */
-#header-text {
-  text-align: left;
-}
+#header-name { font-size: 2.5rem; color: #d4af37; }
+#header-text h2 { color: #b0b0b0; margin-top: 6px; }
 
-/* name styling */
-#header-name {
-  font-size: 2.5rem;
-  color: #d4af37;
-}
-
-/* designation role styling */
-#header-text h2 {
-  font-size: 1.2rem;
-  color: #b0b0b0;
-  margin-top: 6px;
-}
-
-/* profile image on right */
 #profile-picture {
   width: 130px;
   height: 130px;
@@ -54,551 +60,137 @@ header {
   top: 20px;
 }
 
-/* navbar Container */
-#navbar {
-  background-color: #181818;
-  padding: 15px 0;
-}
+/* Navbar */
+#navbar { background: #181818; padding: 15px 0; }
 
-/* main navigation list */
 .nav-l {
   display: flex;
   justify-content: center;
-  list-style: none; /* remove the bullets points */
   gap: 30px;
+  list-style: none;
 }
 
-/* each nav items */
-.nav-item {
-  position: relative; /* needed for dropdown position */
-}
+.nav-item { position: relative; }
 
-/* navigation links */
 .nav-item a {
-  text-decoration: none; /* remove underline */
   color: #f5f5f5;
   padding: 8px 15px;
   border-radius: 5px;
-  transition: 0.3s;
+  text-decoration: none;
 }
 
-/* hover effect for link*/
 .nav-item a:hover {
-  background-color: #d4af37;
+  background: #d4af37;
   color: #121212;
 }
 
-/* dropdown menu*/
+/* Dropdown */
 .dropdown {
   display: none;
   position: absolute;
   top: 35px;
-  background-color: #1e1e1e;
+  background: #1e1e1e;
   padding: 10px;
   border-radius: 6px;
-  list-style: none;   /* remove bullets */
-  margin: 0;
-  min-width: 150px;
-
-}
-
-.dropdown li a {
-  display: block;        /* full width clickable */
-  padding: 8px 12px;
 }
 
 .nav-item:hover .dropdown {
   display: block;
 }
 
-/* responsive navbar for mobile */
-@media (max-width: 768px) {
+/* Lists */
+ul { padding-left: 20px; }
+strong { color: #fff; }
 
-  /* stack navbar vertically */
-  .nav-l {
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-  }
-
-  /* dropdown normally I fixed */
-  .dropdown {
-    position: static;     
-    width: 100%;
-    text-align: center;
-  }
-
-  /* dropdown show properly */
-  .nav-item:hover .dropdown {
-    display: block;
-  }
-
-  /* links full width */
-  .nav-item a {
-    display: block;
-    width: 100%;
-  }
-}
-
-/* about section */
-#about {
-  margin: 30px auto;
-  padding: 25px;
-  width: 85%;
-  background-color: #1e1e1e;
-  border-radius: 8px;
-}
-
-/* common heading style */
-.section-title {
-  color: #d4af37;
-  margin-bottom: 10px;
-  font-size: 1.8rem;
-}
-
-/* about Sectiontext */
-.about-para {
-  color: #b0b0b0;
-  line-height: 1.7;
-}
-
-/* highlight text */
-.about-para strong {
-  color: #ffffff;
-}
-
-/* hr horizontal styling */
-#about hr {
-  margin-top: 15px;
-  border: none;
-  height: 1px;
-  background-color: #333;
-}
-
-/* skills section */
-#skills {
-  margin: 30px auto;
-  padding: 25px;
-  width: 85%;
-  background-color: #1e1e1e;
-  border-radius: 8px;
-}
-
-/* heading */
-.title {
-  color: #d4af37;
-  margin-bottom: 15px;
-}
-
-/* main list */
-.skills {
-  list-style: none;
-  padding-left: 0;
-}
-
-/* each skill block */
-.skill {
-  margin-bottom: 15px;
-}
-
-/* inner list */
-.skill-list {
-  margin-top: 8px;
-  padding-left: 20px;
-  color: #b0b0b0;
-}
-
-/* highlight text */
-.skill strong {
-  color: #ffffff;
-}
-
-/* hr line ko colur change */
-#skills hr {
-  margin-top: 15px;
-  border: none;
-  height: 1px;
-  background-color: #333;
-}
-
-
-/* education section */
-#education {
-  margin: 30px auto;
-  padding: 25px;
-  width: 85%;
-  background-color: #1e1e1e;
-  border-radius: 8px;
-}
-
-/* heading */
-.title {
-  color: #d4af37;
-  margin-bottom: 15px;
-}
-
-/* table */
+/* Table */
 .edu-table {
   width: 100%;
   border-collapse: collapse;
 }
 
-/* table cells */
 .edu-table th,
 .edu-table td {
   padding: 10px;
-  text-align: left;
   border: 1px solid #333;
 }
 
-/* header */
 .edu-table th {
-  background-color: #d4af37;
+  background: #d4af37;
   color: #121212;
-  text-align: center;
-}
-/* hr */
-#education hr {
-  margin-top: 15px;
-  border: none;
-  height: 1px;
-  background-color: #333;
 }
 
-/* experience section */
-#experience {
-  margin: 30px auto;
-  padding: 25px;
-  width: 85%;
-  background-color: #1e1e1e;
-  border-radius: 8px;
-}
-
-/* heading */
-.title {
-  color: #d4af37;
-  margin-bottom: 15px;
-}
-
-/* job role */
-.job-role {
-  margin-bottom: 15px;
-  color: #b0b0b0;
-}
-
-/* date */
-.job-date {
-  font-size: 0.9rem;
-  color: #888;
-}
-
-/* company */
-.company {
-  color: #f5f5f5;
-}
-
-/* list */
-.exp-list {
-  padding-left: 20px;
-  color: #b0b0b0;
-  line-height: 1.6;
-}
-
-/* highlight tech */
-.exp-list strong {
-  color: #ffffff;
-}
-
-/* hr */
-#experience hr {
-  margin-top: 15px;
-  border: none;
-  height: 1px;
-  background-color: #333;
-}
-
-
-/* projects section */
-#projects {
-  margin: 30px auto;
-  padding: 25px;
-  width: 85%;
-  background-color: #1e1e1e;
-  border-radius: 8px;
-}
-
-/* heading */
-.title {
-  color: #d4af37;
-  margin-bottom: 15px;
-}
-
-/* list */
-.project-list {
-  padding-left: 20px;
-}
-
-/* each project */
-.project {
-  margin-bottom: 25px;
-}
-
-/* project title */
-.project-title {
-  color: #ffffff;
-  margin-bottom: 5px;
-}
-
-/* github link */
-.project-link {
-  margin-left: 10px;
-  font-size: 0.9rem;
-  color: #d4af37;
-  text-decoration: none;
-}
-
-/* hover effect */
-.project-link:hover {
-  text-decoration: underline;
-}
-
-/* tech stack */
-.tech {
-  color: #b0b0b0;
-  margin-bottom: 8px;
-}
-
-/* points */
-.project-points {
-  padding-left: 20px;
-  color: #b0b0b0;
-  line-height: 1.6;
-}
-
-/* highlight */
-.project-points strong {
-  color: #ffffff;
-}
-
-/* hr */
-#projects hr {
-  margin-top: 15px;
-  border: none;
-  height: 1px;
-  background-color: #333;
-}
-
-
-/* contact section */
-#contact {
-  margin: 30px auto;
-  padding: 25px;
-  width: 85%;
-  background-color: #1e1e1e;
-  border-radius: 8px;
-}
-
-/* heading */
-.title {
-  color: #d4af37;
-  margin-bottom: 15px;
-}
-
-/* form layout */
+/* Form */
 .contact-form {
   display: flex;
   flex-direction: column;
 }
 
-/* labels */
-.contact-form label {
-  margin-top: 10px;
-  color: #f5f5f5;
-}
-
-/* inputs and textarea */
-#name,
-#email,
-#message,
-#date,
-#time,
-#reason {
+.contact-form input,
+.contact-form textarea,
+.contact-form select {
   margin-top: 5px;
   padding: 8px;
   border-radius: 5px;
   border: none;
-  background-color: #121212;
+  background: #121212;
   color: #f5f5f5;
 }
 
-/* textarea resize because it's not allowed */
-#message {
-  resize: none;
-}
-
-/* radio group */
 .radio-group {
   display: flex;
   gap: 20px;
   margin-top: 8px;
 }
 
-/* label ke andar alignment */
-.radio-group label {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  color: #b0b0b0;
-  cursor: pointer;
-}
-
-/* radio button */
-.radio-group input {
-  accent-color: #d4af37; /* gold color */
-}
-
-/* buttons container */
-.form-btns {
-  margin-top: 15px;
-}
-
-/* buttons */
 .form-btns input {
+  margin-top: 10px;
   padding: 8px 15px;
-  margin-right: 10px;
-  border-radius: 5px;
+  background: #d4af37;
   border: none;
-  background-color: #d4af37;
-  color: #121212;
   cursor: pointer;
 }
 
-/* hover effect */
-.form-btns input:hover {
-  opacity: 0.85;
-}
-
-/* hr */
-#contact hr {
-  margin-top: 15px;
-  border: none;
-  height: 1px;
-  background-color: #333;
-}
-
-
-/* footer */
+/* Footer */
 footer {
   margin-top: 30px;
   padding: 20px;
   text-align: center;
-  background-color: #181818;
+  background: #181818;
 }
 
-/* main text */
-.footer-para {
-  color: #b0b0b0;
-  font-size: 0.9rem;
-  margin-bottom: 5px;
-}
-
-/* second line */
-.child-footer {
-  color: #f5f5f5;
-  font-size: 0.95rem;
-}
-
-/* links */
-.child-footer a {
-  color: #d4af37;
-  text-decoration: none;
-  margin: 0 5px;
-}
-
-/* responsive design */
+/* Responsive */
 @media (max-width: 768px) {
-
-  /* Header stack kara */
   header {
     flex-direction: column;
-    align-items: center;
     text-align: center;
-    padding: 20px;
   }
 
   #profile-picture {
-    position: static;   
+    position: static;
     margin-top: 15px;
   }
 
-  #header-name {
-    font-size: 2rem;
-  }
-
-  #header-text h2 {
-    font-size: 1rem;
-  }
-
-  /* Sections full width */
-  #about,
-  #skills,
-  #education,
-  #experience,
-  #projects,
-  #contact {
+  section {
     width: 95%;
     padding: 15px;
   }
 
-  /* Skills list spacing */
-  .skill-list {
-    padding-left: 15px;
+  .nav-l {
+    flex-direction: column;
+    gap: 10px;
   }
 
-  /* Table responsive */
+  .dropdown {
+    position: static;
+    width: 100%;
+  }
+
   .edu-table {
     display: block;
     overflow-x: auto;
-    white-space: nowrap;
-  }
-
-  /* Navbar already handled but spacing improve */
-  .nav-l {
-    gap: 8px;
-  }
-
-  /* Form inputs full width */
-  .contact-form input,
-  .contact-form textarea,
-  .contact-form select {
-    width: 100%;
-  }
-
-  /* Buttons full width */
-  .form-btns input {
-    width: 100%;
-    margin-bottom: 10px;
   }
 }
 
-
-/* Small Mobile */
 @media (max-width: 480px) {
-
-  #header-name {
-    font-size: 1.7rem;
-  }
-
-  .section-title,
-  .title {
-    font-size: 1.4rem;
-  }
-
-  .project-title {
-    font-size: 1rem;
-  }
-
-  body {
-    font-size: 14px;
-  }
+  body { font-size: 14px; }
 }
