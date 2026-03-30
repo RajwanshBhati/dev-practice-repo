@@ -11,7 +11,7 @@ I Used the array named students it also stores objects I used these data for tes
 
 **1. Total Marks of Each Student**
 
-<img width="864" height="453" alt="image" src="https://github.com/user-attachments/assets/46811c1f-b199-477e-98d1-0c772bbd7610" />
+![alt text](assests/image.png)
 
 
 Each student has multiple subjects. I loop through all subjects and add their scores to get the final total marks. This helps to understand overall performance of each student in the class.
@@ -24,7 +24,7 @@ Each student has multiple subjects. I loop through all subjects and add their sc
 
 **2. Average Marks for Each Student**
 
-<img width="768" height="343" alt="image" src="https://github.com/user-attachments/assets/e946a1e1-2ec1-4bba-80cc-8eb91b3183a7" />
+![alt text](assests/image-1.png)
 
 Average is found by dividing total marks by the number of subjects. This makes it easier to compare students even if their marks are a bit different.
 
@@ -61,7 +61,7 @@ I add all students’ scores for each subject and divide by the number of studen
 
 **5. Determine Overall Class Topper**
 
-<img width="799" height="550" alt="image" src="https://github.com/user-attachments/assets/a060483e-721c-4f77-ba35-0f632389a39b" />
+![alt text](assests/image-2.png)
 
 Total marks of all students are compared and the highest scorer is selected as class topper.
 
@@ -74,7 +74,7 @@ Total marks of all students are compared and the highest scorer is selected as c
 
 **6. Grade Logic**
 
-<img width="600" height="705" alt="image" src="https://github.com/user-attachments/assets/593d6328-bfea-4cd1-811f-e0f0fca64096" />
+![alt text](assests/image-3.png)
 
 Grades are assigned based on average marks:
 85+ = A,
