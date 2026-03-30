@@ -182,7 +182,7 @@ function getGrade(students) {
       grade = "fail (low attendance)";
 
     } else {
-      let avg = getTotal(student) / student.marks.length; // ✅ FIX
+      let avg = getTotal(student) / student.marks.length; 
 
       if (avg >= 85) {
         grade = "A";
