@@ -36,15 +36,20 @@ const students = [
 }
 ];
 
+// here I am calculating total marks for a student because I want to manage function independently and I can reuse this function in other places if needed
+function getTotal(student) {
+  let total = 0;
+  student.marks.forEach(mark => total += mark.score);
+  return total;
+}
+
 // here I am calculating total marks for each student
 function calculateTotalMarks(students) {
   students.forEach((student) => {
-    // start total from 0 for each student
-    let total = 0;
-     // adding all subject scores one by one
-    student.marks.forEach((mark) => {
-      total += mark.score;
-    });
+    // here i Used getTotal function to calculate total marks for each student
+    let total = getTotal(student);
+    student.totalMarks = total;
+    
     student.totalMarks = total;
     // printing total marks in console
     console.log(`${student.name} Total Marks: ${total}`);
@@ -58,7 +63,7 @@ calculateTotalMarks(students);
 // here I am calculating Average marks for each student
 function calculateAverage(students) {
   students.forEach((student) => {
-    let avg = student.totalMarks / student.marks.length;
+    let avg = getTotal(student) / student.marks.length;
     //student.marks.length gives the total number of subjects
     student.average = avg;
     console.log(`${student.name} average: ${student.average.toFixed(1)}`);
@@ -91,7 +96,7 @@ function subjectWiseHighest(students) {
 console.log("3. Subject-wise Highest Score in the Class");
 const subjectTopper = subjectWiseHighest(students);
 
-//we use for in loop for objects
+//I use for in loop for objects
 for (let sub in subjectTopper) {
   console.log(
     `Highest in ${sub} : ${subjectTopper[sub].name} (${subjectTopper[sub].marks})`,
@@ -127,18 +132,19 @@ function getTopper(students) {
   let toppers = []; //using array to store the name and total marks of the toppers
   let maxMark = -1;
   students.forEach((student) => {
-    if (student.totalMarks > maxMark) {
-      maxMark = student.totalMarks;
+   let total = getTotal(student); 
+
+    if (total > maxMark) {
+      maxMark = total;
       toppers = [];
       toppers.push({
         name: student.name,
-        marks: student.totalMarks,
+        marks: total,
       });
-    } else if (student.totalMarks === maxMark) {
-      //if we have more than 1 topper
+    } else if (total === maxMark) {
       toppers.push({
         name: student.name,
-        marks: student.totalMarks,
+        marks: total,
       });
     }
   });
@@ -159,7 +165,7 @@ function getGrade(students) {
     let failedSubjects = [];
 
     student.marks.forEach((subject) => {
-      if (subject.score < 40) {
+      if (subject.score <= 40) {
         failedSubjects.push(subject.subject);
       }
     });
@@ -176,13 +182,13 @@ function getGrade(students) {
       grade = "fail (low attendance)";
 
     } else {
+      let avg = getTotal(student) / student.marks.length; 
 
-      // assigning grade based on average marks
-      if (student.average >= 85) {
+      if (avg >= 85) {
         grade = "A";
-      } else if (student.average >= 70) {
+      } else if (avg >= 70) {
         grade = "B";
-      } else if (student.average >= 50) {
+      } else if (avg >= 50) {
         grade = "C";
       } else {
         grade = "fail";
