@@ -2,7 +2,7 @@ package session1.fileio;
 
 import java.io.*;
 
-public class FileIODemo {
+public class FileIO {
     public static void main(String[] args) {
         String filename = "sample.txt";
 
