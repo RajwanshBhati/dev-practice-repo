@@ -30,7 +30,7 @@ class Task2 extends Thread {
     }
 }
 
-public class MultiThreadDemo {
+public class MultiThread {
 
     public static void main(String[] args) {
 
