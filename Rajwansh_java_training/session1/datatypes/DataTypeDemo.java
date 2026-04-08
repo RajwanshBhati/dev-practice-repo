@@ -21,7 +21,7 @@ public class DataTypeDemo {
 
         arr2[0] = 99;
 
-        System.out.println("\nReference Data Type Output:");
+        System.out.println("Reference Data Type Output:");
         System.out.println("arr1[0] = " + arr1[0]); // 99
         System.out.println("arr2[0] = " + arr2[0]); // 99
     }
