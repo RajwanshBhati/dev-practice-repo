@@ -22,13 +22,7 @@ public class GlobalExceptionHandler {
                 .body(ApiResponse.error(ex.getMessage()));
     }
 
-    //Handles invalid message type exceptions (400).
-    @ExceptionHandler(InvalidMessageTypeException.class)
-    public ResponseEntity<ApiResponse<Void>> handleInvalidMessageType(InvalidMessageTypeException ex) {
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(ApiResponse.error(ex.getMessage()));
-    }
+    
 
     //Handles validation errors (400).
     @ExceptionHandler(MethodArgumentNotValidException.class)
