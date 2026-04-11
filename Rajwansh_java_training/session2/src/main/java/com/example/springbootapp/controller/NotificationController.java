@@ -1,6 +1,8 @@
 package com.example.springbootapp.controller;
 
 import com.example.springbootapp.component.NotificationComponent;
+import com.example.springbootapp.dto.NotificationRequest;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,13 +16,15 @@ public class NotificationController {
         this.notificationComponent = notificationComponent;
     }
 
-   // Endpoint to send a notification. Example: /notification?name=John&event=login
-    @GetMapping
+    //Endpoint to trigger a notification. Validates the request body and sends a notification using the component.
+    @PostMapping("/send")
     public ResponseEntity<String> sendNotification(
-            @RequestParam String name,
-            @RequestParam String event) {
+            @Valid @RequestBody NotificationRequest request) {
 
-        String response = notificationComponent.send(name, event);
+        String response = notificationComponent.send(
+                request.getRecipient(),
+                request.getEventType()
+        );
 
         return ResponseEntity.ok(response);
     }
