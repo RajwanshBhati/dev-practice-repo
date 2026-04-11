@@ -1,4 +1,4 @@
-package com.training.session2.exception;
+package com.example.springbootapp.exception;
 
 public class InvalidMessageTypeException extends RuntimeException {
 
