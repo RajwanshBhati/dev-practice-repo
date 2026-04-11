@@ -1,9 +1,13 @@
 /home/rajwansh/dev-practice-repo/Rajwansh_java_training/session2/src/main/java/com/example/springbootapp/SpringBootApp.java
+/home/rajwansh/dev-practice-repo/Rajwansh_java_training/session2/src/main/java/com/example/springbootapp/component/NotificationComponent.java
+/home/rajwansh/dev-practice-repo/Rajwansh_java_training/session2/src/main/java/com/example/springbootapp/controller/NotificationController.java
 /home/rajwansh/dev-practice-repo/Rajwansh_java_training/session2/src/main/java/com/example/springbootapp/controller/UserController.java
 /home/rajwansh/dev-practice-repo/Rajwansh_java_training/session2/src/main/java/com/example/springbootapp/dto/ApiResponse.java
 /home/rajwansh/dev-practice-repo/Rajwansh_java_training/session2/src/main/java/com/example/springbootapp/dto/CreateUserRequest.java
+/home/rajwansh/dev-practice-repo/Rajwansh_java_training/session2/src/main/java/com/example/springbootapp/dto/NotificationRequest.java
 /home/rajwansh/dev-practice-repo/Rajwansh_java_training/session2/src/main/java/com/example/springbootapp/exception/GlobalExceptionHandler.java
 /home/rajwansh/dev-practice-repo/Rajwansh_java_training/session2/src/main/java/com/example/springbootapp/exception/ResourceNotFoundException.java
 /home/rajwansh/dev-practice-repo/Rajwansh_java_training/session2/src/main/java/com/example/springbootapp/model/User.java
 /home/rajwansh/dev-practice-repo/Rajwansh_java_training/session2/src/main/java/com/example/springbootapp/repository/UserRepository.java
+/home/rajwansh/dev-practice-repo/Rajwansh_java_training/session2/src/main/java/com/example/springbootapp/service/NotificationService.java
 /home/rajwansh/dev-practice-repo/Rajwansh_java_training/session2/src/main/java/com/example/springbootapp/service/UserService.java

@@ -1,9 +1,13 @@
 com/example/springbootapp/repository/UserRepository.class
-com/example/springbootapp/controller/UserController.class
+com/example/springbootapp/component/NotificationComponent.class
 com/example/springbootapp/SpringBootApp.class
-com/example/springbootapp/dto/CreateUserRequest.class
 com/example/springbootapp/dto/ApiResponse.class
-com/example/springbootapp/exception/ResourceNotFoundException.class
 com/example/springbootapp/exception/GlobalExceptionHandler.class
+com/example/springbootapp/controller/NotificationController.class
+com/example/springbootapp/service/NotificationService.class
+com/example/springbootapp/controller/UserController.class
+com/example/springbootapp/dto/CreateUserRequest.class
+com/example/springbootapp/dto/NotificationRequest.class
+com/example/springbootapp/exception/ResourceNotFoundException.class
 com/example/springbootapp/service/UserService.class
 com/example/springbootapp/model/User.class
