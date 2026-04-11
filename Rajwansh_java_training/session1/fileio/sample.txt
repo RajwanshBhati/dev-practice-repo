@@ -1,0 +1,3 @@
+Hello from file I/O demo!
+Line 2: Java is fun.
+Line 3: File reading successful.

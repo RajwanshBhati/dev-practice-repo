@@ -1,13 +1,13 @@
 package session1.oop;
 
-// Encapsulation: private fields + public getters/setters
+// I use encapsulation to protect the data of the Student class by making the fields private and providing public getter and setter methods to access and modify the data. 
 public class Student {
 
     private String name;
     private int rollNumber;
     private double marks;
 
-    // Constructor to initialize student object
+    //  I use Constructor to initialize student object
     public Student(String name, int rollNumber, double marks) {
         this.name = name;
         this.rollNumber = rollNumber;
@@ -46,7 +46,7 @@ public class Student {
         System.out.println("Marks: " + marks);
     }
 
-    // Polymorphism - Method Overloading: same method name with different parameters
+    // Polymorphism Method Overloading achieved by having the same method name but different parameters
     public void show() {
         System.out.println("Showing student details");
     }

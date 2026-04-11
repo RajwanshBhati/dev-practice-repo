@@ -1,12 +1,12 @@
-package session1.advanced;
+package session1.abstraction;
 
 
 abstract class Vehicle {
 
-    // abstract method (no implementation)
+    // abstract method here with no implementation
     abstract void start();
 
-    // normal method
+    // normal method with implementation
     void fuelInfo() {
         System.out.println("Fuel: Petrol / Diesel / Electric");
     }
@@ -27,7 +27,7 @@ public class AbstractClass {
 
         Bike bike = new Bike();
 
-        System.out.println("=== ABSTRACT CLASS DEMO ===");
+        System.out.println("=== ABSTRACT CLASS EXPLANATION ===");
 
         bike.start();
         bike.fuelInfo();

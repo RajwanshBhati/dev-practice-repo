@@ -9,7 +9,7 @@ public class ExceptionHandling {
         try {
             System.out.print("Enter a number: ");
             int num = sc.nextInt();
-            int result = 100 / num;           // may throw ArithmeticException
+            int result = 100 / num;           // may throw ArithmeticException because of division by zero
             System.out.println("Result = " + result);
 
             String str = null;
@@ -20,9 +20,10 @@ public class ExceptionHandling {
         } catch (NullPointerException e) {
             System.out.println("Null value found! " + e.getMessage());
         } catch (Exception e) {               // catch-all for any other error
+
             System.out.println("Some other error: " + e.getMessage());
         } finally {
-            System.out.println("Finally block always runs - cleanup done");
+            System.out.println("Finally block executed.");
             sc.close();
         }
     }

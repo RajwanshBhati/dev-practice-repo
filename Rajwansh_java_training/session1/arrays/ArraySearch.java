@@ -21,7 +21,7 @@ public class ArraySearch {
         System.out.print("Enter element to search: ");
         int target = sc.nextInt();
 
-       // I used a simple linear search algorithm to iterate through the array and check if the target element exists. If it is found, we set the found flag to true and store the index. After the loop, we check the found flag to determine if the element was found and print the  message.
+       // I used a simple linear search algorithm to iterate through the array and check if the target element exists. If it is found, I set the found flag to true and store the index. After the loop, we check the found flag to determine if the element was found and print the  message.
         boolean found = false;
         int index = -1;
 

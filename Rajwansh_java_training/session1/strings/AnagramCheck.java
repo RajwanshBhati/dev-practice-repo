@@ -1,24 +1,33 @@
-package session1.string;
+package session1.strings;
 
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class AnagramCheck {
 
     public static boolean isAnagram(String s1, String s2) {
 
-        if (s1.length() != s2.length()) {
-            return false;
+        // I check Length before proceeding with frequency counting, as anagrams must be of the same length
+        if (s1.length() != s2.length()) return false;
+
+        // Frequency array for a-z
+        int[] freq = new int[26];
+
+        // Count characters of s1 by incrementing the corresponding index in the frequency array. I convert characters to lowercase to ensure case insensitivity.
+        for (char ch : s1.toLowerCase().toCharArray()) {
+            freq[ch - 'a']++;
         }
-        
-        // Convert both strings to lowercase and then to character arrays, sort the arrays, and check if they are equal. If they are equal, the strings are anagrams of each other.
-        char[] arr1 = s1.toLowerCase().toCharArray();
-        char[] arr2 = s2.toLowerCase().toCharArray();
 
-        Arrays.sort(arr1);
-        Arrays.sort(arr2);
+        // Subtract using s2 because anagrams will have the same characters in the same frequency, so I decrement the counts for s2. If they are anagrams, all counts should return to zero.
+        for (char ch : s2.toLowerCase().toCharArray()) {
+            freq[ch - 'a']--;
+        }
 
-        return Arrays.equals(arr1, arr2);
+        // Check all values are 0
+        for (int count : freq) {
+            if (count != 0) return false;
+        }
+
+        return true;
     }
 
     public static void main(String[] args) {
@@ -32,9 +41,9 @@ public class AnagramCheck {
         String s2 = sc.nextLine();
 
         if (isAnagram(s1, s2)) {
-            System.out.println("Strings are Anagrams");
+            System.out.println("Strings are Anagrams ");
         } else {
-            System.out.println("Strings are NOT Anagrams");
+            System.out.println("Strings are NOT Anagrams ");
         }
 
         sc.close();

@@ -1,6 +1,6 @@
 package session1.oop;
 
-// Inheritance GraduateStudent extends Student means that GraduateStudent is a subclass of Student and inherits all its properties and behaviors.
+// GraduateStudent class is a child class of Student class, it inherits all properties and methods of Student class
 public class GraduateStudent extends Student {
 
     private String specialization;
@@ -25,7 +25,7 @@ public class GraduateStudent extends Student {
         System.out.println("Specialization: " + specialization);
     }
 
-    // Polymorphism Method Overloading in child class same method name with different parameters
+    // Polymorphism Method Overloading achieved in child class with same method name but different parameters
     public void show(String message, int year) {
         System.out.println(message + " | Year: " + year + " | Student: " + getName());
     }

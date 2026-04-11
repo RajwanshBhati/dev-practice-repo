@@ -11,7 +11,7 @@ public class ArrayAverage {
         System.out.print("Enter size of array: ");
         int n = sc.nextInt();
 
-        // I added this check to prevent creating an array of size 0 or negative, which would cause an error. If n is less than or equal to 0, we print a message and exit the program.
+        // I added this check to prevent creating an array of size 0 or negative, which would cause an error. If n is less than or equal to 0, I print a message and exit the program.
         if (n <= 0) {
             System.out.println("Array size must be greater than 0");
             return;

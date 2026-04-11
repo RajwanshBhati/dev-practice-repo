@@ -1,7 +1,6 @@
-package session1.advanced;
+package session1.multithreading;
 
 /*
- * This program demonstrates basic multithreading in Java.
  * I create two threads (Task1 and Task2) that run at the same time.
  * Each thread prints numbers from 1 to 5.
  */
@@ -39,7 +38,7 @@ public class MultiThread {
         Task2 t2 = new Task2();
 
         // start() is used to run threads concurrently
-        // it internally calls run()
+        // it internally calls run() method of respective thread class
         t1.start();
         t2.start();
     }

@@ -1,4 +1,4 @@
-package session1.string;
+package session1.strings;
 
 import java.util.Scanner;
 
@@ -6,15 +6,16 @@ public class VowelCount {
 
     public static int countVowels(String str) {
 
-        int count = 0;
-        str = str.toLowerCase();
+          int count = 0;
 
         for (int i = 0; i < str.length(); i++) {
 
             char ch = str.charAt(i);
-           // I used if condition to check if the character is a vowel (a, e, i, o, u) and increment the count variable if it is.
+          // I check if the character is a vowel (both uppercase and lowercase) and increment the count variable accordingly.
             if (ch == 'a' || ch == 'e' || ch == 'i' ||
-                ch == 'o' || ch == 'u') {
+                ch == 'o' || ch == 'u' ||
+                ch == 'A' || ch == 'E' || ch == 'I' ||
+                ch == 'O' || ch == 'U') {
                 count++;
             }
         }

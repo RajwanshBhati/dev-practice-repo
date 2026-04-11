@@ -1,4 +1,4 @@
-package session1.advanced;
+package session1.abstraction;
 
 interface VehicleRules {
 
@@ -24,7 +24,7 @@ public class InterfaceDemo {
 
         Car car = new Car();
 
-        System.out.println("=== INTERFACE DEMO ===");
+        System.out.println("=== INTERFACE EXPLANATION ===");
 
         car.horn();
         car.stop();

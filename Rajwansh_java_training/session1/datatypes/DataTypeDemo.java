@@ -11,8 +11,8 @@ public class DataTypeDemo {
         b = 20;
 
         System.out.println("Primitive Data Type Output:");
-        System.out.println("a = " + a); // 10
-        System.out.println("b = " + b); // 20
+        System.out.println("a = " + a); // output: 10
+        System.out.println("b = " + b); // output: 20
 
 
         //  Reference data type
@@ -22,7 +22,7 @@ public class DataTypeDemo {
         arr2[0] = 99;
 
         System.out.println("Reference Data Type Output:");
-        System.out.println("arr1[0] = " + arr1[0]); // 99
-        System.out.println("arr2[0] = " + arr2[0]); // 99
+        System.out.println("arr1[0] = " + arr1[0]); // output: 99
+        System.out.println("arr2[0] = " + arr2[0]); // output: 99
     }
 }
