@@ -5,6 +5,7 @@ import com.example.springbootapp.exception.ResourceNotFoundException;
 import com.example.springbootapp.model.User;
 import com.example.springbootapp.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import com.example.springbootapp.dto.CreateUserRequest;
 
 import java.util.List;
 
