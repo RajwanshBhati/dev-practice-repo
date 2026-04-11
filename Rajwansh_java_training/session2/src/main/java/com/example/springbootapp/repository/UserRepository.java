@@ -1,6 +1,6 @@
-package com.training.springbootapp.repository;
+package com.example.springbootapp.repository;
 
-import com.training.springbootapp.model.User;
+import com.example.springbootapp.model.User;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;

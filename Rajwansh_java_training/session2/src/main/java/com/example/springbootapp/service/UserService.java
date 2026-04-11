@@ -1,9 +1,9 @@
-package com.training.springbootapp.service;
+package com.example.springbootapp.service;
 
 
-import com.training.springbootapp.exception.ResourceNotFoundException;
-import com.training.springbootapp.model.User;
-import com.training.springbootapp.repository.UserRepository;
+import com.example.springbootapp.exception.ResourceNotFoundException;
+import com.example.springbootapp.model.User;
+import com.example.springbootapp.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
