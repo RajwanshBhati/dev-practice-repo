@@ -13,6 +13,10 @@ public class MessageFormatterService {
 
     private final Map<String, MessageFormatter> formatterRegistry;
 
+
+    public List<String> getSupportedTypes() {
+    return formatterRegistry.keySet().stream().toList();
+}
     public MessageFormatterService(List<MessageFormatter> formatters) {
         this.formatterRegistry = formatters.stream()
                 .collect(Collectors.toMap(
