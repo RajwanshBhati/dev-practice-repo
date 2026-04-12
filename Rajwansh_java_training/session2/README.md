@@ -1,10 +1,22 @@
-**Spring Boot Assignment — Session 2**
-<hr/>
+##  Spring Boot Assignment — Session 2
 
-**Overview**
-<hr/>
+##  Overview
 
-This project is part of the Java Fundamentals training assignment. It demonstrates core Spring Boot concepts, strict layered architecture, and REST API development. The application is built without a physical database, relying instead on thread-safe in-memory data structures to handle state.
+This project is part of the **Java Fundamentals Training Assignment** and showcases the core concepts of Spring Boot along with a well-structured layered architecture.
+
+The application is designed to demonstrate REST API development using a clean and modular approach. Instead of using a physical database, it utilizes **thread-safe in-memory data structures** to efficiently manage application state.
+
+---
+
+## Highlights
+
+- Follows **Layered Architecture** (Controller → Service → Repository)  
+- Implements **RESTful APIs** for real-world scenarios  
+- Uses **In-Memory Data Storage** (No Database Required)  
+- Ensures **Thread-Safe Operations**  
+- Clean, maintainable, and scalable code structure  
+
+---
 
 ## Tech Stack
 
@@ -13,15 +25,6 @@ This project is part of the Java Fundamentals training assignment. It demonstrat
 - Maven (Build Tool)
 - RESTful APIs
 - In-Memory Data Storage (No Database Integration)
-
-## Features
-
-- Create Data
-- Fetch All Records
-- Fetch Record by ID
-- Update Existing Data
-- Delete Data
-- Layered Architecture (Controller → Service → Repository)
 
 
 ## Project Structure
@@ -36,18 +39,18 @@ This project is part of the Java Fundamentals training assignment. It demonstrat
 
 1. **Clone the repository**
 
-git clone https://github.com/RajwanshBhati/dev-practice-repo.git
+   git clone https://github.com/RajwanshBhati/dev-practice-repo.git
 
-cd .\Rajwansh_java_training\session2\
+   cd .\Rajwansh_java_training\session2\
 
 
 2. **Build the project**
 
-mvn clean install
+   mvn clean install
 
 3. **Run the application**
 
-mvn spring-boot:run
+   mvn spring-boot:run
 
 ## API Endpoints
 
@@ -85,7 +88,7 @@ This module handles all user-related operations such as creating, retrieving, up
 This module is responsible for sending notifications using a reusable component.
 
 - **Send Notification**  
-  - Endpoint: `/notification`  
+  - Endpoint: `/notification/send`  
   - Method: GET  
   - Description: Returns a success message indicating that the notification has been sent  
 
@@ -104,6 +107,7 @@ This module is used to format messages based on the selected type.
   - Method: GET  
   - Description: Returns a detailed formatted message  
 
+---
 
 ## API Testing (Thunder Client)
 
@@ -147,7 +151,7 @@ This module is used to format messages based on the selected type.
 
 ![alt text](images/Long_me.png)
 
-<hr/>
+---
 
 **Author**
 
