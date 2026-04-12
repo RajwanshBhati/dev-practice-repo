@@ -1,9 +1,21 @@
 /target/
 .env
+
+# IDE
 .vscode/
 .idea/
 *.iml
+
+# Logs
 *.log
+
+# OS
 .DS_Store
 Thumbs.db
+
+# Maven
+.mvn/wrapper/maven-wrapper.jar
+surefire-reports/
+
+# Docs
 HELP.md
