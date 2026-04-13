@@ -16,6 +16,8 @@ public class MessageFormatterController {
     public MessageFormatterController(MessageFormatterService messageFormatterService) {
         this.messageFormatterService = messageFormatterService;
     }
+
+    // I implemented the getMessage method to handle GET request to the /message endpoint
      @GetMapping
     public ResponseEntity<ApiResponse<String>> getMessage(
             @RequestParam String type,
@@ -29,7 +31,7 @@ public class MessageFormatterController {
         );
     }
 
-
+// I implemented the getSupportedTypes method to handle GET requests to the /message/types endpoint. 
 @GetMapping("/types")
 public ResponseEntity<ApiResponse<List<String>>> getSupportedTypes() {
 

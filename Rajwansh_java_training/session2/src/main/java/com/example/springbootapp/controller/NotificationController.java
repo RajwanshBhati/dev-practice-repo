@@ -16,7 +16,7 @@ public class NotificationController {
         this.notificationComponent = notificationComponent;
     }
 
-    //Endpoint to trigger a notification. Validates the request body and sends a notification using the component.
+    // I implemented the sendNotification method to handle POST requests to the "/notification/send" endpoint. This method takes a NotificationRequest object as input, which is validated using the @Valid annotation
     @PostMapping("/send")
     public ResponseEntity<String> sendNotification(
             @Valid @RequestBody NotificationRequest request) {

@@ -1,5 +1,7 @@
 package com.example.springbootapp.dto;
 
+
+// I am creating a generic ApiResponse class that can be used to standardize the structure of API responses across the application. This class has two fields: message (a string to convey information about the response) and data (a generic type T to hold any type of data that needs to be returned in the response). The class includes constructors, static factory methods for success and error responses, and getter/setter methods for the fields.
 public class ApiResponse<T> {
 
     private String message;
@@ -7,7 +9,8 @@ public class ApiResponse<T> {
 
     public ApiResponse() {
     }
-
+   
+    
     public ApiResponse(String message, T data) {
         this.message = message;
         this.data = data;

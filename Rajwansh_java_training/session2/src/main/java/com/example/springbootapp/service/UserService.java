@@ -20,18 +20,18 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    // Get all users
+    // Here I am implementing the getAllUsers method to retrieve all users from the repository. This method simply calls the findAll method of the UserRepository and returns the list of users.
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
-    /// Get user by ID
+    /// I implemented the getUserById method to fetch a single user by their ID. If the user is not found, it throws a ResourceNotFoundException, which is a custom exception that I created to handle cases where a requested resource in this case, a user does not exist in the repository.
     public User getUserById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User", id));
     }
 
-    // I added validation to ensure data integrity and prevent invalid user creation
+    // I added validation logic to ensure that the name and email fields are not null or empty, and that the email has a valid format. If any of these validations fail, an IllegalArgumentException is thrown with an appropriate message. 
     public User createUser(CreateUserRequest request) {
 
         if (request.getName() == null || request.getName().trim().isEmpty()) {
@@ -80,12 +80,12 @@ public class UserService {
             existingUser.setRole(request.getRole().toUpperCase().trim());
         }
 
-        // Save updated user
+        // Save updated user and return
         return userRepository.save(existingUser);
     }
 
     
-    // I added delete logic to remove users by ID and handle non-existent users gracefully
+    // I added delete logic to remove users by ID and handle the case where the user does not exist by throwing a ResourceNotFoundException. 
     public void deleteUser(Long id) {
 
         if (!userRepository.existsById(id)) {

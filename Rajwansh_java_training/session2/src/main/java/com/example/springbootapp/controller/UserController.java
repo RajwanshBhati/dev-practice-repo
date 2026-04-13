@@ -14,7 +14,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/users") // I used the @RestController annotation to indicate that this class is a RESTful controller, and the @RequestMapping annotation to specify that all endpoints in this controller will be prefixed with "/users". This means that any HTTP requests to paths starting with "/users" will be handled by methods in this controller.
 public class UserController {
 
     private final UserService userService;
@@ -24,7 +24,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    // Get All Users
+    // I implemented the getAllUsers method to retrieve all users from the repository. This method simply calls the findAll method of the UserRepository and returns the list of users.
     @GetMapping
     public ResponseEntity<ApiResponse<List<User>>> getAllUsers() {
         List<User> users = userService.getAllUsers();
@@ -34,7 +34,7 @@ public class UserController {
         );
     }
 
-    // Get User by ID
+    // I implemented the getUserById method to fetch a single user by their ID. If the user is not found, it throws a ResourceNotFoundException, which is a custom exception 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<User>> getUserById(@PathVariable Long id) {
         User user = userService.getUserById(id);
@@ -45,7 +45,7 @@ public class UserController {
     }
 
     
-    // Create new user with validation
+    //  I created the createUser method to create a new user with validation
     @PostMapping
     public ResponseEntity<ApiResponse<User>> createUser(
             @Valid @RequestBody CreateUserRequest request) {
@@ -57,7 +57,7 @@ public class UserController {
                 .body(ApiResponse.success("User created successfully", createdUser));
     }
 
-    // Update existing user
+    // Update existing user 
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<User>> updateUser(
             @PathVariable Long id,
@@ -70,7 +70,7 @@ public class UserController {
         );
     }
 
-    // Delete user
+    // Delete user by ID
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<String>> deleteUser(@PathVariable Long id) {
 

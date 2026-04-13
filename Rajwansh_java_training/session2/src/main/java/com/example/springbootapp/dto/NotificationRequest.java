@@ -2,7 +2,9 @@ package com.example.springbootapp.dto;
 
 import jakarta.validation.constraints.NotBlank;
 
-
+/* I am creating a DTO (Data Transfer Object) class is NotificationRequest that will be used to capture the data needed to send a notification
+. This class has three fields: recipient, eventType, and additionalInfo.
+*/
 public class NotificationRequest {
 
     @NotBlank(message = "Recipient must not be blank")

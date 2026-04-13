@@ -2,6 +2,7 @@ package com.example.springbootapp.component;
 
 import org.springframework.stereotype.Component;
 
+
 @Component
 public class LongMessageFormatter implements MessageFormatter {
 
@@ -13,16 +14,21 @@ public class LongMessageFormatter implements MessageFormatter {
     @Override
     public String format(String context) {
 
-        String topic = (context != null && !context.isBlank())
-                ? context
-                : "your request";
+        String topic = context;
 
-        return "===== LONG MESSAGE =====\n" +
-       "Topic   : " + topic + "\n" +
-       "Status  : Success\n" +
-       "Priority: High\n" +
-       "Details : Request processed using long format\n" +
-       "Result  : Completed\n" +
-       "========================";
+        // Here I handle null or empty case
+        if (topic == null || topic.trim().isEmpty()) {
+            topic = "your request";
+        }
+
+        String message = "LONG MESSAGE\n";
+        message += "Topic   : " + topic + "\n";
+        message += "Status  : Success\n";
+        message += "Priority: High\n";
+        message += "Details : Request processed using long format\n";
+        message += "Result  : Completed\n";
+        message += "Note    : This is a detailed message format for better readability.";
+
+        return message;
     }
 }
