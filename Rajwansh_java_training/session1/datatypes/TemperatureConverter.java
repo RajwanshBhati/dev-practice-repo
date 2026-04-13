@@ -37,7 +37,8 @@ public class TemperatureConverter {
                 case 2:
                     System.out.print("Enter Fahrenheit: ");
                     temp = sc.nextDouble();
-
+                    
+                    //I used the formula (F - 32) * 5 / 9 to convert Fahrenheit to Celsius because it is the standard formula for temperature conversion. The formula first subtracts 32 from the Fahrenheit temperature to adjust for the difference in the starting points of the two scales, and then multiplies by 5/9 to account for the different sizes of the degree units on the two scales.
                     result = (temp - 32) * 5 / 9;
                     System.out.println("Celsius: " + result);
                     break;

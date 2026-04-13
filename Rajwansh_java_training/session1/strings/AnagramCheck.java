@@ -9,7 +9,7 @@ public class AnagramCheck {
         // I check Length before proceeding with frequency counting, as anagrams must be of the same length
         if (s1.length() != s2.length()) return false;
 
-        // Frequency array for a-z
+        // Frequency array for a-z because I am assuming only lowercase letters for simplicity. Each index corresponds to a letter, and the value at that index represents the count of that letter in the string.
         int[] freq = new int[26];
 
         // Count characters of s1 by incrementing the corresponding index in the frequency array. I convert characters to lowercase to ensure case insensitivity.
@@ -39,7 +39,9 @@ public class AnagramCheck {
 
         System.out.print("Enter second string: ");
         String s2 = sc.nextLine();
+        
 
+        // I call the isAnagram method with the two input strings and print the result. If the method returns true, I print that the strings are anagrams; otherwise, I print that they are not.
         if (isAnagram(s1, s2)) {
             System.out.println("Strings are Anagrams ");
         } else {

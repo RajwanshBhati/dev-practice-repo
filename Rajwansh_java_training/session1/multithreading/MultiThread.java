@@ -18,7 +18,7 @@ class Task1 extends Thread {
     }
 }
 
-// Second thread class
+// I create Second thread class that extends Thread and overrides the run() method to print numbers from 1 to 5, similar to Task1 but with a different message to distinguish between the two threads when they run concurrently.
 class Task2 extends Thread {
 
     public void run() {

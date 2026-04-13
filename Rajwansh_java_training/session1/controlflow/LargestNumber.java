@@ -30,7 +30,7 @@ public class LargestNumber {
 
         System.out.println("Largest number is: " + largest);
 
-       // Closing the scanner to prevent resource leak
+       // I closed the scanner to prevent resource leaks because it's a good practice to close resources when they are no longer needed
         sc.close();
     }
 }

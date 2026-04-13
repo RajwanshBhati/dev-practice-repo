@@ -11,7 +11,7 @@ public class FibonacciProgram {
         System.out.print("Enter number of terms: ");
         int n = sc.nextInt();
 
-        //  Edge case if n is zero or negative
+        //  Edge case if n is zero or negative so I printed a message and return
         if (n <= 0) {
             System.out.println("Please enter a positive number");
             return;
@@ -29,6 +29,6 @@ public class FibonacciProgram {
             b = next;
         }
 
-        sc.close();
+        sc.close(); // I closed the scanner to prevent resource leaks because it's a good practice to close resources when they are no longer needed
     }
 }

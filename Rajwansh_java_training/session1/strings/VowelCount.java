@@ -30,7 +30,7 @@ public class VowelCount {
         System.out.print("Enter string: ");
         String str = sc.nextLine();
 
-        System.out.println("Vowel Count: " + countVowels(str));
+        System.out.println("Vowel Count: " + countVowels(str)); // I call the countVowels method with the input string and print the result, which is the total number of vowels present in the string.
 
         sc.close();
     }

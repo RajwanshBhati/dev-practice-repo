@@ -6,11 +6,12 @@ public class FileIO {
     public static void main(String[] args) {
         String filename = "sample.txt";
 
-        // I Create sample file if it doesn't exist
+        // I Create sample file if it doesn't exist and write some lines to it using FileWriter. Then I read the file using BufferedReader and print its contents to the console. I also handle potential exceptions that may occur during file creation and reading, such as FileNotFoundException and IOException, to ensure that the program runs smoothly even if there are issues with file access.
         createSampleFile(filename);
 
         System.out.println("Reading file: " + filename);
-  
+        
+        //I used BufferedReader to read the contents of the file line by line. 
         try (BufferedReader br = new BufferedReader(new FileReader(filename))) {  // try-with-resources to automatically close the BufferedReader
             String line;
             while ((line = br.readLine()) != null) {
@@ -22,7 +23,8 @@ public class FileIO {
             System.out.println("Error reading file: " + e.getMessage());
         }
     }
-
+ 
+    //I created a helper method createSampleFile that checks if the specified file exists. If it doesn't, it creates the file and writes some sample lines to it using FileWriter. This method is called at the beginning of the main method to ensure that there is a file to read from when I attempt to read its contents later on.
     private static void createSampleFile(String filename) {
         File file = new File(filename);
         if (!file.exists()) {

@@ -33,7 +33,7 @@ public class ArraySort {
                 }
             }
 
-            
+            // If no two elements were swapped in the inner loop, then the array is already sorted and I can break out of the loop early to optimize the sorting process
             if (!swapped) break;
         }
 
