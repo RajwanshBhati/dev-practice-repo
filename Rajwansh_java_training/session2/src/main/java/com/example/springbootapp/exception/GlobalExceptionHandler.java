@@ -15,7 +15,7 @@ public class GlobalExceptionHandler {
 
     //Handles resource not found exceptions (404).
 
-    @ExceptionHandler(ResourceNotFoundException.class)
+    @ExceptionHandler(ResourceNotFoundException.class) // I am using the @ExceptionHandler annotation to specify that this method should handle exceptions of type ResourceNotFoundException. When such an exception is thrown in any controller, this method will be invoked to handle it.
     public ResponseEntity<ApiResponse<Void>> handleResourceNotFound(ResourceNotFoundException ex) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
@@ -34,7 +34,7 @@ public class GlobalExceptionHandler {
                 .collect(Collectors.joining(", "));
 
         return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
+                .status(HttpStatus.BAD_REQUEST) // I am returning a ResponseEntity with a status of BAD_REQUEST (400) and a body containing an ApiResponse object with an error message that includes the details of the validation errors.
                 .body(ApiResponse.error("Validation failed: " + errorMessage));
     }
 

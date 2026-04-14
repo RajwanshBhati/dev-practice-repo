@@ -11,6 +11,7 @@ public User(){
 
 }
 
+// Here I am creating a constructor for the User class that takes all the fields as parameters. This constructor allows me to create a new User object with specific values for id, name, email, and role when needed. 
 public User(Long id, String name, String email, String role){
     this.id=id;
     this.name=name;
@@ -18,6 +19,8 @@ public User(Long id, String name, String email, String role){
     this.role = role;
 }
 
+
+// I am creating getter and setter methods for each field in the User class for accessing and modifying the values of the fields. 
 public Long getId(){
     return id;
 }
