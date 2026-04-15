@@ -12,13 +12,13 @@ public class UserRepository{
 
     // I am creaating the constructor of the UserRepository class where I am adding some sample user data to the users list. This will allow me to test the functionality of my REST API without needing a database connection. 
     public UserRepository(){
-        users.add(new User(1, "Priya Sharma",   28, "USER",  "priya.sharma@gmail.com"));
-        users.add(new User(2, "Rahul Mehta",    30, "ADMIN", "rahul.mehta@gmail.com"));
-        users.add(new User(3, "Anjali Gupta",   25, "USER",  "anjali.gupta@gmail.com"));
-        users.add(new User(4, "Vikram Singh",   30, "USER",  "vikram.singh@gmail.com"));
-        users.add(new User(5, "Sneha Patil",    35, "MANAGER","sneha.patil@gmail.com"));
-        users.add(new User(6, "Arjun Nair",     22, "USER",  "arjun.nair@gmail.com"));
-        users.add(new User(7, "Meera Iyer",     40, "ADMIN", "meera.iyer@gmail.com"));
+       users.add(new User(1, "Priya Sharma",   28, "priya.sharma@gmail.com", "USER"));
+       users.add(new User(2, "Rahul Mehta",    30, "rahul.mehta@gmail.com", "ADMIN"));
+       users.add(new User(3, "Anjali Gupta",   25, "anjali.gupta@gmail.com", "USER"));
+       users.add(new User(4, "Vikram Singh",   30, "vikram.singh@gmail.com", "USER"));
+       users.add(new User(5, "Sneha Patil",    35, "sneha.patil@gmail.com", "MANAGER"));
+       users.add(new User(6, "Arjun Nair",     22, "arjun.nair@gmail.com", "USER"));
+       users.add(new User(7, "Meera Iyer",     40, "meera.iyer@gmail.com", "ADMIN"));
 
     }
     

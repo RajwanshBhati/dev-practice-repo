@@ -1,6 +1,6 @@
 package com.springrest.restapi.dto;
 
-
+// Here I am creating a SubmitRequest class to represent the structure of the data that will be submitted through the POST endpoint in the UserController. This class contains fields for title, description, category, and submittedBy, along with their respective getters and setters. This allows me to easily map incoming JSON data to this object when handling POST requests.
 public class SubmitRequest {
 
     private String title;

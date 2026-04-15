@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-
+// I am creating a GlobalExceptionHandler class to handle exceptions across the entire application in a centralized manner. This class uses the @RestControllerAdvice annotation to indicate that it will provide exception handling for REST controllers. It contains methods annotated with @ExceptionHandler to specify which exceptions they handle, such as UserNotFoundException and InvalidRequestException. Each method returns a ResponseEntity containing an ApiResponse with an appropriate error message and HTTP status code.
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 

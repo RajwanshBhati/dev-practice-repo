@@ -4,6 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.springrest.restapi.model.User;
 import com.springrest.restapi.repository.UserRepository;
+import com.springrest.restapi.exception.UserNotFoundException;
+import com.springrest.restapi.exception.InvalidRequestException;
+import java.util.stream.Collectors;
+
 
 @Service
 
@@ -17,7 +21,7 @@ public class UserService{
 
     // I am created a method to search for users based on optional criteria such as name, age, and role. This method retrieves all users from the repository and then filters them based on the provided criteria. If a criterion is not provided  null or blank, it is ignored in the filtering process. The filtered list of users is then returned as the result.
     public List<User> searchUsers(String name, Integer age, String role) {
-        List<User> allUsers = userRepository.findAll();
+        List<User> allUsers = userRepository.getAllUsers();
  
         return allUsers.stream()
                 .filter(user -> matchesName(user, name))
@@ -57,10 +61,10 @@ public class UserService{
             return "Confirmation required";
         }
  
-        boolean exists = userRepository.findById(id).isPresent();
-        if (!exists) {
-            throw new UserNotFoundException("User with ID " + id + " not found.");
-        }
+        User user = userRepository.getUserById(id);
+       if (user == null) {
+     throw new UserNotFoundException("User with ID " + id + " not found.");
+    }
  
         userRepository.deleteById(id);
         return "User with ID " + id + " has been successfully deleted.";
