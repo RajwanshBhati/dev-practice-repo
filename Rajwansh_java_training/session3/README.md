@@ -59,7 +59,7 @@ Delete a user only after explicit confirmation
 - Open the project in IntelliJ IDEA or VS Code
 - Make sure Java 17 is installed
 - Run the main Spring Boot application
-- The server will start on: http://localhost:8080
+- The server will start on: http://localhost:8081
 - Use Postman or Thunder Client to test APIs
 
 
