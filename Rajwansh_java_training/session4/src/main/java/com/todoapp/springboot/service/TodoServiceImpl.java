@@ -126,13 +126,18 @@ public class TodoServiceImpl implements TodoService {
         // Verify existence first so we can throw a meaningful 404. If we just call deleteById and the ID doesn't exist, it will silently do nothing, which is not ideal for my API.
         logger.info("Deleting TODO with ID: {}", id);
         
-        findTodoOrThrow(id);
+        Todo todo = findTodoOrThrow(id);
         todoRepository.deleteById(id);
+
+        // After successfully deleting the todo item, I call the sendTodoDeletedNotification method of the NotificationServiceClient to send a notification about the deleted todo item. I pass the ID and title of the deleted todo item to the notification method.
+         notificationServiceClient.sendTodoDeletedNotification(
+            id,
+            todo.getTitle()
+    );
 
         logger.info("TODO deleted successfully with ID: {}", id);
         
-        // After successfully deleting the todo item, I call the sendTodoDeletedNotification method of the NotificationServiceClient to send a notification about the deleted todo item. I pass the ID and title of the deleted todo item to the notification method.
-        notificationServiceClient.sendTodoDeletedNotification(id, todo.getTitle());
+        
     }
 
     private Todo findTodoOrThrow(Long id) {
