@@ -14,6 +14,7 @@ import com.todoapp.springboot.dto.DeleteConfirmationDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.Optional;
+import com.todoapp.springboot.client.NotificationServiceClient;
 
 
 
@@ -24,9 +25,11 @@ public class TodoServiceImpl implements TodoService {
     private static final Logger logger = LoggerFactory.getLogger(TodoServiceImpl.class);
 
     public final TodoRepository todoRepository;
+    private final NotificationServiceClient notificationServiceClient;
 
-    public TodoServiceImpl(TodoRepository todoRepository) {
+    public TodoServiceImpl(TodoRepository todoRepository, NotificationServiceClient notificationServiceClient) {
         this.todoRepository = todoRepository;
+        this.notificationServiceClient = notificationServiceClient;
     }
 
     @Override
