@@ -9,6 +9,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import com.todoapp.springboot.enums.TodoStatus;
 
 
 // Here I define the Todo entity class, which represents a todo item in the application. It has fields for id, title, description, status, and createdAt. The class is annotated with @Entity to indicate that it is a JPA entity and @Table to specify the table name in the database.
@@ -40,12 +41,12 @@ public class Todo{
    
 
    // Constructor to initialize the title, description, status, and createdAt fields when creating a new todo item. The createdAt field is set to the current date and time when the object is instantiated.
-   public Todo(String title, String description, TodoStatus status) {
-        this.title = title;
-        this.description = description;
-        this.status = status;
-        this.createdAt = LocalDateTime.now();
-    }
+  public Todo(String title, String description, TodoStatus status, LocalDateTime createdAt) {
+    this.title = title;
+    this.description = description;
+    this.status = status;
+    this.createdAt = createdAt;
+}
 
    
     // Getters and setters for all the fields in the class, allowing other parts of the application to access and modify the properties of a todo item.

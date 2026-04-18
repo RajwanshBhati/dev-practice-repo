@@ -1,8 +1,11 @@
-package com.todo.app.exception;
+package com.todoapp.springboot.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.todoapp.springboot.exception.TodoNotFoundException;
+import com.todoapp.springboot.exception.InvalidStatusTransitionException;
+
 
 import java.time.LocalDateTime;
 import java.util.HashMap;

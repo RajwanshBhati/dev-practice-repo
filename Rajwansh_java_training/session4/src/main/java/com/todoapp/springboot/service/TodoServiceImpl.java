@@ -5,6 +5,12 @@ import com.todoapp.springboot.enums.TodoStatus;
 import com.todoapp.springboot.entity.Todo;
 import com.todoapp.springboot.repository.TodoRepository;
 import org.springframework.stereotype.Service;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+import com.todoapp.springboot.exception.TodoNotFoundException;
+import com.todoapp.springboot.exception.InvalidStatusTransitionException;
+
 
 
 @Service
@@ -22,29 +28,29 @@ public class TodoServiceImpl implements TodoService {
      Todo todo = new Todo(
     requestDTO.getTitle(),
     requestDTO.getDescription(),
-    requestDTO.getStatus() != null ? requestDTO.getStatus() : TodoStatus.PENDING
+    requestDTO.getStatus() != null ? requestDTO.getStatus() : TodoStatus.PENDING,
     LocalDateTime.now()
     ) ;
 
     Todo savedTodo = todoRepository.save(todo);
-    return ConvertToResponseDTO(savedTodo);
+    return convertToResponseDTO(savedTodo);
     }
 
 
-   @override
+   @Override
    public List<TodoResponseDTO> getAllTodos() {
         // Here I implement the getAllTodos method, which retrieves all todo items from the database using the TodoRepository, converts each Todo entity to a TodoResponseDTO, and returns a list of TodoResponseDTOs.
         List<Todo> todos = todoRepository.findAll();
         return todos.stream()
-                .map(this::ConvertToResponseDTO)
+                .map(this::convertToResponseDTO)
                 .collect(Collectors.toList());
     }
 
-    @override
+    @Override
     public TodoResponseDTO getTodoById(Long id) {
         // Here I implement the getTodoById method, which retrieves a todo item by its ID. It uses the TodoRepository to find the todo item in the database, and if found, converts it to a TodoResponseDTO and returns it. If the todo item is not found, it throws a RuntimeException with an appropriate message.
         Todo todo = findTodoOrThrow(id);
-        return ConvertToResponseDTO(todo);
+        return convertToResponseDTO(todo);
     }
 
   @Override
@@ -71,7 +77,7 @@ public class TodoServiceImpl implements TodoService {
     }
 
      @Override
-    public void deleteTodo(Long id) {
+    public void deleteTodoById(Long id) {
         // Verify existence first so we can throw a meaningful 404.
         findTodoOrThrow(id);
         todoRepository.deleteById(id);
@@ -94,7 +100,7 @@ public class TodoServiceImpl implements TodoService {
     }
 
 
-    public ConvertToResponseDTO(Todo todo) {
+    public TodoResponseDTO convertToResponseDTO(Todo todo) {
         return new TodoResponseDTO(
                 todo.getId(),
                 todo.getTitle(),

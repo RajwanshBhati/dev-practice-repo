@@ -9,14 +9,14 @@ public class TodoRequestDTO{
     
 
     //@notnull annotation ensures that the title field cannot be null, and the @Size annotation specifies that the title must be between 1 and 255 characters long. 
-    @notNull(message = "Title cannot be null")
+    @NotNull(message = "Title cannot be null")
     @Size(min = 1, max = 255, message = "Title must be between 1 and 255 characters")
     private String title;
 
     @Size(min = 5, message = "Description, if provided, must be at least 5 characters long")
     private String description;
     
-    @notNull(message = "Status cannot be null")
+    @NotNull(message = "Status cannot be null")
     private TodoStatus status;
 
 
