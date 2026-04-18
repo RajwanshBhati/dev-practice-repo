@@ -8,7 +8,7 @@ import jakarta.validation.constraints.Size;
 public class TodoRequestDTO{
     
 
-    //@notnull annotation ensures that the title field cannot be null, and the @Size annotation specifies that the title must be between 1 and 255 characters long. 
+    //@NotNull annotation ensures that the title field cannot be null, and the @Size annotation specifies that the title must be between 1 and 255 characters long. 
     @NotNull(message = "Title cannot be null")
     @Size(min = 1, max = 255, message = "Title must be between 1 and 255 characters")
     private String title;

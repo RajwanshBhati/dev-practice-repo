@@ -16,8 +16,7 @@ public class TodoResponseDTO {
     public TodoResponseDTO() {
     }
     
-    public TodoResponseDTO(Long id, String title, String description,
-                           TodoStatus status, LocalDateTime createdAt) {
+    public TodoResponseDTO(Long id, String title, String description,TodoStatus status, LocalDateTime createdAt) {
         this.id = id;
         this.title = title;
         this.description = description;

@@ -48,7 +48,7 @@ public class TodoServiceImpl implements TodoService {
 
     @Override
     public TodoResponseDTO getTodoById(Long id) {
-        // Here I implement the getTodoById method, which retrieves a todo item by its ID. It uses the TodoRepository to find the todo item in the database, and if found, converts it to a TodoResponseDTO and returns it. If the todo item is not found, it throws a RuntimeException with an appropriate message.
+        // Here I implement the getTodoById method, which retrieves a todo item by its ID. It uses the TodoRepository to find the todo item in the database, and if found, converts it to a TodoResponseDTO and returns it. If the todo item is not found, it throws a RuntimeException with an message.
         Todo todo = findTodoOrThrow(id);
         return convertToResponseDTO(todo);
     }
@@ -78,7 +78,7 @@ public class TodoServiceImpl implements TodoService {
 
      @Override
     public void deleteTodoById(Long id) {
-        // Verify existence first so we can throw a meaningful 404.
+        // Verify existence first so we can throw a meaningful 404. If we just call deleteById and the ID doesn't exist, it will silently do nothing, which is not ideal for my API.
         findTodoOrThrow(id);
         todoRepository.deleteById(id);
     }
