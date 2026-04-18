@@ -10,13 +10,16 @@ import jakarta.servlet.http.HttpServletRequest;
 import com.todoapp.springboot.dto.DeleteConfirmationDTO;
 import java.util.List;
 import jakarta.validation.Valid;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 @RestController
 @RequestMapping("/todos")
 
 public class TodoController{
+
+    private static final Logger logger = LoggerFactory.getLogger(TodoController.class);
 
     public final TodoService todoService;
 
@@ -27,7 +30,11 @@ public class TodoController{
     // Here I Define postmapping to create a new todo item
     @PostMapping
     public ResponseEntity<TodoResponseDTO> createTodo(@Valid @RequestBody TodoRequestDTO todoRequestDTO) {
+        logger.info("Received request to create TODO with title: {}", todoRequestDTO.getTitle());
+
         TodoResponseDTO createdTodo = todoService.createTodo(todoRequestDTO);
+        logger.info("TODO created successfully with ID: {}", createdTodo.getId());
+
         return new ResponseEntity<>(createdTodo, HttpStatus.CREATED);
     }
     
