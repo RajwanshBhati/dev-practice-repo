@@ -6,7 +6,10 @@ import com.todoapp.springboot.service.TodoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.servlet.http.HttpServletRequest;
+import com.todoapp.springboot.dto.DeleteConfirmationDTO;
 import java.util.List;
+import jakarta.validation.Valid;
 
 
 
@@ -23,7 +26,7 @@ public class TodoController{
     
     // Here I Define postmapping to create a new todo item
     @PostMapping
-    public ResponseEntity<TodoResponseDTO> createTodo(@RequestBody TodoRequestDTO todoRequestDTO) {
+    public ResponseEntity<TodoResponseDTO> createTodo(@Valid @RequestBody TodoRequestDTO todoRequestDTO) {
         TodoResponseDTO createdTodo = todoService.createTodo(todoRequestDTO);
         return new ResponseEntity<>(createdTodo, HttpStatus.CREATED);
     }
@@ -46,17 +49,33 @@ public class TodoController{
 
    // Here I Define PutMapping to update a specific todo item by its ID.
     @PutMapping("/{id}")
-    public ResponseEntity<TodoResponseDTO> updateTodo(@PathVariable Long id, @RequestBody TodoRequestDTO todoRequestDTO) {
+    public ResponseEntity<TodoResponseDTO> updateTodo(@Valid @PathVariable Long id, @RequestBody TodoRequestDTO todoRequestDTO) {
         TodoResponseDTO updatedTodo = todoService.updateTodo(id, todoRequestDTO);
         return new ResponseEntity<>(updatedTodo, HttpStatus.OK);
     }
     
 
     //Delete the specific todo item by its ID. It takes the ID as a path variable, calls the deleteTodoById method of the TodoService, and returns an HTTP status of NO_CONTENT to indicate that the deletion was successful.
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTodoById(@PathVariable Long id) {
-        todoService.deleteTodoById(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+   
+   @DeleteMapping("/{id}")
+public ResponseEntity<?> deleteTodoById(
+        @PathVariable Long id,
+        @RequestParam(value = "confirmed", defaultValue = "false") boolean confirmed,
+        HttpServletRequest request) {
+
+    if (!confirmed) {
+        String confirmUrl = request.getRequestURL().toString() + "?confirmed=true";
+
+        DeleteConfirmationDTO confirmation = new DeleteConfirmationDTO(
+                id,
+                "Are you sure you want to delete this todo?",
+                confirmUrl
+        );
+
+        return ResponseEntity.ok(confirmation);
     }
 
+    todoService.deleteTodoById(id);
+    return ResponseEntity.ok("Todo deleted successfully");
+}
 }

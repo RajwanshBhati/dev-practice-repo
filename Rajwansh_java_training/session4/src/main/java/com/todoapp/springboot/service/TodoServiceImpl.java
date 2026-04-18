@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import com.todoapp.springboot.exception.TodoNotFoundException;
 import com.todoapp.springboot.exception.InvalidStatusTransitionException;
+import com.todoapp.springboot.dto.DeleteConfirmationDTO;
 
 
 
@@ -76,6 +77,14 @@ public class TodoServiceImpl implements TodoService {
         return convertToResponseDTO(updatedTodo);
     }
 
+
+    @Override
+    public DeleteConfirmationDTO getDeleteConfirmation(Long id, String baseUrl) {
+        Todo todo = findTodoOrThrow(id);
+        String confirmUrl = baseUrl + "/todos/" + id + "?confirmed=true";
+        return new DeleteConfirmationDTO(todo.getId(), todo.getTitle(), confirmUrl);
+    }
+    
      @Override
     public void deleteTodoById(Long id) {
         // Verify existence first so we can throw a meaningful 404. If we just call deleteById and the ID doesn't exist, it will silently do nothing, which is not ideal for my API.

@@ -69,6 +69,8 @@ mvn spring-boot:run
 
 ![alt text](screenshot/createtodo.png)
 
+![alt text](image-1.png)
+
 2. GET ALL TODOS
 
 ![alt text](screenshot/GetALL.png)
@@ -84,8 +86,11 @@ mvn spring-boot:run
 ![alt text](screenshot/update.png)
 
 5. DELETE TODO
+![alt text](image-2.png)
 
 ![alt text](screenshot/deletetodo.png)
+
+![alt text](image.png)
 
 
 ## Author
