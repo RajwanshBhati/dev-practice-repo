@@ -13,13 +13,15 @@ import com.todoapp.springboot.exception.InvalidStatusTransitionException;
 import com.todoapp.springboot.dto.DeleteConfirmationDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.util.Optional;
+
 
 
 
 @Service
 public class TodoServiceImpl implements TodoService {
 
-    private static final Logger Logger = LoggerFactory.getLogger(TodoServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(TodoServiceImpl.class);
 
     public final TodoRepository todoRepository;
 
