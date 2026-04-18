@@ -47,6 +47,10 @@ public class TodoServiceImpl implements TodoService {
 
     Todo savedTodo = todoRepository.save(todo);
     logger.info("TODO created successfully with ID: {}", savedTodo.getId());
+
+    // After successfully creating the todo item, I call the sendTodoCreatedNotification method of the NotificationServiceClient to send a notification about the new todo item. I pass the ID and title of the created todo item to the notification method.
+    notificationServiceClient.sendTodoCreatedNotification(savedTodo.getId(), savedTodo.getTitle());
+
     return convertToResponseDTO(savedTodo);
     }
 
@@ -98,6 +102,13 @@ public class TodoServiceImpl implements TodoService {
         Todo updatedTodo = todoRepository.save(existingTodo);
 
         logger.info("TODO updated successfully with ID: {}", id);
+        
+        // After successfully updating the todo item, I call the sendTodoUpdatedNotification method of the NotificationServiceClient to send a notification about the updated todo item. I pass the ID, title, and new status of the updated todo item to the notification method.
+        notificationServiceClient.sendTodoUpdatedNotification(
+                updatedTodo.getId(),
+                updatedTodo.getTitle(),
+                updatedTodo.getStatus().name()
+        );
         return convertToResponseDTO(updatedTodo);
     }
 
@@ -119,6 +130,9 @@ public class TodoServiceImpl implements TodoService {
         todoRepository.deleteById(id);
 
         logger.info("TODO deleted successfully with ID: {}", id);
+        
+        // After successfully deleting the todo item, I call the sendTodoDeletedNotification method of the NotificationServiceClient to send a notification about the deleted todo item. I pass the ID and title of the deleted todo item to the notification method.
+        notificationServiceClient.sendTodoDeletedNotification(id, todo.getTitle());
     }
 
     private Todo findTodoOrThrow(Long id) {
