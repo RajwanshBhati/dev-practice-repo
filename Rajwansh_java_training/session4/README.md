@@ -69,7 +69,9 @@ mvn spring-boot:run
 
 ![alt text](screenshot/createtodo.png)
 
-![alt text](image-1.png)
+**Validation in Create Todos**
+
+![alt text](screenshot/validationcreate.png)
 
 2. GET ALL TODOS
 
@@ -79,6 +81,8 @@ mvn spring-boot:run
 
 ![alt text](screenshot/GetBYID.png)
 
+**Validation in GET TODO BY ID**
+
 ![alt text](screenshot/GetByidnotfound.png)
 
 4. UPDATE TODO
@@ -86,11 +90,14 @@ mvn spring-boot:run
 ![alt text](screenshot/update.png)
 
 5. DELETE TODO
-![alt text](image-2.png)
 
+![alt text](screenshot/deletesucc.png)
+
+**Validation Delete**
 ![alt text](screenshot/deletetodo.png)
 
-![alt text](image.png)
+**Confirm Delete**
+![alt text](screenshot/Deleteconfirm.png)
 
 
 ## Author
