@@ -124,7 +124,7 @@ mvn clean test
 **Generate Coverage Report**:
 mvn test
 
-Then open:
+**Then open**:
 
 target/site/jacoco/index.html
 
