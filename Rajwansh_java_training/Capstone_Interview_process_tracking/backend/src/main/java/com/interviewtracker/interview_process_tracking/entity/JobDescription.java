@@ -1,7 +1,7 @@
 package com.interviewtracker.interview_process_tracking.entity;
 
-import com.interviewtracker.interview_process_tracking.enum.JDStatus;
-import com.interviewtracker.interview_process_tracking.enum.JobType;
+import com.interviewtracker.interview_process_tracking.enums.JDStatus;
+import com.interviewtracker.interview_process_tracking.enums.JobType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;

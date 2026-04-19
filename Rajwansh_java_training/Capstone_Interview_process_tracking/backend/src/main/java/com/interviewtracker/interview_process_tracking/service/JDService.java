@@ -2,8 +2,8 @@ package com.interviewtracker.interview_process_tracking.service;
 
 import com.interviewtracker.interview_process_tracking.dto.JDRequestDTO;
 import com.interviewtracker.interview_process_tracking.dto.JDResponseDTO;
-import com.interviewtracker.interview_process_tracking.enum.JDStatus;
-import com.interviewtracker.interview_process_tracking.enum.JobType;
+import com.interviewtracker.interview_process_tracking.enums.JDStatus;
+import com.interviewtracker.interview_process_tracking.enums.JobType;
 
 import java.util.List;
 import java.util.UUID;

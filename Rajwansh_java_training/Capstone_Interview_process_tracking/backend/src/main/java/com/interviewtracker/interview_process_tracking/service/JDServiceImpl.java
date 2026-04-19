@@ -2,8 +2,8 @@ package com.interviewtracker.interview_process_tracking.service;
 
 import com.interviewtracker.interview_process_tracking.dto.JDRequestDTO;
 import com.interviewtracker.interview_process_tracking.dto.JDResponseDTO;
-import com.interviewtracker.interview_process_tracking.enum.JDStatus;
-import com.interviewtracker.interview_process_tracking.enum.JobType;
+import com.interviewtracker.interview_process_tracking.enums.JDStatus;
+import com.interviewtracker.interview_process_tracking.enums.JobType;
 import com.interviewtracker.interview_process_tracking.entity.JobDescription;
 import com.interviewtracker.interview_process_tracking.exception.InvalidRequestException;
 import com.interviewtracker.interview_process_tracking.exception.ResourceNotFoundException;

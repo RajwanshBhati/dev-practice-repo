@@ -1,7 +1,7 @@
 package com.interviewtracker.interview_process_tracking.dto;
 
-import com.interviewtracker.interview_process_tracking.enum.JDStatus;
-import com.interviewtracker.interview_process_tracking.enum.JobType;
+import com.interviewtracker.interview_process_tracking.enums.JDStatus;
+import com.interviewtracker.interview_process_tracking.enums.JobType;
 import lombok.*;
 
 import java.math.BigDecimal;

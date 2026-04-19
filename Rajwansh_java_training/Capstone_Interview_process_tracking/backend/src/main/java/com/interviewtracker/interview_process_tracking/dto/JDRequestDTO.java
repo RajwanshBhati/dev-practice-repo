@@ -1,6 +1,6 @@
 package com.interviewtracker.interview_process_tracking.dto;
 
-import com.interviewtracker.interview_process_tracking.enum.JobType;
+import com.interviewtracker.interview_process_tracking.enums.JobType;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
