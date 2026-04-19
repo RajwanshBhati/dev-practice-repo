@@ -1,7 +1,7 @@
-package com.ats.jobdescription.entity;
+package com.interviewtracker.interview_process_tracking.entity;
 
-import com.ats.jobdescription.enums.JDStatus;
-import com.ats.jobdescription.enums.JobType;
+import com.interviewtracker.interview_process_tracking.enum.JDStatus;
+import com.interviewtracker.interview_process_tracking.enum.JobType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -38,10 +38,10 @@ public class JobDescription {
     private List<String> skillsRequired;
 
     @Column(name = "experience", nullable = false)
-    private Integer Experience;        // in years
+    private Integer experience;        // in years
 
     @Column(name = "salary", nullable = false, precision = 12, scale = 2)
-    private BigDecimal Salary;
+    private BigDecimal salary;
 
     @Column(name = "location", nullable = false)
     private String location;
