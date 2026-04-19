@@ -55,5 +55,47 @@ class GlobalExceptionHandlerTest {
         assertNotNull(response.getBody().get("message"));
     }
 
+    // I write a test for validation exception → should return 400 with field errors
+    @Test
+    void handleValidationException_shouldReturnFieldErrors() {
 
+        // I am creating a dummy object to attach validation errors
+        Object target = new Object();
+
+        // Binding result to simulate validation failure
+        BeanPropertyBindingResult bindingResult =
+                new BeanPropertyBindingResult(target, "object");
+
+        // Adding a fake field error for "title" field
+        bindingResult.addError(new FieldError("object", "title", "Title is required"));
+
+        // Creating exception with binding result to simulate validation failure
+        MethodArgumentNotValidException ex =
+                new MethodArgumentNotValidException(null, bindingResult);
+
+        ResponseEntity<Map<String, Object>> response =
+                handler.handleValidationException(ex);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+
+        Map<String, String> errors =
+                (Map<String, String>) response.getBody().get("errors");
+
+        assertEquals("Title is required", errors.get("title"));
+    }
+
+    //  I write a test for generic exception → should return 500
+    @Test
+    void handleGeneric_shouldReturnInternalServerError() {
+
+        Exception ex = new Exception("Something broke");
+
+        ResponseEntity<Map<String, Object>> response =
+                handler.handleGeneric(ex);
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+
+        assertTrue(response.getBody().get("message")
+                .toString().contains("Something broke"));
+    }
 }
