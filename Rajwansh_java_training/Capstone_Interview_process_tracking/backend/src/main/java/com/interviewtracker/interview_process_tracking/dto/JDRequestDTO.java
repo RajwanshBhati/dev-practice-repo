@@ -12,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+// Here I defined the JDRequestDTO class which is a Data Transfer Object (DTO) used for creating and updating job descriptions. It contains fields for job title, job description, required skills, experience, salary, location, and job type. 
 public class JDRequestDTO {
 
     @NotBlank(message = "Job title is required")

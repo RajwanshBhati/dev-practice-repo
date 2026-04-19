@@ -13,13 +13,16 @@ import java.util.UUID;
 
 @Repository
 public interface JobDescriptionRepository extends JpaRepository<JobDescription, UUID> {
-
+    
+    // These means that the repository provides methods to find job descriptions based on their status, job type, and location.
     List<JobDescription> findByStatus(JDStatus status);
 
     List<JobDescription> findByJobType(JobType jobType);
 
     List<JobDescription> findByLocation(String location);
+    
 
+    // This is a custom query method that allows searching for job descriptions based on multiple optional criteria: status, job type, location, and title. The query uses JPQL to filter the results based on the provided parameters, allowing for flexible searching of job descriptions in the database.
     @Query("SELECT jd FROM JobDescription jd WHERE " +
            "(:status IS NULL OR jd.status = :status) AND " +
            "(:jobType IS NULL OR jd.jobType = :jobType) AND " +

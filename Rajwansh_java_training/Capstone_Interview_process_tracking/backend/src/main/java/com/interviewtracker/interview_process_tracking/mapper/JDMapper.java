@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class JDMapper {
-
+    
     public JobDescription toEntity(JDRequestDTO dto) {
         return JobDescription.builder()
                 .jobTitle(dto.getJobTitle())
