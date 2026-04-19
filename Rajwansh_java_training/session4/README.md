@@ -13,6 +13,9 @@ This project demonstrates layered architecture, DTO usage, validation, JPA (Hibe
 - Status transition validation (PENDING ↔ COMPLETED)
 - Input validation using @Valid
 - Exception handling
+- Logging using SLF4J
+- Unit Testing with high code coverage
+- External service simulation (Notification Service)
 
 ## Tech Stack
 
@@ -21,6 +24,10 @@ This project demonstrates layered architecture, DTO usage, validation, JPA (Hibe
 - Spring Web
 - Spring Data JPA (Hibernate)
 - Jakarta Validation
+- JUnit 5
+- Mockito
+- SLF4J Logger
+
 
 ## Architecture
 
@@ -53,6 +60,75 @@ This project demonstrates layered architecture, DTO usage, validation, JPA (Hibe
 - Handles global exceptions
 - Ensures proper error responses
 
+---
+
+## Logging
+
+Logging is implemented using **SLF4J Logger** across the application.
+
+### Used in:
+- Controller Layer
+- Service Layer
+- NotificationServiceClient
+
+### Purpose:
+- Track API calls
+- Debug issues
+- Monitor flow of application
+
+## External Service Simulation
+
+A dummy service is created to simulate interaction with an external system.
+
+Class:
+
+NotificationServiceClient
+
+**Responsibilities**:
+- Simulates sending notifications
+- Logs actions like:
+- TODO Created
+- TODO Updated
+- TODO Deleted
+
+Example Flow:
+
+When a TODO is created:
+
+Service layer processes request
+Calls NotificationServiceClient
+Logs: "Notification sent for new TODO"
+
+## Unit Testing (85%+ Coverage)
+
+Unit testing is implemented using:
+
+- JUnit 5
+- Mockito
+
+**Covered Layers**:
+
+- Controller
+- Service
+- Exception Handler
+- Client Layer
+
+**Features**:
+- Mocking dependencies using Mockito
+- Testing all success & failure scenarios
+- Achieved ~95% code coverage
+
+**Run Tests**:
+mvn clean test
+
+**Generate Coverage Report**:
+mvn test
+
+Then open:
+
+target/site/jacoco/index.html
+
+![alt text](screenshot/TestCoverage.png)
 
 ## Setup & Run    
 
