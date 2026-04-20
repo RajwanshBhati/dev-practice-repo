@@ -1,8 +1,10 @@
 package com.interview_tracking_system.backend.entity;
 
-import com.interviewtracker;
-import com.interview_tracking_system.backend.enums.JobType;
 import com.interview_tracking_system.backend.enums.JDStatus;
+import com.interview_tracking_system.backend.enums.JobType;
+import com.interview_tracking_system.backend.enums.Role;
+import com.interview_tracking_system.backend.enums.Stage;
+import com.interview_tracking_system.backend.entity.User;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;

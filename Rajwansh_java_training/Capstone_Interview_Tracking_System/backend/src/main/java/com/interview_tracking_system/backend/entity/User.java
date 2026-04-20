@@ -1,5 +1,9 @@
 package com.interview_tracking_system.backend.entity;
 
+import com.interview_tracking_system.backend.enums.Role;
+import com.interview_tracking_system.backend.enums.Stage;
+
+
 import jakarta.persistence.*;
 
 @Entity
