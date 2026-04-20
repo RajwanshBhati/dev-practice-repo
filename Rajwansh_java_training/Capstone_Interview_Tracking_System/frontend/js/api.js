@@ -1,6 +1,6 @@
 const BASE_URL = "http://localhost:8080";
 
-// Fetch data from the backend using a GET request
+// I Fetched data from the backend using a GET request
 async function getRequest(endpoint) {
     const response = await fetch(BASE_URL + endpoint);
     return response.json();

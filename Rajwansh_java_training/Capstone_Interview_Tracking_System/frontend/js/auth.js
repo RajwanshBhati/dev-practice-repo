@@ -6,7 +6,6 @@ async function login() {
 
     const response = await postRequest("/auth/login", data);
 
-    // Save token
     localStorage.setItem("token", response.token);
 
     alert("Login Successful!");

@@ -1,6 +1,6 @@
 const form = document.getElementById("candidateForm");
 
-// Get JD ID from URL
+
 const params = new URLSearchParams(window.location.search);
 const jdId = params.get("jdId");
 
