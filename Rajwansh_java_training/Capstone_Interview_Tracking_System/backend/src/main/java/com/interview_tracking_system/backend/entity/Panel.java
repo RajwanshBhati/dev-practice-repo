@@ -1,4 +1,4 @@
-package com.its.backend.entity;
+package com.interview_tracking_system.backend.entity;
 
 import jakarta.persistence.*;
 
@@ -81,5 +81,5 @@ public class Panel {
     public void setActive(boolean active) { 
         isActive = active; 
     }
-    
+
 }
