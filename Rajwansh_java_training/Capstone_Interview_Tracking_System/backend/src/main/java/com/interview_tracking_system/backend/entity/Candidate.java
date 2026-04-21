@@ -3,6 +3,7 @@ package com.interview_tracking_system.backend.entity;
 import jakarta.persistence.*;
 import com.interview_tracking_system.backend.enums.Stage;
 import com.interview_tracking_system.backend.enums.Role;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "candidates", indexes = {
@@ -63,13 +64,13 @@ public class Candidate {
      * Current CTC of the candidate I used precision and scale to define the format of the CTC values in the database, allowing for up to 12 digits in total with 2 decimal places for cents.
      */
     @Column(name = "current_ctc", nullable = false, precision = 12, scale = 2)
-    private double currentCtc;
+    private BigDecimal currentCtc;
 
     /**
      * Expected CTC.
      */
     @Column(name = "expected_ctc", nullable = false, precision = 12, scale = 2)
-    private double expectedCtc;
+    private BigDecimal expectedCtc;
    
      /**
      * Notice period in days.
@@ -167,19 +168,19 @@ public class Candidate {
         this.relevantExp = relevantExp; 
     }
 
-    public double getCurrentCtc() { 
+    public BigDecimal getCurrentCtc() { 
         return currentCtc; 
     }
 
-    public void setCurrentCtc(double currentCtc) { 
+    public void setCurrentCtc(BigDecimal currentCtc) { 
         this.currentCtc = currentCtc;
     }
 
-    public double getExpectedCtc() { 
+    public BigDecimal getExpectedCtc() { 
         return expectedCtc; 
     }
 
-    public void setExpectedCtc(double expectedCtc) { 
+    public void setExpectedCtc(BigDecimal expectedCtc) { 
         this.expectedCtc = expectedCtc; 
     }
 
