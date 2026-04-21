@@ -3,19 +3,25 @@ package com.interview_tracking_system.backend.entity;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.interview_tracking_system.backend.enums.FeedbackStatus;
+
 /**
- * Unit test class for Feedback entity.
+ * Unit tests for Feedback entity .
  */
 class FeedbackTest {
 
     @Test
-    void testFeedbackFields() {
-        Feedback feedback = new Feedback();
+    void testFeedbackFlow() {
+        Feedback f = new Feedback();
 
-        feedback.setComments("Good candidate");
-        feedback.setRating(5);
+        f.setComments("Good candidate");
+        f.setStrength("Problem solving");
+        f.setWeakness("System design");
+        f.setRating(4);
+        f.setStatus(FeedbackStatus.SELECTED);
 
-        assertEquals("Good candidate", feedback.getComments());
-        assertEquals(5, feedback.getRating());
+        assertEquals("Good candidate", f.getComments());
+        assertEquals(4, f.getRating());
+        assertEquals(FeedbackStatus.SELECTED, f.getStatus());
     }
 }

@@ -7,18 +7,22 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 /**
- * Unit test class for Interview entity.
+ * Unit tests for Interview ent.
  */
 class InterviewTest {
 
     @Test
-    void testDateAndTime() {
-        Interview interview = new Interview();
+    void testInterviewFlow() {
+        Interview i = new Interview();
 
-        interview.setDate(LocalDate.now());
-        interview.setTime(LocalTime.NOON);
+        Candidate c = new Candidate();
+        i.setCandidate(c);
 
-        assertNotNull(interview.getDate());
-        assertNotNull(interview.getTime());
+        i.setDate(LocalDate.now());
+        i.setTime(LocalTime.of(10, 30));
+
+        assertNotNull(i.getCandidate());
+        assertNotNull(i.getDate());
+        assertNotNull(i.getTime());
     }
 }

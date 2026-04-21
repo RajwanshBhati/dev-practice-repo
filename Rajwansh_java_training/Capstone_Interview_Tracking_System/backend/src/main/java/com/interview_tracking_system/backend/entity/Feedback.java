@@ -1,7 +1,5 @@
 package com.interview_tracking_system.backend.entity;
 
-import com.interview_tracking_system.backend.entity.Interview;
-import com.interview_tracking_system.backend.entity.Panel;
 import com.interview_tracking_system.backend.enums.FeedbackStatus;
 
 

@@ -4,13 +4,21 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Unit test class for InterviewPanel entity.
+ * Mapping entity test.
  */
 class InterviewPanelTest {
 
     @Test
-    void testMappingCreation() {
-        InterviewPanel mapping = new InterviewPanel();
-        assertNotNull(mapping);
+    void testMapping() {
+        InterviewPanel ip = new InterviewPanel();
+
+        Interview i = new Interview();
+        Panel p = new Panel();
+
+        ip.setInterview(i);
+        ip.setPanel(p);
+
+        assertNotNull(ip.getInterview());
+        assertNotNull(ip.getPanel());
     }
 }

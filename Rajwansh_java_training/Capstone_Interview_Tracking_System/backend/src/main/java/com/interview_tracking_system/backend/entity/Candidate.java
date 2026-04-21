@@ -2,7 +2,6 @@ package com.interview_tracking_system.backend.entity;
 
 import jakarta.persistence.*;
 import com.interview_tracking_system.backend.enums.Stage;
-import com.interview_tracking_system.backend.enums.Role;
 import java.math.BigDecimal;
 
 @Entity

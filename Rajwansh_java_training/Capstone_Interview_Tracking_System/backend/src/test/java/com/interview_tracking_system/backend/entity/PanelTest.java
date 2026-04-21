@@ -3,19 +3,28 @@ package com.interview_tracking_system.backend.entity;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Unit test class for Panel entity.
- */
 class PanelTest {
 
+    /**
+     * Test Panel entity getters and setters.
+     */
     @Test
-    void testPanelFields() {
+    void testPanelGettersSetters() {
+
         Panel panel = new Panel();
 
-        panel.setName("Interviewer");
-        panel.setEmail("panel@gmail.com");
+        panel.setName("HR Panel");
+        panel.setEmail("hr@company.com");
+        panel.setMobile("9999999999");
+        panel.setOrganization("Tech Corp");
+        panel.setDesignation("Senior HR");
+        panel.setActive(true);
 
-        assertEquals("Interviewer", panel.getName());
-        assertEquals("panel@gmail.com", panel.getEmail());
+        assertEquals("HR Panel", panel.getName());
+        assertEquals("hr@company.com", panel.getEmail());
+        assertEquals("9999999999", panel.getMobile());
+        assertEquals("Tech Corp", panel.getOrganization());
+        assertEquals("Senior HR", panel.getDesignation());
+        assertTrue(panel.isActive());
     }
 }
