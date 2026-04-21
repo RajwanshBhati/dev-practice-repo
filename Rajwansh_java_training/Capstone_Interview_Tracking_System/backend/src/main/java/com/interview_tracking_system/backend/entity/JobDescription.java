@@ -1,51 +1,103 @@
 package com.interview_tracking_system.backend.entity;
 
-import com.interview_tracking_system.backend.enums.JDStatus;
-import com.interview_tracking_system.backend.enums.JobType;
-import com.interview_tracking_system.backend.enums.Role;
-import com.interview_tracking_system.backend.enums.Stage;
-import com.interview_tracking_system.backend.entity.User;
 import jakarta.persistence.*;
-
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
+
+import com.interview_tracking_system.backend.enums.JDStatus;
+import com.interview_tracking_system.backend.enums.JobType;
+
 
 @Entity
 @Table(name = "job_descriptions")
 public class JobDescription {
 
+    /**
+     * Unique identifier for the job description.
+     * UUID is used for better scalability and uniqueness across systems.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    /**
+     * Title of the job (e.g., Java Developer, Data Engineer).
+     */
     private String jobTitle;
 
+    /**
+     * Detailed job description.
+     */
     @Column(columnDefinition = "TEXT")
     private String jobDescription;
 
+    /**
+     * List of required skills for the job.
+     *
+     * Stored in a separate table using @ElementCollection.
+     */
     @ElementCollection
+    @CollectionTable(name = "jd_skills", joinColumns = @JoinColumn(name = "jd_id"))
+    @Column(name = "skill")
     private List<String> skillsRequired;
-    
-    @Column(name = "experience", nullable = false)
-    private Integer experience;
-    
-    @Column(name = "salary", nullable = false, precision = 12, scale = 2)
-    private BigDecimal salary;
 
-    @Column(name = "location", nullable = false)
+    /**
+     * Minimum experience required (in years).
+     */
+    @Column(name = "experience_min", nullable = false)
+    private Integer experienceMin;
+
+    /**
+     * Maximum experience allowed (in years).
+     */
+    @Column(name = "experience_max", nullable = false)
+    private Integer experienceMax;
+
+    /**
+     * Minimum salary offered.
+     */
+    @Column(name = "salary_min", nullable = false, precision = 12, scale = 2)
+    private BigDecimal salaryMin;
+
+    /**
+     * Maximum salary offered.
+     */
+    @Column(name = "salary_max", nullable = false, precision = 12, scale = 2)
+    private BigDecimal salaryMax;
+
+    /**
+     * Job location.
+     */
+    @Column(nullable = false)
     private String location;
 
+    /**
+     * Type of job (Full-Time / Contract / Remote).
+     */
     @Enumerated(EnumType.STRING)
     private JobType jobType;
 
+    /**
+     * Current status of the JD (ACTIVE / INACTIVE).
+     * Default is ACTIVE.
+     */
     @Enumerated(EnumType.STRING)
     private JDStatus status = JDStatus.ACTIVE;
 
-    // Here I defined a no-argument constructor for the JobDescription entity, which is required by JPA for entity instantiation. This allows the framework to create instances of JobDescription when retrieving data from the database.
+    /**
+     * HR user who created this JD.
+     */
+    @ManyToOne
+    @JoinColumn(name = "created_by", nullable = false)
+    private User createdBy;
+
+    /**
+     * Default constructor required by JPA.
+     */
     public JobDescription() {}
 
-    // Getter and setter methods for all the fields in the JobDescription entity. These methods provide access to the properties of the JobDescription and allow for modification of those properties when needed.
+    // GETTERS & SETTERS 
 
     public UUID getId() {
         return id;
@@ -75,20 +127,36 @@ public class JobDescription {
         this.skillsRequired = skillsRequired;
     }
 
-    public Integer getExperience() {
-        return experience;
+    public Integer getExperienceMin() {
+        return experienceMin;
     }
 
-    public void setExperience(Integer experience) {
-        this.experience = experience;
+    public void setExperienceMin(Integer experienceMin) {
+        this.experienceMin = experienceMin;
     }
 
-    public BigDecimal getSalary() {
-        return salary;
+    public Integer getExperienceMax() {
+        return experienceMax;
     }
 
-    public void setSalary(BigDecimal salary) {
-        this.salary = salary;
+    public void setExperienceMax(Integer experienceMax) {
+        this.experienceMax = experienceMax;
+    }
+
+    public BigDecimal getSalaryMin() {
+        return salaryMin;
+    }
+
+    public void setSalaryMin(BigDecimal salaryMin) {
+        this.salaryMin = salaryMin;
+    }
+
+    public BigDecimal getSalaryMax() {
+        return salaryMax;
+    }
+
+    public void setSalaryMax(BigDecimal salaryMax) {
+        this.salaryMax = salaryMax;
     }
 
     public String getLocation() {
@@ -109,5 +177,13 @@ public class JobDescription {
 
     public JDStatus getStatus() {
         return status;
+    }
+
+    public User getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(User createdBy) {
+        this.createdBy = createdBy;
     }
 }

@@ -10,30 +10,60 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "feedback")
 public class Feedback {
-
+    
+     /**
+     * Unique identifier for the feedback.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    
+    /**
+     * Interview for which feedback is given.
+     * Many feedback entries can exist for one interview (multiple panel members).
+     */
     @ManyToOne
     @JoinColumn(name = "interview_id")
     private Interview interview;
-
+    
+    /**
+     * Panel member who provided the feedback.
+     */
     @ManyToOne
     @JoinColumn(name = "panel_id")
     private Panel panel;
-
+    
+    /**
+     * Detailed comments provided by the panel.
+     */
     @Column(length = 1000)
     private String comments;
-
+    
+    /**
+     * Strengths observed in the candidate.
+     */
     private String strength;
+
+    /**
+     * Weaknesses observed in the candidate.
+     */
     private String weakness;
 
+    /**
+     * Rating given by the panel (typically between 1 to 5).
+     */
     private int rating;
-
+    
+     /**
+     * Final decision of the panel (SELECTED / REJECTED).
+     * Uses @Enumerated(EnumType.STRING) for readable DB storage preferred over ORDINAL.
+     */
     @Enumerated(EnumType.STRING)
     private FeedbackStatus status;
-
+    
+    /**
+     * Default constructor required by JPA.
+     */
     public Feedback() {}
 
     // Here I defined Getters & Setters

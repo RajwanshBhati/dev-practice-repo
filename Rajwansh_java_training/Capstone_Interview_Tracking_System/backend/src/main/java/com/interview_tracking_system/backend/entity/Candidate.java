@@ -5,53 +5,101 @@ import com.interview_tracking_system.backend.enums.Stage;
 import com.interview_tracking_system.backend.enums.Role;
 
 @Entity
+@Table(name = "candidates", indexes = {
+        @Index(name = "idx_email", columnList = "email"),
+        @Index(name = "idx_mobile", columnList = "mobile_number")
+    })
 public class Candidate {
-
+    
+    /**
+     * Unique identifier for the candidate.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * Full name of the candidate.
+     */
     private String name;
 
+    /**
+     * Email address of the candidate must be unique.
+     */
     @Column(unique = true)
     private String email;
     
+    /**
+     * Mobile number of the candidate must be unique.
+     */
     @Column(unique = true, nullable = false, length = 15, name = "mobile_number")
     private String mobile;
     
+     /**
+     * URL/path of the uploaded resume file.
+     */
     @Column(name = "resume_url", nullable = false)
     private String resumeUrl;
     
+    /**
+     * Current company of the candidate.
+     */
     @Column(name = "current_company")
     private String currentCompany;
     
+    /**
+     * Total years of experience.
+     */
     @Column(name = "total_experience", nullable = false)
     private double totalExp;
     
+     /**
+     * Relevant experience for the applied role.
+     */
     @Column(name = "relevant_experience", nullable = false)
     private double relevantExp;
     
+     /**
+     * Current CTC of the candidate I used precision and scale to define the format of the CTC values in the database, allowing for up to 12 digits in total with 2 decimal places for cents.
+     */
     @Column(name = "current_ctc", nullable = false, precision = 12, scale = 2)
     private double currentCtc;
 
+    /**
+     * Expected CTC.
+     */
     @Column(name = "expected_ctc", nullable = false, precision = 12, scale = 2)
     private double expectedCtc;
    
+     /**
+     * Notice period in days.
+     */
     @Column(name = "notice_period", nullable = false, columnDefinition = "INT")
     private int noticePeriod;
     
+     /**
+     * Preferred job location of the candidate.
+     */
     @Column(name = "preferred_location", nullable = false)
     private String preferredLocation;
     
-
+    /**
+     * Current stage of the candidate in the interview process.
+     */
     @Enumerated(EnumType.STRING)
     private Stage status;
-
+    
+    /**
+     * Job Description (JD) to which the candidate has applied.
+     */
     @ManyToOne
     @JoinColumn(name = "jd_id")
     private JobDescription jobDescription;
 
-    // Here I defined a no-argument constructor for the Candidate entity, which is required by JPA for entity instantiation. This allows the framework to create instances of Candidate when retrieving data from the database.
+     /**
+     * Default constructor required by JPA.
+     * Initializes the candidate status to PROFILING.
+     */
     public Candidate() {
 
     }
