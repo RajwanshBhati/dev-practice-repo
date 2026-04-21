@@ -1,10 +1,22 @@
 package com.interview_tracking_system.backend.enums;
-        
+
 /**
- * Enum representing the status of a job description.
+ * Status of Job Description.
  */
 public enum JDStatus {
+
+    /** 
+     * Active job description 
+     * */
     ACTIVE,
+
+    /** 
+     * Inactive job description 
+     * */
     INACTIVE,
+
+    /** 
+     * Closed job description 
+     * */
     CLOSED
 }

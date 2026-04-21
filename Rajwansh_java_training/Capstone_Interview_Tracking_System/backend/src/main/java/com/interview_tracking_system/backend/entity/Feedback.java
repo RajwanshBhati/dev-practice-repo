@@ -1,127 +1,199 @@
 package com.interview_tracking_system.backend.entity;
 
 import com.interview_tracking_system.backend.enums.FeedbackStatus;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
-
-import jakarta.persistence.*;
-
+/**
+ * Represents feedback submitted by a panel member for an interview.
+ */
 @Entity
 @Table(name = "feedback")
-public class Feedback {
-    
-     /**
+public final class Feedback {
+
+    /** Maximum length for comments field. */
+    private static final int COMMENTS_LENGTH = 1000;
+
+    /**
      * Unique identifier for the feedback.
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    /**
-     * Interview for which feedback is given.
-     * Many feedback entries can exist for one interview (multiple panel members).
-     */
+
+    /** Interview for which this feedback was given. */
     @ManyToOne
     @JoinColumn(name = "interview_id")
     private Interview interview;
-    
-    /**
-     * Panel member who provided the feedback.
-     */
+
+    /** Panel member who submitted this feedback. */
     @ManyToOne
     @JoinColumn(name = "panel_id")
     private Panel panel;
-    
-    /**
-     * Detailed comments provided by the panel.
-     */
-    @Column(length = 1000)
+
+    /** General comments about the candidate. */
+    @Column(length = COMMENTS_LENGTH)
     private String comments;
-    
-    /**
-     * Strengths observed in the candidate.
-     */
+
+    /** Strengths observed in the candidate. */
     private String strength;
 
-    /**
-     * Weaknesses observed in the candidate.
-     */
+    /** Weaknesses observed in the candidate. */
     private String weakness;
 
-    /**
-     * Rating given by the panel (typically between 1 to 5).
-     */
+    /** Numeric rating given by the panel member. */
     private int rating;
-    
-     /**
-     * Final decision of the panel (SELECTED / REJECTED).
-     * Uses @Enumerated(EnumType.STRING) for readable DB storage preferred over ORDINAL.
-     */
+
+    /** Current status of the feedback. */
     @Enumerated(EnumType.STRING)
     private FeedbackStatus status;
-    
+
     /**
      * Default constructor required by JPA.
      */
-    public Feedback() {}
-
-    // Here I defined Getters & Setters
-    public Long getId() { 
-        return id; 
+    public Feedback() {
     }
 
-    public Interview getInterview() { 
-        return interview; 
+    /**
+     * Returns the unique identifier.
+     *
+     * @return the id
+     */
+    public Long getId() {
+        return id;
     }
 
-    public void setInterview(Interview interview) { 
-        this.interview = interview; 
+    /**
+     * Returns the associated interview.
+     *
+     * @return the interview
+     */
+    public Interview getInterview() {
+        return interview;
     }
 
-    public Panel getPanel() { 
-        return panel; 
+    /**
+     * Sets the associated interview.
+     *
+     * @param interviewRef the interview to set
+     */
+    public void setInterview(final Interview interviewRef) {
+        this.interview = interviewRef;
     }
 
-    public void setPanel(Panel panel) { 
-        this.panel = panel; 
+    /**
+     * Returns the panel member who gave this feedback.
+     *
+     * @return the panel member
+     */
+    public Panel getPanel() {
+        return panel;
     }
 
-    public String getComments() { 
-        return comments; 
+    /**
+     * Sets the panel member who gave this feedback.
+     *
+     * @param panelMember the panel member to set
+     */
+    public void setPanel(final Panel panelMember) {
+        this.panel = panelMember;
     }
 
-    public void setComments(String comments) { 
-        this.comments = comments; 
+    /**
+     * Returns the comments.
+     *
+     * @return the comments
+     */
+    public String getComments() {
+        return comments;
     }
 
-    public String getStrength() { 
-        return strength; 
+    /**
+     * Sets the comments.
+     *
+     * @param feedbackComments the comments to set
+     */
+    public void setComments(final String feedbackComments) {
+        this.comments = feedbackComments;
     }
 
-    public void setStrength(String strength) { 
-        this.strength = strength; 
+    /**
+     * Returns the candidate's strengths.
+     *
+     * @return the strength
+     */
+    public String getStrength() {
+        return strength;
     }
 
-    public String getWeakness() { 
-        return weakness; 
+    /**
+     * Sets the candidate's strengths.
+     *
+     * @param candidateStrength the strength to set
+     */
+    public void setStrength(final String candidateStrength) {
+        this.strength = candidateStrength;
     }
 
-    public void setWeakness(String weakness) { 
-        this.weakness = weakness; 
+    /**
+     * Returns the candidate's weaknesses.
+     *
+     * @return the weakness
+     */
+    public String getWeakness() {
+        return weakness;
     }
 
-    public int getRating() { 
-        return rating; 
+    /**
+     * Sets the candidate's weaknesses.
+     *
+     * @param candidateWeakness the weakness to set
+     */
+    public void setWeakness(final String candidateWeakness) {
+        this.weakness = candidateWeakness;
     }
 
-    public void setRating(int rating) { 
-        this.rating = rating; 
+    /**
+     * Returns the numeric rating.
+     *
+     * @return the rating
+     */
+    public int getRating() {
+        return rating;
     }
 
-    public FeedbackStatus getStatus() { 
-        return status; 
+    /**
+     * Sets the numeric rating.
+     *
+     * @param feedbackRating the rating to set
+     */
+    public void setRating(final int feedbackRating) {
+        this.rating = feedbackRating;
     }
 
-    public void setStatus(FeedbackStatus status) { 
-        this.status = status; 
+    /**
+     * Returns the feedback status.
+     *
+     * @return the status
+     */
+    public FeedbackStatus getStatus() {
+        return status;
+    }
+
+    /**
+     * Sets the feedback status.
+     *
+     * @param feedbackStatus the status to set
+     */
+    public void setStatus(final FeedbackStatus feedbackStatus) {
+        this.status = feedbackStatus;
     }
 }

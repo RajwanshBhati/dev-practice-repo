@@ -1,118 +1,186 @@
 package com.interview_tracking_system.backend.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.Table;
 
 /**
- * Maps entity to "panel" table with index "idx_panel_email" on email column for faster queries.
+ * Represents a panel member who conducts interviews.
  */
 @Entity
-@Table(name = "panel", indexes = {
+@Table(
+    name = "panel",
+    indexes = {
         @Index(name = "idx_panel_email", columnList = "email")
-    })
+    }
+)
 public class Panel {
 
-   /**
-     * Unique identifier for the panel member.
-     */
+    /** Maximum length for name fields. */
+    private static final int NAME_LENGTH = 100;
+
+    /** Maximum length for email field. */
+    private static final int EMAIL_LENGTH = 150;
+
+    /** Maximum length for mobile number field. */
+    private static final int MOBILE_LENGTH = 15;
+
+    /** Maximum length for organization field. */
+    private static final int ORG_LENGTH = 150;
+
+    /** Unique identifier for the panel member. */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, updatable = false)
     private Long id;
 
-    /**
-     * Full name of the panel member.
-     */
-    @Column(name = "name", nullable = false, length = 100)
+    /** Full name of the panel member. */
+    @Column(nullable = false, length = NAME_LENGTH)
     private String name;
 
-    /**
-     * Email of the panel member (must be unique).
-     */
-    @Column(name = "email", nullable = false, unique = true, length = 150)
+    /** Unique email of the panel member. */
+    @Column(nullable = false, unique = true, length = EMAIL_LENGTH)
     private String email;
 
-    /**
-     * Mobile number of the panel member.
-     */
-    @Column(name = "mobile", length = 15)
+    /** Mobile number of the panel member. */
+    @Column(length = MOBILE_LENGTH)
     private String mobile;
 
-    /**
-     * Organization of the panel member.
-     */
-    @Column(name = "organization", length = 150)
+    /** Organization the panel member belongs to. */
+    @Column(length = ORG_LENGTH)
     private String organization;
 
-    /**
-     * Designation of the panel member.
-     */
-    @Column(name = "designation", length = 100)
+    /** Designation or title of the panel member. */
+    @Column(length = NAME_LENGTH)
     private String designation;
 
-    /**
-     * Indicates whether the panel member is active.
-     *
-     * Default value is TRUE. Inactive panel members cannot be assigned to interviews.
-     */
-    @Column(name = "is_active", nullable = false)
+    /** Whether this panel member is currently active. */
+    @Column(nullable = false)
     private boolean isActive = true;
 
     /**
-     * Default constructor required by JPA.
+     * Default constructor for JPA.
      */
     public Panel() {
-
     }
 
-    // Here I defined getter & Setter
-    public Long getId() { return id; }
-
-    public String getName() { 
-        return name; 
+    /**
+     * Returns the unique identifier.
+     *
+     * @return the id
+     */
+    public Long getId() {
+        return id;
     }
 
-    public void setName(String name) { 
-        this.name = name; 
+    /**
+     * Returns the panel member's name.
+     *
+     * @return the name
+     */
+    public String getName() {
+        return name;
     }
 
-    public String getEmail() { 
-        return email; 
+    /**
+     * Sets the panel member's name.
+     *
+     * @param memberName the name to set
+     */
+    public void setName(final String memberName) {
+        this.name = memberName;
     }
 
-    public void setEmail(String email) { 
-        this.email = email; 
+    /**
+     * Returns the panel member's email.
+     *
+     * @return the email
+     */
+    public String getEmail() {
+        return email;
     }
 
-    public String getMobile() { 
-        return mobile; 
+    /**
+     * Sets the panel member's email.
+     *
+     * @param memberEmail the email to set
+     */
+    public void setEmail(final String memberEmail) {
+        this.email = memberEmail;
     }
 
-    public void setMobile(String mobile) { 
-        this.mobile = mobile; 
+    /**
+     * Returns the panel member's mobile number.
+     *
+     * @return the mobile number
+     */
+    public String getMobile() {
+        return mobile;
     }
 
-    public String getOrganization() { 
-        return organization; 
+    /**
+     * Sets the panel member's mobile number.
+     *
+     * @param memberMobile the mobile number to set
+     */
+    public void setMobile(final String memberMobile) {
+        this.mobile = memberMobile;
     }
 
-    public void setOrganization(String organization) { 
-        this.organization = organization; 
+    /**
+     * Returns the organization name.
+     *
+     * @return the organization
+     */
+    public String getOrganization() {
+        return organization;
     }
 
-    public String getDesignation() { 
-        return designation; 
+    /**
+     * Sets the organization name.
+     *
+     * @param org the organization to set
+     */
+    public void setOrganization(final String org) {
+        this.organization = org;
     }
 
-    public void setDesignation(String designation) { 
-        this.designation = designation; 
+    /**
+     * Returns the designation.
+     *
+     * @return the designation
+     */
+    public String getDesignation() {
+        return designation;
     }
 
-    public boolean isActive() { 
-        return isActive; 
+    /**
+     * Sets the designation.
+     *
+     * @param memberDesignation the designation to set
+     */
+    public void setDesignation(final String memberDesignation) {
+        this.designation = memberDesignation;
     }
 
-    public void setActive(boolean active) { 
-        isActive = active; 
+    /**
+     * Returns whether the panel member is active.
+     *
+     * @return true if active
+     */
+    public boolean isActive() {
+        return isActive;
     }
 
+    /**
+     * Sets the active status of the panel member.
+     *
+     * @param activeStatus the active status to set
+     */
+    public void setActive(final boolean activeStatus) {
+        this.isActive = activeStatus;
+    }
 }

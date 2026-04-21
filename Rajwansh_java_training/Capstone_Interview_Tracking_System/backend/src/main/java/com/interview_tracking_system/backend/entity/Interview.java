@@ -1,108 +1,167 @@
 package com.interview_tracking_system.backend.entity;
 
-import jakarta.persistence.*;
+import com.interview_tracking_system.backend.enums.Stage;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import com.interview_tracking_system.backend.enums.Stage;
 
+/**
+ * Represents an interview scheduled for a candidate.
+ */
 @Entity
-@Table(name = "interview",  indexes = {
+@Table(
+    name = "interview",
+    indexes = {
         @Index(name = "idx_candidate_id", columnList = "candidate_id")
-    })
+    }
+)
 public class Interview {
-    /**
-    * Unique identifier for the interview.
-    * Uses @GeneratedValue with IDENTITY strategy for auto-incrementing primary key.
-     */
+
+    /** Maximum length for the stage column. */
+    private static final int STAGE_LENGTH = 50;
+
+    /** Maximum length for the focus area column. */
+    private static final int FOCUS_AREA_LENGTH = 255;
+
+    /** Unique identifier for interview. */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, updatable = false)
     private Long id;
-    
-    /**
-    * Candidate associated with the interview.
-    * Many interviews can be associated with one candidate (OneToMany relationship).
-    * Uses @ManyToOne to define the relationship and @JoinColumn to specify the foreign key column.
-    */
+
+    /** Candidate associated with this interview. */
     @ManyToOne
     @JoinColumn(name = "candidate_id", nullable = false)
     private Candidate candidate;
-    
-        
-    /**
-        * Current stage of the interview process .
-        * Uses @Enumerated(EnumType.STRING) to store enum values as strings in the database for better readability.
-        * The 'stage' field is marked as non-nullable to ensure that every interview has a defined stage.
-    */
+
+    /** Current stage of the interview. */
     @Enumerated(EnumType.STRING)
-    @Column(name = "stage", nullable = false, length = 50)
+    @Column(nullable = false, length = STAGE_LENGTH)
     private Stage stage;
-   
-    /**
-     * Date of the interview.
-     */
-    @Column(name = "date", nullable = false)
+
+    /** Scheduled date of the interview. */
+    @Column(nullable = false)
     private LocalDate date;
-    
-    /**
-     * Time of the interview.
-    */
-    @Column(name = "time", nullable = false)
+
+    /** Scheduled time of the interview. */
+    @Column(nullable = false)
     private LocalTime time;
-    
-    /**
-     * Focus area for evaluation (e.g., DSA, System Design, Java).
-     */
-    @Column(name = "focus_area", length = 255)
+
+    /** Focus area such as DSA or System Design. */
+    @Column(length = FOCUS_AREA_LENGTH)
     private String focusArea;
 
     /**
-     * Default constructor required by JPA.
-    */
-    public Interview() {}
-
-    // Here I defined getter and setter
-    public Long getId() { 
-        return id; 
+     * Default constructor for JPA.
+     */
+    public Interview() {
     }
 
-    public Candidate getCandidate() { 
-        return candidate; 
+    /**
+     * Returns the interview id.
+     *
+     * @return the id
+     */
+    public Long getId() {
+        return id;
     }
 
-    public void setCandidate(Candidate candidate) { 
-        this.candidate = candidate; 
+    /**
+     * Returns the associated candidate.
+     *
+     * @return the candidate
+     */
+    public Candidate getCandidate() {
+        return candidate;
     }
 
-    public Stage getStage() { 
-        return stage; 
+    /**
+     * Sets the associated candidate.
+     *
+     * @param interviewCandidate the candidate to set
+     */
+    public void setCandidate(final Candidate interviewCandidate) {
+        this.candidate = interviewCandidate;
     }
 
-    public void setStage(Stage stage) { 
-        this.stage = stage; 
+    /**
+     * Returns the interview stage.
+     *
+     * @return the stage
+     */
+    public Stage getStage() {
+        return stage;
     }
 
-    public LocalDate getDate() { 
-        return date; 
+    /**
+     * Sets the interview stage.
+     *
+     * @param interviewStage the stage to set
+     */
+    public void setStage(final Stage interviewStage) {
+        this.stage = interviewStage;
     }
 
-    public void setDate(LocalDate date) { 
-        this.date = date; 
+    /**
+     * Returns the interview date.
+     *
+     * @return the date
+     */
+    public LocalDate getDate() {
+        return date;
     }
 
-    public LocalTime getTime() { 
-        return time; 
+    /**
+     * Sets the interview date.
+     *
+     * @param interviewDate the date to set
+     */
+    public void setDate(final LocalDate interviewDate) {
+        this.date = interviewDate;
     }
 
-    public void setTime(LocalTime time) { 
-        this.time = time; 
+    /**
+     * Returns the interview time.
+     *
+     * @return the time
+     */
+    public LocalTime getTime() {
+        return time;
     }
 
-    public String getFocusArea() { 
-        return focusArea; 
+    /**
+     * Sets the interview time.
+     *
+     * @param interviewTime the time to set
+     */
+    public void setTime(final LocalTime interviewTime) {
+        this.time = interviewTime;
     }
 
-    public void setFocusArea(String focusArea) { 
-        this.focusArea = focusArea; 
+    /**
+     * Returns the focus area.
+     *
+     * @return the focus area
+     */
+    public String getFocusArea() {
+        return focusArea;
+    }
+
+    /**
+     * Sets the focus area.
+     *
+     * @param area the focus area to set
+     */
+    public void setFocusArea(final String area) {
+        this.focusArea = area;
     }
 }

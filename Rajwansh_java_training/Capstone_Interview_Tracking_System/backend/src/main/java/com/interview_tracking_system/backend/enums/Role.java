@@ -1,10 +1,21 @@
 package com.interview_tracking_system.backend.enums;
 
 /**
- * Enum representing the role of a user in the interview tracking system.
+ * Represents user roles in system.
  */
 public enum Role {
+    /**
+     * Admin role
+     */
+    ADMIN,
+
+    /**
+     * HR role
+     */
     HR,
-    PANEL,
+
+    /**
+     * Candidate role
+     */
     CANDIDATE
 }

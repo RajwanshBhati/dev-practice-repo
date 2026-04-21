@@ -1,9 +1,17 @@
 package com.interview_tracking_system.backend.enums;
 
 /**
- * Enum representing the status of feedback for a candidate.
+ * Represents final feedback decision of panel.
  */
 public enum FeedbackStatus {
+
+    /**
+     *  Candidate selected 
+     * */
     SELECTED,
+
+    /** 
+     * Candidate rejected 
+     * */
     REJECTED
 }
