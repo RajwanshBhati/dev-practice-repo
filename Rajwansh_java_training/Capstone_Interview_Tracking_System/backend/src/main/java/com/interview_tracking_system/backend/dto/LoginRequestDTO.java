@@ -29,6 +29,9 @@ public class LoginRequestDTO {
 
     /**
      * All-args constructor.
+     *
+     * @param email    user email
+     * @param password user password
      */
     public LoginRequestDTO(String email, String password) {
         this.email = email;
@@ -37,7 +40,7 @@ public class LoginRequestDTO {
 
     /**
      * Gets the email.
-     * 
+     *
      * @return email
      */
     public String getEmail() {
@@ -46,7 +49,7 @@ public class LoginRequestDTO {
 
     /**
      * Gets the password.
-     * 
+     *
      * @return password
      */
     public String getPassword() {
@@ -55,7 +58,7 @@ public class LoginRequestDTO {
 
     /**
      * Set email
-     * 
+     *
      * @param email email to set
      */
     public void setEmail(String email) {
@@ -64,7 +67,7 @@ public class LoginRequestDTO {
 
     /**
      * Set password
-     * 
+     *
      * @param password password to set
      */
     public void setPassword(String password) {
