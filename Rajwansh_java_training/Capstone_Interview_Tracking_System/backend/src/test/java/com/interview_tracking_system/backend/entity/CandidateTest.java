@@ -25,7 +25,7 @@ class CandidateTest {
         c.setExpectedCtc(new BigDecimal("800000"));
         c.setNoticePeriod(30);
         c.setPreferredLocation("Pune");
-        c.setStatus(Stage.HR);
+        c.setStatus(Stage.PROFILING);
 
         assertEquals("Raj", c.getName());
         assertEquals("raj@gmail.com", c.getEmail());
@@ -37,7 +37,7 @@ class CandidateTest {
         assertEquals(new BigDecimal("800000"), c.getExpectedCtc());
         assertEquals(30, c.getNoticePeriod());
         assertEquals("Pune", c.getPreferredLocation());
-        assertEquals(Stage.HR, c.getStatus());
+        assertEquals(Stage.PROFILING, c.getStatus());
     }
 
     @Test

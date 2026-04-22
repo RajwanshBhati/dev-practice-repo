@@ -4,21 +4,37 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Mapping entity test.
+ * Unit tests for InterviewPanel mapping entity.
+ * Validates interview-panel relationship mapping fields.
  */
 class InterviewPanelTest {
 
+    /**
+     * Test InterviewPanel entity basic flow.
+     */
     @Test
-    void testMapping() {
-        InterviewPanel ip = new InterviewPanel();
+    void testInterviewPanelFlow() {
 
-        Interview i = new Interview();
-        Panel p = new Panel();
+        InterviewPanel mapping = new InterviewPanel();
 
-        ip.setInterview(i);
-        ip.setPanel(p);
+        // Set IDs
+        Long interviewId = 101L;
+        Long panelId = 202L;
 
-        assertNotNull(ip.getInterview());
-        assertNotNull(ip.getPanel());
+        mapping.setInterviewId(interviewId);
+        mapping.setPanelId(panelId);
+
+        // Assertions
+        assertEquals(interviewId, mapping.getInterviewId());
+        assertEquals(panelId, mapping.getPanelId());
+    }
+
+    /**
+     * Test object creation.
+     */
+    @Test
+    void testObjectCreation() {
+        InterviewPanel mapping = new InterviewPanel();
+        assertNotNull(mapping);
     }
 }
