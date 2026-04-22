@@ -132,7 +132,7 @@
             <artifactId>maven-checkstyle-plugin</artifactId>
             <version>3.3.1</version>
             <configuration>
-			    <configLocation>checkstyle.xml</configLocation> 
+			    <configLocation>checkstyle.xml</configLocation>
                 <consoleOutput>true</consoleOutput>
                 <failsOnError>false</failsOnError>
             </configuration>
@@ -150,7 +150,7 @@
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-pmd-plugin</artifactId>
-            <version>3.22.0</version>
+            <version>3.23.0</version>
             <configuration>
                 <printFailingErrors>true</printFailingErrors>
             </configuration>
@@ -182,6 +182,15 @@
                 </execution>
             </executions>
         </plugin>
+
+		<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-compiler-plugin</artifactId>
+    <version>3.11.0</version>
+    <configuration>
+        <release>17</release>
+    </configuration>
+</plugin>
 
     </plugins>
 </build>

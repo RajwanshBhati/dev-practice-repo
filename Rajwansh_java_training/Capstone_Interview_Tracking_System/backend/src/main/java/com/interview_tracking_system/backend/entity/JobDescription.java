@@ -14,9 +14,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 /**
  * Represents a Job Description created by HR.
@@ -76,11 +80,52 @@ public class JobDescription {
 
     /** Current status of the job description. */
     @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
     private JDStatus status = JDStatus.ACTIVE;
 
-    /** Foreign key referencing the HR user who created this JD. */
-    @Column(name = "created_by", nullable = false)
-    private Long createdById;
+    /**
+     * Auto-set on record creation.
+     */
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    /**
+     * Auto-updated on every save.
+     */
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    /**
+     * Default constructor.
+     */
+    public JobDescription() {
+
+    }
+
+    /**
+     * All-args constructor.
+     */
+    public JobDescription(UUID id, String jobTitle, String jobDescription,
+            List<String> skillsRequired, Integer minExperience,
+            Integer maxExperience, BigDecimal minSalary, BigDecimal maxSalary,
+            String location, JobType jobType, JDStatus status,
+            LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.id = id;
+        this.jobTitle = jobTitle;
+        this.jobDescription = jobDescription;
+        this.skillsRequired = skillsRequired;
+        this.experienceMin = minExperience;
+        this.experienceMax = maxExperience;
+        this.salaryMin = minSalary;
+        this.salaryMax = maxSalary;
+        this.location = location;
+        this.jobType = jobType;
+        this.status = status;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
 
     /**
      * Returns the unique identifier.
@@ -272,20 +317,197 @@ public class JobDescription {
     }
 
     /**
-     * Returns the foreign key ID of the HR user who created this JD.
+     * Returns the creation timestamp.
      *
-     * @return the createdById
+     * @return the createdAt
      */
-    public Long getCreatedById() {
-        return createdById;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
     /**
-     * Sets the foreign key ID of the HR user who created this JD.
+     * Returns the last updated timestamp.
      *
-     * @param userId the createdById to set
+     * @return the updatedAt
      */
-    public void setCreatedById(final Long userId) {
-        this.createdById = userId;
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
+
+    /**
+     * Returns a new builder instance.
+     *
+     * @return the builder
+     */
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        /** The ID of the job description. */
+        private UUID id;
+        /** The job title. */
+        private String jobTitle;
+        /** The detailed job description. */
+        private String jobDescription;
+        /** The list of required skills. */
+        private List<String> skillsRequired;
+        /** The minimum experience required in years. */
+        private Integer minExperience;
+        /** The maximum experience required in years. */
+        private Integer maxExperience;
+        /** The minimum salary offered. */
+        private BigDecimal minSalary;
+        /** The maximum salary offered. */
+        private BigDecimal maxSalary;
+        /** The job location. */
+        private String location;
+        /** The job type. */
+        private JobType jobType;
+        /** The status of the job description. */
+        private JDStatus status = JDStatus.ACTIVE;
+
+        /**
+         * Sets the ID for the job description.
+         * 
+         * @param id the ID to set
+         * @return this builder instance
+         */
+        public Builder id(UUID id) {
+            this.id = id;
+            return this;
+        }
+
+        /**
+         * Sets the job title.
+         * 
+         * @param jobTitle the job title to set
+         * @return this builder instance
+         */
+        public Builder jobTitle(String jobTitle) {
+            this.jobTitle = jobTitle;
+            return this;
+        }
+
+        /**
+         * Sets the job description text.
+         * 
+         * @param jobDescription the job description to set
+         * @return this builder instance
+         */
+        public Builder jobDescription(String jobDescription) {
+            this.jobDescription = jobDescription;
+            return this;
+        }
+
+        /**
+         * Sets the list of required skills.
+         * 
+         * @param skillsRequired the skills required to set
+         * @return this builder instance
+         */
+        public Builder skillsRequired(List<String> skillsRequired) {
+            this.skillsRequired = skillsRequired;
+            return this;
+        }
+
+        /**
+         * Sets the minimum experience required.
+         * 
+         * @param minExperience the minimum experience to set
+         * @return this builder instance
+         */
+        public Builder minExperience(Integer minExperience) {
+            this.minExperience = minExperience;
+            return this;
+        }
+
+        /**
+         * Sets the maximum experience required.
+         * 
+         * @param maxExperience the maximum experience to set
+         * @return this builder instance
+         */
+        public Builder maxExperience(Integer maxExperience) {
+            this.maxExperience = maxExperience;
+            return this;
+        }
+
+        /**
+         * Sets the minimum salary offered.
+         * 
+         * @param minSalary the minimum salary to set
+         * @return this builder instance
+         */
+        public Builder minSalary(BigDecimal minSalary) {
+            this.minSalary = minSalary;
+            return this;
+        }
+
+        /**
+         * Sets the maximum salary offered.
+         * 
+         * @param maxSalary the maximum salary to set
+         * @return this builder instance
+         */
+        public Builder maxSalary(BigDecimal maxSalary) {
+            this.maxSalary = maxSalary;
+            return this;
+        }
+
+        /**
+         * Sets the job location.
+         * 
+         * @param location the location to set
+         * @return this builder instance
+         */
+        public Builder location(String location) {
+            this.location = location;
+            return this;
+        }
+
+        /**
+         * Sets the job type.
+         * 
+         * @param jobType the job type to set
+         * @return this builder instance
+         */
+        public Builder jobType(JobType jobType) {
+            this.jobType = jobType;
+            return this;
+        }
+
+        /**
+         * Sets the status of the job description.
+         * 
+         * @param status the status to set
+         * @return this builder instance
+         */
+        public Builder status(JDStatus status) {
+            this.status = status;
+            return this;
+        }
+
+        /**
+         * Builds and returns a JobDescription instance based on the provided values.
+         * 
+         * @return a new JobDescription instance
+         */
+        public JobDescription build() {
+            JobDescription jd = new JobDescription();
+            jd.id = this.id;
+            jd.jobTitle = this.jobTitle;
+            jd.jobDescription = this.jobDescription;
+            jd.skillsRequired = this.skillsRequired;
+            jd.experienceMin = this.minExperience;
+            jd.experienceMax = this.maxExperience;
+            jd.salaryMin = this.minSalary;
+            jd.salaryMax = this.maxSalary;
+            jd.location = this.location;
+            jd.jobType = this.jobType;
+            jd.status = this.status;
+            return jd;
+        }
+    }
+
 }
