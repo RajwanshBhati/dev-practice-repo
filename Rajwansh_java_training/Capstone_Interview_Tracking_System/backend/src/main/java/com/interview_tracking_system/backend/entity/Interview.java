@@ -9,8 +9,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -33,15 +31,14 @@ public class Interview {
     /** Maximum length for the focus area column. */
     private static final int FOCUS_AREA_LENGTH = 255;
 
-    /** Unique identifier for interview. */
+    /** Unique identifier for the interview. */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /** Candidate associated with this interview. */
-    @ManyToOne
-    @JoinColumn(name = "candidate_id", nullable = false)
-    private Candidate candidate;
+    /** Foreign key referencing the candidate for this interview. */
+    @Column(name = "candidate_id", nullable = false)
+    private Long candidateId;
 
     /** Current stage of the interview. */
     @Enumerated(EnumType.STRING)
@@ -68,35 +65,27 @@ public class Interview {
 
     /**
      * Returns the interview id.
-     *
-     * @return the id
      */
     public Long getId() {
         return id;
     }
 
     /**
-     * Returns the associated candidate.
-     *
-     * @return the candidate
+     * Returns the foreign key ID of the associated candidate.
      */
-    public Candidate getCandidate() {
-        return candidate;
+    public Long getCandidateId() {
+        return candidateId;
     }
 
     /**
-     * Sets the associated candidate.
-     *
-     * @param interviewCandidate the candidate to set
+     * Sets the foreign key ID of the associated candidate.
      */
-    public void setCandidate(final Candidate interviewCandidate) {
-        this.candidate = interviewCandidate;
+    public void setCandidateId(final Long interviewCandidateId) {
+        this.candidateId = interviewCandidateId;
     }
 
     /**
      * Returns the interview stage.
-     *
-     * @return the stage
      */
     public Stage getStage() {
         return stage;
@@ -104,8 +93,6 @@ public class Interview {
 
     /**
      * Sets the interview stage.
-     *
-     * @param interviewStage the stage to set
      */
     public void setStage(final Stage interviewStage) {
         this.stage = interviewStage;
@@ -113,8 +100,6 @@ public class Interview {
 
     /**
      * Returns the interview date.
-     *
-     * @return the date
      */
     public LocalDate getDate() {
         return date;
@@ -122,8 +107,6 @@ public class Interview {
 
     /**
      * Sets the interview date.
-     *
-     * @param interviewDate the date to set
      */
     public void setDate(final LocalDate interviewDate) {
         this.date = interviewDate;
@@ -131,8 +114,6 @@ public class Interview {
 
     /**
      * Returns the interview time.
-     *
-     * @return the time
      */
     public LocalTime getTime() {
         return time;
@@ -140,8 +121,6 @@ public class Interview {
 
     /**
      * Sets the interview time.
-     *
-     * @param interviewTime the time to set
      */
     public void setTime(final LocalTime interviewTime) {
         this.time = interviewTime;
@@ -149,8 +128,6 @@ public class Interview {
 
     /**
      * Returns the focus area.
-     *
-     * @return the focus area
      */
     public String getFocusArea() {
         return focusArea;
@@ -158,8 +135,6 @@ public class Interview {
 
     /**
      * Sets the focus area.
-     *
-     * @param area the focus area to set
      */
     public void setFocusArea(final String area) {
         this.focusArea = area;

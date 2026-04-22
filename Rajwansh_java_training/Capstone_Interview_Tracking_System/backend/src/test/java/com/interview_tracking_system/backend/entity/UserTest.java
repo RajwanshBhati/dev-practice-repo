@@ -1,12 +1,18 @@
+package com.interview_tracking_system.backend.entity;
+
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
-import com.interview_tracking_system.backend.entity.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.interview_tracking_system.backend.enums.Role;
 
+/**
+ * Unit test for User entity.
+ */
 class UserTest {
-    
+
     /**
-     * Test for User entity.
+     * Test User entity getters and setters.
      */
     @Test
     void testUser() {

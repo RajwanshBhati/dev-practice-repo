@@ -1,7 +1,6 @@
 package com.todoapp.springboot.exception;
 
 import com.todoapp.springboot.enums.TodoStatus;
-import com.todoapp.springboot.exception.TodoNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 

@@ -12,7 +12,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.util.List;
@@ -31,12 +30,12 @@ public class JobDescription {
     /** Scale for salary decimal fields. */
     private static final int SALARY_SCALE = 2;
 
-    /** Unique identifier for JD. */
+    /** Unique identifier for the job description. */
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    /** Job title like Java Developer, Data Engineer. */
+    /** Job title such as Java Developer or Data Engineer. */
     @Column(nullable = false)
     private String jobTitle;
 
@@ -44,7 +43,7 @@ public class JobDescription {
     @Column(columnDefinition = "TEXT")
     private String jobDescription;
 
-    /** Required skills list. */
+    /** Required skills list stored in a separate table. */
     @ElementCollection
     @CollectionTable(
         name = "jd_skills",
@@ -79,14 +78,13 @@ public class JobDescription {
     @Enumerated(EnumType.STRING)
     private JobType jobType;
 
-    /** Current status of the JD. */
+    /** Current status of the job description. */
     @Enumerated(EnumType.STRING)
     private JDStatus status = JDStatus.ACTIVE;
 
-    /** HR user who created this JD. */
-    @ManyToOne
-    @JoinColumn(name = "created_by", nullable = false)
-    private User createdBy;
+    /** Foreign key referencing the HR user who created this JD. */
+    @Column(name = "created_by", nullable = false)
+    private Long createdById;
 
     /**
      * Default constructor for JPA.
@@ -96,8 +94,6 @@ public class JobDescription {
 
     /**
      * Returns the unique identifier.
-     *
-     * @return the id
      */
     public UUID getId() {
         return id;
@@ -105,8 +101,6 @@ public class JobDescription {
 
     /**
      * Returns the job title.
-     *
-     * @return the job title
      */
     public String getJobTitle() {
         return jobTitle;
@@ -114,8 +108,6 @@ public class JobDescription {
 
     /**
      * Sets the job title.
-     *
-     * @param title the job title to set
      */
     public void setJobTitle(final String title) {
         this.jobTitle = title;
@@ -123,8 +115,6 @@ public class JobDescription {
 
     /**
      * Returns the job description text.
-     *
-     * @return the job description
      */
     public String getJobDescription() {
         return jobDescription;
@@ -132,8 +122,6 @@ public class JobDescription {
 
     /**
      * Sets the job description text.
-     *
-     * @param description the description to set
      */
     public void setJobDescription(final String description) {
         this.jobDescription = description;
@@ -141,8 +129,6 @@ public class JobDescription {
 
     /**
      * Returns the list of required skills.
-     *
-     * @return the skills list
      */
     public List<String> getSkillsRequired() {
         return skillsRequired;
@@ -150,8 +136,6 @@ public class JobDescription {
 
     /**
      * Sets the list of required skills.
-     *
-     * @param skills the skills list to set
      */
     public void setSkillsRequired(final List<String> skills) {
         this.skillsRequired = skills;
@@ -159,8 +143,6 @@ public class JobDescription {
 
     /**
      * Returns the minimum experience required.
-     *
-     * @return minimum experience in years
      */
     public Integer getExperienceMin() {
         return experienceMin;
@@ -168,8 +150,6 @@ public class JobDescription {
 
     /**
      * Sets the minimum experience required.
-     *
-     * @param minExp the minimum experience to set
      */
     public void setExperienceMin(final Integer minExp) {
         this.experienceMin = minExp;
@@ -177,8 +157,6 @@ public class JobDescription {
 
     /**
      * Returns the maximum experience required.
-     *
-     * @return maximum experience in years
      */
     public Integer getExperienceMax() {
         return experienceMax;
@@ -186,8 +164,6 @@ public class JobDescription {
 
     /**
      * Sets the maximum experience required.
-     *
-     * @param maxExp the maximum experience to set
      */
     public void setExperienceMax(final Integer maxExp) {
         this.experienceMax = maxExp;
@@ -195,8 +171,6 @@ public class JobDescription {
 
     /**
      * Returns the minimum salary.
-     *
-     * @return the minimum salary
      */
     public BigDecimal getSalaryMin() {
         return salaryMin;
@@ -204,8 +178,6 @@ public class JobDescription {
 
     /**
      * Sets the minimum salary.
-     *
-     * @param minSalary the minimum salary to set
      */
     public void setSalaryMin(final BigDecimal minSalary) {
         this.salaryMin = minSalary;
@@ -213,8 +185,6 @@ public class JobDescription {
 
     /**
      * Returns the maximum salary.
-     *
-     * @return the maximum salary
      */
     public BigDecimal getSalaryMax() {
         return salaryMax;
@@ -222,8 +192,6 @@ public class JobDescription {
 
     /**
      * Sets the maximum salary.
-     *
-     * @param maxSalary the maximum salary to set
      */
     public void setSalaryMax(final BigDecimal maxSalary) {
         this.salaryMax = maxSalary;
@@ -231,8 +199,6 @@ public class JobDescription {
 
     /**
      * Returns the job location.
-     *
-     * @return the location
      */
     public String getLocation() {
         return location;
@@ -240,8 +206,6 @@ public class JobDescription {
 
     /**
      * Sets the job location.
-     *
-     * @param jobLocation the location to set
      */
     public void setLocation(final String jobLocation) {
         this.location = jobLocation;
@@ -249,8 +213,6 @@ public class JobDescription {
 
     /**
      * Returns the job type.
-     *
-     * @return the job type
      */
     public JobType getJobType() {
         return jobType;
@@ -258,37 +220,36 @@ public class JobDescription {
 
     /**
      * Sets the job type.
-     *
-     * @param type the job type to set
      */
     public void setJobType(final JobType type) {
         this.jobType = type;
     }
 
     /**
-     * Returns the JD status.
-     *
-     * @return the status
+     * Returns the current status of the job description. 
      */
     public JDStatus getStatus() {
         return status;
     }
 
     /**
-     * Returns the HR user who created this JD.
-     *
-     * @return the creator
+     * Sets the current status of the job description.
      */
-    public User getCreatedBy() {
-        return createdBy;
+    public void setStatus(final JDStatus status) {
+        this.status = status;
     }
 
     /**
-     * Sets the HR user who created this JD.
-     *
-     * @param creator the HR user to set
+     * Returns the foreign key ID of the HR user who created this JD.
      */
-    public void setCreatedBy(final User creator) {
-        this.createdBy = creator;
+    public Long getCreatedById() {
+        return createdById;
+    }
+
+    /**
+     * Sets the foreign key ID of the HR user who created this JD.
+     */
+    public void setCreatedById(final Long userId) {
+        this.createdById = userId;
     }
 }

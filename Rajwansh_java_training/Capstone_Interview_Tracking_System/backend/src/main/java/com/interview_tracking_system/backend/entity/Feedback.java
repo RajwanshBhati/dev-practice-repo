@@ -8,8 +8,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 /**
@@ -17,7 +15,7 @@ import jakarta.persistence.Table;
  */
 @Entity
 @Table(name = "feedback")
-public final class Feedback {
+public class Feedback {
 
     /** Maximum length for comments field. */
     private static final int COMMENTS_LENGTH = 1000;
@@ -29,15 +27,13 @@ public final class Feedback {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /** Interview for which this feedback was given. */
-    @ManyToOne
-    @JoinColumn(name = "interview_id")
-    private Interview interview;
+    /** Foreign key referencing the interview this feedback belongs to. */
+    @Column(name = "interview_id", nullable = false)
+    private Long interviewId;
 
-    /** Panel member who submitted this feedback. */
-    @ManyToOne
-    @JoinColumn(name = "panel_id")
-    private Panel panel;
+    /** Foreign key referencing the panel member who submitted this feedback. */
+    @Column(name = "panel_id", nullable = false)
+    private Long panelId;
 
     /** General comments about the candidate. */
     @Column(length = COMMENTS_LENGTH)
@@ -50,6 +46,7 @@ public final class Feedback {
     private String weakness;
 
     /** Numeric rating given by the panel member. */
+    @Column(nullable = false)
     private int rating;
 
     /** Current status of the feedback. */
@@ -64,53 +61,41 @@ public final class Feedback {
 
     /**
      * Returns the unique identifier.
-     *
-     * @return the id
      */
     public Long getId() {
         return id;
     }
 
     /**
-     * Returns the associated interview.
-     *
-     * @return the interview
+     * Returns the foreign key ID of the associated interview.
      */
-    public Interview getInterview() {
-        return interview;
+    public Long getInterviewId() {
+        return interviewId;
     }
 
     /**
-     * Sets the associated interview.
-     *
-     * @param interviewRef the interview to set
+     * Sets the foreign key ID of the associated interview.
      */
-    public void setInterview(final Interview interviewRef) {
-        this.interview = interviewRef;
+    public void setInterviewId(final Long interviewRef) {
+        this.interviewId = interviewRef;
     }
 
     /**
-     * Returns the panel member who gave this feedback.
-     *
-     * @return the panel member
+     * Returns the foreign key ID of the panel member.
      */
-    public Panel getPanel() {
-        return panel;
+    public Long getPanelId() {
+        return panelId;
     }
 
     /**
-     * Sets the panel member who gave this feedback.
-     *
-     * @param panelMember the panel member to set
+     * Sets the foreign key ID of the panel member.
      */
-    public void setPanel(final Panel panelMember) {
-        this.panel = panelMember;
+    public void setPanelId(final Long panelRef) {
+        this.panelId = panelRef;
     }
 
     /**
      * Returns the comments.
-     *
-     * @return the comments
      */
     public String getComments() {
         return comments;
@@ -118,8 +103,6 @@ public final class Feedback {
 
     /**
      * Sets the comments.
-     *
-     * @param feedbackComments the comments to set
      */
     public void setComments(final String feedbackComments) {
         this.comments = feedbackComments;
@@ -127,8 +110,6 @@ public final class Feedback {
 
     /**
      * Returns the candidate's strengths.
-     *
-     * @return the strength
      */
     public String getStrength() {
         return strength;
@@ -136,8 +117,6 @@ public final class Feedback {
 
     /**
      * Sets the candidate's strengths.
-     *
-     * @param candidateStrength the strength to set
      */
     public void setStrength(final String candidateStrength) {
         this.strength = candidateStrength;
@@ -145,8 +124,6 @@ public final class Feedback {
 
     /**
      * Returns the candidate's weaknesses.
-     *
-     * @return the weakness
      */
     public String getWeakness() {
         return weakness;
@@ -154,8 +131,6 @@ public final class Feedback {
 
     /**
      * Sets the candidate's weaknesses.
-     *
-     * @param candidateWeakness the weakness to set
      */
     public void setWeakness(final String candidateWeakness) {
         this.weakness = candidateWeakness;
@@ -163,8 +138,6 @@ public final class Feedback {
 
     /**
      * Returns the numeric rating.
-     *
-     * @return the rating
      */
     public int getRating() {
         return rating;
@@ -172,8 +145,6 @@ public final class Feedback {
 
     /**
      * Sets the numeric rating.
-     *
-     * @param feedbackRating the rating to set
      */
     public void setRating(final int feedbackRating) {
         this.rating = feedbackRating;
@@ -181,8 +152,6 @@ public final class Feedback {
 
     /**
      * Returns the feedback status.
-     *
-     * @return the status
      */
     public FeedbackStatus getStatus() {
         return status;
@@ -190,8 +159,6 @@ public final class Feedback {
 
     /**
      * Sets the feedback status.
-     *
-     * @param feedbackStatus the status to set
      */
     public void setStatus(final FeedbackStatus feedbackStatus) {
         this.status = feedbackStatus;

@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.interview_tracking_system.backend.enums.JobType;
-import com.interview_tracking_system.backend.enums.JDStatus;
+
 
 import java.math.BigDecimal;
 import java.util.List;

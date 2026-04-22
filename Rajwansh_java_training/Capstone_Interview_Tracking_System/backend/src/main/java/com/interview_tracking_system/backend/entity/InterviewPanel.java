@@ -1,12 +1,11 @@
 package com.interview_tracking_system.backend.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
@@ -32,15 +31,13 @@ public class InterviewPanel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /** Interview reference. */
-    @ManyToOne
-    @JoinColumn(name = "interview_id", nullable = false)
-    private Interview interview;
+    /** Foreign key referencing the interview. */
+    @Column(name = "interview_id", nullable = false)
+    private Long interviewId;
 
-    /** Panel member reference. */
-    @ManyToOne
-    @JoinColumn(name = "panel_id", nullable = false)
-    private Panel panel;
+    /** Foreign key referencing the panel member. */
+    @Column(name = "panel_id", nullable = false)
+    private Long panelId;
 
     /**
      * Default constructor for JPA.
@@ -50,46 +47,36 @@ public class InterviewPanel {
 
     /**
      * Returns the unique identifier.
-     *
-     * @return the id
      */
     public Long getId() {
         return id;
     }
 
     /**
-     * Returns the associated interview.
-     *
-     * @return the interview
+     * Returns the foreign key ID of the associated interview.
      */
-    public Interview getInterview() {
-        return interview;
+    public Long getInterviewId() {
+        return interviewId;
     }
 
     /**
-     * Sets the associated interview.
-     *
-     * @param interviewRef the interview to set
+     * Sets the foreign key ID of the associated interview.
      */
-    public void setInterview(final Interview interviewRef) {
-        this.interview = interviewRef;
+    public void setInterviewId(final Long interviewRef) {
+        this.interviewId = interviewRef;
     }
 
     /**
-     * Returns the associated panel member.
-     *
-     * @return the panel member
+     * Returns the foreign key ID of the associated panel member.
      */
-    public Panel getPanel() {
-        return panel;
+    public Long getPanelId() {
+        return panelId;
     }
 
     /**
-     * Sets the associated panel member.
-     *
-     * @param panelMember the panel member to set
+     * Sets the foreign key ID of the associated panel member.
      */
-    public void setPanel(final Panel panelMember) {
-        this.panel = panelMember;
+    public void setPanelId(final Long panelRef) {
+        this.panelId = panelRef;
     }
 }

@@ -13,7 +13,6 @@ import com.todoapp.springboot.exception.InvalidStatusTransitionException;
 import com.todoapp.springboot.dto.DeleteConfirmationDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.Optional;
 import com.todoapp.springboot.client.NotificationServiceClient;
 
 

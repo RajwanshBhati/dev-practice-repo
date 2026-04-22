@@ -59,7 +59,7 @@ public class Panel {
 
     /** Whether this panel member is currently active. */
     @Column(nullable = false)
-    private boolean isActive = true;
+    private boolean active = true;
 
     /**
      * Default constructor for JPA.
@@ -67,120 +67,55 @@ public class Panel {
     public Panel() {
     }
 
-    /**
-     * Returns the unique identifier.
-     *
-     * @return the id
-     */
     public Long getId() {
         return id;
     }
 
-    /**
-     * Returns the panel member's name.
-     *
-     * @return the name
-     */
     public String getName() {
         return name;
     }
 
-    /**
-     * Sets the panel member's name.
-     *
-     * @param memberName the name to set
-     */
     public void setName(final String memberName) {
         this.name = memberName;
     }
 
-    /**
-     * Returns the panel member's email.
-     *
-     * @return the email
-     */
     public String getEmail() {
         return email;
     }
 
-    /**
-     * Sets the panel member's email.
-     *
-     * @param memberEmail the email to set
-     */
     public void setEmail(final String memberEmail) {
         this.email = memberEmail;
     }
 
-    /**
-     * Returns the panel member's mobile number.
-     *
-     * @return the mobile number
-     */
     public String getMobile() {
         return mobile;
     }
 
-    /**
-     * Sets the panel member's mobile number.
-     *
-     * @param memberMobile the mobile number to set
-     */
     public void setMobile(final String memberMobile) {
         this.mobile = memberMobile;
     }
 
-    /**
-     * Returns the organization name.
-     *
-     * @return the organization
-     */
     public String getOrganization() {
         return organization;
     }
 
-    /**
-     * Sets the organization name.
-     *
-     * @param org the organization to set
-     */
     public void setOrganization(final String org) {
         this.organization = org;
     }
 
-    /**
-     * Returns the designation.
-     *
-     * @return the designation
-     */
     public String getDesignation() {
         return designation;
     }
 
-    /**
-     * Sets the designation.
-     *
-     * @param memberDesignation the designation to set
-     */
     public void setDesignation(final String memberDesignation) {
         this.designation = memberDesignation;
     }
 
-    /**
-     * Returns whether the panel member is active.
-     *
-     * @return true if active
-     */
     public boolean isActive() {
-        return isActive;
+        return active;
     }
 
-    /**
-     * Sets the active status of the panel member.
-     *
-     * @param activeStatus the active status to set
-     */
     public void setActive(final boolean activeStatus) {
-        this.isActive = activeStatus;
+        this.active = activeStatus;
     }
 }
