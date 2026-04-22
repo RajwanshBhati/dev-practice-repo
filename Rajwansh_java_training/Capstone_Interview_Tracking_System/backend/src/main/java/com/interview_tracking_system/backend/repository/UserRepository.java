@@ -15,7 +15,7 @@ import java.util.UUID;
  * Handles HR and Panel user persistence operations.
  */
 @Repository
-public interface UserRepository extends JpaRepository<User, UUID> {
+public interface UserRepository extends JpaRepository<User, Long> {
 
     /**
      * Find user by email
