@@ -7,41 +7,42 @@ import com.interview_tracking_system.backend.enums.Stage;
 import java.math.BigDecimal;
 
 /**
- * Unit tests for Candidate entity .
+ * Unit tests for Candidate entity.
  */
 class CandidateTest {
 
     @Test
     void testCandidateFullFlow() {
-        Candidate c = new Candidate();
+        Candidate candidate = new Candidate();
 
-        c.setName("Raj");
-        c.setEmail("raj@gmail.com");
-        c.setMobile("9999999999");
-        c.setCurrentCompany("ABC Corp");
-        c.setTotalExp(5);
-        c.setRelevantExp(4);
-        c.setCurrentCtc(new BigDecimal("500000"));
-        c.setExpectedCtc(new BigDecimal("800000"));
-        c.setNoticePeriod(30);
-        c.setPreferredLocation("Pune");
-        c.setStatus(Stage.PROFILING);
+        candidate.setName("Raj");
+        candidate.setEmail("raj@gmail.com");
+        candidate.setMobile("9999999999");
+        candidate.setCurrentCompany("ABC Corp");
+        candidate.setTotalExp(5);
+        candidate.setRelevantExp(4);
+        candidate.setCurrentCtc(new BigDecimal("500000"));
+        candidate.setExpectedCtc(new BigDecimal("800000"));
+        candidate.setNoticePeriod(30);
+        candidate.setPreferredLocation("Pune");
+        candidate.setStatus(Stage.PROFILING);
 
-        assertEquals("Raj", c.getName());
-        assertEquals("raj@gmail.com", c.getEmail());
-        assertEquals("9999999999", c.getMobile());
-        assertEquals("ABC Corp", c.getCurrentCompany());
-        assertEquals(5, c.getTotalExp());
-        assertEquals(4, c.getRelevantExp());
-         assertEquals(new BigDecimal("500000"), c.getCurrentCtc());
-        assertEquals(new BigDecimal("800000"), c.getExpectedCtc());
-        assertEquals(30, c.getNoticePeriod());
-        assertEquals("Pune", c.getPreferredLocation());
-        assertEquals(Stage.PROFILING, c.getStatus());
+        assertEquals("Raj", candidate.getName());
+        assertEquals("raj@gmail.com", candidate.getEmail());
+        assertEquals("9999999999", candidate.getMobile());
+        assertEquals("ABC Corp", candidate.getCurrentCompany());
+        assertEquals(5, candidate.getTotalExp());
+        assertEquals(4, candidate.getRelevantExp());
+        assertEquals(new BigDecimal("500000"), candidate.getCurrentCtc());
+        assertEquals(new BigDecimal("800000"), candidate.getExpectedCtc());
+        assertEquals(30, candidate.getNoticePeriod());
+        assertEquals("Pune", candidate.getPreferredLocation());
+        assertEquals(Stage.PROFILING, candidate.getStatus());
     }
 
     @Test
     void testObjectCreation() {
-        assertNotNull(new Candidate());
+        Candidate candidate = new Candidate();
+        assertNotNull(candidate);
     }
 }

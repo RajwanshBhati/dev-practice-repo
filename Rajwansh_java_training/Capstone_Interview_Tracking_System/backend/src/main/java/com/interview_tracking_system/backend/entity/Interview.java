@@ -17,12 +17,9 @@ import java.time.LocalTime;
  * Represents an interview scheduled for a candidate.
  */
 @Entity
-@Table(
-    name = "interview",
-    indexes = {
+@Table(name = "interview", indexes = {
         @Index(name = "idx_candidate_id", columnList = "candidate_id")
-    }
-)
+})
 public class Interview {
 
     /** Maximum length for the stage column. */
@@ -58,13 +55,9 @@ public class Interview {
     private String focusArea;
 
     /**
-     * Default constructor for JPA.
-     */
-    public Interview() {
-    }
-
-    /**
      * Returns the interview id.
+     *
+     * @return the id
      */
     public Long getId() {
         return id;
@@ -72,6 +65,8 @@ public class Interview {
 
     /**
      * Returns the foreign key ID of the associated candidate.
+     *
+     * @return the candidateId
      */
     public Long getCandidateId() {
         return candidateId;
@@ -79,6 +74,8 @@ public class Interview {
 
     /**
      * Sets the foreign key ID of the associated candidate.
+     *
+     * @param interviewCandidateId the candidate ID to set
      */
     public void setCandidateId(final Long interviewCandidateId) {
         this.candidateId = interviewCandidateId;
@@ -86,6 +83,8 @@ public class Interview {
 
     /**
      * Returns the interview stage.
+     *
+     * @return the stage
      */
     public Stage getStage() {
         return stage;
@@ -93,6 +92,8 @@ public class Interview {
 
     /**
      * Sets the interview stage.
+     *
+     * @param interviewStage the stage to set
      */
     public void setStage(final Stage interviewStage) {
         this.stage = interviewStage;
@@ -100,6 +101,8 @@ public class Interview {
 
     /**
      * Returns the interview date.
+     *
+     * @return the date
      */
     public LocalDate getDate() {
         return date;
@@ -107,6 +110,8 @@ public class Interview {
 
     /**
      * Sets the interview date.
+     *
+     * @param interviewDate the date to set
      */
     public void setDate(final LocalDate interviewDate) {
         this.date = interviewDate;
@@ -114,6 +119,8 @@ public class Interview {
 
     /**
      * Returns the interview time.
+     *
+     * @return the time
      */
     public LocalTime getTime() {
         return time;
@@ -121,6 +128,8 @@ public class Interview {
 
     /**
      * Sets the interview time.
+     *
+     * @param interviewTime the time to set
      */
     public void setTime(final LocalTime interviewTime) {
         this.time = interviewTime;
@@ -128,6 +137,8 @@ public class Interview {
 
     /**
      * Returns the focus area.
+     *
+     * @return the focus area
      */
     public String getFocusArea() {
         return focusArea;
@@ -135,6 +146,8 @@ public class Interview {
 
     /**
      * Sets the focus area.
+     *
+     * @param area the focus area to set
      */
     public void setFocusArea(final String area) {
         this.focusArea = area;

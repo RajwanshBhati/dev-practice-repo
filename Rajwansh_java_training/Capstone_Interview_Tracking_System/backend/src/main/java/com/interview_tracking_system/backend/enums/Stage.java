@@ -5,18 +5,18 @@ package com.interview_tracking_system.backend.enums;
  */
 public enum Stage {
 
-    /** Initial profiling of candidate */
+    /** Initial profiling of candidate. */
     PROFILING,
 
-    /** HR screening round */
+    /** HR screening round. */
     SCREENING,
 
-    /** First technical interview round (L1) */
+    /** First technical interview round (L1). */
     L1_TECHNICAL,
 
-    /** Second technical interview round (L2) */
+    /** Second technical interview round (L2). */
     L2_TECHNICAL,
 
-    /** Final HR discussion round */
+    /** Final HR discussion round. */
     HR_ROUND
 }

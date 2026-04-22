@@ -16,6 +16,7 @@ class UserTest {
      */
     @Test
     void testUser() {
+
         User user = new User();
 
         user.setName("Raj");

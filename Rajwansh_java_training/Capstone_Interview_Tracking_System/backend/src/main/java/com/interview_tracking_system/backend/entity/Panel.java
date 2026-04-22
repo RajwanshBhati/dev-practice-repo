@@ -12,12 +12,9 @@ import jakarta.persistence.Table;
  * Represents a panel member who conducts interviews.
  */
 @Entity
-@Table(
-    name = "panel",
-    indexes = {
+@Table(name = "panel", indexes = {
         @Index(name = "idx_panel_email", columnList = "email")
-    }
-)
+})
 public class Panel {
 
     /** Maximum length for name fields. */
@@ -62,59 +59,118 @@ public class Panel {
     private boolean active = true;
 
     /**
-     * Default constructor for JPA.
+     * Returns the unique identifier for the panel member.
+     *
+     * @return the id
      */
-    public Panel() {
-    }
-
     public Long getId() {
         return id;
     }
 
+    /**
+     * Returns the name of the panel member.
+     *
+     * @return the name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Sets the name of the panel member.
+     *
+     * @param memberName the name to set
+     */
     public void setName(final String memberName) {
         this.name = memberName;
     }
 
+    /**
+     * Returns the email of the panel member.
+     *
+     * @return the email
+     */
     public String getEmail() {
         return email;
     }
 
+    /**
+     * Sets the email of the panel member.
+     *
+     * @param memberEmail the email to set
+     */
     public void setEmail(final String memberEmail) {
         this.email = memberEmail;
     }
 
+    /**
+     * Returns the mobile number of the panel member.
+     *
+     * @return the mobile
+     */
     public String getMobile() {
         return mobile;
     }
 
+    /**
+     * Sets the mobile number of the panel member.
+     *
+     * @param memberMobile the mobile to set
+     */
     public void setMobile(final String memberMobile) {
         this.mobile = memberMobile;
     }
 
+    /**
+     * Returns the organization of the panel member.
+     *
+     * @return the organization
+     */
     public String getOrganization() {
         return organization;
     }
 
+    /**
+     * Sets the organization of the panel member.
+     *
+     * @param org the organization to set
+     */
     public void setOrganization(final String org) {
         this.organization = org;
     }
 
+    /**
+     * Returns the designation of the panel member.
+     *
+     * @return the designation
+     */
     public String getDesignation() {
         return designation;
     }
 
+    /**
+     * Sets the designation of the panel member.
+     *
+     * @param memberDesignation the designation to set
+     */
     public void setDesignation(final String memberDesignation) {
         this.designation = memberDesignation;
     }
 
+    /**
+     * Returns whether the panel member is active.
+     *
+     * @return true if active, false otherwise
+     */
     public boolean isActive() {
         return active;
     }
 
+    /**
+     * Sets the active status of the panel member.
+     *
+     * @param activeStatus the active status to set
+     */
     public void setActive(final boolean activeStatus) {
         this.active = activeStatus;
     }

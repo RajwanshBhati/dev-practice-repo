@@ -5,18 +5,18 @@ package com.interview_tracking_system.backend.enums;
  */
 public enum JobType {
 
-    /** 
-     * Full time job 
-     * */
+    /**
+     * Full time job.
+     */
     FULL_TIME,
 
-    /** 
-     * Contract based job 
-     * */
+    /**
+     * Contract based job.
+     */
     CONTRACT,
 
-    /** 
-     * Remote job 
-     * */
+    /**
+     * Remote job.
+     */
     REMOTE
 }

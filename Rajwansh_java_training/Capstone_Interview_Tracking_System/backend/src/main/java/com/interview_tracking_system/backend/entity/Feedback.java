@@ -54,13 +54,9 @@ public class Feedback {
     private FeedbackStatus status;
 
     /**
-     * Default constructor required by JPA.
-     */
-    public Feedback() {
-    }
-
-    /**
      * Returns the unique identifier.
+     *
+     * @return the id
      */
     public Long getId() {
         return id;
@@ -68,6 +64,8 @@ public class Feedback {
 
     /**
      * Returns the foreign key ID of the associated interview.
+     *
+     * @return the interviewId
      */
     public Long getInterviewId() {
         return interviewId;
@@ -75,6 +73,8 @@ public class Feedback {
 
     /**
      * Sets the foreign key ID of the associated interview.
+     *
+     * @param interviewRef the interviewId to set
      */
     public void setInterviewId(final Long interviewRef) {
         this.interviewId = interviewRef;
@@ -82,6 +82,8 @@ public class Feedback {
 
     /**
      * Returns the foreign key ID of the panel member.
+     *
+     * @return the panelId
      */
     public Long getPanelId() {
         return panelId;
@@ -89,6 +91,8 @@ public class Feedback {
 
     /**
      * Sets the foreign key ID of the panel member.
+     *
+     * @param panelRef the panelId to set
      */
     public void setPanelId(final Long panelRef) {
         this.panelId = panelRef;
@@ -96,6 +100,8 @@ public class Feedback {
 
     /**
      * Returns the comments.
+     *
+     * @return the comments
      */
     public String getComments() {
         return comments;
@@ -103,6 +109,8 @@ public class Feedback {
 
     /**
      * Sets the comments.
+     *
+     * @param feedbackComments the comments to set
      */
     public void setComments(final String feedbackComments) {
         this.comments = feedbackComments;
@@ -110,6 +118,8 @@ public class Feedback {
 
     /**
      * Returns the candidate's strengths.
+     *
+     * @return the strength
      */
     public String getStrength() {
         return strength;
@@ -117,6 +127,8 @@ public class Feedback {
 
     /**
      * Sets the candidate's strengths.
+     *
+     * @param candidateStrength the strengths to set
      */
     public void setStrength(final String candidateStrength) {
         this.strength = candidateStrength;
@@ -124,6 +136,8 @@ public class Feedback {
 
     /**
      * Returns the candidate's weaknesses.
+     *
+     * @return the weakness
      */
     public String getWeakness() {
         return weakness;
@@ -131,6 +145,8 @@ public class Feedback {
 
     /**
      * Sets the candidate's weaknesses.
+     *
+     * @param candidateWeakness the weaknesses to set
      */
     public void setWeakness(final String candidateWeakness) {
         this.weakness = candidateWeakness;
@@ -138,6 +154,8 @@ public class Feedback {
 
     /**
      * Returns the numeric rating.
+     *
+     * @return the rating
      */
     public int getRating() {
         return rating;
@@ -145,6 +163,8 @@ public class Feedback {
 
     /**
      * Sets the numeric rating.
+     *
+     * @param feedbackRating the rating to set
      */
     public void setRating(final int feedbackRating) {
         this.rating = feedbackRating;
@@ -152,6 +172,8 @@ public class Feedback {
 
     /**
      * Returns the feedback status.
+     *
+     * @return the status
      */
     public FeedbackStatus getStatus() {
         return status;
@@ -159,6 +181,8 @@ public class Feedback {
 
     /**
      * Sets the feedback status.
+     *
+     * @param feedbackStatus the status to set
      */
     public void setStatus(final FeedbackStatus feedbackStatus) {
         this.status = feedbackStatus;

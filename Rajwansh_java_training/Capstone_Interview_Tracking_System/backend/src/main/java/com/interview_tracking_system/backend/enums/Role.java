@@ -6,17 +6,17 @@ package com.interview_tracking_system.backend.enums;
 public enum Role {
 
     /**
-     * Human Resource responsible for hiring process
+     * Human Resource responsible for hiring process.
      */
     HR,
 
     /**
-     * Interview panel member who conducts interviews
+     * Interview panel member who conducts interviews.
      */
     PANEL,
 
     /**
-     * Candidate applying for jobs
+     * Candidate applying for jobs.
      */
     CANDIDATE
 }

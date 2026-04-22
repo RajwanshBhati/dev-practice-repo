@@ -14,16 +14,12 @@ import jakarta.persistence.UniqueConstraint;
  * One interview can have multiple panel members.
  */
 @Entity
-@Table(
-    name = "interview_panel",
-    uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"interview_id", "panel_id"})
-    },
-    indexes = {
+@Table(name = "interview_panel", uniqueConstraints = {
+        @UniqueConstraint(columnNames = { "interview_id", "panel_id" })
+}, indexes = {
         @Index(name = "idx_interview_id", columnList = "interview_id"),
         @Index(name = "idx_panel_id", columnList = "panel_id")
-    }
-)
+})
 public class InterviewPanel {
 
     /** Unique identifier for this mapping. */
@@ -40,13 +36,9 @@ public class InterviewPanel {
     private Long panelId;
 
     /**
-     * Default constructor for JPA.
-     */
-    public InterviewPanel() {
-    }
-
-    /**
      * Returns the unique identifier.
+     *
+     * @return the id
      */
     public Long getId() {
         return id;
@@ -54,6 +46,8 @@ public class InterviewPanel {
 
     /**
      * Returns the foreign key ID of the associated interview.
+     *
+     * @return the interviewId
      */
     public Long getInterviewId() {
         return interviewId;
@@ -61,6 +55,8 @@ public class InterviewPanel {
 
     /**
      * Sets the foreign key ID of the associated interview.
+     *
+     * @param interviewRef the interviewId to set
      */
     public void setInterviewId(final Long interviewRef) {
         this.interviewId = interviewRef;
@@ -68,6 +64,8 @@ public class InterviewPanel {
 
     /**
      * Returns the foreign key ID of the associated panel member.
+     *
+     * @return the panelId
      */
     public Long getPanelId() {
         return panelId;
@@ -75,6 +73,8 @@ public class InterviewPanel {
 
     /**
      * Sets the foreign key ID of the associated panel member.
+     *
+     * @param panelRef the panelId to set
      */
     public void setPanelId(final Long panelRef) {
         this.panelId = panelRef;

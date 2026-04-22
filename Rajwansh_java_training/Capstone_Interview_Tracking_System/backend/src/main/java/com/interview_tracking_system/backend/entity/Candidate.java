@@ -47,8 +47,7 @@ public class Candidate {
     private String email;
 
     /** Unique mobile number of the candidate. */
-    @Column(unique = true, nullable = false,
-            length = MOBILE_LENGTH, name = "mobile_number")
+    @Column(unique = true, nullable = false, length = MOBILE_LENGTH, name = "mobile_number")
     private String mobile;
 
     /** URL pointing to the candidate's resume. */
@@ -68,13 +67,11 @@ public class Candidate {
     private double relevantExp;
 
     /** Current cost to company. */
-    @Column(name = "current_ctc", nullable = false,
-            precision = CTC_PRECISION, scale = CTC_SCALE)
+    @Column(name = "current_ctc", nullable = false, precision = CTC_PRECISION, scale = CTC_SCALE)
     private BigDecimal currentCtc;
 
     /** Expected cost to company. */
-    @Column(name = "expected_ctc", nullable = false,
-            precision = CTC_PRECISION, scale = CTC_SCALE)
+    @Column(name = "expected_ctc", nullable = false, precision = CTC_PRECISION, scale = CTC_SCALE)
     private BigDecimal expectedCtc;
 
     /** Notice period in days. */
@@ -95,13 +92,9 @@ public class Candidate {
     private Long jdId;
 
     /**
-     * Default constructor required by JPA.
-     */
-    public Candidate() {
-    }
-
-    /**
      * Returns the unique identifier.
+     *
+     * @return the candidate ID
      */
     public Long getId() {
         return id;
@@ -109,6 +102,8 @@ public class Candidate {
 
     /**
      * Returns the candidate's name.
+     *
+     * @return the name of the candidate
      */
     public String getName() {
         return name;
@@ -116,6 +111,8 @@ public class Candidate {
 
     /**
      * Sets the candidate's name.
+     *
+     * @param candidateName the name to set
      */
     public void setName(final String candidateName) {
         this.name = candidateName;
@@ -123,6 +120,8 @@ public class Candidate {
 
     /**
      * Returns the candidate's email.
+     *
+     * @return the email address of the candidate
      */
     public String getEmail() {
         return email;
@@ -130,6 +129,8 @@ public class Candidate {
 
     /**
      * Sets the candidate's email.
+     *
+     * @param candidateEmail the email address to set
      */
     public void setEmail(final String candidateEmail) {
         this.email = candidateEmail;
@@ -137,6 +138,8 @@ public class Candidate {
 
     /**
      * Returns the candidate's mobile number.
+     *
+     * @return the mobile number of the candidate
      */
     public String getMobile() {
         return mobile;
@@ -144,6 +147,8 @@ public class Candidate {
 
     /**
      * Sets the candidate's mobile number.
+     *
+     * @param candidateMobile the mobile number to set
      */
     public void setMobile(final String candidateMobile) {
         this.mobile = candidateMobile;
@@ -151,6 +156,8 @@ public class Candidate {
 
     /**
      * Returns the resume URL.
+     *
+     * @return the URL of the candidate's resume
      */
     public String getResumeUrl() {
         return resumeUrl;
@@ -158,6 +165,8 @@ public class Candidate {
 
     /**
      * Sets the resume URL.
+     *
+     * @param url the URL to set for the candidate's resume
      */
     public void setResumeUrl(final String url) {
         this.resumeUrl = url;
@@ -165,6 +174,8 @@ public class Candidate {
 
     /**
      * Returns the current company name.
+     *
+     * @return the current employer of the candidate
      */
     public String getCurrentCompany() {
         return currentCompany;
@@ -172,6 +183,8 @@ public class Candidate {
 
     /**
      * Sets the current company name.
+     *
+     * @param company the current employer to set for the candidate
      */
     public void setCurrentCompany(final String company) {
         this.currentCompany = company;
@@ -179,6 +192,8 @@ public class Candidate {
 
     /**
      * Returns total years of experience.
+     *
+     * @return total years of work experience
      */
     public double getTotalExp() {
         return totalExp;
@@ -186,6 +201,8 @@ public class Candidate {
 
     /**
      * Sets total years of experience.
+     *
+     * @param exp total years of work experience to set
      */
     public void setTotalExp(final double exp) {
         this.totalExp = exp;
@@ -193,6 +210,8 @@ public class Candidate {
 
     /**
      * Returns relevant years of experience.
+     *
+     * @return relevant years of work experience
      */
     public double getRelevantExp() {
         return relevantExp;
@@ -200,6 +219,8 @@ public class Candidate {
 
     /**
      * Sets relevant years of experience.
+     *
+     * @param exp relevant years of work experience to set
      */
     public void setRelevantExp(final double exp) {
         this.relevantExp = exp;
@@ -207,6 +228,8 @@ public class Candidate {
 
     /**
      * Returns the current CTC.
+     *
+     * @return the current cost to company
      */
     public BigDecimal getCurrentCtc() {
         return currentCtc;
@@ -214,6 +237,8 @@ public class Candidate {
 
     /**
      * Sets the current CTC.
+     *
+     * @param ctc the current cost to company to set
      */
     public void setCurrentCtc(final BigDecimal ctc) {
         this.currentCtc = ctc;
@@ -221,6 +246,8 @@ public class Candidate {
 
     /**
      * Returns the expected CTC.
+     *
+     * @return the expected cost to company
      */
     public BigDecimal getExpectedCtc() {
         return expectedCtc;
@@ -228,6 +255,8 @@ public class Candidate {
 
     /**
      * Sets the expected CTC.
+     *
+     * @param ctc the expected cost to company to set
      */
     public void setExpectedCtc(final BigDecimal ctc) {
         this.expectedCtc = ctc;
@@ -235,6 +264,8 @@ public class Candidate {
 
     /**
      * Returns the notice period in days.
+     *
+     * @return the notice period
      */
     public int getNoticePeriod() {
         return noticePeriod;
@@ -242,6 +273,8 @@ public class Candidate {
 
     /**
      * Sets the notice period in days.
+     *
+     * @param period the notice period to set
      */
     public void setNoticePeriod(final int period) {
         this.noticePeriod = period;
@@ -249,6 +282,8 @@ public class Candidate {
 
     /**
      * Returns the preferred location.
+     *
+     * @return the preferred job location
      */
     public String getPreferredLocation() {
         return preferredLocation;
@@ -256,6 +291,8 @@ public class Candidate {
 
     /**
      * Sets the preferred location.
+     *
+     * @param location the preferred job location to set
      */
     public void setPreferredLocation(final String location) {
         this.preferredLocation = location;
@@ -263,6 +300,8 @@ public class Candidate {
 
     /**
      * Returns the current interview stage.
+     *
+     * @return the current stage of the candidate in the interview process
      */
     public Stage getStatus() {
         return status;
@@ -270,6 +309,8 @@ public class Candidate {
 
     /**
      * Sets the current interview stage.
+     *
+     * @param candidateStatus the current stage of the candidate in the interview process to set
      */
     public void setStatus(final Stage candidateStatus) {
         this.status = candidateStatus;
@@ -277,6 +318,8 @@ public class Candidate {
 
     /**
      * Returns the foreign key ID of the associated job description.
+     *
+     * @return the job description ID associated with this candidate
      */
     public Long getJdId() {
         return jdId;
@@ -284,6 +327,8 @@ public class Candidate {
 
     /**
      * Sets the foreign key ID of the associated job description.
+     *
+     * @param jobDescriptionId the job description ID to associate with this candidate
      */
     public void setJdId(final Long jobDescriptionId) {
         this.jdId = jobDescriptionId;

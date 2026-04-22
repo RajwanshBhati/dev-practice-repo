@@ -14,6 +14,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -45,10 +46,7 @@ public class JobDescription {
 
     /** Required skills list stored in a separate table. */
     @ElementCollection
-    @CollectionTable(
-        name = "jd_skills",
-        joinColumns = @JoinColumn(name = "jd_id")
-    )
+    @CollectionTable(name = "jd_skills", joinColumns = @JoinColumn(name = "jd_id"))
     @Column(name = "skill")
     private List<String> skillsRequired;
 
@@ -61,13 +59,11 @@ public class JobDescription {
     private Integer experienceMax;
 
     /** Minimum salary offered. */
-    @Column(name = "salary_min", nullable = false,
-            precision = SALARY_PRECISION, scale = SALARY_SCALE)
+    @Column(name = "salary_min", nullable = false, precision = SALARY_PRECISION, scale = SALARY_SCALE)
     private BigDecimal salaryMin;
 
     /** Maximum salary offered. */
-    @Column(name = "salary_max", nullable = false,
-            precision = SALARY_PRECISION, scale = SALARY_SCALE)
+    @Column(name = "salary_max", nullable = false, precision = SALARY_PRECISION, scale = SALARY_SCALE)
     private BigDecimal salaryMax;
 
     /** Job location. */
@@ -87,13 +83,9 @@ public class JobDescription {
     private Long createdById;
 
     /**
-     * Default constructor for JPA.
-     */
-    public JobDescription() {
-    }
-
-    /**
      * Returns the unique identifier.
+     *
+     * @return the id
      */
     public UUID getId() {
         return id;
@@ -101,6 +93,8 @@ public class JobDescription {
 
     /**
      * Returns the job title.
+     *
+     * @return the jobTitle
      */
     public String getJobTitle() {
         return jobTitle;
@@ -108,6 +102,8 @@ public class JobDescription {
 
     /**
      * Sets the job title.
+     *
+     * @param title the jobTitle to set
      */
     public void setJobTitle(final String title) {
         this.jobTitle = title;
@@ -115,6 +111,8 @@ public class JobDescription {
 
     /**
      * Returns the job description text.
+     *
+     * @return the jobDescription
      */
     public String getJobDescription() {
         return jobDescription;
@@ -122,6 +120,8 @@ public class JobDescription {
 
     /**
      * Sets the job description text.
+     *
+     * @param description the jobDescription to set
      */
     public void setJobDescription(final String description) {
         this.jobDescription = description;
@@ -129,20 +129,26 @@ public class JobDescription {
 
     /**
      * Returns the list of required skills.
+     *
+     * @return the skillsRequired
      */
     public List<String> getSkillsRequired() {
-        return skillsRequired;
+        return skillsRequired == null ? null : new ArrayList<>(skillsRequired);
     }
 
     /**
      * Sets the list of required skills.
+     *
+     * @param skills the skillsRequired to set
      */
     public void setSkillsRequired(final List<String> skills) {
-        this.skillsRequired = skills;
+        this.skillsRequired = skills == null ? null : new ArrayList<>(skills);
     }
 
     /**
      * Returns the minimum experience required.
+     *
+     * @return the experienceMin
      */
     public Integer getExperienceMin() {
         return experienceMin;
@@ -150,6 +156,8 @@ public class JobDescription {
 
     /**
      * Sets the minimum experience required.
+     *
+     * @param minExp the experienceMin to set
      */
     public void setExperienceMin(final Integer minExp) {
         this.experienceMin = minExp;
@@ -157,6 +165,8 @@ public class JobDescription {
 
     /**
      * Returns the maximum experience required.
+     *
+     * @return the experienceMax
      */
     public Integer getExperienceMax() {
         return experienceMax;
@@ -164,6 +174,8 @@ public class JobDescription {
 
     /**
      * Sets the maximum experience required.
+     *
+     * @param maxExp the experienceMax to set
      */
     public void setExperienceMax(final Integer maxExp) {
         this.experienceMax = maxExp;
@@ -171,6 +183,8 @@ public class JobDescription {
 
     /**
      * Returns the minimum salary.
+     *
+     * @return the salaryMin
      */
     public BigDecimal getSalaryMin() {
         return salaryMin;
@@ -178,6 +192,8 @@ public class JobDescription {
 
     /**
      * Sets the minimum salary.
+     *
+     * @param minSalary the salaryMin to set
      */
     public void setSalaryMin(final BigDecimal minSalary) {
         this.salaryMin = minSalary;
@@ -185,6 +201,8 @@ public class JobDescription {
 
     /**
      * Returns the maximum salary.
+     *
+     * @return the salaryMax
      */
     public BigDecimal getSalaryMax() {
         return salaryMax;
@@ -192,6 +210,8 @@ public class JobDescription {
 
     /**
      * Sets the maximum salary.
+     *
+     * @param maxSalary the salaryMax to set
      */
     public void setSalaryMax(final BigDecimal maxSalary) {
         this.salaryMax = maxSalary;
@@ -199,6 +219,8 @@ public class JobDescription {
 
     /**
      * Returns the job location.
+     *
+     * @return the location
      */
     public String getLocation() {
         return location;
@@ -206,6 +228,8 @@ public class JobDescription {
 
     /**
      * Sets the job location.
+     *
+     * @param jobLocation the location to set
      */
     public void setLocation(final String jobLocation) {
         this.location = jobLocation;
@@ -213,6 +237,8 @@ public class JobDescription {
 
     /**
      * Returns the job type.
+     *
+     * @return the jobType
      */
     public JobType getJobType() {
         return jobType;
@@ -220,13 +246,17 @@ public class JobDescription {
 
     /**
      * Sets the job type.
+     *
+     * @param type the jobType to set
      */
     public void setJobType(final JobType type) {
         this.jobType = type;
     }
 
     /**
-     * Returns the current status of the job description. 
+     * Returns the current status of the job description.
+     *
+     * @return the status
      */
     public JDStatus getStatus() {
         return status;
@@ -234,6 +264,8 @@ public class JobDescription {
 
     /**
      * Sets the current status of the job description.
+     *
+     * @param status the status to set
      */
     public void setStatus(final JDStatus status) {
         this.status = status;
@@ -241,6 +273,8 @@ public class JobDescription {
 
     /**
      * Returns the foreign key ID of the HR user who created this JD.
+     *
+     * @return the createdById
      */
     public Long getCreatedById() {
         return createdById;
@@ -248,6 +282,8 @@ public class JobDescription {
 
     /**
      * Sets the foreign key ID of the HR user who created this JD.
+     *
+     * @param userId the createdById to set
      */
     public void setCreatedById(final Long userId) {
         this.createdById = userId;

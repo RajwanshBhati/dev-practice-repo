@@ -6,12 +6,12 @@ package com.interview_tracking_system.backend.enums;
 public enum FeedbackStatus {
 
     /**
-     *  Candidate selected 
-     * */
+     * Candidate selected.
+     */
     SELECTED,
 
-    /** 
-     * Candidate rejected 
-     * */
+    /**
+     * Candidate rejected.
+     */
     REJECTED
 }
