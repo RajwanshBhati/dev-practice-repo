@@ -2,6 +2,7 @@ package com.interview_tracking_system.backend.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import com.interview_tracking_system.backend.constants.ValidationMessages;
 
 /**
  * Request body for setting password via activation token.
@@ -12,20 +13,20 @@ public class ChangePasswordRequestDTO {
     /**
      * Activation token received via email.
      */
-    @NotBlank(message = "Token is required")
+    @NotBlank(message = ValidationMessages.TOKEN_REQUIRED)
     private String token;
 
     /**
      * New password — minimum 8 characters.
      */
-    @NotBlank(message = "New password is required")
-    @Size(min = 8, message = "Password must be at least 8 characters")
+    @NotBlank(message = ValidationMessages.NEW_PASSWORD_REQUIRED)
+    @Size(min = 8, message = ValidationMessages.PASSWORD_MIN_LENGTH)
     private String newPassword;
 
     /**
      * Must match newPassword — validated in service.
      */
-    @NotBlank(message = "Confirm password is required")
+    @NotBlank(message = ValidationMessages.CONFIRM_PASSWORD_REQUIRED)
     private String confirmPassword;
 
     /**
@@ -49,7 +50,7 @@ public class ChangePasswordRequestDTO {
 
     /**
      * Gets the token.
-     * 
+     *
      * @return token
      */
     public String getToken() {
@@ -58,7 +59,7 @@ public class ChangePasswordRequestDTO {
 
     /**
      * Gets the new password.
-     * 
+     *
      * @return newPassword
      */
     public String getNewPassword() {
@@ -67,7 +68,7 @@ public class ChangePasswordRequestDTO {
 
     /**
      * Gets the confirm password.
-     * 
+     *
      * @return confirmPassword
      */
     public String getConfirmPassword() {

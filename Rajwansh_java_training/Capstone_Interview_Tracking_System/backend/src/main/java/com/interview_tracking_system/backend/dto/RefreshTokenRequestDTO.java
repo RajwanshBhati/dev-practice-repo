@@ -1,5 +1,8 @@
 package com.interview_tracking_system.backend.dto;
 
+import com.interview_tracking_system.backend.constants.ValidationMessages;
+import com.interview_tracking_system.backend.constants.ValidationMessages;
+
 import jakarta.validation.constraints.NotBlank;
 
 /**
@@ -10,7 +13,7 @@ public class RefreshTokenRequestDTO {
     /**
      * Valid refresh token previously issued on login.
      */
-    @NotBlank(message = "Refresh token is required")
+    @NotBlank(message = ValidationMessages.REFRESH_TOKEN_REQUIRED)
     private String refreshToken;
 
     /**

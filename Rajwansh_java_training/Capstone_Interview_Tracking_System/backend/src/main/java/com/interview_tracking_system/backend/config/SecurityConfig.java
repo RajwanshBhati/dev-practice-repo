@@ -40,23 +40,13 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
 
-                        /**
-                         * Public endpoints - authentication and JD listing
-                         * All other endpoints require authentication with appropriate roles
-                         */
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/jd/**").permitAll()
 
-                        /**
-                         * Role-based access control for different user types
-                         */
                         .requestMatchers("/api/hr/**").hasRole("HR")
                         .requestMatchers("/api/panel/**").hasRole("PANEL")
                         .requestMatchers("/api/candidate/**").hasRole("CANDIDATE")
 
-                        /**
-                         * Any other request must be authenticated
-                         */
                         .anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
