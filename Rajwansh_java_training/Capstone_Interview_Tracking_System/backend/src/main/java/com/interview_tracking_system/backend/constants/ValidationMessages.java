@@ -38,7 +38,9 @@ public final class ValidationMessages {
 
     public static final String EXPERIENCE_NEGATIVE = "Experience cannot be negative";
 
-    public static final String SALARY_REQUIRED = "Salary is required";
+    public static final String MIN_SALARY_REQUIRED = "Minimum salary is required";
+
+    public static final String MAX_SALARY_REQUIRED = "Maximum salary is required";
 
     public static final String SALARY_INVALID = "Salary must be greater than 0";
 

@@ -33,9 +33,13 @@ public class JDRequestDTO {
     @Min(value = 0, message = ValidationMessages.EXPERIENCE_NEGATIVE)
     private Integer maxExperience;
 
-    @NotNull(message = ValidationMessages.SALARY_REQUIRED)
+    @NotNull(message = ValidationMessages.MIN_SALARY_REQUIRED)
     @DecimalMin(value = "0.0", inclusive = false, message = ValidationMessages.SALARY_INVALID)
-    private BigDecimal salary;
+    private BigDecimal minSalary;
+
+    @NotNull(message = ValidationMessages.MAX_SALARY_REQUIRED)
+    @DecimalMin(value = "0.0", inclusive = false, message = ValidationMessages.SALARY_INVALID)
+    private BigDecimal maxSalary;
 
     @NotBlank(message = ValidationMessages.LOCATION_REQUIRED)
     private String location;
@@ -89,12 +93,20 @@ public class JDRequestDTO {
         this.maxExperience = maxExperience;
     }
 
-    public BigDecimal getSalary() {
-        return salary;
+    public BigDecimal getMinSalary() {
+        return minSalary;
     }
 
-    public void setSalary(BigDecimal salary) {
-        this.salary = salary;
+    public void setMinSalary(BigDecimal minSalary) {
+        this.minSalary = minSalary;
+    }
+
+    public BigDecimal getMaxSalary() {
+        return maxSalary;
+    }
+
+    public void setMaxSalary(BigDecimal maxSalary) {
+        this.maxSalary = maxSalary;
     }
 
     public String getLocation() {
