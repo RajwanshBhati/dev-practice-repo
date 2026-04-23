@@ -36,7 +36,7 @@ public class DataSeeder implements ApplicationRunner {
 
     /**
      * Constructor injection of dependencies
-     * 
+     *
      * @param userRepository
      * @param passwordEncoder
      * @param userRepository
