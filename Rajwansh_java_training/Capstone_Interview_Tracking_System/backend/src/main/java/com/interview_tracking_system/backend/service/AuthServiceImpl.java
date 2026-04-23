@@ -43,7 +43,7 @@ public class AuthServiceImpl implements AuthService {
 
     /**
      * Constructor injection of dependencies
-     * 
+     *
      * @param authenticationManager
      * @param userRepository
      * @param refreshTokenRepository
@@ -82,6 +82,7 @@ public class AuthServiceImpl implements AuthService {
          * with old tokens.
          */
         refreshTokenRepository.deleteByUser(user);
+        refreshTokenRepository.flush();
 
         /**
          * Generate new access token using JwtUtil. The token will contain user's email

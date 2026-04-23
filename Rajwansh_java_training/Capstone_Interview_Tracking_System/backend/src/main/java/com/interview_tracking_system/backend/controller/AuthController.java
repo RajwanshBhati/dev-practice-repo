@@ -9,10 +9,15 @@ import com.interview_tracking_system.backend.dto.LoginResponseDTO;
 import com.interview_tracking_system.backend.service.AuthService;
 
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * REST controller for authentication endpoints.
@@ -21,83 +26,90 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(ApiEndpoints.BASE_AUTH)
 public class AuthController {
 
-    /**
-     * AuthService is injected via constructor
-     */
-    private final AuthService authService;
+        // Logger for debugging and monitoring
+        private static final Logger log = LoggerFactory.getLogger(AuthController.class);
 
-    /**
-     * Constructor injection of AuthService
-     *
-     * @param authService
-     */
-    public AuthController(AuthService authService) {
-        this.authService = authService;
-    }
+        /**
+         * AuthService is injected via constructor
+         */
+        private final AuthService authService;
 
-    /**
-     * Login endpoint
-     *
-     * @param request
-     * @return
-     */
-    @PostMapping(ApiEndpoints.LOGIN)
-    public ResponseEntity<ApiResponse<LoginResponseDTO>> login(
-            @Valid @RequestBody LoginRequestDTO loginRequestDTO) {
+        /**
+         * Constructor injection of AuthService
+         */
+        public AuthController(AuthService authService) {
+                this.authService = authService;
+        }
 
-        LoginResponseDTO response = authService.login(loginRequestDTO);
+        /**
+         * Login endpoint
+         */
+        @PostMapping(ApiEndpoints.LOGIN)
+        public ResponseEntity<ApiResponse<LoginResponseDTO>> login(
+                        @Valid @RequestBody LoginRequestDTO loginRequestDTO) {
 
-        return ResponseEntity.ok(
-                ApiResponse.success("Login successful", response));
-    }
+                log.info("Login attempt received for user: {}", loginRequestDTO.getEmail());
 
-    /**
-     * Refresh token endpoint
-     *
-     * @param refreshTokenRequestDTO
-     * @return
-     */
-    @PostMapping(ApiEndpoints.REFRESH)
-    public ResponseEntity<ApiResponse<LoginResponseDTO>> refresh(
-            @Valid @RequestBody RefreshTokenRequestDTO refreshTokenRequestDTO) {
+                LoginResponseDTO response = authService.login(loginRequestDTO);
 
-        LoginResponseDTO response = authService.refreshToken(refreshTokenRequestDTO);
+                log.info("Login successful for user: {}", loginRequestDTO.getEmail());
 
-        return ResponseEntity.ok(
-                ApiResponse.success("Token refreshed", response));
-    }
+                return ResponseEntity.ok(
+                                ApiResponse.success("Login successful", response));
+        }
 
-    /**
-     * Logout endpoint
-     *
-     * @param userDetails
-     * @return
-     */
-    @PostMapping(ApiEndpoints.LOGOUT)
-    public ResponseEntity<ApiResponse<Void>> logout(
-            @AuthenticationPrincipal UserDetails userDetails) {
+        /**
+         * Refresh token endpoint
+         */
+        @PostMapping(ApiEndpoints.REFRESH)
+        public ResponseEntity<ApiResponse<LoginResponseDTO>> refresh(
+                        @Valid @RequestBody RefreshTokenRequestDTO refreshTokenRequestDTO) {
 
-        authService.logout(userDetails.getUsername());
+                log.info("Refresh token request received");
 
-        return ResponseEntity.ok(
-                ApiResponse.success("Logged out successfully", null));
-    }
+                LoginResponseDTO response = authService.refreshToken(refreshTokenRequestDTO);
 
-    /**
-     * Activate account via token and set password
-     *
-     * @param changePasswordRequestDTO
-     * @return
-     */
-    @PostMapping(ApiEndpoints.ACTIVATE)
-    public ResponseEntity<ApiResponse<Void>> activate(
-            @Valid @RequestBody ChangePasswordRequestDTO changePasswordRequestDTO) {
+                log.info("Token refreshed successfully");
 
-        authService.setPasswordViaActivationToken(changePasswordRequestDTO);
+                return ResponseEntity.ok(
+                                ApiResponse.success("Token refreshed", response));
+        }
 
-        return ResponseEntity.ok(
-                ApiResponse.success(
-                        "Account activated successfully. You can now login.",
-                        null));
-    }
+        /**
+         * Logout endpoint
+         */
+        @PostMapping(ApiEndpoints.LOGOUT)
+        public ResponseEntity<ApiResponse<Void>> logout(
+                        @AuthenticationPrincipal UserDetails userDetails) {
+
+                String username = userDetails.getUsername();
+
+                log.info("Logout request received for user: {}", username);
+
+                authService.logout(username);
+
+                log.info("Logout successful for user: {}", username);
+
+                return ResponseEntity.ok(
+                                ApiResponse.success("Logged out successfully", null));
+        }
+
+        /**
+         * Activate account via token and set password
+         */
+        @PostMapping(ApiEndpoints.ACTIVATE)
+        public ResponseEntity<ApiResponse<Void>> activate(
+                        @Valid @RequestBody ChangePasswordRequestDTO changePasswordRequestDTO) {
+
+                log.info("Account activation request received");
+
+                authService.setPasswordViaActivationToken(changePasswordRequestDTO);
+
+                log.info("Account activated successfully");
+
+                return ResponseEntity.ok(
+                                ApiResponse.success(
+                                                "Account activated successfully. You can now login.",
+                                                null));
+        }
 }
