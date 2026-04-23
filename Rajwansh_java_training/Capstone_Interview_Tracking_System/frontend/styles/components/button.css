@@ -50,8 +50,27 @@
   animation: spin 0.7s linear infinite;
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+.btn-primary {
+  background: var(--primary);
+  color: white;
+  padding: 10px 16px;
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-outline {
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-primary);
+  padding: 10px 14px;
+  border-radius: var(--radius);
+}
+
+.btn-danger {
+  background: var(--danger);
+  color: white;
+  padding: 10px 16px;
+  border-radius: var(--radius);
 }

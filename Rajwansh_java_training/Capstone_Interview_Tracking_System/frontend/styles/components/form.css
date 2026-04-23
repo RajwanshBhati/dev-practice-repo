@@ -1,144 +1,19 @@
-/* Form group wrapper */
+.form-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
 .form-group {
-  margin-bottom: 1.25rem;
-}
-
-/* Label */
-.form-group label {
-  display: block;
-  font-size: var(--font-size-sm);
-  font-weight: 500;
-  color: var(--text-primary);
-  margin-bottom: var(--space-sm);
-}
-
-/* Input wrapper — positions icon + toggle inside input */
-.input-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-/* Left icon inside input */
-.input-icon {
-  position: absolute;
-  left: 12px;
-  width: 18px;
-  height: 18px;
-  color: var(--text-muted);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-}
-
-.input-icon svg {
-  width: 16px;
-  height: 16px;
-}
-
-/* Text / email / password input */
-.input-wrapper input {
-  width: 100%;
-  padding: 0.75rem 2.75rem 0.75rem 2.5rem;
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius-md);
-  font-size: 0.9rem;
-  font-family: var(--font);
-  color: var(--text-primary);
-  background: var(--white);
-  outline: none;
-  transition: var(--transition);
-}
-
-.input-wrapper input::placeholder {
-  color: var(--text-muted);
-}
-
-/* Focus state */
-.input-wrapper input:focus {
-  border-color: var(--border-focus);
-  box-shadow: 0 0 0 3px var(--primary-shadow);
-}
-
-/* Validation states */
-.input-wrapper input.input-error {
-  border-color: var(--error);
-}
-
-.input-wrapper input.input-error:focus {
-  box-shadow: 0 0 0 3px var(--error-shadow);
-}
-
-.input-wrapper input.input-success {
-  border-color: var(--success);
-}
-
-/* Password visibility toggle */
-.toggle-password {
-  position: absolute;
-  right: 12px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 4px;
-  color: var(--text-muted);
-  display: flex;
-  align-items: center;
-  transition: color var(--transition-fast);
-}
-
-.toggle-password:hover {
-  color: var(--text-secondary);
-}
-
-.toggle-password svg {
-  width: 16px;
-  height: 16px;
-}
-
-/* Field-level error text */
-.field-error {
-  display: block;
-  font-size: var(--font-size-xs);
-  color: var(--error);
-  margin-top: var(--space-xs);
-  min-height: 1rem;
-}
-
-/* ─── Password Strength Bar ────────────────────────────────────────────────── */
-
-.password-strength {
-  margin-top: var(--space-sm);
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.strength-bar {
   flex: 1;
-  height: 4px;
-  background: var(--border);
-  border-radius: var(--radius-full);
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
-.strength-fill {
-  height: 100%;
-  width: 0%;
-  border-radius: var(--radius-full);
-  transition: width 0.3s ease, background 0.3s ease;
+input, textarea, select {
+  padding: 10px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: white;
 }
-
-.strength-label {
-  font-size: var(--font-size-xxs);
-  font-weight: 500;
-  min-width: 44px;
-  text-align: right;
-}
-
-/* Strength levels */
-.strength-weak   { background: var(--strength-weak);   }
-.strength-fair   { background: var(--strength-fair);   }
-.strength-good   { background: var(--strength-good);   }
-.strength-strong { background: var(--strength-strong); }
