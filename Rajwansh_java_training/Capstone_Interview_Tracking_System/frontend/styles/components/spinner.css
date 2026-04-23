@@ -1,0 +1,17 @@
+.spinner-standalone {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--border);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  margin: var(--space-lg) auto;
+}
+
+/* spin keyframe is defined in button.css
+   If spinner.css is used standalone, define it here too */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

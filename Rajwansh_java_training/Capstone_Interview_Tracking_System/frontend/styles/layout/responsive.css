@@ -1,0 +1,63 @@
+/* Tablet — reduce left panel padding */
+@media (max-width: 1024px) {
+  .auth-left {
+    padding: var(--space-xl) var(--space-xl);
+  }
+
+  .auth-right {
+    width: 420px;
+  }
+}
+
+/* Mobile — stack vertically */
+@media (max-width: 768px) {
+  .auth-wrapper {
+    flex-direction: column;
+  }
+
+  .auth-left {
+    padding: var(--space-xl) var(--space-lg);
+    min-height: auto;
+  }
+
+  /* Hide decorative circles on mobile */
+  .auth-left::before,
+  .auth-left::after {
+    display: none;
+  }
+
+  .brand h1 {
+    font-size: 1.4rem;
+  }
+
+  /* Hide feature/steps list on mobile to save space */
+  .feature-list,
+  .steps-list {
+    display: none;
+  }
+
+  .auth-right {
+    width: 100%;
+    padding: var(--space-xl) var(--space-lg);
+    align-items: flex-start;
+  }
+
+  .auth-card {
+    max-width: 100%;
+  }
+}
+
+/* Small mobile */
+@media (max-width: 400px) {
+  .auth-left {
+    padding: var(--space-lg) var(--space-md);
+  }
+
+  .auth-right {
+    padding: var(--space-lg) var(--space-md);
+  }
+
+  .btn-primary {
+    padding: 0.75rem 1rem;
+  }
+}
