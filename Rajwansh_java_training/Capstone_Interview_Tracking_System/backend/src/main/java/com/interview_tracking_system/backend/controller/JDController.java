@@ -9,7 +9,16 @@ import com.interview_tracking_system.backend.service.JDService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.UUID;
@@ -32,7 +41,7 @@ public class JDController {
 
     /**
      * Create a new Job Description.
-     * 
+     *
      * @param requestDTO
      * @return
      */
@@ -52,7 +61,7 @@ public class JDController {
 
     /**
      * Get Job Description by ID.
-     * 
+     *
      * @param id
      * @param requestDTO
      * @return
@@ -72,7 +81,7 @@ public class JDController {
 
     /**
      * Update JD status (Active/Inactive).
-     * 
+     *
      * @param id
      * @param status
      * @return
@@ -92,7 +101,7 @@ public class JDController {
 
     /**
      * Delete a Job Description by ID.
-     * 
+     *
      * @param id
      * @return
      */
@@ -109,7 +118,7 @@ public class JDController {
 
     /**
      * Get all Job Descriptions.
-     * 
+     *
      * @return List of JDs
      */
     @GetMapping("/hr/jd")
@@ -125,7 +134,7 @@ public class JDController {
 
     /**
      * Search Job Descriptions based on criteria.
-     * 
+     *
      * @param status
      * @param jobType
      * @param location
@@ -149,7 +158,7 @@ public class JDController {
 
     /**
      * Get all active Job Descriptions (for candidates).
-     * 
+     *
      * @return List of active JDs
      */
 
