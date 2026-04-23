@@ -376,7 +376,7 @@ async function handleActivate(e) {
 /* Prefill Token from URL*/
 
 /**
- * If activation page is opened with ?token=xxx in URL,
+ * If activation page is opened with ?token in URL,
  * auto-fills the token input field.
  */
 function prefillTokenFromURL() {

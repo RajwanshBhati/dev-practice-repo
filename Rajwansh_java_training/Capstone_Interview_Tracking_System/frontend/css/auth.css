@@ -1,35 +1,8 @@
-/* ─── Reset & Base ──────────────────────────────────────────────────────────── */
+/* Reset and base styles */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-}
-
-:root {
-  --primary:        #4f46e5;
-  --primary-dark:   #4338ca;
-  --primary-light:  #eef2ff;
-  --success:        #16a34a;
-  --success-light:  #dcfce7;
-  --error:          #dc2626;
-  --error-light:    #fef2f2;
-  --warning:        #d97706;
-  --warning-light:  #fffbeb;
-  --text-primary:   #111827;
-  --text-secondary: #6b7280;
-  --text-muted:     #9ca3af;
-  --border:         #e5e7eb;
-  --border-focus:   #4f46e5;
-  --bg:             #f9fafb;
-  --white:          #ffffff;
-  --radius-sm:      6px;
-  --radius-md:      10px;
-  --radius-lg:      16px;
-  --shadow-sm:      0 1px 3px rgba(0,0,0,0.08);
-  --shadow-md:      0 4px 16px rgba(0,0,0,0.10);
-  --shadow-lg:      0 8px 32px rgba(0,0,0,0.12);
-  --font:           'Segoe UI', system-ui, -apple-system, sans-serif;
-  --transition:     all 0.2s ease;
 }
 
 html, body {
@@ -41,13 +14,13 @@ html, body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ─── Layout ────────────────────────────────────────────────────────────────── */
+/* Layout */
 .auth-wrapper {
   display: flex;
   min-height: 100vh;
 }
 
-/* ─── Left Panel ────────────────────────────────────────────────────────────── */
+/* Left Panel */
 .auth-left {
   flex: 1;
   background: linear-gradient(145deg, #4f46e5 0%, #6366f1 50%, #818cf8 100%);
@@ -60,6 +33,7 @@ html, body {
   overflow: hidden;
 }
 
+/* Decorative circles */
 .auth-left::before {
   content: '';
   position: absolute;
@@ -72,6 +46,7 @@ html, body {
   pointer-events: none;
 }
 
+/* Another circle on the bottom left */
 .auth-left::after {
   content: '';
   position: absolute;
@@ -88,6 +63,7 @@ html, body {
   margin-bottom: 3rem;
 }
 
+/* Brand logo */
 .brand-icon {
   display: inline-flex;
   align-items: center;
@@ -104,6 +80,7 @@ html, body {
   backdrop-filter: blur(8px);
 }
 
+/* Brand text */
 .brand h1 {
   font-size: 1.75rem;
   font-weight: 700;
@@ -112,6 +89,7 @@ html, body {
   letter-spacing: -0.02em;
 }
 
+/* Brand description */
 .brand p {
   font-size: 0.95rem;
   color: rgba(255,255,255,0.75);
@@ -185,7 +163,7 @@ html, body {
   color: rgba(255,255,255,0.65);
 }
 
-/* ─── Right Panel ───────────────────────────────────────────────────────────── */
+/* Right Panel */
 .auth-right {
   width: 480px;
   display: flex;
@@ -217,7 +195,7 @@ html, body {
   color: var(--text-secondary);
 }
 
-/* ─── Alert ─────────────────────────────────────────────────────────────────── */
+/* Alerts */
 .alert {
   display: flex;
   align-items: flex-start;
@@ -265,7 +243,7 @@ html, body {
   color: var(--white);
 }
 
-/* ─── Form ──────────────────────────────────────────────────────────────────── */
+/* Form styles */
 .form-group {
   margin-bottom: 1.25rem;
 }
@@ -367,7 +345,7 @@ html, body {
   min-height: 1rem;
 }
 
-/* ─── Password Strength ─────────────────────────────────────────────────────── */
+/* Password strength meter */
 .password-strength {
   margin-top: 0.5rem;
   display: flex;
@@ -402,7 +380,7 @@ html, body {
 .strength-good   { background: #65a30d;         }
 .strength-strong { background: var(--success);  }
 
-/* ─── Buttons ───────────────────────────────────────────────────────────────── */
+/* Submit button */
 .btn-primary {
   width: 100%;
   padding: 0.8rem 1.5rem;
@@ -453,7 +431,7 @@ html, body {
   animation: spin 0.7s linear infinite;
 }
 
-/* ─── Success State ─────────────────────────────────────────────────────────── */
+/* Success State */
 .success-state {
   text-align: center;
   padding: 1rem 0;
@@ -490,7 +468,7 @@ html, body {
   line-height: 1.6;
 }
 
-/* ─── Footer ────────────────────────────────────────────────────────────────── */
+/* Footer */
 .auth-footer {
   text-align: center;
   margin-top: 1.5rem;
@@ -510,17 +488,7 @@ html, body {
   text-decoration: underline;
 }
 
-/* ─── Animations ────────────────────────────────────────────────────────────── */
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-6px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* ─── Responsive ────────────────────────────────────────────────────────────── */
+/*Responsive Design */
 @media (max-width: 768px) {
   .auth-wrapper {
     flex-direction: column;

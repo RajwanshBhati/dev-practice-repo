@@ -22,19 +22,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
-/**
- * Security configuration class for the application.
- *
- * <p>
- * Handles:
- * <ul>
- * <li>JWT authentication filter integration</li>
- * <li>Role-based authorization</li>
- * <li>CORS configuration for frontend access</li>
- * <li>Stateless session management</li>
- * </ul>
- * </p>
- */
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
@@ -65,53 +52,37 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-                // Enable CORS
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-
-                // Disable CSRF for JWT-based authentication
                 .csrf(csrf -> csrf.disable())
 
-                // Stateless session (no session storage)
+                /**
+                 *
+                 */
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-                // Authorization rules
+                /**
+                 * Authorization rules:
+                 * - Public endpoints: /api/auth/**, OPTIONS requests, GET /api/jd
+                 */
                 .authorizeHttpRequests(auth -> auth
 
-                        // Public endpoints
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/jd/**").permitAll()
 
-                        // Role-based endpoints
                         .requestMatchers("/api/hr/**").hasRole("HR")
                         .requestMatchers("/api/panel/**").hasRole("PANEL")
                         .requestMatchers("/api/candidate/**").hasRole("CANDIDATE")
 
-                        // Any other request must be authenticated
                         .anyRequest().authenticated())
-
-                // Authentication provider
                 .authenticationProvider(authenticationProvider())
 
-                // JWT filter before username/password authentication
+                /* Add JWT filter before username/password authentication */
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
-    /**
-     * Configures CORS policy for frontend integration.
-     *
-     * <p>
-     * Allows frontend running on:
-     * <ul>
-     * <li>http://localhost:3000</li>
-     * <li>http://127.0.0.1:5500</li>
-     * </ul>
-     * </p>
-     *
-     * @return CORS configuration source
-     */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
 
