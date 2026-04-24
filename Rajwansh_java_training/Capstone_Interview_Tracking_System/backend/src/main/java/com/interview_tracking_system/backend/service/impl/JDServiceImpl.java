@@ -1,4 +1,4 @@
-package com.interview_tracking_system.backend.service;
+package com.interview_tracking_system.backend.service.impl;
 
 import com.interview_tracking_system.backend.dto.JDRequestDTO;
 import com.interview_tracking_system.backend.dto.JDResponseDTO;
@@ -9,6 +9,8 @@ import com.interview_tracking_system.backend.exception.InvalidRequestException;
 import com.interview_tracking_system.backend.exception.ResourceNotFoundException;
 import com.interview_tracking_system.backend.mapper.JDMapper;
 import com.interview_tracking_system.backend.repository.JobDescriptionRepository;
+import com.interview_tracking_system.backend.service.JDService;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +18,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import java.util.Objects;
 
 /**
  * Service implementation for Job Description module.
@@ -173,10 +176,6 @@ public class JDServiceImpl implements JDService {
     }
 
     /**
-     * Additional helper methods
-     */
-
-    /**
      * Find JD or throw exception if not found.
      */
     private JobDescription findJDOrThrow(UUID id) {
@@ -189,7 +188,7 @@ public class JDServiceImpl implements JDService {
      * Validate experience range.
      */
     private void validateExperienceRange(Integer min, Integer max) {
-        if (min != null && max != null && min > max) {
+        if (Objects.nonNull(min) && Objects.nonNull(max) && min > max) {
             throw new InvalidRequestException(
                     "Min experience cannot be greater than max experience");
         }
@@ -199,7 +198,8 @@ public class JDServiceImpl implements JDService {
      * Validate salary range.
      */
     private void validateSalaryRange(JDRequestDTO dto) {
-        if (dto.getMinSalary() != null && dto.getMaxSalary() != null &&
+        if (Objects.nonNull(dto.getMinSalary()) &&
+                Objects.nonNull(dto.getMaxSalary()) &&
                 dto.getMinSalary().compareTo(dto.getMaxSalary()) > 0) {
             throw new InvalidRequestException(
                     "Min salary cannot be greater than max salary");

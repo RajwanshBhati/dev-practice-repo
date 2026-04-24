@@ -22,24 +22,35 @@ class InterviewTest {
 
         Interview interview = new Interview();
 
-        // Candidate mapping via FK
+        /**
+         * Candidate ID mapping - using Long for better type safety and validation.
+         */
         Long candidateId = 101L;
         interview.setCandidateId(candidateId);
 
-        // Stage
+        /**
+         * Stage mapping - using Enum for better type safety and validation.
+         */
         interview.setStage(Stage.L1_TECHNICAL);
 
-        // Date & Time
+        /**
+         * Date and Time mapping - using LocalDate and LocalTime for better type safety
+         * and validation.
+         */
         LocalDate date = LocalDate.of(2026, 4, 22);
         LocalTime time = LocalTime.of(10, 30);
 
         interview.setDate(date);
         interview.setTime(time);
 
-        // Focus area
+        /**
+         * Focus area
+         */
         interview.setFocusArea("DSA + System Design");
 
-        // Assertions
+        /**
+         * Assertions to validate all fields are set and retrieved correctly
+         */
         assertEquals(candidateId, interview.getCandidateId());
         assertEquals(Stage.L1_TECHNICAL, interview.getStage());
         assertEquals(date, interview.getDate());

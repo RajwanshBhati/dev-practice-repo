@@ -1,7 +1,7 @@
 package com.interview_tracking_system.backend.entity;
 
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.interview_tracking_system.backend.enums.JobType;
 
