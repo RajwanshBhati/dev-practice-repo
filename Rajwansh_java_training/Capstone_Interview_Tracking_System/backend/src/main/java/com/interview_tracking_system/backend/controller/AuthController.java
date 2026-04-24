@@ -4,8 +4,8 @@ import com.interview_tracking_system.backend.constants.ApiEndpoints;
 import com.interview_tracking_system.backend.constants.LogMessages;
 import com.interview_tracking_system.backend.constants.SuccessMessages;
 import com.interview_tracking_system.backend.dto.ApiResponse;
-import com.interview_tracking_system.backend.dto.auth.ChangePasswordRequestDTO;
-import com.interview_tracking_system.backend.dto.auth.LoginRequestDTO;
+import com.interview_tracking_system.backend.dto.ChangePasswordRequestDTO;
+import com.interview_tracking_system.backend.dto.LoginRequestDTO;
 import com.interview_tracking_system.backend.service.AuthService;
 
 import jakarta.validation.Valid;
