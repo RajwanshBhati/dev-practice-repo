@@ -1,8 +1,0 @@
-com\interview_tracking_system\backend\entity\InterviewTest.class
-com\interview_tracking_system\backend\entity\FeedbackTest.class
-com\interview_tracking_system\backend\entity\JobDescriptionTest.class
-com\interview_tracking_system\backend\entity\UserTest.class
-com\interview_tracking_system\backend\entity\InterviewPanelTest.class
-com\interview_tracking_system\backend\entity\PanelTest.class
-com\interview_tracking_system\backend\BackendApplicationTests.class
-com\interview_tracking_system\backend\entity\CandidateTest.class
