@@ -40,8 +40,5 @@ ol {
   list-style: none;
 }
 
-img,
-svg {
-  display: block;
-  max-width: 100%;
-}
+img { display: block; max-width: 100%; }
+svg { display: inline-block; }

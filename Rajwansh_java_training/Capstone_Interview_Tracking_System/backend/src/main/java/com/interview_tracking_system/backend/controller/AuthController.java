@@ -1,11 +1,9 @@
 package com.interview_tracking_system.backend.controller;
 
 import com.interview_tracking_system.backend.constants.ApiEndpoints;
-import com.interview_tracking_system.backend.dto.ChangePasswordRequestDTO;
-import com.interview_tracking_system.backend.dto.LoginRequestDTO;
-import com.interview_tracking_system.backend.dto.RefreshTokenRequestDTO;
-import com.interview_tracking_system.backend.dto.ApiResponse;
-import com.interview_tracking_system.backend.dto.LoginResponseDTO;
+import com.interview_tracking_system.backend.constants.LogMessages;
+import com.interview_tracking_system.backend.constants.SuccessMessages;
+import com.interview_tracking_system.backend.dto.*;
 import com.interview_tracking_system.backend.service.AuthService;
 
 import jakarta.validation.Valid;
@@ -26,90 +24,69 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(ApiEndpoints.BASE_AUTH)
 public class AuthController {
 
-        // Logger for debugging and monitoring
         private static final Logger log = LoggerFactory.getLogger(AuthController.class);
 
-        /**
-         * AuthService is injected via constructor
-         */
         private final AuthService authService;
 
-        /**
-         * Constructor injection of AuthService
-         */
         public AuthController(AuthService authService) {
                 this.authService = authService;
         }
 
-        /**
-         * Login endpoint
-         */
         @PostMapping(ApiEndpoints.LOGIN)
         public ResponseEntity<ApiResponse<LoginResponseDTO>> login(
                         @Valid @RequestBody LoginRequestDTO loginRequestDTO) {
 
-                log.info("Login attempt received for user: {}", loginRequestDTO.getEmail());
+                log.info(LogMessages.LOGIN_ATTEMPT, loginRequestDTO.getEmail());
 
                 LoginResponseDTO response = authService.login(loginRequestDTO);
 
-                log.info("Login successful for user: {}", loginRequestDTO.getEmail());
+                log.info(LogMessages.LOGIN_SUCCESS, loginRequestDTO.getEmail());
 
                 return ResponseEntity.ok(
-                                ApiResponse.success("Login successful", response));
+                                ApiResponse.success(SuccessMessages.LOGIN_SUCCESS, response));
         }
 
-        /**
-         * Refresh token endpoint
-         */
         @PostMapping(ApiEndpoints.REFRESH)
         public ResponseEntity<ApiResponse<LoginResponseDTO>> refresh(
                         @Valid @RequestBody RefreshTokenRequestDTO refreshTokenRequestDTO) {
 
-                log.info("Refresh token request received");
+                log.info(LogMessages.REFRESH_REQUEST);
 
                 LoginResponseDTO response = authService.refreshToken(refreshTokenRequestDTO);
 
-                log.info("Token refreshed successfully");
+                log.info(LogMessages.REFRESH_SUCCESS);
 
                 return ResponseEntity.ok(
-                                ApiResponse.success("Token refreshed", response));
+                                ApiResponse.success(SuccessMessages.TOKEN_REFRESHED, response));
         }
 
-        /**
-         * Logout endpoint
-         */
         @PostMapping(ApiEndpoints.LOGOUT)
         public ResponseEntity<ApiResponse<Void>> logout(
                         @AuthenticationPrincipal UserDetails userDetails) {
 
                 String username = userDetails.getUsername();
 
-                log.info("Logout request received for user: {}", username);
+                log.info(LogMessages.LOGOUT_REQUEST, username);
 
                 authService.logout(username);
 
-                log.info("Logout successful for user: {}", username);
+                log.info(LogMessages.LOGOUT_SUCCESS, username);
 
                 return ResponseEntity.ok(
-                                ApiResponse.success("Logged out successfully", null));
+                                ApiResponse.success(SuccessMessages.LOGOUT_SUCCESS, null));
         }
 
-        /**
-         * Activate account via token and set password
-         */
         @PostMapping(ApiEndpoints.ACTIVATE)
         public ResponseEntity<ApiResponse<Void>> activate(
                         @Valid @RequestBody ChangePasswordRequestDTO changePasswordRequestDTO) {
 
-                log.info("Account activation request received");
+                log.info(LogMessages.ACTIVATION_REQUEST);
 
                 authService.setPasswordViaActivationToken(changePasswordRequestDTO);
 
-                log.info("Account activated successfully");
+                log.info(LogMessages.ACTIVATION_SUCCESS);
 
                 return ResponseEntity.ok(
-                                ApiResponse.success(
-                                                "Account activated successfully. You can now login.",
-                                                null));
+                                ApiResponse.success(SuccessMessages.ACCOUNT_ACTIVATED, null));
         }
 }
