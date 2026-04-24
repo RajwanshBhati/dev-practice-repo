@@ -1,0 +1,25 @@
+.brand {
+  margin-bottom: 3rem;
+}
+
+.brand-icon {
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.15);
+  border: 1.5px solid rgba(255,255,255,0.25);
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+.brand h1 {
+  font-size: 1.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.brand p {
+  color: rgba(255,255,255,0.75);
+}
