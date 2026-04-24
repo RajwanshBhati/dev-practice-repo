@@ -16,6 +16,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
 @EnableMethodSecurity
@@ -25,7 +30,10 @@ public class SecurityConfig {
     private final CustomUserDetailsService userDetailsService;
 
     /**
-     * Constructor injection
+     * Constructor injection for required security dependencies.
+     *
+     * @param jwtAuthFilter      JWT authentication filter
+     * @param userDetailsService custom user details service
      */
     public SecurityConfig(JwtAuthFilter jwtAuthFilter,
             CustomUserDetailsService userDetailsService) {
@@ -33,14 +41,33 @@ public class SecurityConfig {
         this.userDetailsService = userDetailsService;
     }
 
+    /**
+     * Configures the Spring Security filter chain.
+     *
+     * @param http HttpSecurity configuration object
+     * @return configured SecurityFilterChain
+     * @throws Exception if configuration fails
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        http.csrf(csrf -> csrf.disable())
+        http
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(csrf -> csrf.disable())
+
+                /**
+                 *
+                 */
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+                /**
+                 * Authorization rules:
+                 * - Public endpoints: /api/auth/**, OPTIONS requests, GET /api/jd
+                 */
                 .authorizeHttpRequests(auth -> auth
 
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/jd/**").permitAll()
 
                         .requestMatchers("/api/hr/**").hasRole("HR")
@@ -49,16 +76,49 @@ public class SecurityConfig {
 
                         .anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider())
+
+                /* Add JWT filter before username/password authentication */
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
     @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+
+        CorsConfiguration config = new CorsConfiguration();
+
+        config.setAllowedOrigins(List.of(
+                "http://localhost:3000",
+                "http://127.0.0.1:5500"));
+
+        config.setAllowedMethods(List.of(
+                "GET", "POST", "PUT", "DELETE", "OPTIONS"));
+
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+
+        return source;
+    }
+
+    /**
+     * Password encoder bean using BCrypt hashing algorithm.
+     *
+     * @return BCryptPasswordEncoder instance
+     */
+    @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Authentication provider for user authentication.
+     *
+     * @return DaoAuthenticationProvider configured with user details service
+     */
     @Bean
     public AuthenticationProvider authenticationProvider() {
 
@@ -70,6 +130,13 @@ public class SecurityConfig {
         return provider;
     }
 
+    /**
+     * Provides AuthenticationManager for authentication process.
+     *
+     * @param config Authentication configuration
+     * @return AuthenticationManager instance
+     * @throws Exception if authentication manager cannot be created
+     */
     @Bean
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration config) throws Exception {
