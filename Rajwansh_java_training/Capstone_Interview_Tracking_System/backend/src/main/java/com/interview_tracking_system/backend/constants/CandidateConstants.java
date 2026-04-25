@@ -24,8 +24,6 @@ public final class CandidateConstants {
      */
     public static final String MSG_LOGOUT_SUCCESS = "Logged out successfully.";
 
-    // ===================== ERROR MESSAGES =====================
-
     /**
      * Error message when email is already registered.
      */

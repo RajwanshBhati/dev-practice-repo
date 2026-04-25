@@ -35,9 +35,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         String path = request.getServletPath();
 
-        /**
-         * ✅ PUBLIC ENDPOINTS (NO JWT REQUIRED)
-         */
         if (path.startsWith("/api/auth/")
                 || path.startsWith("/api/candidates/register")
                 || path.startsWith("/api/candidates/login")) {
