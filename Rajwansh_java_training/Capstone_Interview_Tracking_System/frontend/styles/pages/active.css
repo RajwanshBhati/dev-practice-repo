@@ -1,0 +1,45 @@
+/* Success state shown after account activation */
+.success-state {
+  text-align: center;
+  padding: var(--space-md) 0;
+}
+
+/* Green check circle */
+.success-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--success-light);
+  border: 2px solid var(--success-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto var(--space-lg);
+}
+
+.success-icon svg {
+  width: 28px;
+  height: 28px;
+  stroke: var(--success);
+}
+
+.success-state h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--space-sm);
+}
+
+.success-state p {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* Go to login button inside success state */
+.success-state .btn-primary {
+  display: block;
+  text-align: center;
+  margin-top: var(--space-lg);
+  text-decoration: none;
+}

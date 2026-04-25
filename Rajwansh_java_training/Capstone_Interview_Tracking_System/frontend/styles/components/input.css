@@ -1,0 +1,16 @@
+.input-wrapper {
+  position: relative;
+}
+
+.input-wrapper input {
+  width: 100%;
+  padding: 0.75rem 2.75rem 0.75rem 2.5rem;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  transition: var(--transition);
+}
+
+.input-wrapper input:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(79,70,229,0.1);
+}
