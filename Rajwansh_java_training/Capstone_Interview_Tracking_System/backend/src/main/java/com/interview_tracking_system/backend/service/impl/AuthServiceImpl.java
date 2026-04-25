@@ -104,6 +104,12 @@ public class AuthServiceImpl implements AuthService {
                     return new ResourceNotFoundException(ErrorMessages.USER_NOT_FOUND);
                 });
 
+        if (!passwordEncoder.matches(
+                loginRequestDTO.getPassword(),
+                user.getPassword())) {
+            throw new InvalidRequestException("Invalid credentials");
+        }
+
         if (user.getStatus() != UserStatus.ACTIVE) {
             log.warn("Inactive account login attempt: {}", user.getEmail());
             throw new InvalidRequestException(ErrorMessages.ACCOUNT_NOT_ACTIVE);

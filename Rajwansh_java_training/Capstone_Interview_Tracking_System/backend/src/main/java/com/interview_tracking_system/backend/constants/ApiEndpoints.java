@@ -36,14 +36,14 @@ public final class ApiEndpoints {
      */
     public static final String ACTIVATE = "/activate";
 
-    public static final String HR_JD = BASE_API + "/hr/jd";
+    public static final String HR_JD = "/hr/jd";
 
     /**
      * Base path for all API endpoints
      *
      */
 
-    public static final String JD = BASE_API + "/jd";
+    public static final String JD = "/jd";
 
     /**
      * Search endpoint for job descriptions

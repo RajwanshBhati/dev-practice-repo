@@ -56,7 +56,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
 
                 /**
-                 *
+                 * Set session management to stateless since we're using JWT for authentication.
                  */
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
@@ -70,7 +70,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/jd/**").permitAll()
 
-                        .requestMatchers("/api/hr/**").hasRole("HR")
+                        // .requestMatchers("/api/hr/**").hasRole("HR")
+                        .requestMatchers("/api/hr/**").permitAll()
                         .requestMatchers("/api/panel/**").hasRole("PANEL")
                         .requestMatchers("/api/candidate/**").hasRole("CANDIDATE")
 
@@ -90,7 +91,9 @@ public class SecurityConfig {
 
         config.setAllowedOrigins(List.of(
                 "http://localhost:3000",
-                "http://127.0.0.1:5500"));
+                "http://127.0.0.1:5500",
+                "http://127.0.0.1:5501",
+                "http://localhost:5501"));
 
         config.setAllowedMethods(List.of(
                 "GET", "POST", "PUT", "DELETE", "OPTIONS"));
