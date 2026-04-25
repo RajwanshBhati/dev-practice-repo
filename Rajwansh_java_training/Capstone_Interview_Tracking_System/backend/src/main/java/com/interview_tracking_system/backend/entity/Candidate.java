@@ -9,8 +9,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 /**
  * Represents a candidate in the interview tracking system.
@@ -50,6 +53,10 @@ public class Candidate {
     @Column(unique = true, nullable = false, length = MOBILE_LENGTH, name = "mobile_number")
     private String mobile;
 
+    /** date of birth */
+    @Column(name = "date_of_birth")
+    private LocalDate dateOfBirth;
+
     /** URL pointing to the candidate's resume. */
     @Column(name = "resume_url", nullable = false)
     private String resumeUrl;
@@ -82,6 +89,10 @@ public class Candidate {
     @Column(name = "preferred_location", nullable = false)
     private String preferredLocation;
 
+    /** Source through which candidate applied (e.g. LinkedIn, Naukri, Referral). */
+    @Column(name = "source")
+    private String source;
+
     /** Current interview stage of the candidate. */
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -90,6 +101,13 @@ public class Candidate {
     /** Foreign key referencing the associated job description. */
     @Column(name = "jd_id", nullable = false)
     private Long jdId;
+
+    /**
+     * Associated candidate user account (one-to-one relationship).
+     */
+    @OneToOne
+    @JoinColumn(name = "candidate_user_id", unique = true)
+    private CandidateUser candidateUser;
 
     /**
      * Returns the unique identifier.
@@ -125,6 +143,60 @@ public class Candidate {
      */
     public String getEmail() {
         return email;
+    }
+
+    /**
+     * Gets the date of birth of the candidate.
+     *
+     * @return candidate's date of birth
+     */
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    /**
+     * Sets the date of birth of the candidate.
+     *
+     * @param dateOfBirth candidate's date of birth
+     */
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    /**
+     * Gets the source through which candidate applied.
+     *
+     * @return application source (e.g. LinkedIn, Naukri)
+     */
+    public String getSource() {
+        return source;
+    }
+
+    /**
+     * Sets the source through which candidate applied.
+     *
+     * @param source application source
+     */
+    public void setSource(String source) {
+        this.source = source;
+    }
+
+    /**
+     * Gets the associated candidate user account.
+     *
+     * @return candidate user entity
+     */
+    public CandidateUser getCandidateUser() {
+        return candidateUser;
+    }
+
+    /**
+     * Sets the associated candidate user account.
+     *
+     * @param candidateUser candidate user entity
+     */
+    public void setCandidateUser(CandidateUser candidateUser) {
+        this.candidateUser = candidateUser;
     }
 
     /**
@@ -310,7 +382,8 @@ public class Candidate {
     /**
      * Sets the current interview stage.
      *
-     * @param candidateStatus the current stage of the candidate in the interview process to set
+     * @param candidateStatus the current stage of the candidate in the interview
+     *                        process to set
      */
     public void setStatus(final Stage candidateStatus) {
         this.status = candidateStatus;
@@ -328,7 +401,8 @@ public class Candidate {
     /**
      * Sets the foreign key ID of the associated job description.
      *
-     * @param jobDescriptionId the job description ID to associate with this candidate
+     * @param jobDescriptionId the job description ID to associate with this
+     *                         candidate
      */
     public void setJdId(final Long jobDescriptionId) {
         this.jdId = jobDescriptionId;
