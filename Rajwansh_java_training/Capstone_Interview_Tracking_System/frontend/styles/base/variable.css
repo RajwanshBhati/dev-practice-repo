@@ -1,3 +1,8 @@
+/*  variable.css
+  Global CSS variables for the Interview Tracking System .
+  Defines colors, typography, spacing, and other design tokens for consistent styling across the application.
+*/
+
 :root {
 
   /* Colors — Brand */
@@ -31,7 +36,7 @@
   --bg:                #f9fafb;
   --white:             #ffffff;
 
-  /* Colors — Left Panel Gradient */
+  /* Left Panel Gradient */
   --panel-grad-start:  #4f46e5;
   --panel-grad-mid:    #6366f1;
   --panel-grad-end:    #818cf8;
@@ -48,7 +53,7 @@
   --shadow-lg:         0 8px 32px rgba(0, 0, 0, 0.12);
 
   /* Typography */
-  --font:              'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font:              "Segoe UI", system-ui, -apple-system, sans-serif;
   --font-size-base:    15px;
   --font-size-sm:      0.875rem;
   --font-size-xs:      0.8rem;
@@ -75,6 +80,3 @@
   --strength-good:     #65a30d;
   --strength-strong:   #16a34a;
 }
-
-
-

@@ -1,16 +1,34 @@
-/* Tablet — reduce left panel padding */
+/* ── Tablet (≤1024px) ── */
 @media (max-width: 1024px) {
+
+  /* Auth layout */
   .auth-left {
-    padding: var(--space-xl) var(--space-xl);
+    padding: var(--space-xl);
   }
 
   .auth-right {
     width: 420px;
   }
+
+  /* Sidebar layout */
+  .sidebar {
+    width: 200px;
+  }
+
+  .main-content {
+    margin-left: 200px;
+  }
+
+  /* Stats grid */
+  .stats-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
-/* Mobile — stack vertically */
+/* ── Mobile (≤768px) ── */
 @media (max-width: 768px) {
+
+  /* Layout switch */
   .auth-wrapper {
     flex-direction: column;
   }
@@ -18,22 +36,6 @@
   .auth-left {
     padding: var(--space-xl) var(--space-lg);
     min-height: auto;
-  }
-
-  /* Hide decorative circles on mobile */
-  .auth-left::before,
-  .auth-left::after {
-    display: none;
-  }
-
-  .brand h1 {
-    font-size: 1.4rem;
-  }
-
-  /* Hide feature/steps list on mobile to save space */
-  .feature-list,
-  .steps-list {
-    display: none;
   }
 
   .auth-right {
@@ -45,10 +47,67 @@
   .auth-card {
     max-width: 100%;
   }
+
+  /* Hide decorative elements */
+  .auth-left::before,
+  .auth-left::after {
+    display: none;
+  }
+
+  /* Typography */
+  .brand h1 {
+    font-size: 1.4rem;
+  }
+
+  /* Hide extra UI for mobile */
+  .feature-list,
+  .steps-list {
+    display: none;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    display: none;
+  }
+
+  .main-content {
+    margin-left: 0;
+    padding: 1.25rem;
+  }
+
+  /* Forms */
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  /* Filters */
+  .filter-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  /* Table column hiding */
+  .jd-table th:nth-child(5),
+  .jd-table td:nth-child(5) {
+    display: none;
+  }
 }
 
-/* Small mobile */
-@media (max-width: 400px) {
+/* ── Small Mobile (≤480px) ── */
+@media (max-width: 480px) {
+
+  /* Stats */
+  .stats-row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  /* Table optimization */
+  .jd-table th:nth-child(4),
+  .jd-table td:nth-child(4) {
+    display: none;
+  }
+
+  /* Auth padding adjustments */
   .auth-left {
     padding: var(--space-lg) var(--space-md);
   }
@@ -57,32 +116,8 @@
     padding: var(--space-lg) var(--space-md);
   }
 
+  /* Buttons */
   .btn-primary {
     padding: 0.75rem 1rem;
   }
-}
-
-
-@media (max-width: 1024px) {
-  .sidebar { width: 200px; }
-  .main-content { margin-left: 200px; }
-  .stats-row { grid-template-columns: repeat(2, 1fr); }
-}
-
-@media (max-width: 768px) {
-  .sidebar { display: none; }
-  .main-content { margin-left: 0; padding: 1.25rem; }
-  .stats-row { grid-template-columns: repeat(2, 1fr); }
-  .form-row { grid-template-columns: 1fr; }
-  .filter-bar { flex-direction: column; align-items: stretch; }
-  .search-wrapper { width: 100%; }
-  .jd-table th:nth-child(5),
-  .jd-table td:nth-child(5) { display: none; }
-}
-
-@media (max-width: 480px) {
-  .stats-row { grid-template-columns: 1fr 1fr; }
-  .modal { margin: 0.5rem; }
-  .jd-table th:nth-child(4),
-  .jd-table td:nth-child(4) { display: none; }
 }

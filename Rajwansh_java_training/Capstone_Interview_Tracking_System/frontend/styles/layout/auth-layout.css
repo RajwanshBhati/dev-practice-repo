@@ -3,7 +3,6 @@
   display: flex;
   min-height: 100vh;
 }
-
 .auth-left {
   flex: 1;
   background: linear-gradient(
@@ -151,9 +150,7 @@
   color: rgba(255, 255, 255, 0.65);
 }
 
-/* ─────────────────────────────────────────────────────────
-   RIGHT PANEL — Form section
-───────────────────────────────────────────────────────── */
+/*Right form panel */
 
 .auth-right {
   width: 480px;

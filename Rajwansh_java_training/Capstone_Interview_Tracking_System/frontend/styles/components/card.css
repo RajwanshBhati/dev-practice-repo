@@ -7,20 +7,3 @@
   flex-direction: column;
   gap: 0.25rem;
 }
-
-.stat-value {
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  line-height: 1;
-}
-
-.stat-value.green  { color: var(--success); }
-.stat-value.amber  { color: var(--warning); }
-.stat-value.red    { color: var(--error);   }
-
-.stat-label {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  font-weight: 500;
-}

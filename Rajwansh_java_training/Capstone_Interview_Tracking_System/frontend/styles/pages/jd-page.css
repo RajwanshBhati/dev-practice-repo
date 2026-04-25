@@ -25,6 +25,7 @@
 
 .btn-primary:disabled { opacity: 0.65; cursor: not-allowed; }
 
+/* ── Outline Button ── */
 .btn-outline {
   padding: 0.7rem 1.25rem;
   background: var(--white);

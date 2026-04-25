@@ -2,6 +2,10 @@
   margin-bottom: 3rem;
 }
 
+/*
+  * Brand Icon
+  * A circular icon with the first letter of the brand name, used in the header and login page.
+  */
 .brand-icon {
   width: 52px;
   height: 52px;
@@ -15,6 +19,7 @@
   margin-bottom: 1.5rem;
 }
 
+/* Brand name and tagline */
 .brand h1 {
   font-size: 1.75rem;
   margin-bottom: 0.75rem;
