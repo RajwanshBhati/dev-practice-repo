@@ -1,7 +1,7 @@
 /// these are utility function for redirecting the user
 export function redirectByRole(role) {
   const routes = {
-    HR: "hr-dashboard.html",
+    HR: "jd-management.html",
     PANEL: "panel-dashboard.html",
     CANDIDATE: "candidate-dashboard.html",
   };

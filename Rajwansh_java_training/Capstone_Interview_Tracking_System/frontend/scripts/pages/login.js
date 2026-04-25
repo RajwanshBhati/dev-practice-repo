@@ -12,7 +12,7 @@ import { redirectByRole } from "../utils/redirect.js";
 export async function handleLogin(e) {
   e.preventDefault();
 
-  // Get form values
+  // Get form values and trim whitespace
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value;
 

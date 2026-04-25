@@ -8,6 +8,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   await loadComponent("table-container", "../components/jd-table.html");
   await loadComponent("modals-container", "../components/modals/jd-modal.html");
 
-  // init logic
+  //here I can also initialize any event listeners related to the JD page after the components are loaded
   initJDTable();
 });
