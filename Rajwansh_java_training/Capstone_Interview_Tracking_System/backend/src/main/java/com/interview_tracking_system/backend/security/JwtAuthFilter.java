@@ -21,9 +21,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
     private final CustomUserDetailsService userDetailsService;
 
-    /**
-     * Constructor injection
-     */
     public JwtAuthFilter(JwtUtil jwtUtil,
             CustomUserDetailsService userDetailsService) {
         this.jwtUtil = jwtUtil;
@@ -38,41 +35,44 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         String path = request.getServletPath();
 
-        if (path.startsWith("/api/auth/")) {
+        /**
+         * ✅ PUBLIC ENDPOINTS (NO JWT REQUIRED)
+         */
+        if (path.startsWith("/api/auth/")
+                || path.startsWith("/api/candidates/register")
+                || path.startsWith("/api/candidates/login")) {
             filterChain.doFilter(request, response);
             return;
         }
 
+        /**
+         * Get Authorization header
+         */
         String authHeader = request.getHeader("Authorization");
 
-        /**
-         * If no Authorization header or doesn't start with Bearer, skip authentication
-         */
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
         String token = authHeader.substring(7);
-        String email = null;
+        String email;
 
         try {
             email = jwtUtil.extractEmail(token);
         } catch (Exception e) {
-            // Invalid token, skip authentication
             filterChain.doFilter(request, response);
             return;
         }
 
         /**
-         * If email is valid and no authentication is set in context, then authenticate
-         * user
+         * Authenticate only if not already authenticated
          */
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-
             if (jwtUtil.validateToken(token)) {
+
+                UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,
