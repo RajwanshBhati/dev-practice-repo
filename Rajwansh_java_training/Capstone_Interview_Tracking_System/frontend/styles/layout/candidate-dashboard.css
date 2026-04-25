@@ -1,0 +1,12 @@
+.page-container {
+  padding: 24px;
+}
+
+.page-header h1 {
+  font-size: 28px;
+  margin-bottom: 4px;
+}
+
+.page-header p {
+  color: #6b7280;
+}
