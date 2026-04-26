@@ -29,6 +29,43 @@ let allJDs = [];
 let editingId = null;
 let deletingId = null;
 
+const mainContent = document.getElementById("main-content");
+document.querySelectorAll(".nav-item").forEach((item) => {
+  item.addEventListener("click", async (e) => {
+    e.preventDefault();
+
+    const page = item.getAttribute("data-page");
+
+    if (page === "panel") {
+      loadPanelPage();
+    }
+  });
+});
+
+async function loadPanelPage() {
+  const res = await fetch("./panel-management.html");
+  const html = await res.text();
+
+  mainContent.innerHTML = html;
+
+  // remove old script
+  const oldScript = document.getElementById("panel-script");
+  if (oldScript) oldScript.remove();
+
+  // inject new script
+  const script = document.createElement("script");
+  script.src = "../scripts/candidate/panel.js";
+  script.id = "panel-script";
+
+  script.onload = () => {
+    console.log("Panel script loaded");
+    if (window.loadPanels) {
+      window.loadPanels();
+    }
+  };
+
+  document.body.appendChild(script);
+}
 // Load JD
 async function loadJDs() {
   showTableLoader();
