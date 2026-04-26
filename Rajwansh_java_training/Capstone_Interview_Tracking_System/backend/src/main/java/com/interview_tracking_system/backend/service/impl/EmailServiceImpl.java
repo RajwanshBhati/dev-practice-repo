@@ -49,4 +49,28 @@ public class EmailServiceImpl implements EmailService {
         mailSender.send(message);
         LOGGER.info("Profiling completed email sent successfully to: {}", toEmail);
     }
+
+    @Override
+    public void sendPanelActivationEmail(final String toEmail,
+            final String fullName,
+            final String activationLink) {
+
+        LOGGER.info("Sending panel activation email to: {}", toEmail);
+
+        final SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(toEmail);
+        message.setSubject("Panel Account Activation");
+
+        message.setText(
+                "Hi " + fullName + ",\n\n" +
+                        "Your panel account has been created.\n" +
+                        "Please activate using the link below:\n\n" +
+                        activationLink + "\n\n" +
+                        "Link valid for 24 hours.\n\n" +
+                        "Regards,\nHR Team");
+
+        mailSender.send(message);
+
+        LOGGER.info("Panel activation email sent successfully to: {}", toEmail);
+    }
 }

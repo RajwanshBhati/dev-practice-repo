@@ -12,4 +12,13 @@ public interface EmailService {
      * @param candidateName the name of the candidate
      */
     void sendProfilingCompletedEmail(String toEmail, String candidateName);
+
+    /**
+     * Sends panel activation email.
+     *
+     * @param toEmail        panel email
+     * @param fullName       panel full name
+     * @param activationLink activation URL
+     */
+    void sendPanelActivationEmail(String toEmail, String fullName, String activationLink);
 }

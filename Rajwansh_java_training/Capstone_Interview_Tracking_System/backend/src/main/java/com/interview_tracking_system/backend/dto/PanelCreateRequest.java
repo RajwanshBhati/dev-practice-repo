@@ -30,6 +30,10 @@ public class PanelCreateRequest {
         return fullName;
     }
 
+    public String getOrganization() {
+        return organization;
+    }
+
     /**
      * Sets the full name of the panel member.
      *
@@ -82,7 +86,7 @@ public class PanelCreateRequest {
      *         public String getOrganization() {
      *         return organization;
      *         }
-     * 
+     *
      *         /**
      *         Sets the organization the panel member belongs to.
      *
