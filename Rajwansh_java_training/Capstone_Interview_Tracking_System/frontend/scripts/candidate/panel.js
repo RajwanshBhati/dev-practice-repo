@@ -57,7 +57,7 @@ async function loadPanels() {
     const token = getToken();
 
     if (!token) {
-      console.error("❌ No token found");
+      console.error("No token found");
       return;
     }
 
