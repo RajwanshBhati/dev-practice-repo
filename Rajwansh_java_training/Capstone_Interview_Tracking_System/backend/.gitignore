@@ -1,4 +1,8 @@
 HELP.md
+
+target/
+*.log
+uploads/
 target/
 **/target/
 .mvn/wrapper/maven-wrapper.jar
