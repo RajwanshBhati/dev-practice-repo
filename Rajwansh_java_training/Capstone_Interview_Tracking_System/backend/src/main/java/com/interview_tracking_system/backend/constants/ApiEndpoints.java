@@ -50,6 +50,12 @@ public final class ApiEndpoints {
      */
     public static final String JD_SEARCH = HR_JD + "/search";
 
+    public static final String BASE = "/api/v1";
+
+    public static final String PANEL = BASE + "/panel";
+    public static final String CREATE = "/create";
+    public static final String LIST = "/list";
+
     private ApiEndpoints() {
 
     }
