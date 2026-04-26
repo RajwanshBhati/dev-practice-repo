@@ -2,25 +2,22 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Register | TalentBridge</title>
-  <link rel="stylesheet" href="../styles/base/reset.css" />
-  <link rel="stylesheet" href="../styles/base/variable.css" />
-  <link rel="stylesheet" href="../styles/components/candidate_form.css" />
-  <link rel="stylesheet" href="../styles/components//utilites.css" />
-  <link rel="stylesheet" href="../styles/components/auth.css" />
-   <link rel="stylesheet" href="../styles/layout/candidate-layout.css" />
+    <link rel="stylesheet" href="../styles//candidate.css"/>
 </head>
 <body class="auth-body">
 
   <div class="auth-split">
+
+    <!-- Left Panel -->
     <div class="auth-left">
       <div class="brand-logo">
         <span class="logo-icon">⬡</span>
-        <span class="logo-text">Grow in Tech</span>
+        <span class="logo-text">TalentBridge</span>
       </div>
       <div class="auth-left-content">
-        <h1>Start your<br/><em>journey</em> here.</h1>
+        <h1>Start your<br /><em>journey</em> here.</h1>
         <p>Create your profile and apply to top opportunities curated just for you.</p>
         <div class="auth-steps">
           <div class="step active"><span>01</span> Register</div>
@@ -30,72 +27,57 @@
       </div>
     </div>
 
+    <!-- Right Panel -->
     <div class="auth-right">
       <div class="auth-card">
         <h2>Create Account</h2>
-        <p class="auth-subtitle">Already have an account? <a href="login.html">Sign in</a></p>
+        <p class="auth-subtitle">
+          Already have an account? <a href="login.html">Sign in</a>
+        </p>
 
         <div id="errorMsg"   class="alert alert-error   hidden"></div>
         <div id="successMsg" class="alert alert-success hidden"></div>
 
         <form id="registerForm" novalidate>
+
           <div class="form-row">
             <div class="form-group">
-              <label>Full Name <span class="req">*</span></label>
+              <label for="fullName">Full Name <span class="req">*</span></label>
               <input type="text" id="fullName" placeholder="John Doe" required />
             </div>
             <div class="form-group">
-              <label>Email ID <span class="req">*</span></label>
+              <label for="email">Email ID <span class="req">*</span></label>
               <input type="email" id="email" placeholder="john@example.com" required />
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
-              <label>Mobile Number <span class="req">*</span></label>
-              <div class="phone-input">
-                <select id="mobileCode">
-                  <option value="+91">🇮🇳 +91</option>
-                  <option value="+1">🇺🇸 +1</option>
-                  <option value="+44">🇬🇧 +44</option>
-                  <option value="+61">🇦🇺 +61</option>
-                  <option value="+971">🇦🇪 +971</option>
-                </select>
-                <input type="tel" id="mobile" placeholder="9876543210" required />
-              </div>
-            </div>
-            <div class="form-group">
-              <label>Date of Birth <span class="opt">(optional)</span></label>
-              <input type="date" id="dob" />
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label>Password <span class="req">*</span></label>
+              <label for="password">Password <span class="req">*</span></label>
               <div class="pwd-wrap">
                 <input type="password" id="password" placeholder="Min 8 characters" required />
-                <button type="button" class="eye-btn" onclick="togglePwd('password',this)">👁</button>
+                <button type="button" class="eye-btn" data-target="password">👁</button>
               </div>
             </div>
             <div class="form-group">
-              <label>Confirm Password <span class="req">*</span></label>
+              <label for="confirmPassword">Confirm Password <span class="req">*</span></label>
               <div class="pwd-wrap">
                 <input type="password" id="confirmPassword" placeholder="Re-enter password" required />
-                <button type="button" class="eye-btn" onclick="togglePwd('confirmPassword',this)">👁</button>
+                <button type="button" class="eye-btn" data-target="confirmPassword">👁</button>
               </div>
             </div>
           </div>
 
-          <button type="submit" class="btn-primary" id="registerBtn">Create Account</button>
+          <button type="submit" class="btn-primary" id="registerBtn">
+            Create Account
+          </button>
+
         </form>
       </div>
     </div>
-  </div>
 
-  <script src="js/config.js"></script>
-  <script src="js/candidate-auth.js"></script>
-  <script src="../scripts//candidate/candidate_auth.js" ></script>
+  </div>
+   <script type="module" src="../scripts/services/candidate_register.js"></script>
 
 </body>
 </html>

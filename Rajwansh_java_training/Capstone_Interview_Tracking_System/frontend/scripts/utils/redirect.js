@@ -1,10 +1,10 @@
 /// these are utility function for redirecting the user
 export function redirectByRole(role) {
   const routes = {
-    HR: "jd-management.html",
-    PANEL: "panel-dashboard.html",
-    CANDIDATE: "candidate-dashboard.html",
+    hr: "jd-management.html",
+    panel: "panel-dashboard.html",
+    candidate: "candidate-dashboard.html",
   };
 
-  window.location.href = routes[role] || "login.html";
+  window.location.href = routes[role.toLowerCase()] || "login.html";
 }

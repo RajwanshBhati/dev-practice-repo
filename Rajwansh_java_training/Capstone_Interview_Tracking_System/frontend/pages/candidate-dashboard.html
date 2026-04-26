@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Browse Jobs | TalentBridge</title>
-  <link rel="stylesheet" href="../styles/candidate.css" />
+  <link rel="stylesheet" href="../styles//candidate.css"/>
 </head>
-<body class="dashboard-body">
+<body>
 
   <!-- Navbar -->
   <nav class="navbar">
@@ -14,12 +14,11 @@
       <span class="logo-icon">⬡</span> TalentBridge
     </a>
     <div class="nav-right">
-      <a href="candidate-status.html" class="nav-status-link">📋 My Application</a>
       <div class="nav-user">
         <div class="nav-avatar" id="avatarInitial">?</div>
         <span id="userName"></span>
       </div>
-      <button class="btn-logout" onclick="logout()">Sign Out</button>
+      <button class="btn-logout" id="logoutBtn">Sign Out</button>
     </div>
   </nav>
 
@@ -27,18 +26,39 @@
 
     <!-- Page Header -->
     <div class="page-header">
-      <div>
-        <h1>Open Positions</h1>
-        <p>Find your next opportunity — apply with one click</p>
+      <h1>Open Positions</h1>
+      <p>Find your next opportunity — click a card to view details and apply</p>
+    </div>
+
+    <!-- Stage Tracker (hidden until applied) -->
+    <div id="stageSection" style="display:none;">
+      <div class="stage-tracker">
+        <div class="stage-item" id="st-PROFILING">
+          <div class="stage-dot">1</div>
+          <div class="stage-label">Profiling</div>
+        </div>
+        <div class="stage-item" id="st-L1">
+          <div class="stage-dot">2</div>
+          <div class="stage-label">L1 Technical</div>
+        </div>
+        <div class="stage-item" id="st-L2">
+          <div class="stage-dot">3</div>
+          <div class="stage-label">L2 Technical</div>
+        </div>
+        <div class="stage-item" id="st-HR">
+          <div class="stage-dot">4</div>
+          <div class="stage-label">HR Round</div>
+        </div>
       </div>
     </div>
 
-    <!-- Application Banner  -->
+    <!-- Applied banner -->
     <div id="appBanner" class="app-banner hidden"></div>
 
     <!-- Filters -->
     <div class="filters-bar">
-      <input type="text" id="searchInput" class="search-input" placeholder="🔍  Search by title, skills, location…" />
+      <input type="text" id="searchInput" class="search-input"
+             placeholder="🔍  Search by title, location…" />
       <select id="filterType" class="filter-select">
         <option value="">All Types</option>
         <option value="Full-Time">Full-Time</option>
@@ -47,32 +67,86 @@
       </select>
     </div>
 
-    <!-- JD Grid -->
+    <!-- Loader -->
     <div id="loader" class="loader">
       <div class="loader-spinner">⟳</div>
       <p style="margin-top:12px">Loading jobs…</p>
     </div>
+
+    <!-- No jobs -->
     <div id="noJobs" class="no-jobs hidden">
       <p style="font-size:32px">📭</p>
       <p style="margin-top:8px">No open positions right now. Check back soon!</p>
     </div>
+
+    <!-- JD Grid -->
     <div id="jdGrid" class="jd-grid"></div>
 
   </div>
 
-  <!-- ── Apply / Profiling Modal -->
+
+  <!-- ── JD Detail Modal ── -->
+  <div id="jdDetailModal" class="modal-overlay hidden">
+    <div class="modal-box">
+
+      <div class="modal-header">
+        <div>
+          <h2 id="detailTitle">—</h2>
+          <div class="modal-job-name" id="detailType"></div>
+        </div>
+        <button class="btn-close" id="detailClose">✕</button>
+      </div>
+
+      <div class="modal-detail">
+        <div class="detail-meta" id="detailMeta"></div>
+
+        <div class="detail-section">
+          <h4>Description</h4>
+          <p id="detailDesc">—</p>
+        </div>
+
+        <div class="detail-section" id="detailSkillsSection">
+          <h4>Skills Required</h4>
+          <div class="skills-wrap" id="detailSkills"></div>
+        </div>
+
+        <div class="detail-grid">
+          <div class="detail-section">
+            <h4>Experience</h4>
+            <p id="detailExp">—</p>
+          </div>
+          <div class="detail-section">
+            <h4>Salary Range</h4>
+            <p id="detailSalary">—</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-footer">
+        <button class="btn-primary" id="detailApplyBtn"
+                style="width:auto;margin-top:0;padding:10px 28px;">
+          Apply for this Position
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ── Apply / Profiling Modal ── -->
   <div id="applyModal" class="modal-overlay hidden">
     <div class="modal-box">
+
       <div class="modal-header">
         <div>
           <h2>Apply for Position</h2>
           <div class="modal-job-name" id="modalJobTitle"></div>
         </div>
-        <button class="btn-close" onclick="closeModal()">✕</button>
+        <button class="btn-close" id="applyModalClose">✕</button>
       </div>
 
-      <div id="formError"   class="alert alert-error   hidden"></div>
-      <div id="formSuccess" class="alert alert-success hidden"></div>
+      <div id="formError"   class="alert alert-error   hidden" style="margin:16px 24px 0;"></div>
+      <div id="formSuccess" class="alert alert-success hidden" style="margin:16px 24px 0;"></div>
 
       <form id="profilingForm" class="modal-form" novalidate>
         <input type="hidden" id="modalJobId" />
@@ -82,17 +156,17 @@
           <div class="section-label">Personal Information</div>
           <div class="form-row">
             <div class="form-group">
-              <label>Full Name <span class="req">*</span></label>
+              <label for="pFullName">Full Name <span class="req">*</span></label>
               <input type="text" id="pFullName" placeholder="John Doe" required />
             </div>
             <div class="form-group">
-              <label>Email ID <span class="req">*</span></label>
+              <label for="pEmail">Email ID <span class="req">*</span></label>
               <input type="email" id="pEmail" placeholder="john@example.com" required />
             </div>
           </div>
           <div class="form-row">
             <div class="form-group">
-              <label>Mobile Number <span class="req">*</span></label>
+              <label for="pMobile">Mobile Number <span class="req">*</span></label>
               <div class="phone-input">
                 <select id="pMobileCode">
                   <option value="+91">🇮🇳 +91</option>
@@ -105,7 +179,7 @@
               </div>
             </div>
             <div class="form-group">
-              <label>Date of Birth <span class="opt">(optional)</span></label>
+              <label for="pDob">Date of Birth <span class="opt">(optional)</span></label>
               <input type="date" id="pDob" />
             </div>
           </div>
@@ -116,39 +190,39 @@
           <div class="section-label">Professional Details</div>
           <div class="form-row">
             <div class="form-group">
-              <label>Current Organisation <span class="req">*</span></label>
+              <label for="pCurrentOrg">Current Organisation <span class="req">*</span></label>
               <input type="text" id="pCurrentOrg" placeholder="Acme Corp" required />
             </div>
             <div class="form-group">
-              <label>Preferred Location <span class="req">*</span></label>
+              <label for="pPreferredLocation">Preferred Location <span class="req">*</span></label>
               <input type="text" id="pPreferredLocation" placeholder="Pune / Remote" required />
             </div>
           </div>
           <div class="form-row">
             <div class="form-group">
-              <label>Total Experience (yrs) <span class="req">*</span></label>
-              <input type="number" id="pTotalExp" placeholder="5" min="0" max="50" required />
+              <label for="pTotalExp">Total Experience (yrs) <span class="req">*</span></label>
+              <input type="number" id="pTotalExp" placeholder="5" min="0" max="50" step="0.5" required />
             </div>
             <div class="form-group">
-              <label>Relevant Experience (yrs) <span class="req">*</span></label>
-              <input type="number" id="pRelevantExp" placeholder="3" min="0" max="50" required />
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label>Current CTC <span class="req">*</span></label>
-              <input type="text" id="pCurrentCTC" placeholder="₹ 8,00,000" required />
-            </div>
-            <div class="form-group">
-              <label>Expected CTC <span class="req">*</span></label>
-              <input type="text" id="pExpectedCTC" placeholder="₹ 12,00,000" required />
+              <label for="pRelevantExp">Relevant Experience (yrs) <span class="req">*</span></label>
+              <input type="number" id="pRelevantExp" placeholder="3" min="0" max="50" step="0.5" required />
             </div>
           </div>
           <div class="form-row">
             <div class="form-group">
-              <label>Notice Period (days) <span class="req">*</span></label>
+              <label for="pCurrentCTC">Current CTC (LPA) <span class="req">*</span></label>
+              <input type="number" id="pCurrentCTC" placeholder="8.5" min="0" step="0.01" required />
+            </div>
+            <div class="form-group">
+              <label for="pExpectedCTC">Expected CTC (LPA) <span class="req">*</span></label>
+              <input type="number" id="pExpectedCTC" placeholder="12" min="0" step="0.01" required />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="pNoticePeriod">Notice Period <span class="req">*</span></label>
               <select id="pNoticePeriod" required>
-                <option value="">Select</option>
+                <option value="">Select…</option>
                 <option value="0">Immediate / Serving</option>
                 <option value="15">15 days</option>
                 <option value="30">30 days</option>
@@ -158,7 +232,7 @@
               </select>
             </div>
             <div class="form-group">
-              <label>Source <span class="req">*</span></label>
+              <label for="pSource">Source <span class="req">*</span></label>
               <select id="pSource" required>
                 <option value="">How did you hear about us?</option>
                 <option value="LinkedIn">LinkedIn</option>
@@ -176,24 +250,21 @@
         <div class="form-section">
           <div class="section-label">Resume</div>
           <div class="form-group">
-            <label class="file-upload-label">
-              <span class="file-upload-icon">📎</span>
-              <span id="resumeLabel">Click to upload resume (PDF / DOC / DOCX)</span>
-              <input type="file" id="pResume" accept=".pdf,.doc,.docx" onchange="handleResumeChange(this)" />
-            </label>
+            <label for="pResumeFile">Upload Resume (PDF) <span class="req">*</span></label>
+            <input type="file" id="pResumeFile" accept="application/pdf" required />
+            <small class="hint">Upload a PDF resume file, not a link.</small>
           </div>
         </div>
 
         <button type="submit" class="btn-primary" id="submitProfilingBtn">
           Submit Application
         </button>
+
       </form>
     </div>
   </div>
 
 
-  <script src="js/config.js"></script>
-  <script src="js/candidate-dashboard.js"></script>
-  <script src="../scripts/candidate/avatar.js"></script>
+ <script type="module" src="../scripts/candidate/candidate_dashboard.js"></script>
 </body>
 </html>

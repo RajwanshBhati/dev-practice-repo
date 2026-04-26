@@ -5,35 +5,14 @@
 }
 
 .jd-card {
-  background: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 14px;
+  background: #fff;
   padding: 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  cursor: pointer;
   transition: 0.2s;
 }
 
 .jd-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-}
-
-.jd-title {
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.jd-meta {
-  color: #6b7280;
-  font-size: 13px;
-  margin-top: 6px;
-}
-
-.jd-btn {
-  margin-top: 12px;
-  background: #2563eb;
-  color: white;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 8px;
-  cursor: pointer;
+  transform: translateY(-4px);
 }

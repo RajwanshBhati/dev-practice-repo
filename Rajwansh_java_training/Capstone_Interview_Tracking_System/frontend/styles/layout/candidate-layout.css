@@ -1,43 +1,13 @@
-.auth-split {
-  display: flex;
-  min-height: 100vh;
+.page-container {
+  padding: 24px;
+  max-width: 1200px;
+  margin: auto;
 }
 
-.auth-left {
-  flex: 1;
-  background: linear-gradient(135deg, #4f46e5, #6366f1);
-  color: white;
-  padding: 50px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+.page-header h1 {
+  margin: 0;
 }
 
-.auth-right {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 40px;
-}
-
-.auth-card {
-  width: 100%;
-  max-width: 520px;
-  background: white;
-  padding: 30px;
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-}
-
-.auth-subtitle a {
-  color: #2563eb;   /* blue */
-  font-weight: 600;
-  text-decoration: none;
-  transition: 0.2s;
-}
-
-.auth-subtitle a:hover {
-  color: #1d4ed8;
-  text-decoration: underline;
+.page-header p {
+  color: var(--muted);
 }

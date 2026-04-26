@@ -150,7 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Auth guard
   const token = localStorage.getItem("accessToken");
   const role = localStorage.getItem("role");
-  if (!token || role !== "HR") {
+  if (!token || role?.toLowerCase() !== "hr") {
     window.location.href = "login.html";
     return;
   }

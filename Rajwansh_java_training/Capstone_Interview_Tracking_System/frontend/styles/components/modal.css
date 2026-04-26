@@ -60,6 +60,7 @@
 .modal-close svg {
   width: 16px;
   height: 16px;
+  pointer-events: none;
 }
 .modal-body {
   padding: 1.5rem;
