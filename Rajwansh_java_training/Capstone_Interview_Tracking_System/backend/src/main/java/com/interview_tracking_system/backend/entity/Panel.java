@@ -33,7 +33,7 @@ public class Panel {
     private Long id;
 
     /** Full name of the panel member. Cannot be null. */
-    @Column(nullable = false, length = NAME_LENGTH)
+    @Column(name = "full_name", nullable = false, length = NAME_LENGTH)
     private String fullName;
 
     /** Email address of the panel member. Must be unique and cannot be null. */

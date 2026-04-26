@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -40,6 +41,7 @@ public class PanelServiceImpl implements PanelService {
      * Create panel user and send activation email
      */
     @Override
+    @Transactional
     public String createPanel(PanelCreateRequest request) {
 
         logger.info("Creating panel user: {}", request.getEmail());
@@ -52,7 +54,9 @@ public class PanelServiceImpl implements PanelService {
         String token = UUID.randomUUID().toString();
 
         User user = new User();
+        logger.info("FULL NAME FROM REQUEST: {}", request.getFullName());
         user.setName(request.getFullName());
+
         user.setEmail(request.getEmail());
         user.setMobile(request.getMobile());
         user.setOrganisation(request.getOrganization());
@@ -61,14 +65,14 @@ public class PanelServiceImpl implements PanelService {
         user.setRole(Role.PANEL);
         user.setStatus(UserStatus.PENDING);
 
-        user.setPassword(null);
+        user.setPassword(passwordEncoder.encode("TEMP123"));
 
         user.setActivationToken(token);
         user.setActivationTokenExpiry(LocalDateTime.now().plusHours(24));
 
         userRepository.save(user);
 
-        String link = "http://localhost:3000/panel/activate?token=" + token;
+        String link = "http://127.0.0.1:5501/panel/activate?token=" + token;
 
         emailService.sendPanelActivationEmail(
                 request.getEmail(),
@@ -84,6 +88,7 @@ public class PanelServiceImpl implements PanelService {
      * Activate panel user
      */
     @Override
+    @Transactional
     public String activatePanel(PanelActivationRequest request) {
 
         logger.info("Activating panel user");

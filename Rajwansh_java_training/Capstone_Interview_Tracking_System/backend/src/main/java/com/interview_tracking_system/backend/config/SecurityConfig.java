@@ -4,6 +4,7 @@ import com.interview_tracking_system.backend.security.CustomUserDetailsService;
 import com.interview_tracking_system.backend.security.JwtAuthFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -68,9 +69,23 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/v1/panel/activate").permitAll()
 
+                        .requestMatchers(HttpMethod.POST, "/api/hr/jd").hasRole("HR")
+                        .requestMatchers(HttpMethod.PUT, "/api/hr/jd/**").hasRole("HR")
+                        .requestMatchers(HttpMethod.PATCH, "/api/hr/jd/**").hasRole("HR")
+                        .requestMatchers(HttpMethod.DELETE, "/api/hr/jd/**").hasRole("HR")
+
+                        .requestMatchers(HttpMethod.GET, "/api/hr/jd/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/hr/jd").permitAll()
+
                         .requestMatchers("/api/hr/**").hasRole("HR")
-                        .requestMatchers("/api/panel/**").hasRole("PANEL")
+                        .requestMatchers("/api/candidates/register").permitAll()
+                        .requestMatchers("/api/candidates/login").permitAll()
+                        .requestMatchers("/api/candidates/my-status").permitAll()
                         .requestMatchers("/api/candidates/**").hasRole("CANDIDATE")
+
+                        .requestMatchers("/api/v1/panel/create").hasRole("HR")
+                        .requestMatchers("/api/v1/panel/list").hasRole("HR")
+                        .requestMatchers("/api/v1/panel/interviews/**").hasRole("PANEL")
 
                         .anyRequest().authenticated())
 
