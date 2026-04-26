@@ -1,7 +1,6 @@
 package com.interview_tracking_system.backend.dto;
 
 import com.interview_tracking_system.backend.constants.ValidationMessages;
-import com.interview_tracking_system.backend.constants.ValidationMessages;
 
 import jakarta.validation.constraints.NotBlank;
 

@@ -6,19 +6,27 @@ import com.interview_tracking_system.backend.dto.CandidateProfileRequest;
 import com.interview_tracking_system.backend.dto.CandidateRegisterRequest;
 import com.interview_tracking_system.backend.dto.CandidateResponseDTO;
 import com.interview_tracking_system.backend.dto.LoginRequestDTO;
-import com.interview_tracking_system.backend.entity.CandidateUser;
+import com.interview_tracking_system.backend.entity.User;
 import com.interview_tracking_system.backend.security.JwtUtil;
 import com.interview_tracking_system.backend.service.CandidateService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import java.beans.PropertyEditorSupport;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(CandidateApiConstants.BASE_URL)
@@ -49,6 +57,20 @@ public class CandidateController {
             final JwtUtil jwtUtil) {
         this.candidateService = candidateService;
         this.jwtUtil = jwtUtil;
+    }
+
+    @InitBinder
+    public void initBinder(final WebDataBinder binder) {
+        binder.registerCustomEditor(UUID.class, new PropertyEditorSupport() {
+            @Override
+            public void setAsText(final String text) {
+                if (text == null || text.trim().isEmpty() || "NaN".equalsIgnoreCase(text.trim())) {
+                    setValue(null);
+                } else {
+                    setValue(UUID.fromString(text));
+                }
+            }
+        });
     }
 
     /**
@@ -83,7 +105,7 @@ public class CandidateController {
 
         LOGGER.info("Login request received for email: {}", request.getEmail());
 
-        CandidateUser user = candidateService.login(request);
+        User user = candidateService.login(request);
 
         String token = jwtUtil.generateAccessToken(
                 user.getEmail(),
@@ -101,9 +123,10 @@ public class CandidateController {
      * @param authHeader Authorization header containing Bearer token
      * @return saved candidate response with HTTP 201 status
      */
-    @PostMapping(CandidateApiConstants.APPLY_URL)
+    @PostMapping(value = CandidateApiConstants.APPLY_URL, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<CandidateResponseDTO> applyToJob(
-            @RequestBody final CandidateProfileRequest request,
+            @ModelAttribute final CandidateProfileRequest request,
+            @RequestPart("resumeFile") final MultipartFile resumeFile,
             @RequestHeader("Authorization") final String authHeader) {
 
         LOGGER.info("Apply job request received");
@@ -113,7 +136,7 @@ public class CandidateController {
 
         LOGGER.info("Applying job for email: {}", email);
 
-        CandidateResponseDTO response = candidateService.applyToJob(request, email);
+        CandidateResponseDTO response = candidateService.applyToJob(request, resumeFile, email);
 
         LOGGER.info("Application submitted successfully for email: {}", email);
 

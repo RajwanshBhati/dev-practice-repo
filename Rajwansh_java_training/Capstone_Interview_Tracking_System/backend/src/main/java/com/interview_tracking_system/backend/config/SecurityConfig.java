@@ -69,7 +69,11 @@ public class SecurityConfig {
                         .requestMatchers("/api/candidates/register").permitAll()
                         .requestMatchers("/api/candidates/login").permitAll()
 
-                        .requestMatchers("/api/candidates/**").authenticated()
+                        // .requestMatchers("/api/candidates/**")
+                        // .hasAuthority("CANDIDATE")
+
+                        .requestMatchers("/api/candidates/apply")
+                        .hasRole("CANDIDATE")
 
                         .requestMatchers("/api/hr/**").permitAll()
                         .requestMatchers("/api/panel/**").hasRole("PANEL")

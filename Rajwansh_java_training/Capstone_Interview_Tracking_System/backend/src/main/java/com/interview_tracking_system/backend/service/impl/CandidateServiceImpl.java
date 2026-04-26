@@ -5,18 +5,23 @@ import com.interview_tracking_system.backend.dto.CandidateProfileRequest;
 import com.interview_tracking_system.backend.dto.CandidateRegisterRequest;
 import com.interview_tracking_system.backend.dto.CandidateResponseDTO;
 import com.interview_tracking_system.backend.entity.Candidate;
-import com.interview_tracking_system.backend.entity.CandidateUser;
+import com.interview_tracking_system.backend.entity.User;
+import com.interview_tracking_system.backend.enums.Role;
 import com.interview_tracking_system.backend.enums.Stage;
+import com.interview_tracking_system.backend.enums.UserStatus;
 import com.interview_tracking_system.backend.repository.CandidateRepository;
-import com.interview_tracking_system.backend.repository.CandidateUserRepository;
+import com.interview_tracking_system.backend.repository.UserRepository;
 import com.interview_tracking_system.backend.service.CandidateService;
 import com.interview_tracking_system.backend.service.EmailService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import static com.interview_tracking_system.backend.constants.CandidateConstants.ERROR_EMAIL_EXISTS;
 import static com.interview_tracking_system.backend.constants.CandidateConstants.ERROR_PASSWORD_MISMATCH;
@@ -25,14 +30,23 @@ import static com.interview_tracking_system.backend.constants.CandidateConstants
 import static com.interview_tracking_system.backend.constants.CandidateConstants.ERROR_NOT_LOGGED_IN;
 import static com.interview_tracking_system.backend.constants.CandidateConstants.ERROR_NO_APPLICATION;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+
 @Service
 public class CandidateServiceImpl implements CandidateService {
+
+    @Value("${resume.upload-dir:uploads/resumes}")
+    private String resumeUploadDir;
 
     /** Logger instance for logging service activity */
     private static final Logger LOGGER = LoggerFactory.getLogger(CandidateServiceImpl.class);
 
-    /** Repository for candidate users */
-    private final CandidateUserRepository candidateUserRepository;
+    /** Repository for all users (HR, Panel, Candidate) */
+    private final UserRepository userRepository;
 
     /** Repository for candidate job applications */
     private final CandidateRepository candidateRepository;
@@ -41,28 +55,30 @@ public class CandidateServiceImpl implements CandidateService {
     private final EmailService emailService;
 
     /** Password encoder for hashing passwords */
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     /**
      * Constructor for dependency injection.
      *
-     * @param candidateUserRepository repository for candidate users
-     * @param candidateRepository     repository for candidate data
-     * @param emailService            email service
+     * @param userRepository      repository for users
+     * @param candidateRepository repository for candidate data
+     * @param emailService        email service
+     * @param passwordEncoder     password encoder bean
      */
     public CandidateServiceImpl(
-            final CandidateUserRepository candidateUserRepository,
+            final UserRepository userRepository,
             final CandidateRepository candidateRepository,
-            final EmailService emailService) {
+            final EmailService emailService,
+            final PasswordEncoder passwordEncoder) {
 
-        this.candidateUserRepository = candidateUserRepository;
+        this.userRepository = userRepository;
         this.candidateRepository = candidateRepository;
         this.emailService = emailService;
-        this.passwordEncoder = new BCryptPasswordEncoder();
+        this.passwordEncoder = passwordEncoder;
     }
 
     /**
-     * Registers a new candidate user.
+     * Registers a new candidate user in the users table with ROLE_CANDIDATE.
      *
      * @param request the candidate registration request
      * @throws IllegalArgumentException if validation fails
@@ -70,52 +86,70 @@ public class CandidateServiceImpl implements CandidateService {
     @Override
     public void register(final CandidateRegisterRequest request) {
 
-        LOGGER.info("Register request received for email: {}", request.getEmail());
+        if (LOGGER.isInfoEnabled()) {
+            LOGGER.info("Register request received for email: {}", request.getEmail());
+        }
 
         if (!request.getPassword().equals(request.getConfirmPassword())) {
-            LOGGER.error("Password mismatch for email: {}", request.getEmail());
+            if (LOGGER.isErrorEnabled()) {
+                LOGGER.error("Password mismatch for email: {}", request.getEmail());
+            }
             throw new IllegalArgumentException(ERROR_PASSWORD_MISMATCH);
         }
 
-        if (candidateUserRepository.existsByEmail(request.getEmail())) {
-            LOGGER.error("Email already exists: {}", request.getEmail());
+        if (userRepository.existsByEmail(request.getEmail())) {
+            if (LOGGER.isErrorEnabled()) {
+                LOGGER.error("Email already exists: {}", request.getEmail());
+            }
             throw new IllegalArgumentException(ERROR_EMAIL_EXISTS);
         }
 
-        CandidateUser user = new CandidateUser();
-        user.setFullName(request.getFullName());
+        User user = new User();
+        user.setName(request.getFullName());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRole(Role.CANDIDATE);
+        user.setStatus(UserStatus.ACTIVE);
 
-        candidateUserRepository.save(user);
+        userRepository.save(user);
 
-        LOGGER.info("Candidate registered successfully: {}", request.getEmail());
+        if (LOGGER.isInfoEnabled()) {
+            LOGGER.info("Candidate registered successfully: {}", request.getEmail());
+        }
     }
 
     /**
      * Authenticates a candidate user.
      *
      * @param request login request containing email and password
-     * @return authenticated CandidateUser
+     * @return authenticated User
      * @throws IllegalArgumentException if credentials are invalid
      */
     @Override
-    public CandidateUser login(final LoginRequestDTO request) {
+    public User login(final LoginRequestDTO request) {
 
-        LOGGER.info("Login attempt for email: {}", request.getEmail());
+        if (LOGGER.isInfoEnabled()) {
+            LOGGER.info("Login attempt for email: {}", request.getEmail());
+        }
 
-        CandidateUser user = candidateUserRepository.findByEmail(request.getEmail())
+        User user = userRepository.findByEmailIgnoreCase(request.getEmail())
                 .orElseThrow(() -> {
-                    LOGGER.error("User not found: {}", request.getEmail());
+                    if (LOGGER.isErrorEnabled()) {
+                        LOGGER.error("User not found: {}", request.getEmail());
+                    }
                     return new IllegalArgumentException(ERROR_INVALID_CREDENTIALS);
                 });
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            LOGGER.error("Invalid password for email: {}", request.getEmail());
+            if (LOGGER.isErrorEnabled()) {
+                LOGGER.error("Invalid password for email: {}", request.getEmail());
+            }
             throw new IllegalArgumentException(ERROR_INVALID_CREDENTIALS);
         }
 
-        LOGGER.info("Login successful for email: {}", request.getEmail());
+        if (LOGGER.isInfoEnabled()) {
+            LOGGER.info("Login successful for email: {}", request.getEmail());
+        }
         return user;
     }
 
@@ -129,31 +163,42 @@ public class CandidateServiceImpl implements CandidateService {
     @Override
     public CandidateResponseDTO applyToJob(
             final CandidateProfileRequest request,
+            final MultipartFile resumeFile,
             final String email) {
 
-        LOGGER.info("Apply job request received for email: {}", email);
+        if (LOGGER.isInfoEnabled()) {
+            LOGGER.info("Apply job request received for email: {}", email);
+        }
 
-        CandidateUser candidateUser = candidateUserRepository.findByEmail(email)
+        userRepository.findByEmailIgnoreCase(email)
                 .orElseThrow(() -> {
-                    LOGGER.error("User not found: {}", email);
+                    if (LOGGER.isErrorEnabled()) {
+                        LOGGER.error("User not found: {}", email);
+                    }
                     return new IllegalStateException(ERROR_NOT_LOGGED_IN);
                 });
+        String fullMobile = request.getMobileCode() + request.getMobileNumber();
+        if (candidateRepository.existsByEmail(email)
+                || candidateRepository.existsByMobile(fullMobile)) {
 
-        if (candidateRepository.findByCandidateUserId(candidateUser.getId()).isPresent()) {
-            LOGGER.error("Candidate already applied: {}", email);
+            LOGGER.error("Candidate already applied: {} / {}", email, fullMobile);
             throw new IllegalStateException(ERROR_ALREADY_APPLIED);
+        }
+        if (request.getJdId() == null) {
+            if (LOGGER.isErrorEnabled()) {
+                LOGGER.error("Invalid or missing jdId for email: {}", email);
+            }
+            throw new IllegalArgumentException("Please provide a valid jdId.");
         }
 
         Candidate candidate = new Candidate();
-
         candidate.setName(request.getName());
         candidate.setEmail(request.getEmail());
 
-        String fullMobile = request.getMobileCode() + request.getMobileNumber();
         candidate.setMobile(fullMobile);
 
         candidate.setDateOfBirth(request.getDateOfBirth());
-        candidate.setResumeUrl(request.getResumeUrl());
+        candidate.setResumeUrl(storeResumeFile(resumeFile, email));
         candidate.setCurrentCompany(request.getCurrentCompany());
         candidate.setTotalExp(request.getTotalExp());
         candidate.setRelevantExp(request.getRelevantExp());
@@ -165,15 +210,38 @@ public class CandidateServiceImpl implements CandidateService {
         candidate.setJdId(request.getJdId());
         candidate.setStatus(Stage.PROFILING);
 
-        candidate.setCandidateUser(candidateUser);
-
         Candidate saved = candidateRepository.save(candidate);
 
         emailService.sendProfilingCompletedEmail(email, request.getName());
 
-        LOGGER.info("Candidate applied successfully for JD: {}", request.getJdId());
+        if (LOGGER.isInfoEnabled()) {
+            LOGGER.info("Candidate applied successfully for JD: {}", request.getJdId());
+        }
 
         return mapToResponse(saved);
+    }
+
+    private String storeResumeFile(final MultipartFile resumeFile, final String email) {
+        if (resumeFile == null || resumeFile.isEmpty()) {
+            throw new IllegalArgumentException("Resume file is required");
+        }
+
+        try {
+            String fileName = StringUtils.cleanPath(resumeFile.getOriginalFilename());
+            String cleanedEmail = email.replaceAll("[^a-zA-Z0-9._-]", "_");
+            String storedName = String.format("%s_%d_%s", cleanedEmail, System.currentTimeMillis(), fileName);
+
+            Path uploadPath = Paths.get(resumeUploadDir).toAbsolutePath().normalize();
+            Files.createDirectories(uploadPath);
+
+            Path targetLocation = uploadPath.resolve(storedName);
+            Files.copy(resumeFile.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+
+            return targetLocation.toString();
+        } catch (IOException ex) {
+            LOGGER.error("Failed to store resume file for email: {}", email, ex);
+            throw new IllegalStateException("Could not store resume file. Please try again.", ex);
+        }
     }
 
     /**
@@ -187,13 +255,7 @@ public class CandidateServiceImpl implements CandidateService {
 
         LOGGER.info("Fetching status for email: {}", email);
 
-        CandidateUser user = candidateUserRepository.findByEmail(email)
-                .orElseThrow(() -> {
-                    LOGGER.error("User not found: {}", email);
-                    return new IllegalStateException(ERROR_NOT_LOGGED_IN);
-                });
-
-        Candidate candidate = candidateRepository.findByCandidateUserId(user.getId())
+        Candidate candidate = candidateRepository.findByEmail(email)
                 .orElseThrow(() -> {
                     LOGGER.error("No application found for user: {}", email);
                     return new IllegalStateException(ERROR_NO_APPLICATION);

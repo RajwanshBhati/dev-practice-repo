@@ -1,6 +1,7 @@
 package com.interview_tracking_system.backend.dto;
 
 import com.interview_tracking_system.backend.enums.Stage;
+import java.util.UUID;
 
 /**
  * DTO for candidate profile response.
@@ -20,7 +21,7 @@ public class CandidateResponseDTO {
     private Stage status;
 
     /** Job description ID applied for. */
-    private Long jdId;
+    private UUID jdId;
 
     /**
      * Returns the candidate ID.
@@ -99,7 +100,7 @@ public class CandidateResponseDTO {
      *
      * @return the job description ID
      */
-    public Long getJdId() {
+    public UUID getJdId() {
         return jdId;
     }
 
@@ -108,7 +109,7 @@ public class CandidateResponseDTO {
      *
      * @param jobDescriptionId the JD ID to set
      */
-    public void setJdId(final Long jobDescriptionId) {
+    public void setJdId(final UUID jobDescriptionId) {
         this.jdId = jobDescriptionId;
     }
 }

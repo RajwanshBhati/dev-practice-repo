@@ -8,6 +8,7 @@ C:\Users\rajwansh.bhati\Assignment01\backend-dev\Rajwansh_java_training\Capstone
 C:\Users\rajwansh.bhati\Assignment01\backend-dev\Rajwansh_java_training\Capstone_Interview_Tracking_System\backend\src\main\java\com\interview_tracking_system\backend\enums\Role.java
 C:\Users\rajwansh.bhati\Assignment01\backend-dev\Rajwansh_java_training\Capstone_Interview_Tracking_System\backend\src\main\java\com\interview_tracking_system\backend\service\impl\EmailServiceImpl.java
 C:\Users\rajwansh.bhati\Assignment01\backend-dev\Rajwansh_java_training\Capstone_Interview_Tracking_System\backend\src\main\java\com\interview_tracking_system\backend\service\impl\JDServiceImpl.java
+C:\Users\rajwansh.bhati\Assignment01\backend-dev\Rajwansh_java_training\Capstone_Interview_Tracking_System\backend\src\main\java\com\interview_tracking_system\backend\constants\CandidateConstants.java
 C:\Users\rajwansh.bhati\Assignment01\backend-dev\Rajwansh_java_training\Capstone_Interview_Tracking_System\backend\src\main\java\com\interview_tracking_system\backend\dto\JDResponseDTO.java
 C:\Users\rajwansh.bhati\Assignment01\backend-dev\Rajwansh_java_training\Capstone_Interview_Tracking_System\backend\src\main\java\com\interview_tracking_system\backend\repository\package-info.java
 C:\Users\rajwansh.bhati\Assignment01\backend-dev\Rajwansh_java_training\Capstone_Interview_Tracking_System\backend\src\main\java\com\interview_tracking_system\backend\entity\CandidateUser.java
@@ -33,6 +34,7 @@ C:\Users\rajwansh.bhati\Assignment01\backend-dev\Rajwansh_java_training\Capstone
 C:\Users\rajwansh.bhati\Assignment01\backend-dev\Rajwansh_java_training\Capstone_Interview_Tracking_System\backend\src\main\java\com\interview_tracking_system\backend\security\JwtUtil.java
 C:\Users\rajwansh.bhati\Assignment01\backend-dev\Rajwansh_java_training\Capstone_Interview_Tracking_System\backend\src\main\java\com\interview_tracking_system\backend\dto\RefreshTokenRequestDTO.java
 C:\Users\rajwansh.bhati\Assignment01\backend-dev\Rajwansh_java_training\Capstone_Interview_Tracking_System\backend\src\main\java\com\interview_tracking_system\backend\service\JDService.java
+C:\Users\rajwansh.bhati\Assignment01\backend-dev\Rajwansh_java_training\Capstone_Interview_Tracking_System\backend\src\main\java\com\interview_tracking_system\backend\constants\CandidateApiConstants.java
 C:\Users\rajwansh.bhati\Assignment01\backend-dev\Rajwansh_java_training\Capstone_Interview_Tracking_System\backend\src\main\java\com\interview_tracking_system\backend\repository\UserRepository.java
 C:\Users\rajwansh.bhati\Assignment01\backend-dev\Rajwansh_java_training\Capstone_Interview_Tracking_System\backend\src\main\java\com\interview_tracking_system\backend\entity\Panel.java
 C:\Users\rajwansh.bhati\Assignment01\backend-dev\Rajwansh_java_training\Capstone_Interview_Tracking_System\backend\src\main\java\com\interview_tracking_system\backend\entity\JobDescription.java
@@ -51,6 +53,7 @@ C:\Users\rajwansh.bhati\Assignment01\backend-dev\Rajwansh_java_training\Capstone
 C:\Users\rajwansh.bhati\Assignment01\backend-dev\Rajwansh_java_training\Capstone_Interview_Tracking_System\backend\src\main\java\com\interview_tracking_system\backend\mapper\JDMapper.java
 C:\Users\rajwansh.bhati\Assignment01\backend-dev\Rajwansh_java_training\Capstone_Interview_Tracking_System\backend\src\main\java\com\interview_tracking_system\backend\repository\RefreshTokenRepository.java
 C:\Users\rajwansh.bhati\Assignment01\backend-dev\Rajwansh_java_training\Capstone_Interview_Tracking_System\backend\src\main\java\com\interview_tracking_system\backend\constants\ApiEndpoints.java
+C:\Users\rajwansh.bhati\Assignment01\backend-dev\Rajwansh_java_training\Capstone_Interview_Tracking_System\backend\src\main\java\com\interview_tracking_system\backend\constants\ApiMessages.java
 C:\Users\rajwansh.bhati\Assignment01\backend-dev\Rajwansh_java_training\Capstone_Interview_Tracking_System\backend\src\main\java\com\interview_tracking_system\backend\constants\ErrorMessages.java
 C:\Users\rajwansh.bhati\Assignment01\backend-dev\Rajwansh_java_training\Capstone_Interview_Tracking_System\backend\src\main\java\com\interview_tracking_system\backend\enums\JobType.java
 C:\Users\rajwansh.bhati\Assignment01\backend-dev\Rajwansh_java_training\Capstone_Interview_Tracking_System\backend\src\main\java\com\interview_tracking_system\backend\dto\CandidateRegisterRequest.java

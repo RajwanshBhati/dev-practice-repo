@@ -2,6 +2,7 @@ package com.interview_tracking_system.backend.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.UUID;
 
 /**
  * DTO for candidate profiling/apply request.
@@ -22,9 +23,6 @@ public class CandidateProfileRequest {
 
     /** Date of birth (optional). */
     private LocalDate dateOfBirth;
-
-    /** Google Drive resume link. */
-    private String resumeUrl;
 
     /** Current organization of the candidate. */
     private String currentCompany;
@@ -51,7 +49,7 @@ public class CandidateProfileRequest {
     private String source;
 
     /** Job description ID candidate is applying for. */
-    private Long jdId;
+    private UUID jdId;
 
     /**
      * Returns the name.
@@ -141,24 +139,6 @@ public class CandidateProfileRequest {
      */
     public void setDateOfBirth(final LocalDate dob) {
         this.dateOfBirth = dob;
-    }
-
-    /**
-     * Returns the resume URL.
-     *
-     * @return the Google Drive resume link
-     */
-    public String getResumeUrl() {
-        return resumeUrl;
-    }
-
-    /**
-     * Sets the resume URL.
-     *
-     * @param url the resume URL to set
-     */
-    public void setResumeUrl(final String url) {
-        this.resumeUrl = url;
     }
 
     /**
@@ -310,7 +290,7 @@ public class CandidateProfileRequest {
      *
      * @return the job description ID
      */
-    public Long getJdId() {
+    public UUID getJdId() {
         return jdId;
     }
 
@@ -319,7 +299,7 @@ public class CandidateProfileRequest {
      *
      * @param jobDescriptionId the job description ID to set
      */
-    public void setJdId(final Long jobDescriptionId) {
+    public void setJdId(final UUID jobDescriptionId) {
         this.jdId = jobDescriptionId;
     }
 }

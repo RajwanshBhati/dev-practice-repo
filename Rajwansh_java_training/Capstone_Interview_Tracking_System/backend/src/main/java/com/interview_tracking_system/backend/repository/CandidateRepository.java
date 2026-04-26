@@ -34,4 +34,12 @@ public interface CandidateRepository extends JpaRepository<Candidate, Long> {
      * @return an Optional containing the candidate if found
      */
     Optional<Candidate> findByCandidateUserId(Long candidateUserId);
+
+    /**
+     * Finds a candidate by email address.
+     *
+     * @param email the email to search
+     * @return an Optional containing the candidate if found
+     */
+    Optional<Candidate> findByEmail(String email);
 }

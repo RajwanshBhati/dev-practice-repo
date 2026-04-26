@@ -14,6 +14,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.UUID;
 
 /**
  * Represents a candidate in the interview tracking system.
@@ -74,11 +75,11 @@ public class Candidate {
     private double relevantExp;
 
     /** Current cost to company. */
-    @Column(name = "current_ctc", nullable = false, precision = CTC_PRECISION, scale = CTC_SCALE)
+    @Column(name = "current_ctc", nullable = true, precision = CTC_PRECISION, scale = CTC_SCALE)
     private BigDecimal currentCtc;
 
     /** Expected cost to company. */
-    @Column(name = "expected_ctc", nullable = false, precision = CTC_PRECISION, scale = CTC_SCALE)
+    @Column(name = "expected_ctc", nullable = true, precision = CTC_PRECISION, scale = CTC_SCALE)
     private BigDecimal expectedCtc;
 
     /** Notice period in days. */
@@ -99,8 +100,8 @@ public class Candidate {
     private Stage status;
 
     /** Foreign key referencing the associated job description. */
-    @Column(name = "jd_id", nullable = false)
-    private Long jdId;
+    @Column(name = "jd_id", nullable = true)
+    private UUID jdId;
 
     /**
      * Associated candidate user account (one-to-one relationship).
@@ -394,7 +395,7 @@ public class Candidate {
      *
      * @return the job description ID associated with this candidate
      */
-    public Long getJdId() {
+    public UUID getJdId() {
         return jdId;
     }
 
@@ -404,7 +405,7 @@ public class Candidate {
      * @param jobDescriptionId the job description ID to associate with this
      *                         candidate
      */
-    public void setJdId(final Long jobDescriptionId) {
+    public void setJdId(final UUID jobDescriptionId) {
         this.jdId = jobDescriptionId;
     }
 }

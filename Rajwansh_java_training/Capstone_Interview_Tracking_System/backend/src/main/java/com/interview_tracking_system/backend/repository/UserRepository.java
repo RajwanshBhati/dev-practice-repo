@@ -23,6 +23,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
 
     /**
+     * Find user by email (case-insensitive)
+     */
+    Optional<User> findByEmailIgnoreCase(String email);
+
+    /**
      * Find user by mobile
      */
 
