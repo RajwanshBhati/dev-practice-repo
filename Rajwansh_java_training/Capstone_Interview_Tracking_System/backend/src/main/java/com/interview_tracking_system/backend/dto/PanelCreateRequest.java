@@ -39,7 +39,7 @@ public class PanelCreateRequest {
      *
      * @param fullName the full name to set; must not be null or blank
      */
-    public void setFullName(final String fullName) {
+    public void setFullName(String fullName) {
         this.fullName = fullName;
     }
 

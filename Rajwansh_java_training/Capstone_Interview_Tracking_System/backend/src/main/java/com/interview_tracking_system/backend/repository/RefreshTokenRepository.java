@@ -7,6 +7,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Repository for RefreshToken entity.
@@ -29,5 +31,7 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, UUID
     /**
      * Delete refresh token(s) for a user during logout.
      */
+    @Transactional
+    @Modifying
     void deleteByUser(User user);
 }

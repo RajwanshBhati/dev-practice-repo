@@ -9,5 +9,6 @@ public enum UserStatus {
     /** User cannot log in but account is not deleted. */
     INACTIVE,
     /** User account is locked. */
-    LOCKED
+    LOCKED,
+    PENDING,
 }

@@ -34,7 +34,7 @@ public class Panel {
 
     /** Full name of the panel member. Cannot be null. */
     @Column(nullable = false, length = NAME_LENGTH)
-    private String name;
+    private String fullName;
 
     /** Email address of the panel member. Must be unique and cannot be null. */
     @Column(nullable = false, unique = true, length = EMAIL_LENGTH)
@@ -90,8 +90,8 @@ public class Panel {
      *
      * @return the panel member's name
      */
-    public String getName() {
-        return name;
+    public String getFullName() {
+        return fullName;
     }
 
     /**
@@ -99,8 +99,8 @@ public class Panel {
      *
      * @param name the name to set; must not be null or blank
      */
-    public void setName(final String name) {
-        this.name = name;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     /**

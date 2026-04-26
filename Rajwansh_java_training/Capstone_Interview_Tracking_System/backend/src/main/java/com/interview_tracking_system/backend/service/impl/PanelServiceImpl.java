@@ -3,12 +3,15 @@ package com.interview_tracking_system.backend.service.impl;
 import com.interview_tracking_system.backend.constants.MessageConstants;
 import com.interview_tracking_system.backend.dto.PanelActivationRequest;
 import com.interview_tracking_system.backend.dto.PanelCreateRequest;
-import com.interview_tracking_system.backend.entity.Panel;
-import com.interview_tracking_system.backend.repository.PanelRepository;
+import com.interview_tracking_system.backend.entity.User;
+import com.interview_tracking_system.backend.enums.Role;
+import com.interview_tracking_system.backend.enums.UserStatus;
+import com.interview_tracking_system.backend.repository.UserRepository;
 import com.interview_tracking_system.backend.service.EmailService;
 import com.interview_tracking_system.backend.service.PanelService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -16,45 +19,54 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-/**
- * Implementation of PanelService
- */
 @Service
 public class PanelServiceImpl implements PanelService {
 
     private static final Logger logger = LoggerFactory.getLogger(PanelServiceImpl.class);
 
-    private final PanelRepository panelRepository;
+    private final UserRepository userRepository;
     private final EmailService emailService;
+    private final PasswordEncoder passwordEncoder;
 
-    public PanelServiceImpl(PanelRepository panelRepository,
-            EmailService emailService) {
-        this.panelRepository = panelRepository;
+    public PanelServiceImpl(UserRepository userRepository,
+            EmailService emailService,
+            PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
         this.emailService = emailService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     /**
-     * Create panel member and send activation email
+     * Create panel user and send activation email
      */
     @Override
     public String createPanel(PanelCreateRequest request) {
 
-        logger.info("Creating panel member: {}", request.getEmail());
+        logger.info("Creating panel user: {}", request.getEmail());
 
-        Panel panel = new Panel();
-        panel.setName(request.getFullName());
-        panel.setEmail(request.getEmail());
-        panel.setMobile(request.getMobile());
-        panel.setOrganization(request.getOrganization());
-        panel.setDesignation(request.getDesignation());
-        panel.setActive(false);
+        // check duplicate email
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new RuntimeException("Email already exists");
+        }
 
         String token = UUID.randomUUID().toString();
 
-        panel.setActivationToken(token);
-        panel.setTokenExpiry(LocalDateTime.now().plusHours(24));
+        User user = new User();
+        user.setName(request.getFullName());
+        user.setEmail(request.getEmail());
+        user.setMobile(request.getMobile());
+        user.setOrganisation(request.getOrganization());
+        user.setDesignation(request.getDesignation());
 
-        panelRepository.save(panel);
+        user.setRole(Role.PANEL);
+        user.setStatus(UserStatus.PENDING);
+
+        user.setPassword(null);
+
+        user.setActivationToken(token);
+        user.setActivationTokenExpiry(LocalDateTime.now().plusHours(24));
+
+        userRepository.save(user);
 
         String link = "http://localhost:3000/panel/activate?token=" + token;
 
@@ -63,60 +75,63 @@ public class PanelServiceImpl implements PanelService {
                 request.getFullName(),
                 link);
 
-        logger.info("Panel created successfully: {}", request.getEmail());
+        logger.info("Panel activation email sent: {}", request.getEmail());
 
         return MessageConstants.PANEL_CREATED;
     }
 
     /**
-     * Activate panel account using token
+     * Activate panel user
      */
     @Override
     public String activatePanel(PanelActivationRequest request) {
 
-        logger.info("Activating panel with token");
+        logger.info("Activating panel user");
 
         if (!request.getPassword().equals(request.getConfirmPassword())) {
             throw new RuntimeException(MessageConstants.PASSWORD_MISMATCH);
         }
 
-        Panel panel = panelRepository.findByActivationToken(request.getToken())
+        User user = userRepository.findByActivationToken(request.getToken())
                 .orElseThrow(() -> new RuntimeException(MessageConstants.INVALID_TOKEN));
 
-        if (panel.getTokenExpiry().isBefore(LocalDateTime.now())) {
+        if (user.getActivationTokenExpiry() == null ||
+                user.getActivationTokenExpiry().isBefore(LocalDateTime.now())) {
             throw new RuntimeException(MessageConstants.INVALID_TOKEN);
         }
 
-        panel.setPassword(request.getPassword());
-        panel.setActive(true);
-        panel.setActivationToken(null);
+        user.setPassword(passwordEncoder.encode(request.getConfirmPassword()));
+        user.setStatus(UserStatus.ACTIVE);
 
-        panelRepository.save(panel);
+        user.setActivationToken(null);
+        user.setActivationTokenExpiry(null);
 
-        logger.info("Panel activated: {}", panel.getEmail());
+        userRepository.save(user);
+
+        logger.info("Panel activated successfully: {}", user.getEmail());
 
         return MessageConstants.PANEL_ACTIVATED;
     }
 
     /**
-     * Get all panel members
+     * Get all panel users
      */
     @Override
     public List<PanelCreateRequest> getAllPanels() {
 
-        logger.info("Fetching all panel members");
+        logger.info("Fetching all panel users");
 
-        List<Panel> panels = panelRepository.findAll();
+        List<User> panels = userRepository.findByRole(Role.PANEL);
 
         List<PanelCreateRequest> response = new ArrayList<>();
 
-        for (Panel p : panels) {
+        for (User u : panels) {
             PanelCreateRequest dto = new PanelCreateRequest();
-            dto.setFullName(p.getName());
-            dto.setEmail(p.getEmail());
-            dto.setMobile(p.getMobile());
-            dto.setOrganization(p.getOrganization());
-            dto.setDesignation(p.getDesignation());
+            dto.setFullName(u.getName());
+            dto.setEmail(u.getEmail());
+            dto.setMobile(u.getMobile());
+            dto.setOrganization(u.getOrganisation());
+            dto.setDesignation(u.getDesignation());
 
             response.add(dto);
         }

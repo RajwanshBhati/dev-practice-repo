@@ -9,8 +9,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import java.util.List;
 import java.io.IOException;
 
 /**
@@ -38,7 +36,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         if (path.startsWith("/api/auth/")
                 || path.startsWith("/api/candidates/register")
-                || path.startsWith("/api/candidates/login")) {
+                || path.startsWith("/api/candidates/login")
+                || path.startsWith("/api/panel/create")) {
             filterChain.doFilter(request, response);
             return;
         }

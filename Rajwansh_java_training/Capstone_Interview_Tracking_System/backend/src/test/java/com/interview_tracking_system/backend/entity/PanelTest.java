@@ -13,14 +13,14 @@ class PanelTest {
 
         Panel panel = new Panel();
 
-        panel.setName("HR Panel");
+        panel.setFullName("HR Panel");
         panel.setEmail("hr@company.com");
         panel.setMobile("9999999999");
         panel.setOrganization("Tech Corp");
         panel.setDesignation("Senior HR");
         panel.setActive(true);
 
-        assertEquals("HR Panel", panel.getName());
+        assertEquals("HR Panel", panel.getFullName());
         assertEquals("hr@company.com", panel.getEmail());
         assertEquals("9999999999", panel.getMobile());
         assertEquals("Tech Corp", panel.getOrganization());

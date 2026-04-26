@@ -19,7 +19,6 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -81,22 +80,10 @@ public class AuthServiceImpl implements AuthService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    /**
-     * Handles user login and generates access and refresh tokens.
-     *
-     * @param loginRequestDTO the login request containing email and password
-     * @return the login response with tokens and user details
-     */
     @Override
-    @Transactional
     public LoginResponseDTO login(LoginRequestDTO loginRequestDTO) {
 
         log.info("Login attempt for email: {}", loginRequestDTO.getEmail());
-
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginRequestDTO.getEmail(),
-                        loginRequestDTO.getPassword()));
 
         User user = userRepository.findByEmail(loginRequestDTO.getEmail())
                 .orElseThrow(() -> {
@@ -104,23 +91,27 @@ public class AuthServiceImpl implements AuthService {
                     return new ResourceNotFoundException(ErrorMessages.USER_NOT_FOUND);
                 });
 
-        if (!passwordEncoder.matches(
-                loginRequestDTO.getPassword(),
-                user.getPassword())) {
+        // Password validation (manual)
+        if (!passwordEncoder.matches(loginRequestDTO.getPassword(), user.getPassword())) {
             throw new InvalidRequestException("Invalid credentials");
         }
 
+        // Account status check
         if (user.getStatus() != UserStatus.ACTIVE) {
             log.warn("Inactive account login attempt: {}", user.getEmail());
             throw new InvalidRequestException(ErrorMessages.ACCOUNT_NOT_ACTIVE);
         }
 
+        // Delete old refresh tokens
         refreshTokenRepository.deleteByUser(user);
-        refreshTokenRepository.flush();
+        // refreshTokenRepository.flush();
 
+        // Generate access token
         String accessToken = jwtUtil.generateAccessToken(
-                user.getEmail(), user.getRole().name());
+                user.getEmail(),
+                user.getRole().name());
 
+        // Generate refresh token
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setToken(UUID.randomUUID().toString());
         refreshToken.setUser(user);
@@ -130,6 +121,7 @@ public class AuthServiceImpl implements AuthService {
 
         log.info("Login successful for: {}", user.getEmail());
 
+        // Response build
         LoginResponseDTO response = new LoginResponseDTO();
         response.setAccessToken(accessToken);
         response.setRefreshToken(refreshToken.getToken());

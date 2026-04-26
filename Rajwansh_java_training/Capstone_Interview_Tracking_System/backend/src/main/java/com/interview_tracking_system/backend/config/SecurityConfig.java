@@ -66,20 +66,13 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
 
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/candidates/register").permitAll()
-                        .requestMatchers("/api/candidates/login").permitAll()
+                        .requestMatchers("/api/v1/panel/activate").permitAll()
 
-                        // .requestMatchers("/api/candidates/**")
-                        // .hasAuthority("CANDIDATE")
-
-                        .requestMatchers("/api/candidates/apply")
-                        .hasRole("CANDIDATE")
-
-                        .requestMatchers("/api/hr/**").permitAll()
+                        .requestMatchers("/api/hr/**").hasRole("HR")
                         .requestMatchers("/api/panel/**").hasRole("PANEL")
+                        .requestMatchers("/api/candidates/**").hasRole("CANDIDATE")
 
                         .anyRequest().authenticated())
-                .authenticationProvider(authenticationProvider())
 
                 /* Add JWT filter before username/password authentication */
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
