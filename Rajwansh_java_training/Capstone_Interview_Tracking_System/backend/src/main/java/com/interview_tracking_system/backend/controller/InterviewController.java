@@ -7,7 +7,14 @@ import com.interview_tracking_system.backend.service.InterviewService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import com.interview_tracking_system.backend.dto.PanelInterviewDTO;
 
 import java.util.List;
 
@@ -79,7 +86,7 @@ public class InterviewController {
      * @return list of interview ids
      */
     @GetMapping("/panel/{panelId}")
-    public List<Long> getPanelInterviews(@PathVariable final Long panelId) {
+    public List<PanelInterviewDTO> getPanelInterviews(@PathVariable final Long panelId) {
 
         LOGGER.info("Fetching panel interviews for panel {}", panelId);
 

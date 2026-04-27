@@ -28,12 +28,12 @@ public class PanelInterviewDTO {
     /**
      * Candidate total experience.
      */
-    private Integer totalExperience;
+    private Double totalExperience;
 
     /**
      * Candidate relevant experience.
      */
-    private Integer relevantExperience;
+    private Double relevantExperience;
 
     /**
      * Current candidate organization.
@@ -107,19 +107,19 @@ public class PanelInterviewDTO {
         this.candidateMobileNumber = candidateMobileNumber;
     }
 
-    public Integer getTotalExperience() {
+    public Double getTotalExperience() {
         return totalExperience;
     }
 
-    public void setTotalExperience(final Integer totalExperience) {
+    public void setTotalExperience(final Double totalExperience) {
         this.totalExperience = totalExperience;
     }
 
-    public Integer getRelevantExperience() {
+    public Double getRelevantExperience() {
         return relevantExperience;
     }
 
-    public void setRelevantExperience(final Integer relevantExperience) {
+    public void setRelevantExperience(final Double relevantExperience) {
         this.relevantExperience = relevantExperience;
     }
 

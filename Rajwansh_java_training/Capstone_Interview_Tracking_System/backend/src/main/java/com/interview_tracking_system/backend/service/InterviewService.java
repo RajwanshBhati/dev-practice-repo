@@ -1,5 +1,6 @@
 package com.interview_tracking_system.backend.service;
 
+import com.interview_tracking_system.backend.dto.PanelInterviewDTO;
 import com.interview_tracking_system.backend.dto.ScheduleInterviewRequestDTO;
 import com.interview_tracking_system.backend.dto.SubmitFeedbackRequestDTO;
 import com.interview_tracking_system.backend.dto.UpdateCandidateStatusDTO;
@@ -34,18 +35,18 @@ public interface InterviewService {
     void submitFeedback(Long panelId, SubmitFeedbackRequestDTO request);
 
     /**
-     * Fetch interviews assigned to a panel.
-     *
-     * @param panelId panel id
-     * @return list of interview ids (or simple response)
-     */
-    List<Long> getPanelInterviews(Long panelId);
-
-    /**
      * Fetch interview details for a candidate.
      *
      * @param candidateId candidate id
      * @return list of interview ids (or simple response)
      */
     List<Long> getCandidateInterviews(Long candidateId);
+
+    /**
+     * Fetches all interviews assigned to a panel member.
+     *
+     * @param panelId panel user id
+     * @return list of panel interview DTO
+     */
+    List<PanelInterviewDTO> getPanelInterviews(Long panelId);
 }

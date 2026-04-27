@@ -1,5 +1,6 @@
 package com.interview_tracking_system.backend.service.impl;
 
+import com.interview_tracking_system.backend.dto.PanelInterviewDTO;
 import com.interview_tracking_system.backend.dto.ScheduleInterviewRequestDTO;
 import com.interview_tracking_system.backend.dto.SubmitFeedbackRequestDTO;
 import com.interview_tracking_system.backend.dto.UpdateCandidateStatusDTO;
@@ -40,10 +41,9 @@ public class InterviewServiceImpl implements InterviewService {
     private final CandidateRepository candidateRepository;
     private final InterviewRepository interviewRepository;
     private final InterviewPanelRepository interviewPanelRepository;
-    private final PanelRepository panelRepository;
+    private final UserRepository userRepository;
     private final FeedbackRepository feedbackRepository;
     private final EmailService emailService;
-    private final UserRepository userRepository;
 
     /**
      * Creates interview workflow service with required repositories and email
@@ -66,10 +66,9 @@ public class InterviewServiceImpl implements InterviewService {
         this.candidateRepository = candidateRepository;
         this.interviewRepository = interviewRepository;
         this.interviewPanelRepository = interviewPanelRepository;
-        this.panelRepository = panelRepository;
+        this.userRepository = userRepository;
         this.feedbackRepository = feedbackRepository;
         this.emailService = emailService;
-        this.userRepository = userRepository;
     }
 
     /**
@@ -197,7 +196,7 @@ public class InterviewServiceImpl implements InterviewService {
         interviewRepository.findById(request.getInterviewId())
                 .orElseThrow(() -> new RuntimeException("Interview not found"));
 
-        panelRepository.findById(panelId)
+        userRepository.findById(panelId)
                 .orElseThrow(() -> new RuntimeException("Panel not found"));
 
         Feedback feedback = new Feedback();
@@ -221,17 +220,54 @@ public class InterviewServiceImpl implements InterviewService {
      * @return interview id list
      */
     @Override
-    public List<Long> getPanelInterviews(final Long panelId) {
+    public List<PanelInterviewDTO> getPanelInterviews(final Long panelId) {
+
+        LOGGER.info("Fetching interviews for panel id {}", panelId);
 
         List<InterviewPanel> mappings = interviewPanelRepository.findByPanelId(panelId);
 
-        List<Long> interviewIds = new ArrayList<>();
+        List<PanelInterviewDTO> response = new ArrayList<>();
 
         for (InterviewPanel mapping : mappings) {
-            interviewIds.add(mapping.getInterviewId());
+
+            Interview interview = interviewRepository.findById(mapping.getInterviewId())
+                    .orElseThrow(() -> new RuntimeException("Interview not found"));
+
+            Candidate candidate = candidateRepository.findById(interview.getCandidateId())
+                    .orElseThrow(() -> new RuntimeException("Candidate not found"));
+
+            PanelInterviewDTO dto = new PanelInterviewDTO();
+
+            dto.setInterviewId(interview.getId());
+
+            dto.setCandidateName(candidate.getName());
+            dto.setCandidateEmail(candidate.getEmail());
+            dto.setCandidateMobileNumber(candidate.getMobile());
+
+            dto.setTotalExperience(candidate.getTotalExp());
+            dto.setRelevantExperience(candidate.getRelevantExp());
+            dto.setCurrentCompany(candidate.getCurrentCompany());
+
+            dto.setJobTitle("-");
+
+            dto.setStage(interview.getStage().name());
+
+            dto.setInterviewDate(interview.getDate().toString());
+            dto.setInterviewTime(interview.getTime().toString());
+
+            dto.setFocusArea(interview.getFocusArea());
+            dto.setResumeUrl(candidate.getResumeUrl());
+
+            boolean alreadySubmitted = feedbackRepository
+                    .findByInterviewIdAndPanelId(interview.getId(), panelId)
+                    .isPresent();
+
+            dto.setFeedbackSubmitted(alreadySubmitted);
+
+            response.add(dto);
         }
 
-        return interviewIds;
+        return response;
     }
 
     /**
