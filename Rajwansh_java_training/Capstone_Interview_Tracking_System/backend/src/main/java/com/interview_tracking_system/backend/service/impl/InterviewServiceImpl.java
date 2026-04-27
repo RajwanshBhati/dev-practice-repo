@@ -1,5 +1,6 @@
 package com.interview_tracking_system.backend.service.impl;
 
+import com.interview_tracking_system.backend.dto.HRFeedbackDTO;
 import com.interview_tracking_system.backend.dto.PanelInterviewDTO;
 import com.interview_tracking_system.backend.dto.ScheduleInterviewRequestDTO;
 import com.interview_tracking_system.backend.dto.SubmitFeedbackRequestDTO;
@@ -288,5 +289,69 @@ public class InterviewServiceImpl implements InterviewService {
         }
 
         return interviewIds;
+    }
+
+    @Override
+    public List<HRFeedbackDTO> getFeedbackForCandidate(final Long candidateId) {
+
+        LOGGER.info("Fetching feedback for candidate {}", candidateId);
+
+        List<Interview> interviews = interviewRepository.findByCandidateId(candidateId);
+
+        List<HRFeedbackDTO> response = new ArrayList<>();
+
+        for (Interview interview : interviews) {
+
+            List<Feedback> feedbacks = feedbackRepository.findByInterviewId(interview.getId());
+
+            for (Feedback feedback : feedbacks) {
+
+                User panelUser = userRepository.findById(feedback.getPanelId())
+                        .orElse(null);
+
+                Candidate candidate = candidateRepository.findById(candidateId)
+                        .orElse(null);
+
+                if (candidate == null)
+                    continue;
+
+                HRFeedbackDTO dto = new HRFeedbackDTO();
+
+                dto.setFeedbackId(feedback.getId());
+                dto.setInterviewId(interview.getId());
+                dto.setCandidateId(candidateId);
+
+                dto.setCandidateName(candidate.getName());
+
+                dto.setPanelId(feedback.getPanelId());
+
+                dto.setPanelName(
+                        panelUser != null ? panelUser.getName() : "-");
+
+                dto.setPanelEmail(
+                        panelUser != null ? panelUser.getEmail() : "-");
+
+                dto.setStage(interview.getStage().name());
+
+                dto.setInterviewDate(
+                        interview.getDate() != null ? interview.getDate().toString() : "-");
+
+                dto.setInterviewTime(
+                        interview.getTime() != null ? interview.getTime().toString() : "-");
+
+                dto.setComments(feedback.getComments());
+                dto.setStrengths(feedback.getStrength());
+                dto.setWeaknesses(feedback.getWeakness());
+                dto.setRating(feedback.getRating());
+                dto.setDecision(
+                        feedback.getStatus() != null
+                                ? feedback.getStatus().name()
+                                : "-");
+
+                response.add(dto);
+            }
+        }
+
+        return response;
     }
 }

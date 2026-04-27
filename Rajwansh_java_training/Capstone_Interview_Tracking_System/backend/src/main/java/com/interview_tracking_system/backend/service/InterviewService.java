@@ -1,5 +1,6 @@
 package com.interview_tracking_system.backend.service;
 
+import com.interview_tracking_system.backend.dto.HRFeedbackDTO;
 import com.interview_tracking_system.backend.dto.PanelInterviewDTO;
 import com.interview_tracking_system.backend.dto.ScheduleInterviewRequestDTO;
 import com.interview_tracking_system.backend.dto.SubmitFeedbackRequestDTO;
@@ -49,4 +50,12 @@ public interface InterviewService {
      * @return list of panel interview DTO
      */
     List<PanelInterviewDTO> getPanelInterviews(Long panelId);
+
+    /**
+     * Fetch all feedbacks for a candidate (for HR view).
+     *
+     * @param candidateId candidate id
+     * @return list of feedback DTO
+     */
+    List<HRFeedbackDTO> getFeedbackForCandidate(Long candidateId);
 }
