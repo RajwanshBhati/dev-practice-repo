@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panel Dashboard</title>
+
+
+  <link rel="stylesheet" href="../styles/hr-interview.css" />
+
+
+
+</head>
+
+<body>
+
+
+  <section class="panel-section">
+
+    <div class="page-header">
+      <h1>Panel Dashboard</h1>
+      <p>Assigned Interviews</p>
+    </div>
+
+    <div class="table-wrapper">
+      <table class="jd-table">
+        <thead>
+          <tr>
+            <th>Candidate</th>
+            <th>Email</th>
+            <th>Mobile</th>
+            <th>Stage</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Focus Area</th>
+            <th>Resume</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody id="panel-table-body"></tbody>
+      </table>
+    </div>
+
+  </section>
+
+  <!-- Feedback Modal -->
+  <div id="feedback-modal" class="modal-overlay" style="display:none;">
+    <div class="modal-box">
+
+      <h2>Submit Feedback</h2>
+
+      <textarea id="feedback-comments" placeholder="Comments"></textarea>
+
+      <input type="text" id="feedback-strength" placeholder="Strengths"/>
+      <input type="text" id="feedback-weakness" placeholder="Weakness"/>
+
+      <select id="feedback-rating">
+        <option value="1">Rating: 1</option>
+        <option value="2">Rating: 2</option>
+        <option value="3">Rating: 3</option>
+        <option value="4">Rating: 4</option>
+        <option value="5">Rating: 5</option>
+      </select>
+
+      <select id="feedback-status">
+        <option value="SELECTED">Selected</option>
+        <option value="REJECTED">Rejected</option>
+      </select>
+
+      <button id="submit-feedback-btn">Submit</button>
+      <button onclick="closeFeedback()">Cancel</button>
+
+    </div>
+  </div>
+
+  <!-- JS -->
+  <script type="module" src="../scripts/pages/panel-main.js"></script>
+
+</body>
+</html>

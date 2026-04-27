@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import com.interview_tracking_system.backend.entity.User;
+import com.interview_tracking_system.backend.repository.UserRepository;
+import org.springframework.security.core.Authentication;
 
 import com.interview_tracking_system.backend.dto.PanelInterviewDTO;
 
@@ -28,14 +31,17 @@ public class InterviewController {
     private static final Logger LOGGER = LoggerFactory.getLogger(InterviewController.class);
 
     private final InterviewService interviewService;
+    private final UserRepository userRepository;
 
     /**
      * Constructor injection for interview service.
      *
      * @param interviewService service layer
      */
-    public InterviewController(final InterviewService interviewService) {
+    public InterviewController(final InterviewService interviewService, final UserRepository userRepository) {
         this.interviewService = interviewService;
+        this.userRepository = userRepository;
+
     }
 
     /**
@@ -70,13 +76,18 @@ public class InterviewController {
      * @param panelId panel id (from frontend/session)
      * @param request feedback request
      */
-    @PostMapping("/feedback/{panelId}")
-    public void submitFeedback(@PathVariable final Long panelId,
+    @PostMapping("/feedback")
+    public void submitFeedback(final Authentication authentication,
             @RequestBody final SubmitFeedbackRequestDTO request) {
 
-        LOGGER.info("Panel {} submitting feedback", panelId);
+        String email = authentication.getName();
 
-        interviewService.submitFeedback(panelId, request);
+        User panelUser = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Panel not found"));
+
+        LOGGER.info("Panel {} submitting feedback", panelUser.getId());
+
+        interviewService.submitFeedback(panelUser.getId(), request);
     }
 
     /**
