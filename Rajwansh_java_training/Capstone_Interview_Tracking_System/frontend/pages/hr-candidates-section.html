@@ -13,10 +13,6 @@
 
 <section class="candidate-section">
 
-  <!--
-    This section shows all candidates who applied for any JD.
-    HR will review candidate profile details from here.
-  -->
   <div class="page-header">
     <div class="page-header-left">
       <h1>Candidates</h1>
@@ -24,9 +20,6 @@
     </div>
   </div>
 
-  <!--
-    Filters for quick search and stage selection.
-  -->
   <div class="filter-bar">
     <div class="search-wrapper">
       <input
@@ -70,17 +63,15 @@
       <tbody id="hr-candidate-table-body"></tbody>
     </table>
 
-    <!-- Modal -->
+    <!-- Schedule Modal -->
     <div class="modal-overlay" id="schedule-modal" style="display: none;">
       <div class="modal-box">
-
         <div class="modal-header">
           <h2>Schedule Interview</h2>
           <button type="button" id="schedule-modal-close">×</button>
         </div>
 
         <div class="modal-body">
-
           <input type="hidden" id="schedule-candidate-id" />
           <input type="hidden" id="schedule-stage" />
 
@@ -96,18 +87,23 @@
           <small>Select minimum 1 and maximum 2 panel members.</small>
 
           <label>Focus Areas</label>
-          <textarea
-            id="focus-areas"
-            rows="4"
-            placeholder="Example: Java, Spring Boot, SQL, problem solving"
-          ></textarea>
-
+          <textarea id="focus-areas" rows="4"></textarea>
         </div>
 
         <div class="modal-footer">
           <button type="button" id="schedule-cancel-btn">Cancel</button>
           <button type="button" id="schedule-submit-btn">Schedule</button>
         </div>
+      </div>
+    </div>
+    <div id="hr-feedback-modal" class="modal-overlay" style="display:none;">
+      <div class="modal-box">
+
+        <h2>Panel Feedback</h2>
+
+        <div id="hr-feedback-content"></div>
+
+        <button onclick="closeHRFeedback()">Close</button>
 
       </div>
     </div>
@@ -127,6 +123,9 @@
   </div>
 
 </section>
+
+<!-- JS -->
+<script type="module" src="../scripts/pages/hr-main.js"></script>
 
 </body>
 </html>

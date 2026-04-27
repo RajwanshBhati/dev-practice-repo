@@ -85,6 +85,10 @@ export function renderCandidateTable(candidates) {
         <button class="action-btn select-btn" data-id="${candidateId}">
           Select
         </button>
+
+        <button class="action-btn feedback-btn" data-id="${candidate.id}">
+      Feedback
+    </button>
       </div>
     </td>
   `;

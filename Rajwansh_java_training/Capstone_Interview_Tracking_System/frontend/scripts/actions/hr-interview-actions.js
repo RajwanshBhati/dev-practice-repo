@@ -9,6 +9,7 @@ import {
   applyCandidateFilters,
   showCandidateMessage,
 } from "../ui/hr-interview-ui.js";
+import { handleFeedbackClick } from "./hr-feedback-actions.js";
 
 let scheduleEventsAttached = false;
 
@@ -93,6 +94,11 @@ export function attachCandidateActions(reloadCandidates) {
 
     if (event.target.classList.contains("select-btn")) {
       await handleFinalSelect(candidateId, reloadCandidates);
+    }
+
+    if (event.target.classList.contains("feedback-btn")) {
+      const candidateId = event.target.dataset.id;
+      handleFeedbackClick(candidateId);
     }
   });
 }
@@ -231,3 +237,8 @@ function closeScheduleModal() {
   document.getElementById("focus-areas").value = "";
   document.getElementById("panel-select").innerHTML = "";
 }
+
+function closeHRFeedback() {
+  document.getElementById("hr-feedback-modal").style.display = "none";
+}
+window.closeHRFeedback = closeHRFeedback;

@@ -91,7 +91,6 @@ async function loadCandidatePage() {
   script.onload = () => {
     console.log("Candidate script loaded");
 
-    // IMPORTANT: manually call init
     initHrCandidateSection();
   };
 
@@ -216,7 +215,6 @@ async function handleLogout() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Auth guard
   const token = localStorage.getItem("accessToken");
   const role = localStorage.getItem("role");
   if (!token || role?.toLowerCase() !== "hr") {
@@ -239,8 +237,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Load data JD
   loadJDs();
-
-  // Skill input init
   initSkillInput();
 
   document.getElementById("create-jd-btn")?.addEventListener("click", () => {
