@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HR Candidates</title>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="../styles/hr-interview.css" />
+</head>
+
+<body>
+
+<section class="candidate-section">
+
+  <!--
+    This section shows all candidates who applied for any JD.
+    HR will review candidate profile details from here.
+  -->
+  <div class="page-header">
+    <div class="page-header-left">
+      <h1>Candidates</h1>
+      <p>Review candidate applications and manage interview rounds</p>
+    </div>
+  </div>
+
+  <!--
+    Filters for quick search and stage selection.
+  -->
+  <div class="filter-bar">
+    <div class="search-wrapper">
+      <input
+        type="text"
+        id="candidate-search-input"
+        placeholder="Search by name, email, company or JD"
+      />
+    </div>
+
+    <select id="candidate-stage-filter" class="filter-select">
+      <option value="">All Stages</option>
+      <option value="PROFILING">Profiling</option>
+      <option value="SCREENING">Screening</option>
+      <option value="L1_TECHNICAL">L1 Technical</option>
+      <option value="L2_TECHNICAL">L2 Technical</option>
+      <option value="HR_ROUND">HR Round</option>
+      <option value="REJECTED">Rejected</option>
+      <option value="SELECTED">Selected</option>
+    </select>
+  </div>
+
+  <!-- Candidate Table -->
+  <div class="table-wrapper">
+    <table class="jd-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Mobile</th>
+          <th>JD Applied</th>
+          <th>Experience</th>
+          <th>Company</th>
+          <th>CTC</th>
+          <th>Location</th>
+          <th>Status</th>
+          <th>Resume</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody id="hr-candidate-table-body"></tbody>
+    </table>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="schedule-modal" style="display: none;">
+      <div class="modal-box">
+
+        <div class="modal-header">
+          <h2>Schedule Interview</h2>
+          <button type="button" id="schedule-modal-close">×</button>
+        </div>
+
+        <div class="modal-body">
+
+          <input type="hidden" id="schedule-candidate-id" />
+          <input type="hidden" id="schedule-stage" />
+
+          <label>Interview Date</label>
+          <input type="date" id="interview-date" />
+
+          <label>Interview Time</label>
+          <input type="time" id="interview-time" />
+
+          <label>Select Panel Members</label>
+          <select id="panel-select" multiple></select>
+
+          <small>Select minimum 1 and maximum 2 panel members.</small>
+
+          <label>Focus Areas</label>
+          <textarea
+            id="focus-areas"
+            rows="4"
+            placeholder="Example: Java, Spring Boot, SQL, problem solving"
+          ></textarea>
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" id="schedule-cancel-btn">Cancel</button>
+          <button type="button" id="schedule-submit-btn">Schedule</button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Empty state -->
+    <div class="empty-state" id="candidate-empty-state" style="display:none;">
+      <h3>No candidates found</h3>
+      <p>Candidate applications will appear here after they apply for a JD.</p>
+    </div>
+
+    <!-- Loader -->
+    <div class="table-loader" id="candidate-table-loader">
+      <div class="spinner-standalone"></div>
+      <p>Loading candidates...</p>
+    </div>
+
+  </div>
+
+</section>
+
+</body>
+</html>

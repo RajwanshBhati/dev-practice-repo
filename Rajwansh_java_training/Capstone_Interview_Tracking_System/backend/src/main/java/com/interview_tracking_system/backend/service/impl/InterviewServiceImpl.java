@@ -7,7 +7,6 @@ import com.interview_tracking_system.backend.entity.Candidate;
 import com.interview_tracking_system.backend.entity.Feedback;
 import com.interview_tracking_system.backend.entity.Interview;
 import com.interview_tracking_system.backend.entity.InterviewPanel;
-import com.interview_tracking_system.backend.entity.Panel;
 import com.interview_tracking_system.backend.enums.FeedbackStatus;
 import com.interview_tracking_system.backend.enums.Stage;
 import com.interview_tracking_system.backend.repository.CandidateRepository;
@@ -17,6 +16,8 @@ import com.interview_tracking_system.backend.repository.InterviewRepository;
 import com.interview_tracking_system.backend.repository.PanelRepository;
 import com.interview_tracking_system.backend.service.EmailService;
 import com.interview_tracking_system.backend.service.InterviewService;
+import com.interview_tracking_system.backend.entity.User;
+import com.interview_tracking_system.backend.repository.UserRepository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +43,7 @@ public class InterviewServiceImpl implements InterviewService {
     private final PanelRepository panelRepository;
     private final FeedbackRepository feedbackRepository;
     private final EmailService emailService;
+    private final UserRepository userRepository;
 
     /**
      * Creates interview workflow service with required repositories and email
@@ -59,13 +61,15 @@ public class InterviewServiceImpl implements InterviewService {
             final InterviewPanelRepository interviewPanelRepository,
             final PanelRepository panelRepository,
             final FeedbackRepository feedbackRepository,
-            final EmailService emailService) {
+            final EmailService emailService,
+            final UserRepository userRepository) {
         this.candidateRepository = candidateRepository;
         this.interviewRepository = interviewRepository;
         this.interviewPanelRepository = interviewPanelRepository;
         this.panelRepository = panelRepository;
         this.feedbackRepository = feedbackRepository;
         this.emailService = emailService;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -98,17 +102,17 @@ public class InterviewServiceImpl implements InterviewService {
 
         Interview savedInterview = interviewRepository.save(interview);
 
-        List<Panel> selectedPanels = new ArrayList<>();
+        List<User> selectedPanels = new ArrayList<>();
 
         for (Long panelId : panelIds) {
-            Panel panel = panelRepository.findById(panelId)
+            User panelUser = userRepository.findById(panelId)
                     .orElseThrow(() -> new RuntimeException("Panel not found"));
 
-            selectedPanels.add(panel);
+            selectedPanels.add(panelUser);
 
             InterviewPanel interviewPanel = new InterviewPanel();
             interviewPanel.setInterviewId(savedInterview.getId());
-            interviewPanel.setPanelId(panel.getId());
+            interviewPanel.setPanelId(panelUser.getId());
 
             interviewPanelRepository.save(interviewPanel);
         }
@@ -125,10 +129,10 @@ public class InterviewServiceImpl implements InterviewService {
                 stage.name(),
                 formattedDateTime);
 
-        for (Panel panel : selectedPanels) {
+        for (User panelUser : selectedPanels) {
             emailService.sendPanelInterviewAssignmentEmail(
-                    panel.getEmail(),
-                    panel.getFullName(),
+                    panelUser.getEmail(),
+                    panelUser.getName(),
                     candidate.getName(),
                     stage.name(),
                     formattedDateTime);
@@ -147,17 +151,26 @@ public class InterviewServiceImpl implements InterviewService {
 
         LOGGER.info("Updating candidate status for id {}", request.getCandidateId());
 
+        if (request.getCandidateId() == null) {
+            throw new RuntimeException("Candidate id is required");
+        }
+
         Candidate candidate = candidateRepository.findById(request.getCandidateId())
                 .orElseThrow(() -> new RuntimeException("Candidate not found"));
 
-        if (request.getDecision() != null && !request.getDecision().isBlank()) {
-            Stage decision = Stage.valueOf(request.getDecision());
-            candidate.setStatus(decision);
-        } else if (request.getStage() != null && !request.getStage().isBlank()) {
-            Stage stage = Stage.valueOf(request.getStage());
-            candidate.setStatus(stage);
+        String statusValue = request.getDecision();
+
+        if (statusValue == null || statusValue.isBlank()) {
+            statusValue = request.getStage();
         }
 
+        if (statusValue == null || statusValue.isBlank()) {
+            throw new RuntimeException("Candidate status is required");
+        }
+
+        Stage status = Stage.valueOf(statusValue.trim().toUpperCase());
+
+        candidate.setStatus(status);
         candidateRepository.save(candidate);
 
         LOGGER.info("Candidate status updated for id {}", candidate.getId());

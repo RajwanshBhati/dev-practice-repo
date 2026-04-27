@@ -132,6 +132,7 @@ public class PanelServiceImpl implements PanelService {
 
         for (User u : panels) {
             PanelCreateRequest dto = new PanelCreateRequest();
+            dto.setId(u.getId());
             dto.setFullName(u.getName());
             dto.setEmail(u.getEmail());
             dto.setMobile(u.getMobile());

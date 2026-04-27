@@ -23,6 +23,7 @@ import {
   setDeleteLoading,
 } from "./jd/modal.js";
 import { showAlert } from "./jd/utils.js";
+import { initHrCandidateSection } from "../scripts/pages/hr-candidate-main.js";
 
 // here i defined states
 let allJDs = [];
@@ -38,6 +39,10 @@ document.querySelectorAll(".nav-item").forEach((item) => {
 
     if (page === "panel") {
       loadPanelPage();
+    }
+
+    if (page === "candidates") {
+      loadCandidatePage();
     }
   });
 });
@@ -66,6 +71,33 @@ async function loadPanelPage() {
 
   document.body.appendChild(script);
 }
+
+async function loadCandidatePage() {
+  const res = await fetch("./hr-candidates-section.html");
+  const html = await res.text();
+
+  mainContent.innerHTML = html;
+
+  // remove old script
+  const oldScript = document.getElementById("candidate-script");
+  if (oldScript) oldScript.remove();
+
+  // inject new script
+  const script = document.createElement("script");
+  script.type = "module";
+  script.src = "../scripts/pages/hr-candidate-main.js";
+  script.id = "candidate-script";
+
+  script.onload = () => {
+    console.log("Candidate script loaded");
+
+    // IMPORTANT: manually call init
+    initHrCandidateSection();
+  };
+
+  document.body.appendChild(script);
+}
+
 // Load JD
 async function loadJDs() {
   showTableLoader();

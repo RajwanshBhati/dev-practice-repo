@@ -9,7 +9,15 @@ function authHeaders() {
 }
 
 export async function fetchAllJDs() {
-  const res = await fetch(`${API_BASE}/hr/jd`, { headers: authHeaders() });
+  const res = await fetch(`${API_BASE}/hr/jd`, {
+    method: "GET",
+    headers: authHeaders(),
+  });
+
+  if (!res.ok) {
+    throw new Error(`Failed to load JDs. Status: ${res.status}`);
+  }
+
   return res.json();
 }
 

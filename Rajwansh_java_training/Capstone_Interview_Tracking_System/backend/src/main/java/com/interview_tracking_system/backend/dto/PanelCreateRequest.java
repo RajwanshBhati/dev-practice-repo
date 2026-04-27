@@ -3,6 +3,11 @@ package com.interview_tracking_system.backend.dto;
 public class PanelCreateRequest {
 
     /**
+     * Unique id of panel member.
+     */
+    private Long id;
+
+    /**
      * Full name of the panel member being registered. Must not be null or blank.
      */
     private String fullName;
@@ -20,6 +25,24 @@ public class PanelCreateRequest {
 
     /** Job designation or title of the panel member. Optional. */
     private String designation;
+
+    /**
+     * Returns panel id.
+     *
+     * @return panel id
+     */
+    public Long getId() {
+        return id;
+    }
+
+    /**
+     * Sets panel id.
+     *
+     * @param id panel id
+     */
+    public void setId(final Long id) {
+        this.id = id;
+    }
 
     /**
      * Returns the full name of the panel member.

@@ -6,6 +6,8 @@ package com.interview_tracking_system.backend.dto;
  */
 public class HRCandidateFullDTO {
 
+    private Long id;
+
     private String name;
     private String email;
     private String mobileNumber;
@@ -23,6 +25,20 @@ public class HRCandidateFullDTO {
 
     private String jobTitle;
     private String status;
+
+    /**
+     * Returns candidate id.
+     */
+    public Long getId() {
+        return id;
+    }
+
+    /**
+     * Sets candidate id.
+     */
+    public void setId(final Long id) {
+        this.id = id;
+    }
 
     /**
      * Returns candidate name.

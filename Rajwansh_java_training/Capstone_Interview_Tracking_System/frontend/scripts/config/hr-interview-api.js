@@ -1,19 +1,19 @@
 /**
- * API endpoints used by HR interview workflow.
+ * API endpoints used in HR candidate workflow.
  */
-export const HR_INTERVIEW_API = {
+export const HR_CANDIDATE_API = {
   candidates: "http://localhost:8080/api/hr/candidates",
-  panels: "http://localhost:8080/api/v1/panel/all",
+  panels: "http://localhost:8080/api/v1/panel/list",
   scheduleInterview: "http://localhost:8080/api/interview/schedule",
   updateCandidateStatus: "http://localhost:8080/api/interview/status",
 };
 
 /**
- * Returns authorization headers for protected HR APIs.
+ * Returns headers required for HR protected APIs.
  *
- * @returns {Object} headers with JWT token
+ * @returns {Object} request headers
  */
-export function getHrAuthHeaders() {
+export function getHrCandidateHeaders() {
   return {
     "Content-Type": "application/json",
     Authorization: "Bearer " + localStorage.getItem("accessToken"),

@@ -25,14 +25,6 @@ public interface InterviewRepository extends JpaRepository<Interview, Long> {
     List<Interview> findByCandidateId(Long candidateId);
 
     /**
-     * Fetch interviews by panel id.
-     *
-     * @param panelId panel id
-     * @return list of interviews
-     */
-    List<Interview> findByPanelId(Long panelId);
-
-    /**
      * Fetch interviews by stage (L1 / L2).
      *
      * @param stage stage

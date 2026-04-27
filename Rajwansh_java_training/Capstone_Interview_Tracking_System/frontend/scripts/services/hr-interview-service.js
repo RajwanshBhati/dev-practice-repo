@@ -1,68 +1,74 @@
 import {
-  HR_INTERVIEW_API,
-  getHrAuthHeaders,
+  HR_CANDIDATE_API,
+  getHrCandidateHeaders,
 } from "../config/hr-interview-api.js";
 
 /**
- * Fetches all candidates for HR dashboard.
+ * Fetch all candidates applied for JDs.
  */
-export async function fetchHrCandidates() {
-  const response = await fetch(HR_INTERVIEW_API.candidates, {
+export async function getAllCandidates() {
+  const response = await fetch(HR_CANDIDATE_API.candidates, {
     method: "GET",
-    headers: getHrAuthHeaders(),
+    headers: getHrCandidateHeaders(),
   });
 
   if (!response.ok) {
-    throw new Error("Unable to load candidates");
+    throw new Error("Failed to load candidates");
   }
 
   return response.json();
 }
 
 /**
- * Fetches panel members for interview assignment.
- *
- * @returns {Promise<Array>} panel list
+ * Fetch all available panel members.
  */
-export async function fetchPanelMembers() {
-  const response = await fetch(HR_INTERVIEW_API.panels, {
+export async function getAllPanels() {
+  const response = await fetch(HR_CANDIDATE_API.panels, {
     method: "GET",
-    headers: getHrAuthHeaders(),
+    headers: getHrCandidateHeaders(),
   });
 
   if (!response.ok) {
-    throw new Error("Unable to load panel members");
+    throw new Error("Failed to load panels");
   }
 
   return response.json();
 }
 
 /**
- * Sends interview schedule details to backend.
+ * Update candidate status (Reject / Stage change).
  */
-export async function scheduleInterview(payload) {
-  const response = await fetch(HR_INTERVIEW_API.scheduleInterview, {
+export async function changeCandidateStatus(payload) {
+  console.log("Status payload:", payload);
+
+  const response = await fetch(HR_CANDIDATE_API.updateCandidateStatus, {
     method: "POST",
-    headers: getHrAuthHeaders(),
+    headers: getHrCandidateHeaders(),
     body: JSON.stringify(payload),
   });
 
   if (!response.ok) {
-    throw new Error("Unable to schedule interview");
+    const errorText = await response.text();
+    console.error("Status API failed:", response.status, errorText);
+    throw new Error("Failed to update status");
   }
 }
 
 /**
- * Updates candidate stage or final decision.
+ * Schedule interview for candidate.
  */
-export async function updateCandidateStatus(payload) {
-  const response = await fetch(HR_INTERVIEW_API.updateCandidateStatus, {
+export async function createInterviewSchedule(payload) {
+  console.log("Schedule payload:", payload);
+
+  const response = await fetch(HR_CANDIDATE_API.scheduleInterview, {
     method: "POST",
-    headers: getHrAuthHeaders(),
+    headers: getHrCandidateHeaders(),
     body: JSON.stringify(payload),
   });
 
   if (!response.ok) {
-    throw new Error("Unable to update candidate status");
+    const errorText = await response.text();
+    console.error("Schedule API failed:", response.status, errorText);
+    throw new Error("Failed to schedule interview");
   }
 }

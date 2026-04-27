@@ -1,0 +1,9 @@
+#panel-select {
+  width: 100%;
+  min-height: 120px;
+  font-size: 14px;
+}
+
+#panel-select option {
+  white-space: normal;
+}
