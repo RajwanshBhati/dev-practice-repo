@@ -1,6 +1,7 @@
 package com.interview_tracking_system.backend.service.impl;
 
 import com.interview_tracking_system.backend.service.EmailService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.SimpleMailMessage;
@@ -8,69 +9,124 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 /**
- * Implementation of EmailService for sending email notifications.
+ * Handles all email related operations.
  */
 @Service
 public class EmailServiceImpl implements EmailService {
 
-    /** Logger for this class. */
     private static final Logger LOGGER = LoggerFactory.getLogger(EmailServiceImpl.class);
 
-    /** Subject for profiling completed email. */
-    private static final String PROFILING_SUBJECT = "Application Received - Profiling Completed";
-
-    /** Body template for profiling completed email. */
-    private static final String PROFILING_BODY_TEMPLATE = "Dear %s,\n\nYour application has been successfully submitted."
-            + "\nYour profiling is now marked as Completed."
-            + "\nOur HR team will review your profile and get back to you.\n\nRegards,\nHR Team";
-
-    /** The mail sender instance. */
     private final JavaMailSender mailSender;
 
     /**
-     * Constructs EmailServiceImpl with required dependencies.
+     * Constructor injection for mail sender.
      *
-     * @param sender the JavaMailSender to use
+     * @param mailSender spring mail sender
      */
-    public EmailServiceImpl(final JavaMailSender sender) {
-        this.mailSender = sender;
+    public EmailServiceImpl(final JavaMailSender mailSender) {
+        this.mailSender = mailSender;
     }
 
     /**
-     * {@inheritDoc}
+     * Sends profiling completion email.
      */
     @Override
     public void sendProfilingCompletedEmail(final String toEmail, final String candidateName) {
-        LOGGER.info("Sending profiling completed email to: {}", toEmail);
-        final SimpleMailMessage message = new SimpleMailMessage();
+
+        SimpleMailMessage message = new SimpleMailMessage();
+
         message.setTo(toEmail);
-        message.setSubject(PROFILING_SUBJECT);
-        message.setText(String.format(PROFILING_BODY_TEMPLATE, candidateName));
+        message.setSubject("Profile Submitted Successfully");
+
+        message.setText(
+                "Hi " + candidateName + ",\n\n"
+                        + "Your profile has been successfully submitted.\n"
+                        + "Our HR team will review your application soon.\n\n"
+                        + "Thanks,\nRecruitment Team");
+
         mailSender.send(message);
-        LOGGER.info("Profiling completed email sent successfully to: {}", toEmail);
+
+        LOGGER.info("Profiling email sent to {}", toEmail);
     }
 
+    /**
+     * Sends panel activation email.
+     */
     @Override
     public void sendPanelActivationEmail(final String toEmail,
             final String fullName,
             final String activationLink) {
 
-        LOGGER.info("Sending panel activation email to: {}", toEmail);
+        SimpleMailMessage message = new SimpleMailMessage();
 
-        final SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(toEmail);
         message.setSubject("Panel Account Activation");
 
         message.setText(
-                "Hi " + fullName + ",\n\n" +
-                        "Your panel account has been created.\n" +
-                        "Please activate using the link below:\n\n" +
-                        activationLink + "\n\n" +
-                        "Link valid for 24 hours.\n\n" +
-                        "Regards,\nHR Team");
+                "Hi " + fullName + ",\n\n"
+                        + "You have been added as a panel member.\n"
+                        + "Please activate your account using the link below:\n\n"
+                        + activationLink + "\n\n"
+                        + "Thanks,\nRecruitment Team");
 
         mailSender.send(message);
 
-        LOGGER.info("Panel activation email sent successfully to: {}", toEmail);
+        LOGGER.info("Panel activation mail sent to {}", toEmail);
+    }
+
+    /**
+     * Sends interview schedule mail to candidate.
+     */
+    @Override
+    public void sendCandidateInterviewScheduleEmail(final String toEmail,
+            final String candidateName,
+            final String stage,
+            final String interviewDateTime) {
+
+        SimpleMailMessage message = new SimpleMailMessage();
+
+        message.setTo(toEmail);
+        message.setSubject("Interview Scheduled");
+
+        message.setText(
+                "Hi " + candidateName + ",\n\n"
+                        + "Your interview has been scheduled.\n\n"
+                        + "Stage: " + stage + "\n"
+                        + "Date & Time: " + interviewDateTime + "\n\n"
+                        + "Please be available on time.\n\n"
+                        + "Best of luck!\nRecruitment Team");
+
+        mailSender.send(message);
+
+        LOGGER.info("Interview mail sent to candidate {}", toEmail);
+    }
+
+    /**
+     * Sends interview assignment mail to panel.
+     */
+    @Override
+    public void sendPanelInterviewAssignmentEmail(final String toEmail,
+            final String panelName,
+            final String candidateName,
+            final String stage,
+            final String interviewDateTime) {
+
+        SimpleMailMessage message = new SimpleMailMessage();
+
+        message.setTo(toEmail);
+        message.setSubject("Interview Assigned");
+
+        message.setText(
+                "Hi " + panelName + ",\n\n"
+                        + "You have been assigned an interview.\n\n"
+                        + "Candidate: " + candidateName + "\n"
+                        + "Stage: " + stage + "\n"
+                        + "Date & Time: " + interviewDateTime + "\n\n"
+                        + "Please review candidate details before interview.\n\n"
+                        + "Thanks,\nRecruitment Team");
+
+        mailSender.send(message);
+
+        LOGGER.info("Interview assignment mail sent to panel {}", toEmail);
     }
 }
