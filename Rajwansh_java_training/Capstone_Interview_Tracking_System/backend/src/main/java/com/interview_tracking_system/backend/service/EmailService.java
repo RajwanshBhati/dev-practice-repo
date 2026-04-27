@@ -21,4 +21,32 @@ public interface EmailService {
      * @param activationLink activation URL
      */
     void sendPanelActivationEmail(String toEmail, String fullName, String activationLink);
+
+    /**
+     * Sends interview schedule email to candidate.
+     *
+     * @param toEmail           candidate email
+     * @param candidateName     candidate name
+     * @param stage             interview stage
+     * @param interviewDateTime scheduled interview date and time
+     */
+    void sendCandidateInterviewScheduleEmail(String toEmail,
+            String candidateName,
+            String stage,
+            String interviewDateTime);
+
+    /**
+     * Sends interview assignment email to panel member.
+     *
+     * @param toEmail           panel email
+     * @param panelName         panel full name
+     * @param candidateName     candidate name
+     * @param stage             interview stage
+     * @param interviewDateTime scheduled interview date and time
+     */
+    void sendPanelInterviewAssignmentEmail(String toEmail,
+            String panelName,
+            String candidateName,
+            String stage,
+            String interviewDateTime);
 }
