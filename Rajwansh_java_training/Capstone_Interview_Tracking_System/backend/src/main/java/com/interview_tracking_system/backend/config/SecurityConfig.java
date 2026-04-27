@@ -60,33 +60,59 @@ public class SecurityConfig {
                  */
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-                /**
-                 * Authorization rules:
-                 * - Public endpoints: /api/auth/**, OPTIONS requests, GET /api/jd
-                 */
                 .authorizeHttpRequests(auth -> auth
 
+                        /**
+                         * Authentication endpoints are public.
+                         * Users must be able to register and login without a token.
+                         */
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/v1/auth/**").permitAll()
+
+                        /**
+                         * Panel activation is triggered via email link.
+                         * At this point, panel users are not authenticated yet.
+                         */
                         .requestMatchers("/api/v1/panel/activate").permitAll()
 
-                        .requestMatchers(HttpMethod.POST, "/api/hr/jd").hasRole("HR")
-                        .requestMatchers(HttpMethod.PUT, "/api/hr/jd/**").hasRole("HR")
-                        .requestMatchers(HttpMethod.PATCH, "/api/hr/jd/**").hasRole("HR")
-                        .requestMatchers(HttpMethod.DELETE, "/api/hr/jd/**").hasRole("HR")
+                        /**
+                         * Panel creation is restricted to HR users.
+                         * Only HR should onboard panel members into the system.
+                         */
+                        .requestMatchers("/api/v1/panel/create").hasRole("HR")
 
-                        .requestMatchers(HttpMethod.GET, "/api/hr/jd/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/hr/jd").permitAll()
+                        /**
+                         * Interview scheduling and candidate status updates are controlled by HR.
+                         * This ensures the recruitment workflow is managed centrally.
+                         */
+                        .requestMatchers("/api/interview/schedule").hasRole("HR")
+                        .requestMatchers("/api/interview/status").hasRole("HR")
 
+                        /**
+                         * Panel users can only:
+                         * 1. View interviews assigned to them
+                         * 2. Submit feedback for those interviews
+                         * They should not have access to HR-level operations.
+                         */
+                        .requestMatchers("/api/interview/feedback/**").hasRole("PANEL")
+                        .requestMatchers("/api/interview/panel/**").hasRole("PANEL")
+
+                        /**
+                         * Candidates can only track their own interview progress and status.
+                         * They are not allowed to access feedback or administrative actions.
+                         */
+                        .requestMatchers("/api/interview/candidate/**").hasRole("CANDIDATE")
+
+                        /**
+                         * Existing role-based APIs for each module.
+                         */
                         .requestMatchers("/api/hr/**").hasRole("HR")
-                        .requestMatchers("/api/candidates/register").permitAll()
-                        .requestMatchers("/api/candidates/login").permitAll()
-                        .requestMatchers("/api/candidates/my-status").permitAll()
+                        .requestMatchers("/api/panel/**").hasRole("PANEL")
                         .requestMatchers("/api/candidates/**").hasRole("CANDIDATE")
 
-                        .requestMatchers("/api/v1/panel/create").hasRole("HR")
-                        .requestMatchers("/api/v1/panel/list").hasRole("HR")
-                        .requestMatchers("/api/v1/panel/interviews/**").hasRole("PANEL")
-
+                        /**
+                         * Any other request must be authenticated.
+                         */
                         .anyRequest().authenticated())
 
                 /* Add JWT filter before username/password authentication */
