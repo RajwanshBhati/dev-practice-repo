@@ -1,22 +1,42 @@
 package com.interview_tracking_system.backend.enums;
 
 /**
- * Represents different stages of an interview process.
+ * Represents the recruitment stage of a candidate.
  */
 public enum Stage {
 
-    /** Initial profiling of candidate. */
+    /**
+     * Candidate has submitted profile details and resume.
+     */
     PROFILING,
 
-    /** HR screening round. */
+    /**
+     * HR is reviewing the candidate before technical rounds.
+     */
     SCREENING,
 
-    /** First technical interview round (L1). */
+    /**
+     * Candidate is scheduled or moved to first technical round.
+     */
     L1_TECHNICAL,
 
-    /** Second technical interview round (L2). */
+    /**
+     * Candidate is scheduled or moved to second technical round.
+     */
     L2_TECHNICAL,
 
-    /** Final HR discussion round. */
-    HR_ROUND
+    /**
+     * Candidate is moved to the final HR discussion round.
+     */
+    HR_ROUND,
+
+    /**
+     * Candidate is rejected from the hiring process.
+     */
+    REJECTED,
+
+    /**
+     * Candidate is finally selected after all required rounds.
+     */
+    SELECTED
 }
