@@ -58,6 +58,10 @@ public final class ApiEndpoints {
 
     public static final String GETPANEL = "/interviews";
 
+    public static final String SHOWHR = "/api/hr";
+    public static final String SHOWCANDIDATE = "/candidates";
+    public static final String SHOWFEED = "/feedback";
+
     private ApiEndpoints() {
 
     }
