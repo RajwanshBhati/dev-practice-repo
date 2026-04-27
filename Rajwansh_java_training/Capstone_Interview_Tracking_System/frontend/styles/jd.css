@@ -1,13 +1,6 @@
-@import 'base/variables.css';
-@import 'base/reset.css';
-
-@import 'components/alert.css';
-@import 'components/button.css';
-@import 'components/badge.css';
-@import 'components/modal.css';
-@import 'components/spinner.css';
-
-@import 'layout/dashboard.css';
-@import 'layout/responsive.css';
-
-@import 'pages/jd-page.css';
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}

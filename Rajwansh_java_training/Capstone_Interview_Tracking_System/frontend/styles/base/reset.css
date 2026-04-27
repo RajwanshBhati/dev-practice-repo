@@ -11,6 +11,7 @@ body {
   height: 100%;
 }
 
+/* Base body styles  */
 body {
   font-family: var(--font);
   font-size: var(--font-size-base);
@@ -20,25 +21,34 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-button {
-  font-family: var(--font);
-}
-
+/* Form elements */
+button,
 input,
 textarea,
 select {
   font-family: var(--font);
 }
 
+/* Links */
 a {
   text-decoration: none;
   color: inherit;
 }
 
+/* Lists */
 ul,
 ol {
   list-style: none;
 }
 
-img { display: block; max-width: 100%; }
-svg { display: inline-block; }
+/* Media */
+img {
+  display: block;
+  max-width: 100%;
+}
+
+/* SVG */
+svg {
+  display: inline-block;
+  max-width: 100%;
+}

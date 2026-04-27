@@ -1,22 +1,20 @@
-.stats-row {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1rem;
-  margin-bottom: 20px;
-}
-
-.stat-card {
-  background: var(--card);
-  padding: 16px;
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-}
-
 .stat-value {
-  font-size: 22px;
-  font-weight: bold;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1;
 }
-
-.stat-value.green { color: var(--success); }
-.stat-value.red { color: var(--danger); }
-.stat-value.amber { color: var(--warning); }
+.stat-value.green {
+  color: var(--success);
+}
+.stat-value.amber {
+  color: var(--warning);
+}
+.stat-value.red {
+  color: var(--error);
+}
+.stat-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}

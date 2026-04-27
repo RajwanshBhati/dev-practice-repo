@@ -9,12 +9,7 @@
   padding: 1rem;
   animation: overlayFadeIn 0.2s ease;
 }
-
-@keyframes overlayFadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-
+/* Modal container */
 .modal {
   background: var(--white);
   border-radius: var(--radius-lg);
@@ -27,14 +22,11 @@
   animation: modalSlideIn 0.25s ease;
 }
 
-.modal-sm { max-width: 420px; }
 
-@keyframes modalSlideIn {
-  from { opacity: 0; transform: translateY(-20px) scale(0.97); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
+.modal-sm {
+  max-width: 420px;
 }
 
-/* Header */
 .modal-header {
   display: flex;
   align-items: center;
@@ -43,14 +35,11 @@
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
 }
-
 .modal-header h2 {
   font-size: 1.1rem;
   font-weight: 600;
   color: var(--text-primary);
-  letter-spacing: -0.01em;
 }
-
 .modal-close {
   width: 32px;
   height: 32px;
@@ -64,25 +53,20 @@
   color: var(--text-muted);
   transition: var(--transition);
 }
-
 .modal-close:hover {
   background: var(--border);
   color: var(--text-primary);
 }
-
 .modal-close svg {
   width: 16px;
   height: 16px;
+  pointer-events: none;
 }
-
-/* Body */
 .modal-body {
   padding: 1.5rem;
   overflow-y: auto;
   flex: 1;
 }
-
-/* Footer */
 .modal-footer {
   display: flex;
   align-items: center;
@@ -92,8 +76,6 @@
   border-top: 1px solid var(--border);
   flex-shrink: 0;
 }
-
-/* Delete confirm content */
 .delete-confirm-icon {
   width: 56px;
   height: 56px;
@@ -105,20 +87,17 @@
   justify-content: center;
   margin: 0 auto 1rem;
 }
-
 .delete-confirm-icon svg {
   width: 24px;
   height: 24px;
   stroke: var(--error);
 }
-
 .delete-confirm-text {
   text-align: center;
   font-size: 0.9rem;
   color: var(--text-secondary);
   line-height: 1.6;
 }
-
 .delete-confirm-text strong {
   color: var(--text-primary);
 }

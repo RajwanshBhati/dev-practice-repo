@@ -10,6 +10,6 @@
 @import 'layout/auth-layout.css';
 @import 'layout/responsive.css';
 
-@import 'pages/login.css';
-@import 'pages/activate.css';
-@import 'pages/forgot-password.css';
+
+@import 'pages/active.css';
+
