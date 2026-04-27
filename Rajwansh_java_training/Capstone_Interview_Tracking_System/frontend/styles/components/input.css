@@ -1,0 +1,132 @@
+.form-group input[type="text"],
+
+/* Here I have added styles for text and number inputs, textareas, and select dropdowns. I have also included styles for a custom skills input component that allows users to enter multiple skills as tags. The focus states and error states are styled to provide clear visual feedback to users. */
+.form-group input[type="number"] {
+  width: 100%;
+  padding: 0.7rem 0.875rem;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  background: var(--white);
+  outline: none;
+  transition: var(--transition);
+}
+
+/* Focus state for text and number inputs */
+.form-group input[type="text"]:focus,
+.form-group input[type="number"]:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px var(--primary-shadow);
+}
+
+/* Error state for text and number inputs */
+.form-group input.input-error {
+  border-color: var(--error);
+}
+
+/* Error state focus for text and number inputs */
+.form-group textarea {
+  width: 100%;
+  padding: 0.7rem 0.875rem;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  resize: vertical;
+  outline: none;
+  transition: var(--transition);
+  min-height: 100px;
+}
+
+/* Focus state for textarea */
+.form-group textarea:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px var(--primary-shadow);
+}
+
+/* Error state for textarea */
+.form-group select {
+  width: 100%;
+  padding: 0.7rem 2.25rem 0.7rem 0.875rem;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  background: var(--white);
+  outline: none;
+  cursor: pointer;
+  transition: var(--transition);
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+}
+
+/* Focus state for select */
+.form-group select:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px var(--primary-shadow);
+}
+
+/* Error state for select */
+.skills-input-wrapper {
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 0.4rem 0.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  cursor: text;
+  transition: var(--transition);
+  background: var(--white);
+  min-height: 46px;
+  align-items: flex-start;
+}
+
+/* Focus state for skills input wrapper */
+.skills-input-wrapper:focus-within {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px var(--primary-shadow);
+}
+
+/* Error state for skills input wrapper */
+.skills-input-wrapper input {
+  border: none;
+  outline: none;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  flex: 1;
+  min-width: 120px;
+  padding: 0.25rem;
+  background: transparent;
+}
+.skill-input-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: var(--primary-light);
+  color: var(--primary);
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-full);
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+
+/* Remove button for skill tags */
+.skill-input-tag button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  padding: 0;
+  font-size: 14px;
+  line-height: 1;
+  opacity: 0.7;
+  transition: opacity 0.15s;
+}
+.skill-input-tag button:hover {
+  opacity: 1;
+}

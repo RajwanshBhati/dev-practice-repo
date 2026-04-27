@@ -1,0 +1,21 @@
+.filters-bar {
+  display: flex;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.search-input {
+  flex: 1;
+  padding: 10px;
+}
+
+.filter-select {
+  padding: 10px;
+}
+
+.app-banner {
+  background: #ecfdf5;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
