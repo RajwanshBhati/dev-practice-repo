@@ -81,26 +81,6 @@ public class JDController {
         }
 
         /**
-         * Update JD status (Active/Inactive).
-         *
-         * @param id
-         * @param status
-         * @return
-         */
-        @PatchMapping(ApiEndpoints.HR_JD + "/{id}/status")
-        public ResponseEntity<ApiResponse<JDResponseDTO>> updateStatus(
-                        @PathVariable UUID id,
-                        @RequestParam JDStatus status) {
-
-                log.info("Updating JD status: " + id + " -> " + status);
-
-                JDResponseDTO response = jdService.updateJDStatus(id, status);
-
-                return ResponseEntity.ok(
-                                ApiResponse.success("Status updated to " + status, response));
-        }
-
-        /**
          * Delete a Job Description by ID.
          *
          * @param id
@@ -184,5 +164,20 @@ public class JDController {
 
                 return ResponseEntity.ok(
                                 ApiResponse.success("Job Description fetched", response));
+        }
+
+        @PatchMapping(ApiEndpoints.HR_JD + "/{id}/status")
+        public ResponseEntity<ApiResponse<JDResponseDTO>> updateStatus(
+                        @PathVariable UUID id,
+                        @RequestParam String status) {
+
+                JDStatus jdStatus = JDStatus.valueOf(status.toUpperCase());
+
+                log.info("Updating JD status: " + id + " -> " + jdStatus);
+
+                JDResponseDTO response = jdService.updateJDStatus(id, jdStatus);
+
+                return ResponseEntity.ok(
+                                ApiResponse.success("Status updated to " + jdStatus, response));
         }
 }

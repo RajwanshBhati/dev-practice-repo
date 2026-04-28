@@ -72,12 +72,13 @@ public class PanelServiceImpl implements PanelService {
 
         userRepository.save(user);
 
-        String link = "http://127.0.0.1:5501/panel/activate?token=" + token;
+        // String link = "http://127.0.0.1:5501/panel/activate?token=" + token;
+        String activationToken = token;
 
         emailService.sendPanelActivationEmail(
                 request.getEmail(),
                 request.getFullName(),
-                link);
+                activationToken);
 
         logger.info("Panel activation email sent: {}", request.getEmail());
 

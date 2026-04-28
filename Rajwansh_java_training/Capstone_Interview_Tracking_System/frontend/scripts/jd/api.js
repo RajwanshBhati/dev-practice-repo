@@ -4,7 +4,7 @@ function authHeaders() {
   const token = localStorage.getItem("accessToken");
   return {
     "Content-Type": "application/json",
-    Authorization: `Bearer ${token}`,
+    ...(token && { Authorization: `Bearer ${token}` }),
   };
 }
 
@@ -20,18 +20,6 @@ export async function fetchAllJDs() {
 
   return res.json();
 }
-
-export async function searchJDs(title, status, jobType) {
-  const params = new URLSearchParams();
-  if (title) params.append("title", title);
-  if (status) params.append("status", status);
-  if (jobType) params.append("jobType", jobType);
-  const res = await fetch(`${API_BASE}/hr/jd/search?${params}`, {
-    headers: authHeaders(),
-  });
-  return res.json();
-}
-
 export async function createJD(payload) {
   const res = await fetch(`${API_BASE}/hr/jd`, {
     method: "POST",
@@ -47,15 +35,34 @@ export async function updateJD(id, payload) {
     headers: authHeaders(),
     body: JSON.stringify(payload),
   });
-  return res.json();
+
+  const text = await res.text();
+  const data = text ? JSON.parse(text) : null;
+
+  if (!res.ok) {
+    throw new Error(data?.message || "Update failed");
+  }
+
+  return data;
 }
 
 export async function updateJDStatus(id, status) {
-  const res = await fetch(`${API_BASE}/hr/jd/${id}/status?status=${status}`, {
-    method: "PATCH",
-    headers: authHeaders(),
-  });
-  return res.json();
+  const res = await fetch(
+    `${API_BASE}/hr/jd/${id}/status?status=${encodeURIComponent(status)}`,
+    {
+      method: "PATCH",
+      headers: authHeaders(),
+    },
+  );
+
+  const text = await res.text();
+  const data = text ? JSON.parse(text) : null;
+
+  if (!res.ok) {
+    throw new Error(data?.message || "Status update failed");
+  }
+
+  return data;
 }
 
 export async function deleteJD(id) {

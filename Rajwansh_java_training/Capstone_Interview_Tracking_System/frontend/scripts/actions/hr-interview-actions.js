@@ -57,6 +57,11 @@ async function handleSchedule(candidateId, stage, reloadCandidates) {
     panelSelect.appendChild(option);
   });
   modal.style.display = "flex";
+  const dateInput = document.getElementById("interview-date");
+
+  if (dateInput) {
+    dateInput.min = new Date().toISOString().split("T")[0];
+  }
 
   attachScheduleModalEvents(reloadCandidates);
 }
@@ -207,7 +212,13 @@ async function submitScheduleForm(reloadCandidates) {
     showCandidateMessage("Please select interview date and time");
     return;
   }
+  const selectedDateTime = new Date(`${date}T${time}`);
+  const currentDateTime = new Date();
 
+  if (selectedDateTime < currentDateTime) {
+    showCandidateMessage("Interview date and time cannot be in the past");
+    return;
+  }
   if (panelIds.length < 1 || panelIds.length > 2) {
     showCandidateMessage("Please select minimum 1 and maximum 2 panels");
     return;

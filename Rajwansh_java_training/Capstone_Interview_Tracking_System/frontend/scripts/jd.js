@@ -1,6 +1,5 @@
 import {
   fetchAllJDs,
-  searchJDs,
   createJD,
   updateJD,
   updateJDStatus,
@@ -97,10 +96,13 @@ async function loadCandidatePage() {
 // Load JD
 async function loadJDs() {
   showTableLoader();
+
   try {
     const data = await fetchAllJDs();
+
     if (data.success) {
       allJDs = data.data || [];
+
       renderTable(allJDs, handleEdit, handleDelete);
       updateStats(allJDs);
     } else {
@@ -110,15 +112,27 @@ async function loadJDs() {
     showAlert("Cannot connect to server. Is backend running?");
   }
 }
+function applyFilters() {
+  const search = document.getElementById("jd-search-input").value.toLowerCase();
+  const status = document.getElementById("jd-status-filter").value;
+  const type = document.getElementById("jd-type-filter").value;
 
-async function applyFilters() {
-  const title = document.getElementById("search-input")?.value.trim();
-  const status = document.getElementById("filter-status")?.value;
-  const jobType = document.getElementById("filter-type")?.value;
-  try {
-    const data = await searchJDs(title, status, jobType);
-    if (data.success) renderTable(data.data || [], handleEdit, handleDelete);
-  } catch (err) {}
+  const normalize = (v) =>
+    String(v || "")
+      .toUpperCase()
+      .replaceAll(" ", "_");
+
+  const filtered = allJDs.filter((jd) => {
+    const text = `${jd.jobTitle} ${jd.location}`.toLowerCase();
+
+    return (
+      (!search || text.includes(search)) &&
+      (!status || normalize(jd.status) === normalize(status)) &&
+      (!type || normalize(jd.jobType) === normalize(type))
+    );
+  });
+
+  renderTable(filtered, handleEdit, handleDelete);
 }
 
 // Handel edit functionality
@@ -136,42 +150,37 @@ function handleDelete(id, title) {
 
 // submit jd
 async function handleSubmit() {
-  if (!validateJDForm()) return;
-
   const payload = buildPayload();
-  setModalLoading(true);
+  const isEditMode = Boolean(editingId);
 
   try {
-    let data;
-
-    if (editingId) {
-      data = await updateJD(editingId, payload);
-
-      // Update status if changed
+    if (isEditMode) {
       const newStatus = document.getElementById("jd-status")?.value;
-      const existing = allJDs.find((j) => j.id === editingId);
+      const existing = allJDs.find((j) => String(j.id) === String(editingId));
+
       if (existing && newStatus && existing.status !== newStatus) {
         await updateJDStatus(editingId, newStatus);
       }
+
+      await updateJD(editingId, payload);
     } else {
-      data = await createJD(payload);
+      await createJD(payload);
     }
 
-    if (data.success) {
-      closeModal();
-      editingId = null;
-      showAlert(
-        editingId ? "JD updated successfully!" : "JD created successfully!",
-        "success",
-      );
-      await loadJDs();
-    } else {
-      showAlert(data.message || "Something went wrong", "error", "modal-alert");
-    }
+    closeModal();
+
+    // clear filters
+    document.getElementById("jd-search-input").value = "";
+    document.getElementById("jd-status-filter").value = "";
+    document.getElementById("jd-type-filter").value = "";
+
+    await loadJDs();
+
+    showAlert("JD updated successfully", "success");
+
+    editingId = null;
   } catch (err) {
-    showAlert("Cannot connect to server", "error", "modal-alert");
-  } finally {
-    setModalLoading(false);
+    console.error(err);
   }
 }
 
@@ -267,25 +276,29 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   let timer;
-  document.getElementById("search-input")?.addEventListener("input", () => {
+
+  document.getElementById("jd-search-input")?.addEventListener("input", () => {
     clearTimeout(timer);
-    timer = setTimeout(applyFilters, 400);
+    timer = setTimeout(applyFilters, 300);
   });
 
   document
-    .getElementById("filter-status")
+    .getElementById("jd-status-filter")
     ?.addEventListener("change", applyFilters);
 
   document
-    .getElementById("filter-type")
+    .getElementById("jd-type-filter")
     ?.addEventListener("change", applyFilters);
 
-  document.getElementById("clear-filter-btn")?.addEventListener("click", () => {
-    document.getElementById("search-input").value = "";
-    document.getElementById("filter-status").value = "";
-    document.getElementById("filter-type").value = "";
-    renderTable(allJDs, handleEdit, handleDelete);
-  });
+  document
+    .getElementById("jd-clear-filter-btn")
+    ?.addEventListener("click", () => {
+      document.getElementById("jd-search-input").value = "";
+      document.getElementById("jd-status-filter").value = "";
+      document.getElementById("jd-type-filter").value = "";
+
+      renderTable(allJDs, handleEdit, handleDelete);
+    });
 
   document
     .getElementById("logout-btn")

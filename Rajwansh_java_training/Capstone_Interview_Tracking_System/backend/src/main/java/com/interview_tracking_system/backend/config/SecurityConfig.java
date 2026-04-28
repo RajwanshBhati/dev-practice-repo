@@ -68,6 +68,7 @@ public class SecurityConfig {
                          */
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/v1/auth/**").permitAll()
+                        .requestMatchers("/api/resumes/**").permitAll()
 
                         /**
                          * Panel activation is triggered via email link.
@@ -109,10 +110,15 @@ public class SecurityConfig {
                         /**
                          * Existing role-based APIs for each module.
                          */
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/hr/jd").permitAll()
-                        .requestMatchers("/api/hr/**").hasRole("HR")
-                        .requestMatchers("/api/panel/**").hasRole("PANEL")
-                        .requestMatchers("/api/candidates/**").hasRole("CANDIDATE")
+                        // .requestMatchers("/api/hr/**").hasRole("HR")
+                        // .requestMatchers("/api/panel/**").hasRole("PANEL")
+                        // .requestMatchers("/api/candidates/**").hasRole("CANDIDATE")
+                        .requestMatchers(HttpMethod.PATCH, "/api/hr/jd/*/status").permitAll()
+                        .requestMatchers("/api/hr/**").hasAnyAuthority("HR", "ROLE_HR")
+                        .requestMatchers("/api/panel/**").hasAnyAuthority("PANEL", "ROLE_PANEL")
+                        .requestMatchers("/api/candidates/**").hasAnyAuthority("CANDIDATE", "ROLE_CANDIDATE")
 
                         /**
                          * Any other request must be authenticated.
@@ -137,7 +143,7 @@ public class SecurityConfig {
                 "http://localhost:5501"));
 
         config.setAllowedMethods(List.of(
-                "GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
 
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);

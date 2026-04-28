@@ -1,4 +1,4 @@
-import { logoutCandidate } from "./candidate.js";
+import { logoutCandidate } from "../candidate/candidate.js";
 import {
   getToken,
   getName,
@@ -284,8 +284,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const token = getToken();
     try {
       if (token) await logoutCandidate(token);
-    } catch (e) {
-    }
+    } catch (e) {}
 
     ["accessToken", "name", "email", "role", "hasApplied"].forEach((key) =>
       localStorage.removeItem(key),

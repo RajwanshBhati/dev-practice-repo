@@ -67,6 +67,7 @@ public class HRDashboardService {
                         dto.setPreferredLocation(c.getPreferredLocation());
                         dto.setNoticePeriod(c.getNoticePeriod());
                         dto.setSource(c.getSource());
+                        dto.setResumeUrl(c.getResumeUrl());
 
                         dto.setStatus(
                                         c.getStatus() != null

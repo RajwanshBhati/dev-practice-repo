@@ -165,6 +165,10 @@ public class CandidateServiceImpl implements CandidateService {
             final MultipartFile resumeFile,
             final String email) {
 
+        if (candidateRepository.existsByEmail(request.getEmail())) {
+            throw new IllegalStateException("You can apply for only one JD.");
+        }
+
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("Apply job request received for email: {}", email);
         }
@@ -236,7 +240,7 @@ public class CandidateServiceImpl implements CandidateService {
             Path targetLocation = uploadPath.resolve(storedName);
             Files.copy(resumeFile.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
-            return targetLocation.toString();
+            return "/api/resumes/" + storedName;
         } catch (IOException ex) {
             LOGGER.error("Failed to store resume file for email: {}", email, ex);
             throw new IllegalStateException("Could not store resume file. Please try again.", ex);

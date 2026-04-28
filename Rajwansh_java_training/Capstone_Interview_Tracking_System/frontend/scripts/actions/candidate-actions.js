@@ -1,4 +1,4 @@
-import { getCandidateStatus, applyCandidate } from "./candidate.js";
+import { getCandidateStatus, applyCandidate } from "../candidate/candidate.js";
 import { API } from "../config/candidate-api.js";
 import { filterJDs } from "../utils/candidate-filters.js";
 import {
@@ -8,7 +8,7 @@ import {
   showFormMsg,
   hideFormMessages,
   closeApplyModal,
-} from "./candidate-dashboard.js";
+} from "../candidate/candidate-dashboard.js";
 
 export let allJDs = [];
 export let appliedJdIds = [];
@@ -23,10 +23,15 @@ export function getName() {
 }
 
 export function extractJdId(jd) {
-  if (!jd || !jd.jdId) {
-    throw new Error("Invalid JD object: jdId missing");
+  if (!jd) {
+    throw new Error("Invalid JD object");
   }
-  return jd.jdId;
+  const id = jd.id ?? jd.jd_id;
+
+  if (!id) {
+    throw new Error("JD ID missing in object");
+  }
+  return id;
 }
 
 // Load JDs from API
@@ -167,6 +172,37 @@ export async function handleApplySubmit(e, selectedApplyJD) {
     return;
   }
 
+  const requiredFields = [
+    { value: fullName, label: "Full Name" },
+    { value: email, label: "Email" },
+    { value: mobile, label: "Mobile Number" },
+    { value: currentOrg, label: "Current Organisation" },
+    { value: preferredLocation, label: "Preferred Location" },
+    { value: totalExp, label: "Total Experience" },
+    { value: relevantExp, label: "Relevant Experience" },
+    { value: currentCTC, label: "Current CTC" },
+    { value: expectedCTC, label: "Expected CTC" },
+    { value: noticePeriod, label: "Notice Period" },
+    { value: source, label: "Source" },
+  ];
+
+  const missingFields = requiredFields
+    .filter(
+      (field) =>
+        field.value === null ||
+        field.value === undefined ||
+        String(field.value).trim() === "",
+    )
+    .map((field) => field.label);
+
+  if (missingFields.length > 0) {
+    showFormMsg(
+      "formError",
+      `Please fill required field(s): ${missingFields.join(", ")}`,
+      "error",
+    );
+    return;
+  }
   if (!resumeFile) {
     showFormMsg("formError", "Resume required.", "error");
     return;
@@ -190,11 +226,11 @@ export async function handleApplySubmit(e, selectedApplyJD) {
   formData.append("mobileNumber", mobile);
   formData.append("dateOfBirth", dob || "");
   formData.append("currentCompany", currentOrg);
-  formData.append("totalExp", totalExp || "");
-  formData.append("relevantExp", relevantExp || "");
-  formData.append("currentCtc", currentCTC || "");
-  formData.append("expectedCtc", expectedCTC || "");
-  formData.append("noticePeriod", noticePeriod || "");
+  formData.append("totalExp", totalExp);
+  formData.append("relevantExp", relevantExp);
+  formData.append("currentCtc", currentCTC);
+  formData.append("expectedCtc", expectedCTC);
+  formData.append("noticePeriod", noticePeriod);
   formData.append("preferredLocation", preferredLocation);
   formData.append("source", source || "Website");
   formData.append("jdId", jdId);

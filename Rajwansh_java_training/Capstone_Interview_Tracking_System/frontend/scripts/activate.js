@@ -22,6 +22,19 @@ if (urlToken) {
   tokenInput.value = urlToken;
 }
 
+function setupPasswordToggle(buttonId, inputId) {
+  const button = document.getElementById(buttonId);
+  const input = document.getElementById(inputId);
+
+  if (!button || !input) return;
+
+  button.addEventListener("click", () => {
+    input.type = input.type === "password" ? "text" : "password";
+  });
+}
+
+setupPasswordToggle("toggle-new-password", "new-password");
+setupPasswordToggle("toggle-confirm-password", "confirm-password");
 function showAlert(msg, type = "error") {
   alertBox.style.display = "flex";
   alertMessage.innerText = msg;

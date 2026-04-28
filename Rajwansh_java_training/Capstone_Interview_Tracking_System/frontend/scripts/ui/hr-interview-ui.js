@@ -55,6 +55,7 @@ export function renderCandidateTable(candidates) {
     <td>${candidate.currentCompany || "-"}</td>
     <td>${formatCtc(candidate)}</td>
     <td>${candidate.preferredLocation || "-"}</td>
+    <td>${candidate.source || "-"}</td>
     <td>
       <span class="status-pill">
         ${candidate.status || "-"}
@@ -161,10 +162,15 @@ function formatExperience(candidate) {
  * Builds readable CTC text.
  */
 function formatCtc(candidate) {
-  const current = candidate.currentCtc || "-";
-  const expected = candidate.expectedCtc || "-";
+  const current = candidate.currentCtc ?? "-";
+  const expected = candidate.expectedCtc ?? "-";
 
-  return `${current} / ${expected}`;
+  return `
+    <div class="ctc-box">
+      <div><strong>Currect CTC:</strong> ${current}</div>
+      <div><strong>Expected CTC:</strong> ${expected}</div>
+    </div>
+  `;
 }
 
 /**
@@ -175,5 +181,9 @@ function renderResumeLink(resumeUrl) {
     return "-";
   }
 
-  return `<a href="${resumeUrl}" target="_blank">View</a>`;
+  const finalUrl = resumeUrl.startsWith("http")
+    ? resumeUrl
+    : `http://localhost:8080${resumeUrl}`;
+
+  return `<a href="${finalUrl}" target="_blank" class="resume-link">View Resume</a>`;
 }

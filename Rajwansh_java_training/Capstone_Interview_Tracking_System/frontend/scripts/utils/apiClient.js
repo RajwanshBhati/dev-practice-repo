@@ -1,4 +1,4 @@
-import API_BASE from "../config/api.js";
+import { API_BASE } from "../config/api.js";
 
 export async function apiFetch(endpoint, options = {}) {
   try {

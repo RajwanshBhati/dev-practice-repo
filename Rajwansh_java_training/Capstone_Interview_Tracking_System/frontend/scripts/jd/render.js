@@ -7,17 +7,29 @@ import {
 } from "./utils.js";
 
 export function updateStats(data) {
+  const normalize = (value) => String(value || "").toUpperCase();
+
   const set = (id, val) => {
     const el = document.getElementById(id);
     if (el) el.textContent = val;
   };
+
   set("stat-total", data.length);
-  set("stat-active", data.filter((j) => j.status === "ACTIVE").length);
-  set("stat-inactive", data.filter((j) => j.status === "INACTIVE").length);
-  set("stat-closed", data.filter((j) => j.status === "CLOSED").length);
+  set(
+    "stat-active",
+    data.filter((j) => normalize(j.status) === "ACTIVE").length,
+  );
+  set(
+    "stat-inactive",
+    data.filter((j) => normalize(j.status) === "INACTIVE").length,
+  );
+  set(
+    "stat-closed",
+    data.filter((j) => normalize(j.status) === "CLOSED").length,
+  );
 }
 
-export function renderTable(data, onEdit, onDelete) {
+export function renderTable(data, onEdit, onDelete, shouldStore = true) {
   const tbody = document.getElementById("jd-table-body");
   const emptyState = document.getElementById("empty-state");
   const table = document.getElementById("jd-table");

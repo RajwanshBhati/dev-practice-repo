@@ -39,10 +39,13 @@ public class EmailServiceImpl implements EmailService {
         message.setSubject("Profile Submitted Successfully");
 
         message.setText(
-                "Hi " + candidateName + ",\n\n"
-                        + "Your profile has been successfully submitted.\n"
-                        + "Our HR team will review your application soon.\n\n"
-                        + "Thanks,\nRecruitment Team");
+                "Dear " + candidateName + ",\n\n"
+                        + "We are pleased to inform you that your profile has been successfully submitted.\n\n"
+                        + "Our recruitment team is currently reviewing your application. "
+                        + "If your profile matches our requirements, we will reach out to you for the next steps.\n\n"
+                        + "We appreciate your interest in joining our organization.\n\n"
+                        + "Warm regards,\n"
+                        + "Recruitment Team");
 
         mailSender.send(message);
 
@@ -63,11 +66,14 @@ public class EmailServiceImpl implements EmailService {
         message.setSubject("Panel Account Activation");
 
         message.setText(
-                "Hi " + fullName + ",\n\n"
-                        + "You have been added as a panel member.\n"
-                        + "Please activate your account using the link below:\n\n"
+                "Dear " + fullName + ",\n\n"
+                        + "You have been added as a panel member.\n\n"
+                        + "Please open the activation page:\n"
+                        + "http://127.0.0.1:5500/Rajwansh_java_training/Capstone_Interview_Tracking_System/frontend/pages/activate.html\n\n"
+                        + "Use the below token for activation:\n\n"
                         + activationLink + "\n\n"
-                        + "Thanks,\nRecruitment Team");
+                        + "Best regards,\n"
+                        + "Recruitment Team");
 
         mailSender.send(message);
 
@@ -89,12 +95,18 @@ public class EmailServiceImpl implements EmailService {
         message.setSubject("Interview Scheduled");
 
         message.setText(
-                "Hi " + candidateName + ",\n\n"
-                        + "Your interview has been scheduled.\n\n"
-                        + "Stage: " + stage + "\n"
-                        + "Date & Time: " + interviewDateTime + "\n\n"
-                        + "Please be available on time.\n\n"
-                        + "Best of luck!\nRecruitment Team");
+                "Dear " + candidateName + ",\n\n"
+                        + "We are pleased to inform you that your interview has been scheduled.\n\n"
+                        + "Interview Details:\n"
+                        + "---------------------------------\n"
+                        + "Stage        : " + stage + "\n"
+                        + "Date & Time  : " + interviewDateTime + "\n"
+                        + "---------------------------------\n\n"
+                        + "Kindly ensure your availability at the scheduled time.\n"
+                        + "Please reach out to us in case of any queries.\n\n"
+                        + "We wish you all the best for your interview.\n\n"
+                        + "Warm regards,\n"
+                        + "Recruitment Team");
 
         mailSender.send(message);
 
@@ -117,13 +129,18 @@ public class EmailServiceImpl implements EmailService {
         message.setSubject("Interview Assigned");
 
         message.setText(
-                "Hi " + panelName + ",\n\n"
-                        + "You have been assigned an interview.\n\n"
-                        + "Candidate: " + candidateName + "\n"
-                        + "Stage: " + stage + "\n"
-                        + "Date & Time: " + interviewDateTime + "\n\n"
-                        + "Please review candidate details before interview.\n\n"
-                        + "Thanks,\nRecruitment Team");
+                "Dear " + panelName + ",\n\n"
+                        + "You have been assigned to conduct an interview as per the details below:\n\n"
+                        + "Interview Details:\n"
+                        + "---------------------------------\n"
+                        + "Candidate    : " + candidateName + "\n"
+                        + "Stage        : " + stage + "\n"
+                        + "Date & Time  : " + interviewDateTime + "\n"
+                        + "---------------------------------\n\n"
+                        + "Kindly review the candidate's profile before the interview and share your feedback post evaluation.\n\n"
+                        + "Thank you for your support.\n\n"
+                        + "Best regards,\n"
+                        + "Recruitment Team");
 
         mailSender.send(message);
 
