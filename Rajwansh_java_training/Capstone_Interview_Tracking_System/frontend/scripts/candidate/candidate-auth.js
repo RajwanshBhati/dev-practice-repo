@@ -31,13 +31,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (password !== confirmPassword) {
-      errDiv.textContent = "⚠ Passwords do not match.";
+      errDiv.textContent = "Passwords do not match.";
       errDiv.classList.remove("hidden");
       return;
     }
 
-    if (password.length < 8) {
-      errDiv.textContent = "Password must be at least 8 characters.";
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
+
+    if (!passwordRegex.test(password)) {
+      errDiv.textContent =
+        "Password must be at least 8 characters and include uppercase, lowercase, number, and special character.";
       errDiv.classList.remove("hidden");
       return;
     }

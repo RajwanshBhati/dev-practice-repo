@@ -6,6 +6,10 @@ package com.interview_tracking_system.backend.enums;
 public enum Stage {
 
     /**
+     * Candidate not applied
+     */
+    NOT_APPLIED,
+    /**
      * Candidate has submitted profile details and resume.
      */
     PROFILING,

@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import java.beans.PropertyEditorSupport;
 import java.util.UUID;
+import java.util.Objects;
 
 @RestController
 @RequestMapping(CandidateApiConstants.BASE_URL)
@@ -64,11 +65,15 @@ public class CandidateController {
         binder.registerCustomEditor(UUID.class, new PropertyEditorSupport() {
             @Override
             public void setAsText(final String text) {
-                if (text == null || text.trim().isEmpty() || "NaN".equalsIgnoreCase(text.trim())) {
+
+                final String value = Objects.isNull(text) ? "" : text.trim();
+
+                if (value.isEmpty() || "NaN".equalsIgnoreCase(value)) {
                     setValue(null);
-                } else {
-                    setValue(UUID.fromString(text));
+                    return;
                 }
+
+                setValue(UUID.fromString(value));
             }
         });
     }

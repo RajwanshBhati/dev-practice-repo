@@ -27,47 +27,58 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
- * Implementation of AuthService.
+ * Service implementation of {@link AuthService} that handles
+ * authentication operations such as login, logout, token refresh,
+ * and account activation.
  */
 @Service
 public class AuthServiceImpl implements AuthService {
 
+    /**
+     * Logger for tracking authentication events.
+     */
     private static final Logger log = LoggerFactory.getLogger(AuthServiceImpl.class);
 
     /**
-     * Dependencies for authentication, user management, token handling, and
-     * password encoding.
+     * Authentication manager for handling authentication flow.
      */
     private final AuthenticationManager authenticationManager;
 
     /**
-     * Repositories and utilities for user and token management, JWT handling, and
-     * password encoding.
+     * Repository for managing user-related database operations.
      */
     private final UserRepository userRepository;
 
     /**
-     * Repository for managing refresh tokens, including creation, validation, and
-     * deletion of tokens associated with users.
+     * Repository for managing refresh tokens.
      */
     private final RefreshTokenRepository refreshTokenRepository;
 
     /**
-     * Utility for generating and validating JWT tokens.
+     * Utility class for JWT token generation and validation.
      */
     private final JwtUtil jwtUtil;
 
     /**
-     * Encoder for hashing passwords.
+     * Encoder for hashing and verifying passwords.
      */
     private final PasswordEncoder passwordEncoder;
 
     /**
-     * The number of days for which refresh tokens are valid.
+     * Number of days a refresh token remains valid.
      */
     @Value("${jwt.refresh-token-days:7}")
     private int refreshTokenDays;
 
+    /**
+     * Constructor for dependency injection.
+     *
+     * @param authenticationManager  authentication manager
+     * @param userRepository         user repository
+     * @param refreshTokenRepository refresh token repository
+     * @param jwtUtil                JWT utility
+     * @param passwordEncoder        password encoder
+     */
     public AuthServiceImpl(AuthenticationManager authenticationManager,
             UserRepository userRepository,
             RefreshTokenRepository refreshTokenRepository,
@@ -80,6 +91,12 @@ public class AuthServiceImpl implements AuthService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    /**
+     * Authenticates a user and generates access and refresh tokens.
+     *
+     * @param loginRequestDTO login request containing credentials
+     * @return login response containing tokens and user details
+     */
     @Override
     public LoginResponseDTO login(LoginRequestDTO loginRequestDTO) {
 
@@ -91,27 +108,26 @@ public class AuthServiceImpl implements AuthService {
                     return new ResourceNotFoundException(ErrorMessages.USER_NOT_FOUND);
                 });
 
-        // Password validation (manual)
+        /** Validates password against stored hash */
         if (!passwordEncoder.matches(loginRequestDTO.getPassword(), user.getPassword())) {
             throw new InvalidRequestException("Invalid credentials");
         }
 
-        // Account status check
-        if (user.getStatus() != UserStatus.ACTIVE) {
+        /** Checks if account is active */
+        if (!UserStatus.ACTIVE.equals(user.getStatus())) {
             log.warn("Inactive account login attempt: {}", user.getEmail());
             throw new InvalidRequestException(ErrorMessages.ACCOUNT_NOT_ACTIVE);
         }
 
-        // Delete old refresh tokens
+        /** Deletes any existing refresh tokens for the user */
         refreshTokenRepository.deleteByUser(user);
-        // refreshTokenRepository.flush();
 
-        // Generate access token
+        /** Generates access token */
         String accessToken = jwtUtil.generateAccessToken(
                 user.getEmail(),
                 user.getRole().name());
 
-        // Generate refresh token
+        /** Creates and stores a new refresh token */
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setToken(UUID.randomUUID().toString());
         refreshToken.setUser(user);
@@ -121,7 +137,7 @@ public class AuthServiceImpl implements AuthService {
 
         log.info("Login successful for: {}", user.getEmail());
 
-        // Response build
+        /** Builds response object */
         LoginResponseDTO response = new LoginResponseDTO();
         response.setAccessToken(accessToken);
         response.setRefreshToken(refreshToken.getToken());
@@ -133,10 +149,10 @@ public class AuthServiceImpl implements AuthService {
     }
 
     /**
-     * Refreshes the access token using a valid refresh token.
+     * Refreshes access token using a valid refresh token.
      *
-     * @param request the refresh token request containing the refresh token
-     * @return the updated login response with new tokens and user details
+     * @param request refresh token request DTO
+     * @return updated login response
      */
     @Override
     public LoginResponseDTO refreshToken(RefreshTokenRequestDTO request) {
@@ -150,6 +166,7 @@ public class AuthServiceImpl implements AuthService {
                     return new InvalidRequestException(ErrorMessages.INVALID_REFRESH_TOKEN);
                 });
 
+        /** Checks if refresh token is expired */
         if (storedToken.isExpired()) {
             log.warn("Expired refresh token used: {}", storedToken.getToken());
             refreshTokenRepository.delete(storedToken);
@@ -158,6 +175,7 @@ public class AuthServiceImpl implements AuthService {
 
         User user = storedToken.getUser();
 
+        /** Generates new access token */
         String newAccessToken = jwtUtil.generateAccessToken(
                 user.getEmail(), user.getRole().name());
 
@@ -174,9 +192,9 @@ public class AuthServiceImpl implements AuthService {
     }
 
     /**
-     * Logs out a user by invalidating their refresh token.
+     * Logs out user by deleting associated refresh tokens.
      *
-     * @param email the email of the user to log out
+     * @param email user email
      */
     @Override
     @Transactional
@@ -196,10 +214,9 @@ public class AuthServiceImpl implements AuthService {
     }
 
     /**
-     * Sets a new password for a user using an activation token.
+     * Activates user account and sets new password using activation token.
      *
-     * @param request the change password request containing the activation token
-     *                and new password
+     * @param request change password request DTO
      */
     @Override
     @Transactional
@@ -213,11 +230,13 @@ public class AuthServiceImpl implements AuthService {
                     return new InvalidRequestException(ErrorMessages.INVALID_ACTIVATION_TOKEN);
                 });
 
+        /** Checks if activation token is expired */
         if (user.getActivationTokenExpiry().isBefore(LocalDateTime.now())) {
             log.warn("Expired activation token for user: {}", user.getEmail());
             throw new InvalidRequestException(ErrorMessages.ACTIVATION_TOKEN_EXPIRED);
         }
 
+        /** Validates password and confirm password match */
         if (!request.getNewPassword().equals(request.getConfirmPassword())) {
             log.warn("Password mismatch during activation for user: {}", user.getEmail());
             throw new InvalidRequestException(ErrorMessages.PASSWORD_MISMATCH);

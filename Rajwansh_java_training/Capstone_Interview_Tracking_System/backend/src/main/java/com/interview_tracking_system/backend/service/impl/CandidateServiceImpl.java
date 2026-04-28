@@ -28,7 +28,6 @@ import static com.interview_tracking_system.backend.constants.CandidateConstants
 import static com.interview_tracking_system.backend.constants.CandidateConstants.ERROR_INVALID_CREDENTIALS;
 import static com.interview_tracking_system.backend.constants.CandidateConstants.ERROR_ALREADY_APPLIED;
 import static com.interview_tracking_system.backend.constants.CandidateConstants.ERROR_NOT_LOGGED_IN;
-import static com.interview_tracking_system.backend.constants.CandidateConstants.ERROR_NO_APPLICATION;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -253,17 +252,26 @@ public class CandidateServiceImpl implements CandidateService {
     @Override
     public CandidateResponseDTO getMyStatus(final String email) {
 
-        LOGGER.info("Fetching status for email: {}", email);
+        LOGGER.info("Getting candidate status for email: {}", email);
 
-        Candidate candidate = candidateRepository.findByEmail(email)
-                .orElseThrow(() -> {
-                    LOGGER.error("No application found for user: {}", email);
-                    return new IllegalStateException(ERROR_NO_APPLICATION);
-                });
+        CandidateResponseDTO dto = new CandidateResponseDTO();
 
-        LOGGER.info("Status fetched successfully for email: {}", email);
+        Candidate candidate = candidateRepository.findByEmail(email).orElse(null);
 
-        return mapToResponse(candidate);
+        if (candidate == null) {
+            LOGGER.warn("Candidate profile not found for email: {}", email);
+
+            dto.setStatus(Stage.NOT_APPLIED);
+            return dto;
+        }
+
+        dto.setId(candidate.getId());
+        dto.setName(candidate.getName());
+        dto.setEmail(candidate.getEmail());
+        dto.setStatus(candidate.getStatus());
+        dto.setJdId(candidate.getJdId());
+
+        return dto;
     }
 
     /**

@@ -30,27 +30,41 @@
       <p>Find your next opportunity — click a card to view details and apply</p>
     </div>
 
-    <!-- Stage Tracker (hidden until applied) -->
     <div id="stageSection" style="display:none;">
-      <div class="stage-tracker">
-        <div class="stage-item" id="st-PROFILING">
-          <div class="stage-dot">1</div>
-          <div class="stage-label">Profiling</div>
-        </div>
-        <div class="stage-item" id="st-L1">
-          <div class="stage-dot">2</div>
-          <div class="stage-label">L1 Technical</div>
-        </div>
-        <div class="stage-item" id="st-L2">
-          <div class="stage-dot">3</div>
-          <div class="stage-label">L2 Technical</div>
-        </div>
-        <div class="stage-item" id="st-HR">
-          <div class="stage-dot">4</div>
-          <div class="stage-label">HR Round</div>
-        </div>
-      </div>
+
+  <!-- Current Status -->
+  <div style="margin-bottom: 15px;">
+    <strong>Current Status:</strong>
+    <span id="candidate-current-status">-</span>
+  </div>
+
+  <!-- Final Status -->
+  <div id="final-status" style="margin-bottom: 20px;"></div>
+
+  <!-- Progress Tracker -->
+  <div class="stage-tracker">
+    <div class="stage-item" id="st-PROFILING">
+      <div class="stage-dot">1</div>
+      <div class="stage-label">Profiling</div>
     </div>
+    <div class="stage-item" id="st-L1">
+      <div class="stage-dot">2</div>
+      <div class="stage-label">L1 Technical</div>
+    </div>
+    <div class="stage-item" id="st-L2">
+      <div class="stage-dot">3</div>
+      <div class="stage-label">L2 Technical</div>
+    </div>
+    <div class="stage-item" id="st-HR">
+      <div class="stage-dot">4</div>
+      <div class="stage-label">HR Round</div>
+    </div>
+  </div>
+
+
+  <div id="candidate-interview-info" style="margin-top:20px;"></div>
+
+</div>
 
     <!-- Applied banner -->
     <div id="appBanner" class="app-banner hidden"></div>

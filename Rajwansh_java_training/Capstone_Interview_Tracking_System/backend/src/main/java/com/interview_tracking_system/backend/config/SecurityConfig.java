@@ -96,7 +96,10 @@ public class SecurityConfig {
                          */
                         .requestMatchers("/api/interview/feedback/**").hasRole("PANEL")
                         .requestMatchers("/api/interview/panel/**").hasRole("PANEL")
-
+                        .requestMatchers(
+                                "/api/candidates/register",
+                                "/api/candidates/login")
+                        .permitAll()
                         /**
                          * Candidates can only track their own interview progress and status.
                          * They are not allowed to access feedback or administrative actions.
@@ -106,6 +109,7 @@ public class SecurityConfig {
                         /**
                          * Existing role-based APIs for each module.
                          */
+                        .requestMatchers("/api/hr/jd").permitAll()
                         .requestMatchers("/api/hr/**").hasRole("HR")
                         .requestMatchers("/api/panel/**").hasRole("PANEL")
                         .requestMatchers("/api/candidates/**").hasRole("CANDIDATE")

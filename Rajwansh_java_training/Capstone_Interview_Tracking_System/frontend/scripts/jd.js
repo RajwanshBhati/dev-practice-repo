@@ -63,7 +63,6 @@ async function loadPanelPage() {
   script.id = "panel-script";
 
   script.onload = () => {
-    console.log("Panel script loaded");
     if (window.loadPanels) {
       window.loadPanels();
     }
@@ -89,8 +88,6 @@ async function loadCandidatePage() {
   script.id = "candidate-script";
 
   script.onload = () => {
-    console.log("Candidate script loaded");
-
     initHrCandidateSection();
   };
 
@@ -111,7 +108,6 @@ async function loadJDs() {
     }
   } catch (err) {
     showAlert("Cannot connect to server. Is backend running?");
-    console.error(err);
   }
 }
 
@@ -122,9 +118,7 @@ async function applyFilters() {
   try {
     const data = await searchJDs(title, status, jobType);
     if (data.success) renderTable(data.data || [], handleEdit, handleDelete);
-  } catch (err) {
-    console.error(err);
-  }
+  } catch (err) {}
 }
 
 // Handel edit functionality
@@ -176,7 +170,6 @@ async function handleSubmit() {
     }
   } catch (err) {
     showAlert("Cannot connect to server", "error", "modal-alert");
-    console.error(err);
   } finally {
     setModalLoading(false);
   }
@@ -200,7 +193,6 @@ async function handleConfirmDelete() {
   } catch (err) {
     closeDeleteModal();
     showAlert("Cannot connect to server");
-    console.error(err);
   } finally {
     setDeleteLoading(false);
   }

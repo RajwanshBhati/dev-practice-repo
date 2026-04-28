@@ -1,10 +1,10 @@
-console.log("loaded js");
 import {
   getCandidateStatus,
   applyCandidate,
   logoutCandidate,
 } from "./candidate.js";
 import { API } from "../config/candidate-api.js";
+import { filterJDs } from "../utils/candidate-filters.js";
 
 let allJDs = [];
 let selectedJD = null;
@@ -60,9 +60,11 @@ function jobTypeBadgeClass(type) {
 
 // Extract JD ID
 function extractJdId(jd) {
-  if (!jd) return "";
-  // Support all possible field names from API
-  return jd.jobId ?? jd.jdId ?? jd.id ?? jd.job_id ?? jd.JdId ?? "";
+  if (!jd || !jd.jdId) {
+    throw new Error("Invalid JD object: jdId missing");
+  }
+
+  return jd.jdId;
 }
 
 // stage tracker
@@ -98,7 +100,6 @@ function showBanner(msg, type) {
 
 //  Load JDs
 async function loadJDs() {
-  console.log("Starting loadJDs");
   const loader = document.getElementById("loader");
   const grid = document.getElementById("jdGrid");
   const noJobs = document.getElementById("noJobs");
@@ -109,17 +110,13 @@ async function loadJDs() {
 
   // Fallback: hide loader after 10 seconds
   const fallbackTimer = setTimeout(() => {
-    console.log("Fallback: hiding loader after timeout");
     if (loader) loader.classList.add("hidden");
     if (noJobs) noJobs.classList.remove("hidden");
   }, 10000);
 
   try {
-    console.log("API URL:", API.HR.JD_LIST);
     const res = await fetch(API.HR.JD_LIST);
-    console.log("Fetch response status:", res.status);
     const data = await res.json();
-    console.log("JD DATA:", data);
 
     clearTimeout(fallbackTimer);
     if (loader) loader.classList.add("hidden");
@@ -131,7 +128,6 @@ async function loadJDs() {
       if (noJobs) noJobs.classList.remove("hidden");
     }
   } catch (err) {
-    console.log("Error in loadJDs:", err);
     clearTimeout(fallbackTimer);
     if (loader) loader.classList.add("hidden");
     if (noJobs) noJobs.classList.remove("hidden");
@@ -165,8 +161,8 @@ function renderGrid(data) {
         </span>
       </div>
       <div class="jd-card-meta">
-        <span>📍 ${jd.location}</span>
-        <span>💼 ${jd.minExperience}–${jd.maxExperience} yrs</span>
+        <span>${jd.location}</span>
+        <span>${jd.minExperience}–${jd.maxExperience} yrs</span>
       </div>
       <div class="jd-card-skills">
         ${skillsHtml}${moreHtml}
@@ -241,9 +237,6 @@ function openApplyModal(jd) {
 
   const jobId = extractJdId(jd);
 
-  console.log("Opening apply modal — JD object:", JSON.stringify(jd));
-  console.log("Resolved jobId:", jobId);
-
   document.getElementById("modalJobTitle").textContent = jd.jobTitle;
   document.getElementById("modalJobId").value = jobId;
 
@@ -252,6 +245,11 @@ function openApplyModal(jd) {
   const email = localStorage.getItem("candidateEmail") || "";
   const nameEl = document.getElementById("pFullName");
   const emailEl = document.getElementById("pEmail");
+
+  if (emailEl) {
+    emailEl.value = localStorage.getItem("email") || "";
+    emailEl.readOnly = true;
+  }
   if (nameEl && name) nameEl.value = name;
   if (emailEl && email) emailEl.value = email;
 
@@ -298,11 +296,7 @@ async function handleApplySubmit(e) {
   const noticePeriod = document.getElementById("pNoticePeriod")?.value;
   const source = document.getElementById("pSource")?.value;
   const resumeFile = document.getElementById("pResumeFile")?.files?.[0];
-
-  console.log("selectedApplyJD:", selectedApplyJD);
   const jdId = extractJdId(selectedApplyJD);
-
-  console.log("JD ID:", jdId, "appliedJdIds:", appliedJdIds);
 
   if (appliedJdIds.length > 0) {
     showFormMsg(
@@ -371,16 +365,14 @@ async function handleApplySubmit(e) {
   try {
     const data = await applyCandidate(formData, token);
 
-    console.log("API response:", data);
-
     if (data.success || data.id) {
       showFormMsg("formSuccess", "Application submitted!", "success");
       appliedJdIds.push(jdId);
       localStorage.setItem("hasApplied", "true"); // Persist application status
 
-      setTimeout(() => {
+      setTimeout(async () => {
         closeApplyModal();
-        renderStageTracker("PROFILING", "IN_PROGRESS");
+        await loadCandidateStatus();
         showBanner("Application submitted", "success");
       }, 1200);
     } else {
@@ -417,45 +409,63 @@ function showFormMsg(id, msg, type) {
 // Load Candidate Status
 async function loadCandidateStatus() {
   const token = getToken();
-  if (!token) return;
 
-  // Check localStorage for persisted application status
-  const persistedApplied = localStorage.getItem("hasApplied");
-  if (persistedApplied === "true") {
-    console.log("Using persisted applied status");
-    hasApplied = true;
-    appliedJdIds = ["applied"];
-    renderStageTracker("PROFILING", "IN_PROGRESS");
-    showBanner("Application submitted — Profiling in progress", "pending");
+  if (!token) {
     return;
   }
 
   try {
     const data = await getCandidateStatus(token);
-    console.log("Candidate status response:", data);
-    if (data.success && data.data) {
-      candidateStatus = data.data;
-      appliedJdIds = ["applied"]; // Prevent further applications
 
-      const { stage, status, appliedJD } = data.data;
-      renderStageTracker(stage, status);
-
-      const bannerMsg =
-        status === "REJECTED"
-          ? `Application rejected at ${stage} stage`
-          : status === "SELECTED"
-            ? `🎉 Congratulations! Selected — ${stage}`
-            : `Current Stage: ${stage} — ${status}`;
-
-      const bannerType =
-        status === "REJECTED"
-          ? "rejected"
-          : status === "SELECTED"
-            ? "success"
-            : "pending";
-
-      showBanner(bannerMsg, bannerType);
+    if (!data || data.status === "NOT_APPLIED") {
+      document.getElementById("stageSection").style.display = "none";
+      showBanner("You have not applied for any position yet.", "pending");
+      return;
     }
+
+    candidateStatus = data;
+    appliedJdIds = ["applied"];
+
+    const stage = data.status;
+    const status = data.status;
+
+    renderStageTracker(stage, status);
+
+    document.getElementById("candidate-current-status").textContent = status;
+
+    const finalStatus = document.getElementById("final-status");
+
+    if (status === "SELECTED") {
+      finalStatus.innerHTML = `
+        <div class="final-status selected">
+          <h2>Congratulations! You are selected.</h2>
+        </div>
+      `;
+    } else if (status === "REJECTED") {
+      finalStatus.innerHTML = `
+        <div class="final-status rejected">
+          <h2>Your application was rejected.</h2>
+        </div>
+      `;
+    } else {
+      finalStatus.innerHTML = "";
+    }
+
+    const bannerMsg =
+      status === "REJECTED"
+        ? "Application rejected"
+        : status === "SELECTED"
+          ? "Congratulations! Selected"
+          : `Current Stage: ${status}`;
+
+    const bannerType =
+      status === "REJECTED"
+        ? "rejected"
+        : status === "SELECTED"
+          ? "success"
+          : "pending";
+
+    showBanner(bannerMsg, bannerType);
   } catch (err) {
     console.error("Status fetch error:", err);
   }
@@ -463,21 +473,10 @@ async function loadCandidateStatus() {
 
 // Filters
 function applyFilters() {
-  const search =
-    document.getElementById("searchInput")?.value.toLowerCase() || "";
-  const type = document.getElementById("filterType")?.value || "";
+  const searchInput = document.getElementById("searchInput")?.value;
+  const typeInput = document.getElementById("filterType")?.value;
 
-  const filtered = allJDs.filter((jd) => {
-    const matchSearch =
-      !search ||
-      jd.jobTitle?.toLowerCase().includes(search) ||
-      jd.location?.toLowerCase().includes(search);
-
-    const matchType =
-      !type || jobTypeLabel(jd.jobType).toLowerCase() === type.toLowerCase();
-
-    return matchSearch && matchType;
-  });
+  const filtered = filterJDs(allJDs, searchInput, typeInput);
 
   renderGrid(filtered);
 
@@ -486,7 +485,6 @@ function applyFilters() {
     noJobs.classList.toggle("hidden", filtered.length > 0);
   }
 }
-
 document.addEventListener("DOMContentLoaded", async () => {
   const token = getToken();
   if (!token) {
@@ -549,14 +547,22 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Logout
   document.getElementById("logoutBtn")?.addEventListener("click", async () => {
+    const token = getToken();
+
     try {
-      await logoutCandidate(token);
-    } catch (e) {}
+      if (token) {
+        await logoutCandidate(token);
+      }
+    } catch (e) {
+      console.warn("Logout API failed, continuing cleanup", e);
+    }
+
     localStorage.removeItem("accessToken");
     localStorage.removeItem("name");
     localStorage.removeItem("email");
     localStorage.removeItem("role");
     localStorage.removeItem("hasApplied");
+
     window.location.href = "login.html";
   });
 });
