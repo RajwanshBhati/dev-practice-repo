@@ -285,7 +285,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     try {
       if (token) await logoutCandidate(token);
     } catch (e) {
-      console.warn("Logout API failed, continuing cleanup", e);
     }
 
     ["accessToken", "name", "email", "role", "hasApplied"].forEach((key) =>

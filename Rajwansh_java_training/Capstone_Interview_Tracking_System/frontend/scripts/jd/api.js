@@ -68,11 +68,21 @@ export async function deleteJD(id) {
 
 export async function logoutAPI() {
   const token = localStorage.getItem("accessToken");
-  await fetch(`${API_BASE}/auth/logout`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  });
+
+  try {
+    await fetch(`${API_BASE}/auth/logout`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  } catch (err) {
+  } finally {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("name");
+    localStorage.removeItem("email");
+    localStorage.removeItem("role");
+    window.location.href = "/login.html";
+  }
 }

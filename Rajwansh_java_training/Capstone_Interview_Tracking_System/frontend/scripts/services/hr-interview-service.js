@@ -39,8 +39,6 @@ export async function getAllPanels() {
  * Update candidate status (Reject / Stage change).
  */
 export async function changeCandidateStatus(payload) {
-  console.log("Status payload:", payload);
-
   const response = await fetch(HR_CANDIDATE_API.updateCandidateStatus, {
     method: "POST",
     headers: getHrCandidateHeaders(),
@@ -49,7 +47,6 @@ export async function changeCandidateStatus(payload) {
 
   if (!response.ok) {
     const errorText = await response.text();
-    console.error("Status API failed:", response.status, errorText);
     throw new Error("Failed to update status");
   }
 }
@@ -58,8 +55,6 @@ export async function changeCandidateStatus(payload) {
  * Schedule interview for candidate.
  */
 export async function createInterviewSchedule(payload) {
-  console.log("Schedule payload:", payload);
-
   const response = await fetch(HR_CANDIDATE_API.scheduleInterview, {
     method: "POST",
     headers: getHrCandidateHeaders(),
@@ -68,7 +63,6 @@ export async function createInterviewSchedule(payload) {
 
   if (!response.ok) {
     const errorText = await response.text();
-    console.error("Schedule API failed:", response.status, errorText);
     throw new Error("Failed to schedule interview");
   }
 }

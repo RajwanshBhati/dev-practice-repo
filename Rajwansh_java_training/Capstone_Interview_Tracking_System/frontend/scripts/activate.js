@@ -46,9 +46,7 @@ function checkStrength(pwd) {
   return "Strong";
 }
 
-passwordInput.addEventListener("input", () => {
-  console.log("Strength:", checkStrength(passwordInput.value));
-});
+passwordInput.addEventListener("input", () => {});
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();

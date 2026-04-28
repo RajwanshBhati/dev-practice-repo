@@ -1,23 +1,24 @@
-import API_BASE from "../config/api.js";
+import { apiFetch } from "../utils/apiClient.js";
 
-// This service will handle all authentication related API calls
-export async function loginAPI(email, password) {
-  const response = await fetch(`${API_BASE}/auth/login`, {
+// Login API
+export function loginAPI(email, password) {
+  return apiFetch("/auth/login", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),
   });
-
-  return await response.json();
 }
 
-// This can be used for account activation after registration
-export async function activateAPI(payload) {
-  const response = await fetch(`${API_BASE}/auth/activate`, {
+// Activate API
+export function activateAPI(payload) {
+  return apiFetch("/auth/activate", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
+}
 
-  return await response.json();
+// Logout API
+export function logoutAPI() {
+  return apiFetch("/auth/logout", {
+    method: "POST",
+  });
 }

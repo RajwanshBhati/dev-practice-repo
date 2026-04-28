@@ -42,7 +42,6 @@ async function loadCandidateDashboard() {
       renderInterviewDetails([]);
     }
   } catch (error) {
-    console.error("Candidate dashboard loading failed", error);
     showCandidateError("Unable to load candidate dashboard");
   } finally {
     setCandidateLoader(false);

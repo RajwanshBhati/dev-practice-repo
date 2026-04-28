@@ -20,8 +20,6 @@ if (form) {
       designation: document.getElementById("designation").value.trim(),
     };
 
-    console.log("Sending Payload:", payload);
-
     try {
       const res = await fetch(`${API}/create`, {
         method: "POST",
@@ -46,7 +44,6 @@ if (form) {
       form.reset();
       loadPanels();
     } catch (err) {
-      console.error(err);
       alert(" Server error");
     }
   });
@@ -57,7 +54,6 @@ async function loadPanels() {
     const token = getToken();
 
     if (!token) {
-      console.error("No token found");
       return;
     }
 
@@ -69,12 +65,10 @@ async function loadPanels() {
     });
 
     if (!res.ok) {
-      console.error("Failed:", res.status);
       return;
     }
 
     const data = await res.json();
-    console.log("Panels:", data);
 
     if (!tableBody) return;
 
@@ -98,9 +92,7 @@ async function loadPanels() {
 
       tableBody.appendChild(row);
     });
-  } catch (err) {
-    console.error(" Error loading panels", err);
-  }
+  } catch (err) {}
 }
 
 document.addEventListener("DOMContentLoaded", () => {

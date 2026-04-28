@@ -41,8 +41,6 @@ async function handleSchedule(candidateId, stage, reloadCandidates) {
   panelSelect.innerHTML = "";
 
   panels.forEach((panel) => {
-    console.log("Panel object:", panel);
-
     const panelId = panel.id || panel.panelId || panel.userId || panel.panel_id;
     const panelName = panel.fullName || panel.name || "Panel";
     const panelEmail = panel.email || panel.emailId || panel.userEmail || "-";
@@ -161,8 +159,6 @@ async function handleFinalSelect(candidateId, reloadCandidates) {
  * Builds readable panel list
  */
 function buildPanelListText(panels) {
-  console.log("Panels from backend:", panels);
-
   let text = "Available Panels:\n";
 
   panels.forEach((panel) => {
@@ -216,7 +212,6 @@ async function submitScheduleForm(reloadCandidates) {
     showCandidateMessage("Please select minimum 1 and maximum 2 panels");
     return;
   }
-  console.log("Selected panel ids:", panelIds);
   await createInterviewSchedule({
     candidateId: Number(candidateId),
     stage: stage,

@@ -61,7 +61,6 @@ export async function loadJDs() {
     clearTimeout(fallbackTimer);
     if (loader) loader.classList.add("hidden");
     if (noJobs) noJobs.classList.remove("hidden");
-    console.error(err);
   }
 }
 
@@ -122,9 +121,7 @@ export async function loadCandidateStatus() {
           : "pending";
 
     showBanner(bannerMsg, bannerType);
-  } catch (err) {
-    console.error("Status fetch error:", err);
-  }
+  } catch (err) {}
 }
 
 // Handle application form submission
@@ -203,23 +200,6 @@ export async function handleApplySubmit(e, selectedApplyJD) {
   formData.append("jdId", jdId);
   formData.append("resumeFile", resumeFile);
 
-  console.debug("Submitting candidate application", {
-    jdId,
-    fullName,
-    email,
-    mobileCode,
-    mobile,
-    currentOrg,
-    preferredLocation,
-    totalExp,
-    relevantExp,
-    currentCTC,
-    expectedCTC,
-    noticePeriod,
-    source,
-    resumeFile,
-  });
-
   try {
     const data = await applyCandidate(formData, token);
 
@@ -234,7 +214,6 @@ export async function handleApplySubmit(e, selectedApplyJD) {
         showBanner("Application submitted", "success");
       }, 1200);
     } else {
-      console.warn("Application submission failed", data);
       showFormMsg(
         "formError",
         data.message || data.error || "Submission failed",
@@ -242,7 +221,6 @@ export async function handleApplySubmit(e, selectedApplyJD) {
       );
     }
   } catch (err) {
-    console.error("Application submission error", err);
     showFormMsg(
       "formError",
       err.message || "Server error. Try again.",

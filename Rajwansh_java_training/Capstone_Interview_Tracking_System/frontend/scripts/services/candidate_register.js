@@ -57,8 +57,15 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      if (password.length < 8) {
-        showMsg("errorMsg", "Password must be at least 8 characters.", "error");
+      const passwordRegex =
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
+
+      if (!passwordRegex.test(password)) {
+        showMsg(
+          "errorMsg",
+          "Password must be at least 8 characters and include uppercase, lowercase, number, and special character.",
+          "error",
+        );
         return;
       }
 
@@ -91,7 +98,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       } catch (err) {
         showMsg("errorMsg", "Cannot connect to server.", "error");
-        console.error(err);
       } finally {
         setLoading(false);
       }

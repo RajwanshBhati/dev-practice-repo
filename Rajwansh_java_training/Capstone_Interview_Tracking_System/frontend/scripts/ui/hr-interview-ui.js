@@ -36,7 +36,6 @@ export function renderCandidateTable(candidates) {
   emptyState.style.display = "none";
 
   candidates.forEach((candidate) => {
-    console.log("Candidate object:", candidate);
     const candidateId =
       candidate.id ||
       candidate.candidateId ||

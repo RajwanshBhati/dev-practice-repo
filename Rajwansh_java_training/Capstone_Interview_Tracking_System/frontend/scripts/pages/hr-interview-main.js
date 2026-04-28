@@ -11,7 +11,6 @@ async function loadCandidates() {
 
     renderCandidateTable(candidates);
   } catch (error) {
-    console.error("Candidate loading failed", error);
     showMessage("Unable to load candidates");
   }
 }

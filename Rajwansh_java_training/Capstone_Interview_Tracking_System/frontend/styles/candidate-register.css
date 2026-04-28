@@ -1,0 +1,263 @@
+/*
+  Base styling for full page.
+  Using a neutral background so the card stands out clearly.
+*/
+.auth-body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+  background: #f4f7fb;
+  color: #1f2937;
+}
+
+/*
+  Splitting the layout into two sections:
+  left for branding and right for the form.
+*/
+.auth-split {
+  display: grid;
+  grid-template-columns: 45% 55%;
+  min-height: 100vh;
+}
+
+/*
+  Left panel is used for visual branding.
+*/
+.auth-left {
+  background: linear-gradient(135deg, #1e3a8a, #2563eb);
+  color: #ffffff;
+  padding: 50px;
+  display: flex;
+  align-items: center;
+}
+
+
+.auth-left-content h1 {
+  font-size: 52px;
+  line-height: 1.2;
+  margin-bottom: 20px;
+}
+
+/*
+  Highlighting the italic word
+*/
+.auth-left-content em {
+  font-style: normal;
+  color: #bfdbfe;
+}
+
+/*
+  Supporting text below heading.
+*/
+.auth-left-content p {
+  font-size: 16px;
+  margin-bottom: 30px;
+  color: #e0e7ff;
+}
+
+/*
+  Steps section to guide the user visually.
+*/
+.auth-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.step {
+  opacity: 0.7;
+  font-size: 14px;
+}
+
+/*
+  Active step is highlighted so user knows current progress.
+*/
+.step.active {
+  opacity: 1;
+  font-weight: bold;
+}
+
+/*
+  Right panel centers the form nicely.
+*/
+.auth-right {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+}
+
+/*
+  Card container for form.
+  White background keeps it clean and readable.
+*/
+.auth-card {
+  width: 100%;
+  max-width: 500px;
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+}
+
+/*
+  Form title styling.
+*/
+.auth-card h2 {
+  margin-bottom: 10px;
+}
+
+/*
+  Subtitle under heading.
+*/
+.auth-subtitle {
+  font-size: 14px;
+  margin-bottom: 20px;
+  color: #6b7280;
+}
+
+/*
+  Form rows arranged in two columns for better space usage.
+*/
+.form-row {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+/*
+  Each field takes equal width inside row.
+*/
+.form-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/*
+  Label styling for readability.
+*/
+.form-group label {
+  font-size: 13px;
+  margin-bottom: 5px;
+}
+
+/*
+  Input fields styled for clean UI and focus effect.
+*/
+.form-group input {
+  padding: 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  outline: none;
+}
+
+/*
+  Highlight input on focus to improve UX.
+*/
+.form-group input:focus {
+  border-color: #2563eb;
+}
+
+
+.pwd-wrap {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+/*
+  Eye button placed inside input field for toggling visibility.
+*/
+.eye-btn {
+  position: absolute;
+  right: 10px;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+/*
+  Primary button styling for main action.
+*/
+.btn-primary {
+  width: 100%;
+  padding: 12px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+/*
+  Slight hover effect for better interaction feedback.
+*/
+.btn-primary:hover {
+  background: #1e40af;
+}
+
+/*
+  Error and success messages styling.
+*/
+.alert {
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.alert-error {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.alert-success {
+  background: #dcfce7;
+  color: #166534;
+}
+
+/*
+  Hidden class used to toggle visibility via JS.
+*/
+.hidden {
+  display: none;
+}
+
+/*
+  Making the "Sign in" link more noticeable so users can easily switch to login.
+*/
+.auth-subtitle a {
+  color: #2563eb;
+  font-weight: 600;
+  text-decoration: none;
+  position: relative;
+}
+
+/*
+  Subtle underline effect on hover to give a clean interactive feel.
+*/
+.auth-subtitle a::after {
+  content: "";
+  position: absolute;
+  width: 0%;
+  height: 2px;
+  left: 0;
+  bottom: -2px;
+  background-color: #2563eb;
+  transition: width 0.3s ease;
+}
+
+/*
+  Expanding underline on hover for a smooth highlight effect.
+*/
+.auth-subtitle a:hover::after {
+  width: 100%;
+}
+
+/*
+  Slight color change on hover to indicate clickability.
+*/
+.auth-subtitle a:hover {
+  color: #1e40af;
+}
