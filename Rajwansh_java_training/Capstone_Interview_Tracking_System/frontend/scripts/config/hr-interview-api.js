@@ -6,6 +6,7 @@ export const HR_CANDIDATE_API = {
   panels: "http://localhost:8080/api/v1/panel/list",
   scheduleInterview: "http://localhost:8080/api/interview/schedule",
   updateCandidateStatus: "http://localhost:8080/api/interview/status",
+  onboardCandidate: "http://localhost:8080/api/candidates/onboard",
 };
 
 /**

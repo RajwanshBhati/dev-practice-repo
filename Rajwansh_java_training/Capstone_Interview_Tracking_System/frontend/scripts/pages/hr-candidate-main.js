@@ -14,15 +14,17 @@ import { attachCandidateActions } from "../actions/hr-interview-actions.js";
  * Loads candidates and refreshes HR candidate section.
  */
 async function loadHrCandidates() {
+  showCandidateLoader();
+
   try {
-    showCandidateLoader();
+    const data = await getAllCandidates();
 
-    const candidates = await getAllCandidates();
+    setCandidateList(data);
 
-    setCandidateList(candidates);
-    renderCandidateTable(candidates);
-  } catch (error) {
-    showCandidateMessage("Unable to load candidates");
+    renderCandidateTable(data);
+    attachCandidateActions(loadHrCandidates);
+  } catch (err) {
+    console.error(err);
   }
 }
 
@@ -41,7 +43,6 @@ function attachCandidateFilters() {
  * Starts HR candidate workflow.
  */
 export function initHrCandidateSection() {
-  loadHrCandidates();
   attachCandidateFilters();
-  attachCandidateActions(loadHrCandidates);
+  loadHrCandidates();
 }

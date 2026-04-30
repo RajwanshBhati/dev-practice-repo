@@ -87,7 +87,7 @@ public class SecurityConfig {
                          * This ensures the recruitment workflow is managed centrally.
                          */
                         .requestMatchers("/api/interview/schedule").hasRole("HR")
-                        .requestMatchers("/api/interview/status").hasRole("HR")
+                        .requestMatchers("/api/interview/status").hasAnyAuthority("HR", "ROLE_HR")
 
                         /**
                          * Panel users can only:
@@ -115,9 +115,10 @@ public class SecurityConfig {
                         // .requestMatchers("/api/hr/**").hasRole("HR")
                         // .requestMatchers("/api/panel/**").hasRole("PANEL")
                         // .requestMatchers("/api/candidates/**").hasRole("CANDIDATE")
-                        .requestMatchers(HttpMethod.PATCH, "/api/hr/jd/*/status").permitAll()
+
                         .requestMatchers("/api/hr/**").hasAnyAuthority("HR", "ROLE_HR")
                         .requestMatchers("/api/panel/**").hasAnyAuthority("PANEL", "ROLE_PANEL")
+                        .requestMatchers("/api/candidates/onboard").hasAnyAuthority("HR", "ROLE_HR")
                         .requestMatchers("/api/candidates/**").hasAnyAuthority("CANDIDATE", "ROLE_CANDIDATE")
 
                         /**

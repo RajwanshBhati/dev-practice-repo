@@ -82,7 +82,7 @@ public class InterviewController {
 
         String email = authentication.getName();
 
-        User panelUser = userRepository.findByEmail(email)
+        User panelUser = userRepository.findByEmailIgnoreCase(email)
                 .orElseThrow(() -> new RuntimeException("Panel not found"));
 
         LOGGER.info("Panel {} submitting feedback", panelUser.getId());

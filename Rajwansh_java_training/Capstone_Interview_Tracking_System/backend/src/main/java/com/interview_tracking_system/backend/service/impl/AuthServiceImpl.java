@@ -102,7 +102,9 @@ public class AuthServiceImpl implements AuthService {
 
         log.info("Login attempt for email: {}", loginRequestDTO.getEmail());
 
-        User user = userRepository.findByEmail(loginRequestDTO.getEmail())
+        String email = loginRequestDTO.getEmail().trim().toLowerCase();
+
+        User user = userRepository.findByEmailIgnoreCase(email)
                 .orElseThrow(() -> {
                     log.error("User not found: {}", loginRequestDTO.getEmail());
                     return new ResourceNotFoundException(ErrorMessages.USER_NOT_FOUND);

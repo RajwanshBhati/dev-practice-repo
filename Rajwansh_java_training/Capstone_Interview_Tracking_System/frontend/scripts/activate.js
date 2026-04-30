@@ -1,3 +1,5 @@
+import { showToast } from "./utils/toast.js";
+
 const API_BASE = "http://localhost:8080/api/v1/panel";
 
 const form = document.getElementById("activate-form");
@@ -11,14 +13,15 @@ const btnText = document.getElementById("btn-text");
 const btnLoader = document.getElementById("btn-loader");
 
 const alertBox = document.getElementById("alert-box");
-const alertMessage = document.getElementById("alert-message");
-
 const successState = document.getElementById("success-state");
 
 const params = new URLSearchParams(window.location.search);
 const urlToken = params.get("token");
 
-if (urlToken) {
+if (!urlToken) {
+  showToast("Activation token missing from link", "error");
+  form.style.display = "none";
+} else {
   tokenInput.value = urlToken;
 }
 
@@ -30,36 +33,26 @@ function setupPasswordToggle(buttonId, inputId) {
 
   button.addEventListener("click", () => {
     input.type = input.type === "password" ? "text" : "password";
+    button.textContent = input.type === "password" ? "Show" : "Hide";
   });
 }
 
 setupPasswordToggle("toggle-new-password", "new-password");
 setupPasswordToggle("toggle-confirm-password", "confirm-password");
-function showAlert(msg, type = "error") {
-  alertBox.style.display = "flex";
-  alertMessage.innerText = msg;
-  alertBox.className = "alert " + type;
-}
 
 function setLoading(state) {
+  if (!btn) return;
+
+  btn.disabled = state;
+
   if (state) {
-    btn.disabled = true;
     btnText.style.display = "none";
     btnLoader.style.display = "inline-flex";
   } else {
-    btn.disabled = false;
     btnText.style.display = "inline";
     btnLoader.style.display = "none";
   }
 }
-
-function checkStrength(pwd) {
-  if (pwd.length < 6) return "Weak";
-  if (pwd.length < 10) return "Medium";
-  return "Strong";
-}
-
-passwordInput.addEventListener("input", () => {});
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -68,16 +61,24 @@ form.addEventListener("submit", async (e) => {
   const password = passwordInput.value.trim();
   const confirmPassword = confirmInput.value.trim();
 
-  if (!token) return showAlert("Token missing");
-  if (!password || !confirmPassword)
-    return showAlert("All fields are required");
+  if (!token) {
+    showToast("Invalid activation link", "error");
+    return;
+  }
+
+  if (!password || !confirmPassword) {
+    showToast("Password and confirm password are required", "error");
+    return;
+  }
 
   if (password.length < 6) {
-    return showAlert("Password must be at least 6 characters");
+    showToast("Password must be at least 6 characters", "error");
+    return;
   }
 
   if (password !== confirmPassword) {
-    return showAlert("Passwords do not match");
+    showToast("Passwords do not match", "error");
+    return;
   }
 
   try {
@@ -89,26 +90,29 @@ form.addEventListener("submit", async (e) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        token: token,
-        password: password,
-        confirmPassword: confirmPassword,
+        token,
+        password,
+        confirmPassword,
       }),
     });
 
-    let data = {};
-    try {
-      data = await response.json();
-    } catch (e) {}
+    const text = await response.text();
 
     if (!response.ok) {
-      throw new Error(data.message || "Activation failed");
+      throw new Error(text || "Activation failed");
     }
 
     form.style.display = "none";
-    successState.style.display = "block";
-    alertBox.style.display = "none";
+    if (alertBox) alertBox.style.display = "none";
+    if (successState) successState.style.display = "block";
+
+    showToast("Password set successfully. Redirecting to login...", "success");
+
+    setTimeout(() => {
+      window.location.href = "login.html?activated=true";
+    }, 1200);
   } catch (error) {
-    showAlert(error.message || "Something went wrong");
+    showToast(error.message || "Something went wrong", "error");
   } finally {
     setLoading(false);
   }

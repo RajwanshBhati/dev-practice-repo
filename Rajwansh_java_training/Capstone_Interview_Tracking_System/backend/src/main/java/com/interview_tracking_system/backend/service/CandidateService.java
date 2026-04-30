@@ -1,6 +1,7 @@
 package com.interview_tracking_system.backend.service;
 
 import com.interview_tracking_system.backend.dto.LoginRequestDTO;
+import com.interview_tracking_system.backend.dto.CandidateOnboardRequest;
 import com.interview_tracking_system.backend.dto.CandidateProfileRequest;
 import com.interview_tracking_system.backend.dto.CandidateRegisterRequest;
 import com.interview_tracking_system.backend.dto.CandidateResponseDTO;
@@ -44,4 +45,11 @@ public interface CandidateService {
      * @return the candidate response DTO with current stage
      */
     CandidateResponseDTO getMyStatus(String email);
+
+    /**
+     * Onboard Candidate
+     * 
+     * @param request
+     */
+    void onboardCandidate(CandidateOnboardRequest request);
 }

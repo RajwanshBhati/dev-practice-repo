@@ -1,3 +1,5 @@
+import { showToast } from "../utils/toast.js";
+
 const API = "http://localhost:8080/api/v1/panel";
 
 const form = document.getElementById("panel-form");
@@ -36,15 +38,16 @@ if (form) {
       } catch {}
 
       if (!res.ok) {
-        alert(data.message || "Error creating panel");
+        showToast(data.message || "Error creating panel", "error");
+
         return;
       }
 
-      alert("Panel created + activation email sent!");
+      showToast("Panel created and activation email sent!", "success");
       form.reset();
       loadPanels();
     } catch (err) {
-      alert(" Server error");
+      showToast("Server error", "error");
     }
   });
 }
@@ -75,7 +78,7 @@ async function loadPanels() {
     tableBody.innerHTML = "";
 
     if (!data || data.length === 0) {
-      tableBody.innerHTML = `<tr><td colspan="5">No panel members found</td></tr>`;
+      tableBody.innerHTML = `<tr><td colspan="6">No panel members found</td></tr>`;
       return;
     }
 
@@ -98,3 +101,6 @@ async function loadPanels() {
 document.addEventListener("DOMContentLoaded", () => {
   loadPanels();
 });
+
+window.loadPanels = loadPanels;
+loadPanels();

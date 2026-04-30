@@ -9,8 +9,6 @@ import {
   applyCandidateFilters,
   showCandidateMessage,
 } from "../ui/hr-interview-ui.js";
-import { handleFeedbackClick } from "./hr-feedback-actions.js";
-
 let scheduleEventsAttached = false;
 
 /**
@@ -69,97 +67,80 @@ async function handleSchedule(candidateId, stage, reloadCandidates) {
 /**
  * Attaches all action button handlers for HR candidate table.
  */
+let isActionBound = false;
+
 export function attachCandidateActions(reloadCandidates) {
-  const tableBody = document.getElementById("hr-candidate-table-body");
+  const container = document.getElementById("candidate-container");
 
-  tableBody.addEventListener("click", async (event) => {
-    const candidateId = event.target.dataset.id;
+  if (!container || isActionBound) return;
 
-    if (!candidateId) {
-      return;
+  isActionBound = true;
+
+  container.addEventListener("change", (e) => {
+    const select = e.target.closest(".candidate-action-select");
+    if (!select) return;
+
+    const id = select.dataset.id;
+    const action = select.value;
+
+    if (action === "screening") {
+      handleScreening(id, reloadCandidates);
     }
 
-    if (event.target.classList.contains("reject-btn")) {
-      await handleReject(candidateId, reloadCandidates);
+    if (action === "reject") {
+      handleReject(id, reloadCandidates);
     }
 
-    if (event.target.classList.contains("l1-btn")) {
-      await handleSchedule(candidateId, "L1_TECHNICAL", reloadCandidates);
+    if (action === "l1") {
+      handleSchedule(id, "L1_TECHNICAL", reloadCandidates);
     }
 
-    if (event.target.classList.contains("l2-btn")) {
-      await handleSchedule(candidateId, "L2_TECHNICAL", reloadCandidates);
+    if (action === "l2") {
+      handleSchedule(id, "L2_TECHNICAL", reloadCandidates);
     }
 
-    if (event.target.classList.contains("hr-btn")) {
-      await handleStageUpdate(candidateId, "HR_ROUND", reloadCandidates);
+    if (action === "hr") {
+      handleSchedule(id, "HR_ROUND", reloadCandidates);
     }
 
-    if (event.target.classList.contains("select-btn")) {
-      await handleFinalSelect(candidateId, reloadCandidates);
+    if (action === "select") {
+      handleFinalSelect(id, reloadCandidates);
     }
-
-    if (event.target.classList.contains("feedback-btn")) {
-      const candidateId = event.target.dataset.id;
-      handleFeedbackClick(candidateId);
-    }
+    select.value = "";
   });
 }
+async function handleScreening(candidateId, reloadCandidates) {
+  await changeCandidateStatus({
+    candidateId: Number(candidateId),
+    stage: "SCREENING",
+    remarks: "Moved to screening",
+  });
 
-/**
- * Rejects a candidate.
- */
+  showCandidateMessage("Candidate moved to screening");
+  reloadCandidates();
+}
+
 async function handleReject(candidateId, reloadCandidates) {
-  const confirmed = confirm("Are you sure you want to reject this candidate?");
-
-  if (!confirmed) {
-    return;
-  }
-
   await changeCandidateStatus({
     candidateId: Number(candidateId),
     decision: "REJECTED",
     remarks: "Rejected by HR",
   });
 
-  showCandidateMessage("Candidate rejected");
+  showCandidateMessage("Candidate rejected successfully");
   reloadCandidates();
 }
 
-/**
- * Moves candidate to HR round.
- */
-async function handleStageUpdate(candidateId, stage, reloadCandidates) {
-  await changeCandidateStatus({
-    candidateId: Number(candidateId),
-    stage: stage,
-    remarks: "Moved to HR round",
-  });
-
-  showCandidateMessage("Candidate moved to HR round");
-  reloadCandidates();
-}
-
-/**
- * Final selection of candidate.
- */
 async function handleFinalSelect(candidateId, reloadCandidates) {
-  const confirmed = confirm("Mark this candidate as selected?");
-
-  if (!confirmed) {
-    return;
-  }
-
   await changeCandidateStatus({
     candidateId: Number(candidateId),
     decision: "SELECTED",
     remarks: "Selected by HR",
   });
 
-  showCandidateMessage("Candidate selected");
+  showCandidateMessage("Candidate selected successfully");
   reloadCandidates();
 }
-
 /**
  * Builds readable panel list
  */

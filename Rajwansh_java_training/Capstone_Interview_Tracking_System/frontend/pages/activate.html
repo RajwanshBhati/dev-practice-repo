@@ -4,7 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ATS — Activate Account</title>
-    <link rel="stylesheet" href="../styles/auth.css" />
+    <link rel="stylesheet" href="../styles/base/base.css" />
+    <link rel="stylesheet" href="../styles/active.css" />
+
   </head>
   <body>
     <div class="auth-wrapper">
@@ -48,7 +50,6 @@
         <div class="auth-card">
           <div class="auth-header">
             <h2>Activate your account</h2>
-            <p>Use the token from your invitation email</p>
           </div>
 
           <!-- Alert Box -->
@@ -87,37 +88,7 @@
           </div>
 
           <form id="activate-form" novalidate>
-            <div class="form-group">
-              <label for="token">Activation token</label>
-              <div class="input-wrapper">
-                <span class="input-icon">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <path
-                      d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778
-                           7.778 5.5 5.5 0 0 1 7.777-7.777zm0
-                           0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5
-                           3.5L19 4"
-                    />
-                  </svg>
-                </span>
-                <input
-                  type="text"
-                  id="token"
-                  name="token"
-                  placeholder="Paste your activation token"
-                  required
-                />
-              </div>
-              <span class="field-error" id="token-error"></span>
-            </div>
-
+            <input type="hidden" id="token" name="token" />
             <div class="form-group">
               <label for="new-password">New password</label>
               <div class="input-wrapper">
@@ -221,7 +192,7 @@
         </div>
       </div>
     </div>
-
-    <script src="../scripts/activate.js"></script>
+    <div id="toast-container"></div>
+    <script type="module" src="../scripts/activate.js"></script>
   </body>
 </html>

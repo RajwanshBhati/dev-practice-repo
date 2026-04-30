@@ -7,6 +7,7 @@
 
     <!-- Styles -->
     <link rel="stylesheet" href="../styles/hr-interview.css" />
+    <link rel="stylesheet" href="../styles/base/base.css" />
   </head>
 
   <body>
@@ -40,27 +41,7 @@
       </div>
 
       <!-- Candidate Table -->
-      <div class="table-wrapper">
-        <table class="jd-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Mobile</th>
-              <th>JD Applied</th>
-              <th>Experience</th>
-              <th>Company</th>
-              <th>CTC</th>
-              <th>Location</th>
-              <th>Source</th>
-              <th>Status</th>
-              <th>Resume</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-
-          <tbody id="hr-candidate-table-body"></tbody>
-        </table>
+<div id="candidate-container" class="candidate-grid"></div>
 
         <!-- Schedule Modal -->
         <div class="modal-overlay" id="schedule-modal" style="display: none">
@@ -95,16 +76,6 @@
             </div>
           </div>
         </div>
-        <div id="hr-feedback-modal" class="modal-overlay" style="display: none">
-          <div class="modal-box">
-            <h2>Panel Feedback</h2>
-
-            <div id="hr-feedback-content"></div>
-
-            <button onclick="closeHRFeedback()">Close</button>
-          </div>
-        </div>
-
         <!-- Empty state -->
         <div
           class="empty-state"
@@ -124,7 +95,7 @@
         </div>
       </div>
     </section>
-
+    <div id="toast-container"></div>
     <!-- JS -->
     <script type="module" src="../scripts/pages/hr-main.js"></script>
   </body>

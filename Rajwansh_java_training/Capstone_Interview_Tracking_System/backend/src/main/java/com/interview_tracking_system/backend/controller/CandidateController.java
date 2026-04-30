@@ -28,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.beans.PropertyEditorSupport;
 import java.util.UUID;
 import java.util.Objects;
+import com.interview_tracking_system.backend.dto.CandidateOnboardRequest;
 
 @RestController
 @RequestMapping(CandidateApiConstants.BASE_URL)
@@ -184,5 +185,17 @@ public class CandidateController {
         LOGGER.info("Logout request received");
 
         return ResponseEntity.ok(ApiMessages.LOGOUT_SUCCESS);
+    }
+
+    @PostMapping("/onboard")
+    public ResponseEntity<String> onboardCandidate(
+            @RequestBody final CandidateOnboardRequest request) {
+
+        LOGGER.info("HR onboard candidate request received for email: {}", request.getEmail());
+
+        candidateService.onboardCandidate(request);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body("Candidate onboarded successfully. Email sent.");
     }
 }

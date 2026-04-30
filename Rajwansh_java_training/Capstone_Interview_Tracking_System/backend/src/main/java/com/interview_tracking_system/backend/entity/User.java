@@ -14,6 +14,7 @@ import jakarta.persistence.Index;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -40,6 +41,12 @@ public class User {
      */
     @Column(nullable = false, unique = true)
     private String email;
+
+    /**
+     * Date BOB
+     */
+    @Column
+    private LocalDate dateOfBirth;
 
     /**
      * Mobile number of the user (optional but unique if provided).
@@ -105,6 +112,14 @@ public class User {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
 
     /**
      * Default constructor for JPA.

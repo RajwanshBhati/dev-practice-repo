@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Browse Jobs | TalentBridge</title>
+  <link rel="stylesheet" href="../styles/base/base.css" />
   <link rel="stylesheet" href="../styles/candidate.css"/>
 </head>
 <body>
@@ -23,13 +24,45 @@
 
   <div class="page-container">
 
-    <!-- Page Header -->
-    <div class="page-header">
-      <h1>Open Positions</h1>
-      <p>Find your next opportunity — click a card to view details and apply</p>
+    <section id="stageSection" class="status-pipeline">
+  <div class="pipeline-header">
+    <div>
+      <p>Application Status</p>
+      <h2>Your Hiring Progress</h2>
+    </div>
+    <span id="currentStatusBadge" class="status-badge">Profiling</span>
+  </div>
+
+  <div class="pipeline">
+    <div class="pipeline-step" id="st-PROFILING">
+      <span>1</span>
+      <p>Profiling</p>
     </div>
 
-    <div id="stageSection" style="display:none;">
+    <div class="pipeline-line"></div>
+
+    <div class="pipeline-step" id="st-L1">
+      <span>2</span>
+      <p>L1 Interview</p>
+    </div>
+
+    <div class="pipeline-line"></div>
+
+    <div class="pipeline-step" id="st-L2">
+      <span>3</span>
+      <p>L2 Interview</p>
+    </div>
+
+    <div class="pipeline-line"></div>
+
+    <div class="pipeline-step" id="st-HR">
+      <span>4</span>
+      <p>HR Round</p>
+    </div>
+  </div>
+</section>
+
+    <div id="candidateStatusDetails" style="display:none;">
 
   <!-- Current Status -->
   <div style="margin-bottom: 15px;">
@@ -64,10 +97,6 @@
   <div id="candidate-interview-info" style="margin-top:20px;"></div>
 
 </div>
-
-    <!-- Applied banner -->
-    <div id="appBanner" class="app-banner hidden"></div>
-
     <!-- Filters -->
     <div class="filters-bar">
       <input type="text" id="searchInput" class="search-input"
@@ -276,7 +305,7 @@
       </form>
     </div>
   </div>
-
+   <div id="toast-container"></div>
 
  <script type="module" src="../scripts/candidate/candidate-dashboard.js"></script>
 </body>

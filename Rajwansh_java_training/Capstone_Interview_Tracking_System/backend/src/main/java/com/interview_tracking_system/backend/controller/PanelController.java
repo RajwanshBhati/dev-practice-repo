@@ -77,7 +77,7 @@ public class PanelController {
 
         logger.info("API: Fetch Panel Interviews for {}", email);
 
-        User panelUser = userRepository.findByEmail(email)
+        User panelUser = userRepository.findByEmailIgnoreCase(email)
                 .orElseThrow(() -> {
                     logger.error("Panel not found for email: {}", email);
                     return new RuntimeException("Panel not found");

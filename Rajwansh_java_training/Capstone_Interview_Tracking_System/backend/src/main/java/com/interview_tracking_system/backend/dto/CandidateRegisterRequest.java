@@ -1,5 +1,7 @@
 package com.interview_tracking_system.backend.dto;
 
+import java.time.LocalDate;
+
 /**
  * DTO for candidate registration request.
  */
@@ -10,6 +12,12 @@ public class CandidateRegisterRequest {
 
     /** Email address of the candidate. */
     private String email;
+
+    /** Mobile No. of the candidadte */
+    private String mobileNumber;
+
+    /* DOB of candidate */
+    private LocalDate dob;
 
     /** Password chosen by the candidate. */
     private String password;
@@ -33,6 +41,37 @@ public class CandidateRegisterRequest {
      */
     public void setFullName(final String name) {
         this.fullName = name;
+    }
+
+    /**
+     * get the mobile number
+     *
+     * @return Mobile Number
+     */
+
+    public String getMobileNumber() {
+        return mobileNumber;
+    }
+
+    public void setMobileNumber(String mobileNumber) {
+        this.mobileNumber = mobileNumber;
+    }
+
+    /**
+     * get the DOB
+     *
+     * @return DOB;
+     */
+
+    public LocalDate getDob() {
+        return dob;
+    }
+
+    /**
+     * Sets the dob.
+     */
+    public void setDob(LocalDate dob) {
+        this.dob = dob;
     }
 
     /**

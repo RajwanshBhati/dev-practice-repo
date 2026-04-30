@@ -21,12 +21,12 @@ export function getCandidateList() {
  * Renders complete candidate table for HR.
  */
 export function renderCandidateTable(candidates) {
-  const tableBody = document.getElementById("hr-candidate-table-body");
+  const container = document.getElementById("candidate-container");
   const emptyState = document.getElementById("candidate-empty-state");
   const loader = document.getElementById("candidate-table-loader");
 
   loader.style.display = "none";
-  tableBody.innerHTML = "";
+  container.innerHTML = "";
 
   if (!candidates || candidates.length === 0) {
     emptyState.style.display = "block";
@@ -35,68 +35,67 @@ export function renderCandidateTable(candidates) {
 
   emptyState.style.display = "none";
 
-  candidates.forEach((candidate) => {
-    const candidateId =
-      candidate.id ||
-      candidate.candidateId ||
-      candidate.candidate_id ||
-      candidate.candidateUserId ||
-      candidate.candidateProfileId ||
-      candidate.profileId;
+  container.innerHTML = candidates
+    .map((candidate) => {
+      const candidateId =
+        candidate.id || candidate.candidateId || candidate.candidateUserId;
 
-    const row = document.createElement("tr");
+      return `
+  <div class="candidate-card">
+    <div class="candidate-header">
+      <div class="candidate-avatar">
+        ${candidate.name?.charAt(0)?.toUpperCase() || "C"}
+      </div>
 
-    row.innerHTML = `
-    <td>${candidate.name || "-"}</td>
-    <td>${candidate.email || "-"}</td>
-    <td>${candidate.mobileNumber || "-"}</td>
-    <td>${candidate.jdTitle || candidate.jobTitle || "-"}</td>
-    <td>${formatExperience(candidate)}</td>
-    <td>${candidate.currentCompany || "-"}</td>
-    <td>${formatCtc(candidate)}</td>
-    <td>${candidate.preferredLocation || "-"}</td>
-    <td>${candidate.source || "-"}</td>
-    <td>
-      <span class="status-pill">
+      <div>
+        <h3>${candidate.name || "-"}</h3>
+        <p>${candidate.email || "-"}</p>
+        <p>${candidate.mobileNumber || "-"}</p>
+      </div>
+    </div>
+
+    <div class="candidate-detail-grid">
+      <div><span>Job</span><strong>${candidate.jdTitle || candidate.jobTitle || "-"}</strong></div>
+      <div><span>Company</span><strong>${candidate.currentCompany || "-"}</strong></div>
+      <div><span>Location</span><strong>${candidate.preferredLocation || "-"}</strong></div>
+      <div><span>Source</span><strong>${candidate.source || "-"}</strong></div>
+      <div><span>Current CTC</span><strong>${candidate.currentCtc ?? "-"} LPA</strong></div>
+      <div><span>Expected CTC</span><strong>${candidate.expectedCtc ?? "-"} LPA</strong></div>
+    </div>
+
+    <div class="experience-box">
+      <div>
+        <span>Total Experience</span>
+        <strong>${candidate.totalExperience ?? "-"} yrs</strong>
+      </div>
+      <div>
+        <span>Relevant Experience</span>
+        <strong>${candidate.relevantExperience ?? "-"} yrs</strong>
+      </div>
+    </div>
+
+    <div class="candidate-footer">
+      <span class="status ${String(candidate.status || "").toLowerCase()}">
         ${candidate.status || "-"}
       </span>
-    </td>
-    <td>
+
       ${renderResumeLink(candidate.resumeUrl)}
-    </td>
-    <td>
-      <div class="candidate-actions">
-        <button class="action-btn reject-btn" data-id="${candidateId}">
-          Reject
-        </button>
 
-        <button class="action-btn l1-btn" data-id="${candidateId}">
-          L1
-        </button>
-
-        <button class="action-btn l2-btn" data-id="${candidateId}">
-          L2
-        </button>
-
-        <button class="action-btn hr-btn" data-id="${candidateId}">
-          HR Round
-        </button>
-
-        <button class="action-btn select-btn" data-id="${candidateId}">
-          Select
-        </button>
-
-        <button class="action-btn feedback-btn" data-id="${candidate.id}">
-      Feedback
-    </button>
-      </div>
-    </td>
-  `;
-
-    tableBody.appendChild(row);
-  });
+      <select class="candidate-action-select" data-id="${candidateId}">
+        <option value="">Choose Action</option>
+        <option value="screening">Screening</option>
+        <option value="l1">Schedule L1</option>
+        <option value="l2">Schedule L2</option>
+        <option value="hr">Schedule HR</option>
+        <option value="reject">Reject</option>
+        <option value="select">Select</option>
+      </select>
+    </div>
+  </div>
+`;
+    })
+    .join("");
 }
-
 /**
  * Filters candidates using search text and stage filter.
  */

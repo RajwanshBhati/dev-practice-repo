@@ -13,6 +13,9 @@ import com.interview_tracking_system.backend.repository.CandidateRepository;
 import com.interview_tracking_system.backend.repository.UserRepository;
 import com.interview_tracking_system.backend.service.CandidateService;
 import com.interview_tracking_system.backend.service.EmailService;
+import com.interview_tracking_system.backend.dto.CandidateOnboardRequest;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,39 +85,45 @@ public class CandidateServiceImpl implements CandidateService {
      * @param request the candidate registration request
      * @throws IllegalArgumentException if validation fails
      */
+
     @Override
     public void register(final CandidateRegisterRequest request) {
 
-        if (LOGGER.isInfoEnabled()) {
-            LOGGER.info("Register request received for email: {}", request.getEmail());
+        String fullName = request.getFullName() == null ? "" : request.getFullName().trim();
+        String email = request.getEmail() == null ? "" : request.getEmail().trim().toLowerCase();
+        String mobileNumber = request.getMobileNumber() == null ? "" : request.getMobileNumber().trim();
+
+        if (fullName.isEmpty()
+                || email.isEmpty()
+                || mobileNumber.isEmpty()
+                || request.getDob() == null
+                || request.getPassword() == null
+                || request.getConfirmPassword() == null) {
+            throw new IllegalArgumentException("All fields are required.");
         }
 
         if (!request.getPassword().equals(request.getConfirmPassword())) {
-            if (LOGGER.isErrorEnabled()) {
-                LOGGER.error("Password mismatch for email: {}", request.getEmail());
-            }
             throw new IllegalArgumentException(ERROR_PASSWORD_MISMATCH);
         }
 
-        if (userRepository.existsByEmail(request.getEmail())) {
-            if (LOGGER.isErrorEnabled()) {
-                LOGGER.error("Email already exists: {}", request.getEmail());
-            }
+        if (userRepository.existsByEmail(email)) {
             throw new IllegalArgumentException(ERROR_EMAIL_EXISTS);
         }
 
+        if (userRepository.existsByMobile(mobileNumber)) {
+            throw new IllegalArgumentException("Mobile number already exists.");
+        }
+
         User user = new User();
-        user.setName(request.getFullName());
-        user.setEmail(request.getEmail());
+        user.setName(fullName);
+        user.setEmail(email);
+        user.setMobile(mobileNumber);
+        user.setDateOfBirth(request.getDob());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRole(Role.CANDIDATE);
         user.setStatus(UserStatus.ACTIVE);
 
         userRepository.save(user);
-
-        if (LOGGER.isInfoEnabled()) {
-            LOGGER.info("Candidate registered successfully: {}", request.getEmail());
-        }
     }
 
     /**
@@ -165,10 +174,6 @@ public class CandidateServiceImpl implements CandidateService {
             final MultipartFile resumeFile,
             final String email) {
 
-        if (candidateRepository.existsByEmail(request.getEmail())) {
-            throw new IllegalStateException("You can apply for only one JD.");
-        }
-
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("Apply job request received for email: {}", email);
         }
@@ -180,9 +185,15 @@ public class CandidateServiceImpl implements CandidateService {
                     }
                     return new IllegalStateException(ERROR_NOT_LOGGED_IN);
                 });
-        String fullMobile = request.getMobileCode() + request.getMobileNumber();
-        if (candidateRepository.existsByEmail(email)
-                || candidateRepository.existsByMobile(fullMobile)) {
+        String mobileCode = request.getMobileCode() == null ? "" : request.getMobileCode().trim();
+        String mobileNumber = request.getMobileNumber() == null ? "" : request.getMobileNumber().trim();
+
+        if (!mobileNumber.matches("^[6-9]\\d{9}$")) {
+            throw new IllegalArgumentException("Enter a valid 10-digit mobile number.");
+        }
+
+        String fullMobile = mobileCode + mobileNumber;
+        if (candidateRepository.existsByEmailIgnoreCaseAndStatusNot(email, Stage.REJECTED)) {
 
             LOGGER.error("Candidate already applied: {} / {}", email, fullMobile);
             throw new IllegalStateException(ERROR_ALREADY_APPLIED);
@@ -196,7 +207,7 @@ public class CandidateServiceImpl implements CandidateService {
 
         Candidate candidate = new Candidate();
         candidate.setName(request.getName());
-        candidate.setEmail(request.getEmail());
+        candidate.setEmail(email.trim().toLowerCase());
 
         candidate.setMobile(fullMobile);
 
@@ -260,7 +271,9 @@ public class CandidateServiceImpl implements CandidateService {
 
         CandidateResponseDTO dto = new CandidateResponseDTO();
 
-        Candidate candidate = candidateRepository.findByEmail(email).orElse(null);
+        Candidate candidate = candidateRepository
+                .findTopByEmailIgnoreCaseOrderByIdDesc(email)
+                .orElse(null);
 
         if (candidate == null) {
             LOGGER.warn("Candidate profile not found for email: {}", email);
@@ -295,4 +308,79 @@ public class CandidateServiceImpl implements CandidateService {
 
         return dto;
     }
+
+
+@Override
+public void onboardCandidate(final CandidateOnboardRequest request) {
+
+    /*
+     * Trim input values to remove extra spaces.
+     * Email is converted to lowercase to avoid duplicate case issues.
+     */
+    String fullName = request.getFullName() == null ? "" : request.getFullName().trim();
+    String email = request.getEmail() == null ? "" : request.getEmail().trim().toLowerCase();
+    String mobileNumber = request.getMobileNumber() == null ? "" : request.getMobileNumber().trim();
+
+    /*
+     * Validate mandatory fields.
+     * Candidate cannot be onboarded if any required field is missing.
+     */
+    if (fullName.isEmpty()
+            || email.isEmpty()
+            || mobileNumber.isEmpty()
+            || request.getDob() == null) {
+        throw new IllegalArgumentException("All fields are required.");
+    }
+
+    /*
+     * Check whether email is already registered in the system.
+     */
+    if (userRepository.existsByEmail(email)) {
+        throw new IllegalArgumentException("Email already exists.");
+    }
+
+    /*
+     * Check whether mobile number is already registered in the system.
+     */
+    if (userRepository.existsByMobile(mobileNumber)) {
+        throw new IllegalArgumentException("Mobile number already exists.");
+    }
+
+    /*
+     * Generate temporary password and activation token.
+     * Temporary password is sent to candidate through email.
+     * Activation token is used to activate the account securely.
+     */
+    String temporaryPassword = "TEMP@" + UUID.randomUUID().toString().substring(0, 8);
+    String activationToken = UUID.randomUUID().toString();
+
+    /*
+     * Create a new user account for the candidate.
+     * Candidate status remains PENDING until account activation.
+     */
+    User user = new User();
+    user.setName(fullName);
+    user.setEmail(email);
+    user.setMobile(mobileNumber);
+    user.setDateOfBirth(request.getDob());
+    user.setPassword(passwordEncoder.encode(temporaryPassword));
+    user.setRole(Role.CANDIDATE);
+    user.setStatus(UserStatus.PENDING);
+    user.setActivationToken(activationToken);
+    user.setActivationTokenExpiry(LocalDateTime.now().plusHours(24));
+
+    /*
+     * Save candidate user details into the database.
+     */
+    userRepository.save(user);
+
+    /*
+     * Send onboarding email with temporary password and activation token.
+     */
+    emailService.sendCandidateOnboardEmail(
+            email,
+            fullName,
+            temporaryPassword,
+            activationToken);
+}
 }

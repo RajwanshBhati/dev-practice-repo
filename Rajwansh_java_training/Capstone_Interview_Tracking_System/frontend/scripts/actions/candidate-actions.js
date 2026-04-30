@@ -58,7 +58,7 @@ export async function loadJDs() {
 
     if (data.success && data.data?.length > 0) {
       allJDs = data.data;
-      renderGrid(allJDs);
+      renderGrid(allJDs, appliedJdIds);
     } else {
       if (noJobs) noJobs.classList.remove("hidden");
     }
@@ -84,7 +84,7 @@ export async function loadCandidateStatus() {
     }
 
     candidateStatus = data;
-    appliedJdIds = ["applied"];
+    appliedJdIds = data.status === "REJECTED" ? [] : [data.jdId];
 
     const stage = data.status;
     const status = data.status;
@@ -158,7 +158,7 @@ export async function handleApplySubmit(e, selectedApplyJD) {
   const resumeFile = document.getElementById("pResumeFile")?.files?.[0];
   const jdId = extractJdId(selectedApplyJD);
 
-  if (appliedJdIds.length > 0) {
+  if (appliedJdIds.length > 0 && candidateStatus?.status !== "REJECTED") {
     showFormMsg(
       "formError",
       "You have already applied for a position.",
@@ -207,7 +207,10 @@ export async function handleApplySubmit(e, selectedApplyJD) {
     showFormMsg("formError", "Resume required.", "error");
     return;
   }
-
+  if (!/^[6-9]\d{9}$/.test(mobile)) {
+    showFormMsg("formError", "Enter a valid 10-digit mobile number.", "error");
+    return;
+  }
   if (resumeFile.type !== "application/pdf") {
     showFormMsg("formError", "Only PDF allowed.", "error");
     return;
@@ -244,6 +247,17 @@ export async function handleApplySubmit(e, selectedApplyJD) {
       appliedJdIds.push(jdId);
       localStorage.setItem("hasApplied", "true");
 
+      document.querySelectorAll(".apply-btn").forEach((btn) => {
+        btn.disabled = true;
+        btn.textContent = "Applied";
+      });
+
+      const detailApplyBtn = document.getElementById("detailApplyBtn");
+      if (detailApplyBtn) {
+        detailApplyBtn.disabled = true;
+        detailApplyBtn.textContent = "Applied";
+      }
+
       setTimeout(async () => {
         closeApplyModal();
         await loadCandidateStatus();
@@ -276,7 +290,7 @@ export function applyFilters() {
   const typeInput = document.getElementById("filterType")?.value;
 
   const filtered = filterJDs(allJDs, searchInput, typeInput);
-  renderGrid(filtered);
+  renderGrid(filtered, appliedJdIds);
 
   const noJobs = document.getElementById("noJobs");
   if (noJobs) {

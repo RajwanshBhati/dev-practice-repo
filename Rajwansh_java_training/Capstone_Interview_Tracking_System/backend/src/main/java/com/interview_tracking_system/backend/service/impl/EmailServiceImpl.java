@@ -65,13 +65,16 @@ public class EmailServiceImpl implements EmailService {
         message.setTo(toEmail);
         message.setSubject("Panel Account Activation");
 
+        String activationUrl = "http://127.0.0.1:5500/Rajwansh_java_training/Capstone_Interview_Tracking_System/frontend/pages/activate.html?token="
+                + activationLink;
+
         message.setText(
                 "Dear " + fullName + ",\n\n"
                         + "You have been added as a panel member.\n\n"
-                        + "Please open the activation page:\n"
-                        + "http://127.0.0.1:5500/Rajwansh_java_training/Capstone_Interview_Tracking_System/frontend/pages/activate.html\n\n"
-                        + "Use the below token for activation:\n\n"
-                        + activationLink + "\n\n"
+                        + "Please click the below link to set your password:\n\n"
+                        + activationUrl + "\n\n"
+                        + "This link is valid for 24 hours.\n\n"
+                        + "After setting your password, you can login using your email and new password.\n\n"
                         + "Best regards,\n"
                         + "Recruitment Team");
 
@@ -145,5 +148,38 @@ public class EmailServiceImpl implements EmailService {
         mailSender.send(message);
 
         LOGGER.info("Interview assignment mail sent to panel {}", toEmail);
+    }
+
+    /**
+     * Send Candiadte Onboard mail
+     */
+    @Override
+    public void sendCandidateOnboardEmail(
+            final String toEmail,
+            final String candidateName,
+            final String temporaryPassword,
+            final String activationToken) {
+
+        SimpleMailMessage message = new SimpleMailMessage();
+
+        String activationUrl = "http://127.0.0.1:5500/Rajwansh_java_training/Capstone_Interview_Tracking_System/frontend/pages/activate.html?token="
+                + activationToken;
+
+        message.setTo(toEmail);
+        message.setSubject("Candidate Account Onboarded");
+
+        message.setText(
+                "Dear " + candidateName + ",\n\n"
+                        + "Your candidate account has been created by HR.\n\n"
+                        + "Login Email: " + toEmail + "\n"
+                        + "Temporary Password: " + temporaryPassword + "\n\n"
+                        + "Please click the below link to set your new password:\n\n"
+                        + activationUrl + "\n\n"
+                        + "This link is valid for 24 hours.\n\n"
+                        + "After setting your password, you can login using your email and new password.\n\n"
+                        + "Best regards,\n"
+                        + "Recruitment Team");
+
+        mailSender.send(message);
     }
 }

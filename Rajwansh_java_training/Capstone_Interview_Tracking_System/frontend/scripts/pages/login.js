@@ -1,65 +1,77 @@
-import { showAlert, hideAlert } from "../utils/alert.js";
-import {
-  showFieldError,
-  clearFieldError,
-  markFieldSuccess,
-} from "../utils/fieldValidation.js";
-import { setLoading } from "../utils/loader.js";
 import { loginAPI } from "../services/authService.js";
 import { storeAuthData } from "../utils/authStorage.js";
 import { redirectByRole } from "../utils/redirect.js";
 
-export async function handleLogin(e) {
+const form = document.getElementById("loginForm");
+const message = document.getElementById("loginMessage");
+const loginBtn = document.getElementById("login-btn");
+
+function showMessage(text, type = "error") {
+  if (!message) return;
+  message.textContent = text;
+  message.className =
+    type === "success" ? "message msg-success" : "message msg-error";
+}
+
+const params = new URLSearchParams(window.location.search);
+
+if (params.get("activated") === "true") {
+  showMessage("Password set successfully. Please login.", "success");
+}
+
+function setLoginLoading(loading) {
+  if (!loginBtn) return;
+  loginBtn.disabled = loading;
+  loginBtn.textContent = loading ? "Logging in..." : "Login";
+}
+
+form?.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  // Get form values and trim whitespace
-  const email = document.getElementById("email").value.trim();
+  const email = document.getElementById("email").value.trim().toLowerCase();
   const password = document.getElementById("password").value;
 
-  hideAlert();
+  showMessage("");
 
-  let valid = true;
-
-  // Basic validation
-  if (!email) {
-    showFieldError("email", "Email required");
-    valid = false;
+  if (!email || !password) {
+    showMessage("Email and password are required.");
+    return;
   }
 
-  if (email && !/^\S+@\S+\.\S+$/.test(email)) {
-    showFieldError("email", "Invalid email format");
-    valid = false;
+  if (!/^\S+@\S+\.\S+$/.test(email)) {
+    showMessage("Enter a valid email address.");
+    return;
   }
 
-  // Simple email format validation
-  if (!password) {
-    showFieldError("password", "Password required");
-    valid = false;
-  }
+  setLoginLoading(true);
 
-  if (!valid) return;
-
-  setLoading("login-btn", true);
-
-  // Clear previous errors
-  clearFieldError("email");
-  clearFieldError("password");
   try {
     const result = await loginAPI(email, password);
 
-    if (result.success) {
-      storeAuthData(result.data);
-      showAlert("Login success", "success");
-
-      setTimeout(() => {
-        redirectByRole(result.data.role);
-      }, 1000);
-    } else {
-      showAlert(result.message, "error");
+    if (!result?.success || !result?.data) {
+      showMessage(result?.message || "Login failed.");
+      return;
     }
+
+    storeAuthData(result.data);
+    showMessage("Login successful. Redirecting...", "success");
+
+    setTimeout(() => {
+      const pendingApplyJdId = localStorage.getItem("pendingApplyJdId");
+
+      if (
+        pendingApplyJdId &&
+        String(result.data.role).toLowerCase() === "candidate"
+      ) {
+        window.location.href = "candidate-dashboard.html";
+        return;
+      }
+
+      redirectByRole(result.data.role);
+    }, 700);
   } catch (err) {
-    showAlert("Server error", "error");
+    showMessage(err.message || "Login failed.");
   } finally {
-    setLoading("login-btn", false);
+    setLoginLoading(false);
   }
-}
+});

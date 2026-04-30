@@ -4,6 +4,7 @@ import {
   getName,
   extractJdId,
   appliedJdIds,
+  allJDs,
   loadJDs,
   loadCandidateStatus,
   handleApplySubmit,
@@ -16,12 +17,14 @@ let selectedApplyJD = null;
 // Stage tracker config
 const STAGE_IDS = ["st-PROFILING", "st-L1", "st-L2", "st-HR"];
 const STAGE_MAP = {
+  NOT_APPLIED: -1,
   PROFILING: 0,
   SCREENING: 0,
-  L1: 1,
-  L2: 2,
-  HR: 3,
+  L1_TECHNICAL: 1,
+  L2_TECHNICAL: 2,
   HR_ROUND: 3,
+  REJECTED: 3,
+  SELECTED: 3,
 };
 
 // Formatting helpers
@@ -97,23 +100,28 @@ export function hideFormMessages() {
 }
 
 // JD grid renderer
-export function renderGrid(data) {
+export function renderGrid(data, appliedJdIds = []) {
   const grid = document.getElementById("jdGrid");
   if (!grid) return;
+
   grid.innerHTML = "";
 
   data.forEach((jd) => {
+    const hasAlreadyApplied = appliedJdIds.includes(jd.id);
+
     const skillsHtml = (jd.skillsRequired || [])
       .slice(0, 3)
       .map((s) => `<span class="skill-chip">${s}</span>`)
       .join("");
 
     const more = (jd.skillsRequired || []).length - 3;
+
     const moreHtml =
       more > 0 ? `<span class="skill-chip-more">+${more}</span>` : "";
 
     const card = document.createElement("div");
     card.className = "jd-card";
+
     card.innerHTML = `
       <div class="jd-card-header">
         <div class="jd-card-title">${jd.jobTitle}</div>
@@ -121,10 +129,12 @@ export function renderGrid(data) {
           ${jobTypeLabel(jd.jobType)}
         </span>
       </div>
+
       <div class="jd-card-meta">
         <span>${jd.location}</span>
         <span>${jd.minExperience}–${jd.maxExperience} yrs</span>
       </div>
+
       <div class="jd-card-skills">
         ${skillsHtml}${moreHtml}
       </div>
@@ -132,13 +142,24 @@ export function renderGrid(data) {
         <span class="jd-card-salary">
           ${formatSalary(jd.minSalary)} – ${formatSalary(jd.maxSalary)}
         </span>
-        <span style="font-size:0.8rem;color:var(--primary);font-weight:600;">
-          View Details →
-        </span>
+
+        <button class="apply-btn"
+          ${hasAlreadyApplied ? "disabled" : ""}
+          data-id="${jd.id}">
+          ${hasAlreadyApplied ? "Applied" : "Apply Now"}
+        </button>
       </div>
     `;
+    const applyBtn = card.querySelector(".apply-btn");
 
+    if (applyBtn && !hasAlreadyApplied) {
+      applyBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        openDetailModal(jd);
+      });
+    }
     card.addEventListener("click", () => openDetailModal(jd));
+
     grid.appendChild(card);
   });
 }
@@ -169,13 +190,16 @@ function openDetailModal(jd) {
   }
 
   const applyBtn = document.getElementById("detailApplyBtn");
+
   if (applyBtn) {
     if (appliedJdIds.length > 0) {
-      applyBtn.textContent = "Already Applied";
+      applyBtn.textContent = "Applied";
       applyBtn.disabled = true;
+      applyBtn.classList.add("disabled");
     } else {
       applyBtn.textContent = "Apply for this Position";
       applyBtn.disabled = false;
+      applyBtn.classList.remove("disabled");
     }
   }
 
@@ -243,6 +267,20 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   await loadCandidateStatus();
   await loadJDs();
+
+  const pendingApplyJdId = localStorage.getItem("pendingApplyJdId");
+
+  if (pendingApplyJdId) {
+    const jd = allJDs.find(
+      (item) => String(item.id) === String(pendingApplyJdId),
+    );
+
+    if (jd && appliedJdIds.length === 0) {
+      openApplyModal(jd);
+    }
+
+    localStorage.removeItem("pendingApplyJdId");
+  }
 
   // Detail modal events
   document
