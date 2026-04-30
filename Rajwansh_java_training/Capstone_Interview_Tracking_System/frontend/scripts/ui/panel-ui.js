@@ -23,7 +23,7 @@ export function renderPanelTable(data = []) {
   if (!Array.isArray(data) || data.length === 0) {
     tbody.innerHTML = `
       <tr>
-        <td colspan="9" class="panel-empty-state">
+        <td colspan="10" class="panel-empty-state">
           <div>No interview assigned yet.</div>
           <small>Assigned interviews will appear here after HR schedules them.</small>
         </td>
@@ -44,6 +44,7 @@ export function renderPanelTable(data = []) {
         <td>${escapeHtml(i.candidateName)}</td>
         <td>${escapeHtml(i.candidateEmail)}</td>
         <td>${escapeHtml(i.candidateMobileNumber)}</td>
+        <td>${escapeHtml(i.jobTitle)}</td>
         <td><span class="stage-chip">${escapeHtml(i.stage)}</span></td>
         <td>${escapeHtml(i.interviewDate)}</td>
         <td>${escapeHtml(i.interviewTime)}</td>

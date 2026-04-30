@@ -20,6 +20,8 @@ import com.interview_tracking_system.backend.service.EmailService;
 import com.interview_tracking_system.backend.service.InterviewService;
 import com.interview_tracking_system.backend.entity.User;
 import com.interview_tracking_system.backend.repository.UserRepository;
+import com.interview_tracking_system.backend.entity.JobDescription;
+import com.interview_tracking_system.backend.repository.JobDescriptionRepository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +47,7 @@ public class InterviewServiceImpl implements InterviewService {
     private final UserRepository userRepository;
     private final FeedbackRepository feedbackRepository;
     private final EmailService emailService;
+    private final JobDescriptionRepository jobDescriptionRepository;
 
     /**
      * Creates interview workflow service with required repositories and email
@@ -63,13 +66,15 @@ public class InterviewServiceImpl implements InterviewService {
             final PanelRepository panelRepository,
             final FeedbackRepository feedbackRepository,
             final EmailService emailService,
-            final UserRepository userRepository) {
+            final UserRepository userRepository,
+            final JobDescriptionRepository jobDescriptionRepository) {
         this.candidateRepository = candidateRepository;
         this.interviewRepository = interviewRepository;
         this.interviewPanelRepository = interviewPanelRepository;
         this.userRepository = userRepository;
         this.feedbackRepository = feedbackRepository;
         this.emailService = emailService;
+        this.jobDescriptionRepository = jobDescriptionRepository;
     }
 
     /**
@@ -249,7 +254,15 @@ public class InterviewServiceImpl implements InterviewService {
             dto.setRelevantExperience(candidate.getRelevantExp());
             dto.setCurrentCompany(candidate.getCurrentCompany());
 
-            dto.setJobTitle("-");
+            String jobTitle = "-";
+
+            if (candidate.getJdId() != null) {
+                jobTitle = jobDescriptionRepository.findById(candidate.getJdId())
+                        .map(JobDescription::getJobTitle)
+                        .orElse("-");
+            }
+
+            dto.setJobTitle(jobTitle);
 
             dto.setStage(interview.getStage().name());
 

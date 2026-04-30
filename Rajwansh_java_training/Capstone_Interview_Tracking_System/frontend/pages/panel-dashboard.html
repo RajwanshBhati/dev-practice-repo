@@ -10,77 +10,147 @@
   </head>
 
   <body>
-    <main class="panel-dashboard-page">
-    <button class="panel-back-btn" onclick="history.back()">← Back</button>
-
-    <section class="panel-section">
-      <div class="page-header">
-        <div>
-          <h1>Panel Dashboard</h1>
-          <p id="assign">Assigned Interviews</p>
+    <div class="dashboard-wrapper">
+      <aside class="sidebar">
+        <div class="sidebar-brand">
+          <div class="brand-icon">ATS</div>
+          <span class="brand-name">Panel Dashboard</span>
         </div>
-      </div>
 
-      <div class="panel-table-wrapper">
-        <table class="panel-table">
-          <thead>
-            <tr>
-              <th>Candidate</th>
-              <th>Email</th>
-              <th>Mobile</th>
-              <th>Stage</th>
-              <th>Date</th>
-              <th>Time</th>
-              <th>Focus Area</th>
-              <th>Resume</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody id="panel-table-body"></tbody>
-        </table>
-      </div>
-    </section>
-  </main>
+        <nav class="sidebar-nav">
+          <button
+            class="nav-item active"
+            data-page="interviews"
+            data-filter="all"
+          >
+            Assigned Interviews
+          </button>
 
-    <!-- Feedback Modal -->
-    <div id="feedback-modal" class="modal-overlay" style="display: none;">
-  <div class="modal-box">
-    <div class="modal-header">
-      <h2>Submit Feedback</h2>
-      <button type="button" class="modal-close" onclick="closeFeedback()">×</button>
+          <button
+            class="nav-item"
+            data-page="interviews"
+            data-filter="submitted"
+          >
+            Submitted Feedback
+          </button>
+
+          <button class="nav-item" data-page="interviews" data-filter="pending">
+            Pending Feedback
+          </button>
+
+          <button class="nav-item" data-page="all-jds">All JDs</button>
+        </nav>
+
+        <div class="sidebar-footer">
+          <div class="user-info">
+            <div class="user-avatar" id="user-avatar">P</div>
+            <div class="user-details">
+              <span class="user-name" id="user-name">Panel Member</span>
+              <span class="user-role">Panel</span>
+            </div>
+          </div>
+
+          <button class="logout-btn" id="logout-btn" title="Logout">
+            Signout
+          </button>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <section class="panel-section" id="panel-interview-section">
+          <div class="page-header">
+            <div>
+              <h1>Panel Dashboard</h1>
+              <p id="assign">Assigned Interviews</p>
+            </div>
+          </div>
+
+          <div class="panel-table-wrapper">
+            <table class="panel-table">
+              <thead>
+                <tr>
+                  <th>Candidate</th>
+                  <th>Email</th>
+                  <th>Mobile</th>
+                  <th>Job Title</th>
+                  <th>Stage</th>
+                  <th>Date</th>
+                  <th>Time</th>
+                  <th>Focus Area</th>
+                  <th>Resume</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="panel-table-body"></tbody>
+            </table>
+          </div>
+        </section>
+        <section class="panel-section hidden" id="panel-jd-section">
+          <div class="page-header">
+            <div>
+              <h1>All Job Descriptions</h1>
+              <p>Panel can view all JDs only</p>
+            </div>
+          </div>
+
+          <div class="panel-jd-grid" id="panel-jd-grid"></div>
+        </section>
+      </main>
     </div>
 
-    <form id="feedback-form" class="feedback-form">
-      <textarea id="feedback-comments" placeholder="Comments"></textarea>
+    <!-- Feedback Modal -->
+    <div id="feedback-modal" class="modal-overlay" style="display: none">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h2>Submit Feedback</h2>
+          <button type="button" class="modal-close" onclick="closeFeedback()">
+            ×
+          </button>
+        </div>
 
-      <div class="feedback-grid">
-        <input id="feedback-strength" type="text" placeholder="Strengths" />
-        <input id="feedback-weakness" type="text" placeholder="Weakness" />
+        <form id="feedback-form" class="feedback-form">
+          <textarea id="feedback-comments" placeholder="Comments"></textarea>
+
+          <div class="feedback-grid">
+            <input id="feedback-strength" type="text" placeholder="Strengths" />
+            <input id="feedback-weakness" type="text" placeholder="Weakness" />
+          </div>
+
+          <div class="feedback-grid">
+            <select id="feedback-rating">
+              <option value="1">Rating: 1</option>
+              <option value="2">Rating: 2</option>
+              <option value="3">Rating: 3</option>
+              <option value="4">Rating: 4</option>
+              <option value="5">Rating: 5</option>
+            </select>
+
+            <select id="feedback-status">
+              <option value="SELECTED">Selected</option>
+              <option value="REJECTED">Rejected</option>
+              <option value="HOLD">Hold</option>
+            </select>
+          </div>
+
+          <div class="modal-actions">
+            <button
+              type="button"
+              class="btn-submit-feedback"
+              onclick="submitFeedback()"
+            >
+              Submit
+            </button>
+            <button
+              type="button"
+              class="btn-cancel-feedback"
+              onclick="closeFeedback()"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
       </div>
-
-      <div class="feedback-grid">
-        <select id="feedback-rating">
-          <option value="1">Rating: 1</option>
-          <option value="2">Rating: 2</option>
-          <option value="3">Rating: 3</option>
-          <option value="4">Rating: 4</option>
-          <option value="5">Rating: 5</option>
-        </select>
-
-        <select id="feedback-status">
-          <option value="SELECTED">Selected</option>
-          <option value="REJECTED">Rejected</option>
-          <option value="HOLD">Hold</option>
-        </select>
-      </div>
-
-      <div class="modal-actions">
-        <button type="button" class="btn-submit-feedback" onclick="submitFeedback()">Submit</button>
-        <button type="button" class="btn-cancel-feedback" onclick="closeFeedback()">Cancel</button>
-      </div>
-    </form>
-  </div>
-</div>
+    </div>
     <div id="toast-container"></div>
     <!-- JS -->
     <script type="module" src="../scripts/pages/panel-main.js"></script>
