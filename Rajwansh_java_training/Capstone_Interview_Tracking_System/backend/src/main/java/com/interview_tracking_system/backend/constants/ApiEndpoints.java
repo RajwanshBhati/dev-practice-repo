@@ -52,15 +52,48 @@ public final class ApiEndpoints {
 
     public static final String BASE = "/api/v1";
 
+    /**
+     * Resume file endpoint
+     */
+    public static final String RESUME_FILE = "/{fileName:.+}";
+
+    /**
+     * Panel endpoints
+     */
     public static final String PANEL = BASE + "/panel";
+    /**
+     * create panel endpoints
+     */
     public static final String CREATE = "/create";
+    /**
+     * Show List endpoints
+     */
     public static final String LIST = "/list";
 
+    /**
+     * Interviewer endpoints
+     */
     public static final String GETPANEL = "/interviews";
 
+    /**
+     * HR endpoints
+     */
     public static final String SHOWHR = "/api/hr";
+
+    /**
+     * Candidate endpoints
+     */
     public static final String SHOWCANDIDATE = "/candidates";
+
+    /**
+     * Feedback endpoints
+     */
     public static final String SHOWFEED = "/feedback";
+
+    /**
+     * Resume endpoints
+     */
+    public static final String RESUMES = BASE_API + "/resumes";
 
     private ApiEndpoints() {
 
