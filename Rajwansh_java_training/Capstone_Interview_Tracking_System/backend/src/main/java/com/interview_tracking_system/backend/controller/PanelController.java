@@ -16,6 +16,7 @@ import com.interview_tracking_system.backend.entity.User;
 import com.interview_tracking_system.backend.repository.UserRepository;
 import com.interview_tracking_system.backend.service.InterviewService;
 import org.springframework.security.core.Authentication;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -44,7 +45,7 @@ public class PanelController {
      * Create panel member
      */
     @PostMapping(ApiEndpoints.CREATE)
-    public String createPanel(@RequestBody PanelCreateRequest request) {
+    public String createPanel(@Valid @RequestBody PanelCreateRequest request) {
         logger.info("API: Create Panel");
         return panelService.createPanel(request);
     }
@@ -53,7 +54,7 @@ public class PanelController {
      * Activate panel account
      */
     @PostMapping(ApiEndpoints.ACTIVATE)
-    public String activatePanel(@RequestBody PanelActivationRequest request) {
+    public String activatePanel(@Valid @RequestBody PanelActivationRequest request) {
         logger.info("API: Activate Panel");
         return panelService.activatePanel(request);
     }

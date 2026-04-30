@@ -2,6 +2,11 @@ package com.interview_tracking_system.backend.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 /**
  * Request DTO used by HR to schedule an interview.
@@ -11,26 +16,33 @@ public class ScheduleInterviewRequestDTO {
     /**
      * Candidate ID for whom interview is being scheduled.
      */
+    @NotNull(message = "Candidate id is required")
     private Long candidateId;
 
     /**
      * Stage of interview (L1 or L2).
      */
+    @NotBlank(message = "Interview stage is required")
     private String stage;
 
     /**
      * List of panel member IDs (min 1, max 2).
      */
+    @NotEmpty(message = "At least one panel is required")
+    @Size(max = 2, message = "Maximum 2 panels can be assigned")
     private List<Long> panelIds;
 
     /**
      * Scheduled date and time for interview.
      */
+    @NotNull(message = "Interview time is required")
+    @Future(message = "Interview time must be in future")
     private LocalDateTime interviewTime;
 
     /**
      * Focus areas provided by HR for panel evaluation.
      */
+    @NotBlank(message = "Focus area is required")
     private String focusAreas;
 
     public Long getCandidateId() {

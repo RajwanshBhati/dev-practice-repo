@@ -29,6 +29,7 @@ import java.beans.PropertyEditorSupport;
 import java.util.UUID;
 import java.util.Objects;
 import com.interview_tracking_system.backend.dto.CandidateOnboardRequest;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(CandidateApiConstants.BASE_URL)
@@ -87,7 +88,7 @@ public class CandidateController {
      */
     @PostMapping(CandidateApiConstants.REGISTER_URL)
     public ResponseEntity<String> register(
-            @RequestBody final CandidateRegisterRequest request) {
+            @Valid @RequestBody final CandidateRegisterRequest request) {
 
         LOGGER.info("Register request received for email: {}", request.getEmail());
 
@@ -106,8 +107,7 @@ public class CandidateController {
      * @return JWT token if authentication is successful
      */
     @PostMapping(CandidateApiConstants.LOGIN_URL)
-    public ResponseEntity<String> login(
-            @RequestBody final LoginRequestDTO request) {
+    public ResponseEntity<String> login(@Valid @RequestBody final LoginRequestDTO request) {
 
         LOGGER.info("Login request received for email: {}", request.getEmail());
 
@@ -188,8 +188,7 @@ public class CandidateController {
     }
 
     @PostMapping("/onboard")
-    public ResponseEntity<String> onboardCandidate(
-            @RequestBody final CandidateOnboardRequest request) {
+    public ResponseEntity<String> onboardCandidate(@Valid @RequestBody final CandidateOnboardRequest request) {
 
         LOGGER.info("HR onboard candidate request received for email: {}", request.getEmail());
 

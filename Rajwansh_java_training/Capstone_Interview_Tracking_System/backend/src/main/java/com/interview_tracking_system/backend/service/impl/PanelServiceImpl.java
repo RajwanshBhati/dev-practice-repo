@@ -45,11 +45,11 @@ public class PanelServiceImpl implements PanelService {
     public String createPanel(PanelCreateRequest request) {
 
         logger.info("Creating panel user: {}", request.getEmail());
-
-        // check duplicate email
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new RuntimeException("Email already exists");
         }
+
+        logger.info("Panel created successfully with email: {}", request.getEmail());
 
         String token = UUID.randomUUID().toString();
 
@@ -72,7 +72,6 @@ public class PanelServiceImpl implements PanelService {
 
         userRepository.save(user);
 
-        // String link = "http://127.0.0.1:5501/panel/activate?token=" + token;
         String activationToken = token;
 
         emailService.sendPanelActivationEmail(

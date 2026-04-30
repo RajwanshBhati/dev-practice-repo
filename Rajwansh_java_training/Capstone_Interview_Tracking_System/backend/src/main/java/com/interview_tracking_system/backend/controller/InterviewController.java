@@ -18,6 +18,7 @@ import com.interview_tracking_system.backend.repository.UserRepository;
 import org.springframework.security.core.Authentication;
 
 import com.interview_tracking_system.backend.dto.PanelInterviewDTO;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -50,7 +51,7 @@ public class InterviewController {
      * @param request schedule request
      */
     @PostMapping("/schedule")
-    public void scheduleInterview(@RequestBody final ScheduleInterviewRequestDTO request) {
+    public void scheduleInterview(@Valid @RequestBody final ScheduleInterviewRequestDTO request) {
 
         LOGGER.info("Received request to schedule interview");
 
@@ -63,7 +64,7 @@ public class InterviewController {
      * @param request update request
      */
     @PostMapping("/status")
-    public void updateCandidateStatus(@RequestBody final UpdateCandidateStatusDTO request) {
+    public void updateCandidateStatus(@Valid @RequestBody final UpdateCandidateStatusDTO request) {
 
         LOGGER.info("Received request to update candidate status");
 
@@ -78,7 +79,7 @@ public class InterviewController {
      */
     @PostMapping("/feedback")
     public void submitFeedback(final Authentication authentication,
-            @RequestBody final SubmitFeedbackRequestDTO request) {
+            @Valid @RequestBody final SubmitFeedbackRequestDTO request) {
 
         String email = authentication.getName();
 

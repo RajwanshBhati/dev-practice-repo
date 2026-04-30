@@ -88,6 +88,7 @@ public class CandidateServiceImpl implements CandidateService {
 
     @Override
     public void register(final CandidateRegisterRequest request) {
+        LOGGER.info("Candidate registration request received for email: {}", request.getEmail());
 
         String fullName = request.getFullName() == null ? "" : request.getFullName().trim();
         String email = request.getEmail() == null ? "" : request.getEmail().trim().toLowerCase();
@@ -100,18 +101,22 @@ public class CandidateServiceImpl implements CandidateService {
                 || request.getGender() == null
                 || request.getPassword() == null
                 || request.getConfirmPassword() == null) {
+            LOGGER.warn("Candidate registration failed due to missing required fields for email: {}", email);
             throw new IllegalArgumentException("All fields are required.");
         }
 
         if (!request.getPassword().equals(request.getConfirmPassword())) {
+            LOGGER.warn("Password mismatch during candidate registration for email: {}", email);
             throw new IllegalArgumentException(ERROR_PASSWORD_MISMATCH);
         }
 
         if (userRepository.existsByEmail(email)) {
+            LOGGER.warn("Candidate registration failed. Email already exists: {}", email);
             throw new IllegalArgumentException(ERROR_EMAIL_EXISTS);
         }
 
         if (userRepository.existsByMobile(mobileNumber)) {
+            LOGGER.warn("Candidate registration failed. Mobile already exists: {}", mobileNumber);
             throw new IllegalArgumentException("Mobile number already exists.");
         }
 
@@ -126,6 +131,7 @@ public class CandidateServiceImpl implements CandidateService {
         user.setStatus(UserStatus.ACTIVE);
 
         userRepository.save(user);
+        LOGGER.info("Candidate registered successfully with email: {}", email);
     }
 
     /**
@@ -214,6 +220,7 @@ public class CandidateServiceImpl implements CandidateService {
         candidate.setMobile(fullMobile);
 
         candidate.setDateOfBirth(request.getDateOfBirth());
+        LOGGER.info("Storing resume file for candidate email: {}", email);
         candidate.setResumeUrl(storeResumeFile(resumeFile, email));
         candidate.setCurrentCompany(request.getCurrentCompany());
         candidate.setTotalExp(request.getTotalExp());
@@ -239,6 +246,7 @@ public class CandidateServiceImpl implements CandidateService {
 
     private String storeResumeFile(final MultipartFile resumeFile, final String email) {
         if (resumeFile == null || resumeFile.isEmpty()) {
+            LOGGER.warn("Resume upload failed. Empty resume file for email: {}", email);
             throw new IllegalArgumentException("Resume file is required");
         }
 
@@ -252,6 +260,7 @@ public class CandidateServiceImpl implements CandidateService {
 
             Path targetLocation = uploadPath.resolve(storedName);
             Files.copy(resumeFile.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+            LOGGER.info("Resume stored successfully for email: {} with file name: {}", email, storedName);
 
             return "/api/resumes/" + storedName;
         } catch (IOException ex) {

@@ -1,6 +1,11 @@
 package com.interview_tracking_system.backend.dto;
 
 import com.interview_tracking_system.backend.enums.Gender;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
 
@@ -10,24 +15,35 @@ import java.time.LocalDate;
 public class CandidateRegisterRequest {
 
     /** Full name of the candidate. */
+    @NotBlank(message = "Full name is required")
+    @Size(min = 2, max = 80, message = "Full name must be between 2 and 80 characters")
     private String fullName;
 
     /** Email address of the candidate. */
+    @NotBlank(message = "Email is required")
+    @Email(message = "Invalid email format")
     private String email;
 
     /** Mobile No. of the candidadte */
+    @NotBlank(message = "Mobile number is required")
+    @Pattern(regexp = "^[6-9]\\d{9}$", message = "Enter a valid 10-digit mobile number")
     private String mobileNumber;
 
     /* DOB of candidate */
+    @NotNull(message = "Date of birth is required")
     private LocalDate dob;
 
     /** Gender of candidate */
+    @NotNull(message = "Gender is required")
     private Gender gender;
 
     /** Password chosen by the candidate. */
+    @NotBlank(message = "Password is required")
+    @Size(min = 8, message = "Password must be at least 8 characters")
     private String password;
 
     /** Confirm password for validation. */
+    @NotBlank(message = "Confirm password is required")
     private String confirmPassword;
 
     /**

@@ -16,7 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.stream.Collectors;
 import java.util.Objects;
 
@@ -27,7 +28,7 @@ import java.util.Objects;
 @Service
 public class JDServiceImpl implements JDService {
 
-    private static final Logger log = Logger.getLogger(JDServiceImpl.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(JDServiceImpl.class);
 
     private final JobDescriptionRepository jdRepository;
     private final JDMapper jdMapper;

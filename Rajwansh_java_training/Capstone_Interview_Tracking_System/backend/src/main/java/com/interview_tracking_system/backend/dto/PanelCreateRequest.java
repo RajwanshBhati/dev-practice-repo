@@ -1,5 +1,10 @@
 package com.interview_tracking_system.backend.dto;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+
 public class PanelCreateRequest {
 
     /**
@@ -10,20 +15,28 @@ public class PanelCreateRequest {
     /**
      * Full name of the panel member being registered. Must not be null or blank.
      */
+    @NotBlank(message = "Panel name is required")
+    @Size(min = 2, max = 80, message = "Panel name must be between 2 and 80 characters")
     private String fullName;
 
     /**
      * Email address of the panel member. Must be unique across all panel members.
      */
+    @NotBlank(message = "Email is required")
+    @Email(message = "Invalid email format")
     private String email;
 
     /** Mobile phone number of the panel member. Optional. */
+    @NotBlank(message = "Mobile number is required")
+    @Pattern(regexp = "^[6-9]\\d{9}$", message = "Enter a valid 10-digit mobile number")
     private String mobile;
 
     /** Organization the panel member belongs to. Optional. */
+    @NotBlank(message = "Organization is required")
     private String organization;
 
-    /** Job designation or title of the panel member. Optional. */
+    /** Job designation or title of the panel member. */
+    @NotBlank(message = "Designation is required")
     private String designation;
 
     /**

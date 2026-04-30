@@ -6,6 +6,7 @@ import com.interview_tracking_system.backend.dto.JDResponseDTO;
 import com.interview_tracking_system.backend.enums.JDStatus;
 import com.interview_tracking_system.backend.enums.JobType;
 import com.interview_tracking_system.backend.service.JDService;
+import com.interview_tracking_system.backend.service.impl.JDServiceImpl;
 import com.interview_tracking_system.backend.constants.ApiEndpoints;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -23,13 +24,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping(ApiEndpoints.BASE_API)
 public class JDController {
 
-        private static final Logger log = Logger.getLogger(JDController.class.getName());
+        private static final Logger log = LoggerFactory.getLogger(JDController.class);
 
         private final JDService jdService;
 
