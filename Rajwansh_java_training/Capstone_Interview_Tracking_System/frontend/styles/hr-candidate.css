@@ -1,0 +1,258 @@
+.candidate-section {
+  padding: 30px;
+}
+
+
+.page-header {
+  margin-bottom: 20px;
+}
+
+.page-header h1 {
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--primary-dark);
+}
+
+.page-header p {
+  margin-top: 6px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+
+.filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+}
+
+.search-wrapper {
+  flex: 2;
+  min-width: 260px;
+}
+
+.search-wrapper input,
+.filter-select {
+  height: 48px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: #fffaf6;
+  padding: 0 14px;
+  font-size: 0.95rem;
+  outline: none;
+}
+
+.search-wrapper input {
+  width: 100%;
+}
+
+.filter-select {
+  min-width: 180px;
+  font-weight: 700;
+}
+
+
+.candidate-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 22px;
+}
+
+
+.candidate-card {
+  background: #fff;
+  border: 1px solid #fed7aa;
+  border-radius: 20px;
+  padding: 24px 26px;
+  box-shadow: 0 12px 30px rgba(120, 53, 15, 0.08);
+  transition: 0.25s ease;
+}
+
+.candidate-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 40px rgba(120, 53, 15, 0.12);
+}
+
+
+.candidate-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.candidate-avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: #9a3f06;
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-size: 1rem;
+  font-weight: 900;
+  flex-shrink: 0;
+}
+
+.candidate-name {
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: var(--text);
+}
+
+.candidate-contact {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.candidate-info-grid,
+.candidate-detail-grid,
+.experience-box {
+  display: flex;
+  flex-direction: column;
+  margin: 18px 0 12px;
+}
+
+.candidate-info-grid div,
+.candidate-detail-grid div,
+.experience-box div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 2px;
+  border-bottom: 1px solid #f3d7b8;
+  gap: 14px;
+}
+
+.candidate-info-grid div:last-child,
+.candidate-detail-grid div:last-child,
+.experience-box div:last-child {
+  border-bottom: none;
+}
+
+.candidate-info-grid span,
+.candidate-detail-grid span,
+.experience-box span {
+  min-width: 120px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.candidate-info-grid strong,
+.candidate-detail-grid strong,
+.experience-box strong {
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 900;
+  text-align: right;
+  word-break: break-word;
+}
+
+.experience-box strong {
+  color: var(--primary);
+}
+
+
+.candidate-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 18px;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+
+.status {
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.status.profiling,
+.status.screening,
+.status.l1_technical,
+.status.l2_technical,
+.status.hr_round {
+  background: #ffedd5;
+  color: #9a3412;
+}
+
+.status.selected {
+  background: #dcfce7;
+  color: #047857;
+}
+
+.status.rejected {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+
+.resume-btn,
+.resume-link {
+  text-decoration: none;
+  background: #ecfdf5;
+  color: #047857;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 900;
+}
+
+.action-select,
+.candidate-action-select {
+  width: 100%;
+  height: 46px;
+  margin-top: 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: #fffaf6;
+  color: #9a3412;
+  padding: 0 14px;
+  font-weight: 900;
+  font-size: 0.85rem;
+}
+
+
+.empty-state,
+.table-loader {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.empty-state h3 {
+  color: var(--primary-dark);
+}
+
+.empty-state p {
+  color: var(--muted);
+}
+
+
+@media (max-width: 600px) {
+  .candidate-section {
+    padding: 20px;
+  }
+
+  .candidate-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .candidate-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .resume-btn,
+  .status {
+    text-align: center;
+  }
+}
