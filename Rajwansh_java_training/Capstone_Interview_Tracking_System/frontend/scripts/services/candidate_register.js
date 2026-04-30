@@ -23,6 +23,7 @@ form?.addEventListener("submit", async (e) => {
   const email = document.getElementById("email").value.trim().toLowerCase();
   const mobileNumber = document.getElementById("mobileNumber").value.trim();
   const dob = document.getElementById("dob").value;
+  const gender = document.getElementById("gender").value;
   const password = document.getElementById("password").value;
   const confirmPassword = document.getElementById("confirmPassword").value;
 
@@ -34,7 +35,8 @@ form?.addEventListener("submit", async (e) => {
     !mobileNumber ||
     !dob ||
     !password ||
-    !confirmPassword
+    !confirmPassword ||
+    !gender
   ) {
     showMsg("All fields are required.");
     return;
@@ -68,6 +70,7 @@ form?.addEventListener("submit", async (e) => {
       email,
       mobileNumber,
       dob,
+      gender,
       password,
       confirmPassword,
     });

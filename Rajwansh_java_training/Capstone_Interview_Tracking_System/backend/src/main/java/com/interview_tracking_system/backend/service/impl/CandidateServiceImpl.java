@@ -97,6 +97,7 @@ public class CandidateServiceImpl implements CandidateService {
                 || email.isEmpty()
                 || mobileNumber.isEmpty()
                 || request.getDob() == null
+                || request.getGender() == null
                 || request.getPassword() == null
                 || request.getConfirmPassword() == null) {
             throw new IllegalArgumentException("All fields are required.");
@@ -119,6 +120,7 @@ public class CandidateServiceImpl implements CandidateService {
         user.setEmail(email);
         user.setMobile(mobileNumber);
         user.setDateOfBirth(request.getDob());
+        user.setGender(request.getGender());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRole(Role.CANDIDATE);
         user.setStatus(UserStatus.ACTIVE);
@@ -309,78 +311,79 @@ public class CandidateServiceImpl implements CandidateService {
         return dto;
     }
 
+    @Override
+    public void onboardCandidate(final CandidateOnboardRequest request) {
 
-@Override
-public void onboardCandidate(final CandidateOnboardRequest request) {
+        /*
+         * Trim input values to remove extra spaces.
+         * Email is converted to lowercase to avoid duplicate case issues.
+         */
+        String fullName = request.getFullName() == null ? "" : request.getFullName().trim();
+        String email = request.getEmail() == null ? "" : request.getEmail().trim().toLowerCase();
+        String mobileNumber = request.getMobileNumber() == null ? "" : request.getMobileNumber().trim();
 
-    /*
-     * Trim input values to remove extra spaces.
-     * Email is converted to lowercase to avoid duplicate case issues.
-     */
-    String fullName = request.getFullName() == null ? "" : request.getFullName().trim();
-    String email = request.getEmail() == null ? "" : request.getEmail().trim().toLowerCase();
-    String mobileNumber = request.getMobileNumber() == null ? "" : request.getMobileNumber().trim();
+        /*
+         * Validate mandatory fields.
+         * Candidate cannot be onboarded if any required field is missing.
+         */
+        if (fullName.isEmpty()
+                || email.isEmpty()
+                || mobileNumber.isEmpty()
+                || request.getDob() == null
+                || request.getGender() == null) {
+            throw new IllegalArgumentException("All fields are required.");
+        }
 
-    /*
-     * Validate mandatory fields.
-     * Candidate cannot be onboarded if any required field is missing.
-     */
-    if (fullName.isEmpty()
-            || email.isEmpty()
-            || mobileNumber.isEmpty()
-            || request.getDob() == null) {
-        throw new IllegalArgumentException("All fields are required.");
+        /*
+         * Check whether email is already registered in the system.
+         */
+        if (userRepository.existsByEmail(email)) {
+            throw new IllegalArgumentException("Email already exists.");
+        }
+
+        /*
+         * Check whether mobile number is already registered in the system.
+         */
+        if (userRepository.existsByMobile(mobileNumber)) {
+            throw new IllegalArgumentException("Mobile number already exists.");
+        }
+
+        /*
+         * Generate temporary password and activation token.
+         * Temporary password is sent to candidate through email.
+         * Activation token is used to activate the account securely.
+         */
+        String temporaryPassword = "TEMP@" + UUID.randomUUID().toString().substring(0, 8);
+        String activationToken = UUID.randomUUID().toString();
+
+        /*
+         * Create a new user account for the candidate.
+         * Candidate status remains PENDING until account activation.
+         */
+        User user = new User();
+        user.setName(fullName);
+        user.setEmail(email);
+        user.setMobile(mobileNumber);
+        user.setDateOfBirth(request.getDob());
+        user.setGender(request.getGender());
+        user.setPassword(passwordEncoder.encode(temporaryPassword));
+        user.setRole(Role.CANDIDATE);
+        user.setStatus(UserStatus.PENDING);
+        user.setActivationToken(activationToken);
+        user.setActivationTokenExpiry(LocalDateTime.now().plusHours(24));
+
+        /*
+         * Save candidate user details into the database.
+         */
+        userRepository.save(user);
+
+        /*
+         * Send onboarding email with temporary password and activation token.
+         */
+        emailService.sendCandidateOnboardEmail(
+                email,
+                fullName,
+                temporaryPassword,
+                activationToken);
     }
-
-    /*
-     * Check whether email is already registered in the system.
-     */
-    if (userRepository.existsByEmail(email)) {
-        throw new IllegalArgumentException("Email already exists.");
-    }
-
-    /*
-     * Check whether mobile number is already registered in the system.
-     */
-    if (userRepository.existsByMobile(mobileNumber)) {
-        throw new IllegalArgumentException("Mobile number already exists.");
-    }
-
-    /*
-     * Generate temporary password and activation token.
-     * Temporary password is sent to candidate through email.
-     * Activation token is used to activate the account securely.
-     */
-    String temporaryPassword = "TEMP@" + UUID.randomUUID().toString().substring(0, 8);
-    String activationToken = UUID.randomUUID().toString();
-
-    /*
-     * Create a new user account for the candidate.
-     * Candidate status remains PENDING until account activation.
-     */
-    User user = new User();
-    user.setName(fullName);
-    user.setEmail(email);
-    user.setMobile(mobileNumber);
-    user.setDateOfBirth(request.getDob());
-    user.setPassword(passwordEncoder.encode(temporaryPassword));
-    user.setRole(Role.CANDIDATE);
-    user.setStatus(UserStatus.PENDING);
-    user.setActivationToken(activationToken);
-    user.setActivationTokenExpiry(LocalDateTime.now().plusHours(24));
-
-    /*
-     * Save candidate user details into the database.
-     */
-    userRepository.save(user);
-
-    /*
-     * Send onboarding email with temporary password and activation token.
-     */
-    emailService.sendCandidateOnboardEmail(
-            email,
-            fullName,
-            temporaryPassword,
-            activationToken);
-}
 }

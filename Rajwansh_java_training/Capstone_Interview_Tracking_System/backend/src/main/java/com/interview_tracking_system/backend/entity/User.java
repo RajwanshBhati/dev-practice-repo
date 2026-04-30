@@ -13,7 +13,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Index;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
+import com.interview_tracking_system.backend.enums.Gender;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -49,10 +49,35 @@ public class User {
     private LocalDate dateOfBirth;
 
     /**
+     * Gender
+     */
+
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+
+    /**
      * Mobile number of the user (optional but unique if provided).
      */
     @Column(unique = true)
     private String mobile;
+
+    /**
+     * Gets the gender
+     * 
+     * @return gender
+     */
+    public Gender getGender() {
+        return gender;
+    }
+
+    /**
+     * Sets the Gender
+     * 
+     * @param gender
+     */
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
 
     /**
      * Encrypted password of the user.

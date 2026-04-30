@@ -37,7 +37,7 @@ function renderJobs(jobs) {
       </div>
 
       <p class="job-desc">
-        ${(job.jobDescription || "No description available.").slice(0, 160)}...
+        ${job.jobDescription || "No description available."}
       </p>
 
       <div class="skills">${skills}</div>

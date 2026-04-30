@@ -79,20 +79,22 @@ body {
   color: #1f2937;
 }
 
-.form-group input {
+.form-group input,
+.form-group select {
   width: 100%;
-  height: 48px;
-  padding: 12px 15px;
+  padding: 15px 16px;
   border-radius: 14px;
-  border: 1px solid #fed7aa;
+  border: 1px solid var(--border);
+  font-size: 1rem;
   outline: none;
-  background: #fffaf5;
-  font-size: 0.95rem;
+  background: #fffaf6;
+  color: var(--text);
 }
 
-.form-group input:focus {
-  border-color: #b45309;
-  box-shadow: 0 0 0 4px rgba(180, 83, 9, 0.12);
+.form-group input:focus,
+.form-group select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(180, 83, 9, 0.12);
 }
 
 .register-btn {

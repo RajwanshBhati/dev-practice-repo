@@ -182,8 +182,11 @@ body {
 
   display: flex;
   flex-direction: column;
-  min-height: 360px;
+  min-height: 340px;
+  height: 100%;
+  overflow: hidden;
 }
+
 
 .job-card:hover {
   transform: translateY(-5px);
@@ -193,6 +196,10 @@ body {
   color: var(--primary-dark);
   font-size: 1.3rem;
   margin-bottom: 10px;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .job-meta {
@@ -221,18 +228,29 @@ body {
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+
+  word-break: break-word;
 }
+
 
 .skills {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
   margin: 16px 0;
+
+  max-height: 76px;
+  overflow: hidden;
+}
+
+.job-card p:last-of-type {
+  margin-top: auto;
+  margin-bottom: 0;
 }
 
 .apply-btn {
   width: 100%;
-  margin-top: auto;
+  margin-top: 8px;
 }
 
 @media (max-width: 850px) {

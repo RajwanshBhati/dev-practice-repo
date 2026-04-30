@@ -1,6 +1,7 @@
 package com.interview_tracking_system.backend.dto;
 
 import java.time.LocalDate;
+import com.interview_tracking_system.backend.enums.Gender;
 
 public class CandidateOnboardRequest {
 
@@ -25,6 +26,29 @@ public class CandidateOnboardRequest {
      * Date of birth of the candidate.
      */
     private LocalDate dob;
+
+    /**
+     * Gender of the candidate
+     */
+    private Gender gender;
+
+    /**
+     * Gets the gender of the candidate
+     *
+     * @return gender
+     */
+    public Gender getGender() {
+        return gender;
+    }
+
+    /**
+     * sets the gender
+     * 
+     * @param gender
+     */
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
 
     /**
      * Gets the full name of the candidate.

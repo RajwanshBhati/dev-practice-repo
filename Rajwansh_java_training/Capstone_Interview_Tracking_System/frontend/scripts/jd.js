@@ -114,6 +114,16 @@ function loadOnboardPage() {
         <input type="date" id="candidate-dob" required />
       </div>
 
+      <div class="form-group">
+  <label for="candidate-gender">Gender</label>
+  <select id="candidate-gender" required>
+    <option value="">Select Gender</option>
+    <option value="MALE">Male</option>
+    <option value="FEMALE">Female</option>
+    <option value="OTHER">Other</option>
+  </select>
+</div>
+
       <button type="submit" class="btn-primary">
         Onboard Candidate
       </button>
@@ -220,6 +230,7 @@ function initOnboardForm() {
       email: document.getElementById("candidate-email").value.trim(),
       mobileNumber: document.getElementById("candidate-mobile").value.trim(),
       dob: document.getElementById("candidate-dob").value,
+      gender: document.getElementById("candidate-gender").value,
     };
 
     try {

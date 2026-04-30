@@ -1,5 +1,7 @@
 package com.interview_tracking_system.backend.dto;
 
+import com.interview_tracking_system.backend.enums.Gender;
+
 import java.time.LocalDate;
 
 /**
@@ -18,6 +20,9 @@ public class CandidateRegisterRequest {
 
     /* DOB of candidate */
     private LocalDate dob;
+
+    /** Gender of candidate */
+    private Gender gender;
 
     /** Password chosen by the candidate. */
     private String password;
@@ -72,6 +77,24 @@ public class CandidateRegisterRequest {
      */
     public void setDob(LocalDate dob) {
         this.dob = dob;
+    }
+
+    /**
+     * Gets the Gender
+     *
+     * @return gender
+     */
+    public Gender getGender() {
+        return gender;
+    }
+
+    /**
+     * Sets the gender
+     *
+     * @param gender
+     */
+    public void setGender(Gender gender) {
+        this.gender = gender;
     }
 
     /**
