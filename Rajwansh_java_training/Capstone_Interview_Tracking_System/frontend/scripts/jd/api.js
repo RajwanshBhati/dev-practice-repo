@@ -2,10 +2,18 @@ const API_BASE = "http://localhost:8080/api";
 
 function authHeaders() {
   const token = localStorage.getItem("accessToken");
-  return {
+
+  // Base headers
+  const headers = {
     "Content-Type": "application/json",
-    ...(token && { Authorization: `Bearer ${token}` }),
   };
+
+  // Check if token exists and is not invalid
+  if (token && token !== "undefined" && token !== "null") {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
+  return headers;
 }
 
 export async function fetchAllJDs() {
