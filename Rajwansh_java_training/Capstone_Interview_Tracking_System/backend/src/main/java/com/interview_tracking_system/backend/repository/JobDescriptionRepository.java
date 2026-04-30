@@ -14,29 +14,33 @@ import java.util.UUID;
 @Repository
 public interface JobDescriptionRepository extends JpaRepository<JobDescription, UUID> {
 
-    List<JobDescription> findByStatus(JDStatus status);
+        List<JobDescription> findByStatus(JDStatus status);
 
-    List<JobDescription> findByJobType(JobType jobType);
+        List<JobDescription> findByJobType(JobType jobType);
 
-    List<JobDescription> findByLocation(String location);
+        List<JobDescription> findByLocation(String location);
 
-    /**
-     * Custom search method to filter Job Descriptions based on multiple criteria.
-     * 
-     * @param status
-     * @param jobType
-     * @param location
-     * @param title
-     * @return
-     */
-    @Query("SELECT jd FROM JobDescription jd WHERE " +
-            "(:status IS NULL OR jd.status = :status) AND " +
-            "(:jobType IS NULL OR jd.jobType = :jobType) AND " +
-            "(:location IS NULL OR LOWER(jd.location) LIKE LOWER(CONCAT('%', :location, '%'))) AND " +
-            "(:title IS NULL OR LOWER(jd.jobTitle) LIKE LOWER(CONCAT('%', :title, '%')))")
-    List<JobDescription> searchJDs(
-            @Param("status") JDStatus status,
-            @Param("jobType") JobType jobType,
-            @Param("location") String location,
-            @Param("title") String title);
+        List<JobDescription> findAllByOrderByCreatedAtDesc();
+
+        List<JobDescription> findByStatusOrderByCreatedAtDesc(JDStatus status);
+
+        /**
+         * Custom search method to filter Job Descriptions based on multiple criteria.
+         *
+         * @param status
+         * @param jobType
+         * @param location
+         * @param title
+         * @return
+         */
+        @Query("SELECT jd FROM JobDescription jd WHERE " +
+                        "(:status IS NULL OR jd.status = :status) AND " +
+                        "(:jobType IS NULL OR jd.jobType = :jobType) AND " +
+                        "(:location IS NULL OR LOWER(jd.location) LIKE LOWER(CONCAT('%', :location, '%'))) AND " +
+                        "(:title IS NULL OR LOWER(jd.jobTitle) LIKE LOWER(CONCAT('%', :title, '%')))")
+        List<JobDescription> searchJDs(
+                        @Param("status") JDStatus status,
+                        @Param("jobType") JobType jobType,
+                        @Param("location") String location,
+                        @Param("title") String title);
 }

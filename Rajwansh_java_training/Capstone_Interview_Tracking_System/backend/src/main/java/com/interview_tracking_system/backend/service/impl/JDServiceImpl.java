@@ -80,7 +80,7 @@ public class JDServiceImpl implements JDService {
 
         log.info("Fetching all Job Descriptions");
 
-        return jdRepository.findAll()
+        return jdRepository.findAllByOrderByCreatedAtDesc()
                 .stream()
                 .map(jdMapper::toResponseDTO)
                 .collect(Collectors.toList());
@@ -94,7 +94,7 @@ public class JDServiceImpl implements JDService {
 
         log.info("Fetching ACTIVE Job Descriptions");
 
-        return jdRepository.findByStatus(JDStatus.ACTIVE)
+        return jdRepository.findByStatusOrderByCreatedAtDesc(JDStatus.ACTIVE)
                 .stream()
                 .map(jdMapper::toResponseDTO)
                 .collect(Collectors.toList());

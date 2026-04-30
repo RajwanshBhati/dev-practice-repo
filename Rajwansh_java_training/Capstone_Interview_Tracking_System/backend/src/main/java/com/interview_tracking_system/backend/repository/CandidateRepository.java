@@ -45,11 +45,8 @@ public interface CandidateRepository extends JpaRepository<Candidate, Long> {
      */
     Optional<Candidate> findByEmail(String email);
 
-   /**
+    /**
      * Finds a candidate by email address (case-insensitive).
-     *
-     * <p>This is useful to avoid duplicate entries due to case differences
-     * (e.g., test@gmail.com vs TEST@gmail.com).</p>
      *
      * @param email the email to search
      * @return an Optional containing the candidate if found, otherwise empty
@@ -60,9 +57,6 @@ public interface CandidateRepository extends JpaRepository<Candidate, Long> {
      * Checks if a candidate exists with the given email (case-insensitive)
      * and whose status is not equal to the provided stage.
      *
-     * <p>Useful for preventing duplicate active candidates while allowing
-     * re-registration if the candidate is in a terminal stage like REJECTED.</p>
-     *
      * @param email  the email to check
      * @param status the stage to exclude
      * @return true if such a candidate exists, false otherwise
@@ -71,9 +65,6 @@ public interface CandidateRepository extends JpaRepository<Candidate, Long> {
 
     /**
      * Finds the most recent candidate entry by email (case-insensitive).
-     *
-     * <p>Results are ordered by ID in descending order and only the latest
-     * record is returned.</p>
      *
      * @param email the email to search
      * @return an Optional containing the latest candidate record if found
@@ -84,10 +75,10 @@ public interface CandidateRepository extends JpaRepository<Candidate, Long> {
      * Finds all candidate records by email (case-insensitive),
      * ordered by most recent first.
      *
-     * <p>This is useful for tracking candidate history (multiple applications).</p>
-     *
      * @param email the email to search
      * @return list of candidates sorted by ID in descending order
      */
     List<Candidate> findByEmailIgnoreCaseOrderByIdDesc(String email);
+
+    List<Candidate> findAllByOrderByIdDesc();
 }

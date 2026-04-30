@@ -127,7 +127,7 @@ public class PanelServiceImpl implements PanelService {
 
         logger.info("Fetching all panel users");
 
-        List<User> panels = userRepository.findByRole(Role.PANEL);
+        List<User> panels = userRepository.findByRoleOrderByCreatedAtDesc(Role.PANEL);
 
         List<PanelCreateRequest> response = new ArrayList<>();
 

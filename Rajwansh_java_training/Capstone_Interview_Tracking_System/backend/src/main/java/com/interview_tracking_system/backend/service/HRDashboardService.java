@@ -38,7 +38,7 @@ public class HRDashboardService {
 
                 LOGGER.info("Fetching all candidates for HR dashboard");
 
-                List<Candidate> candidates = candidateRepository.findAll();
+                List<Candidate> candidates = candidateRepository.findAllByOrderByIdDesc();
                 List<HRCandidateFullDTO> result = new ArrayList<>();
 
                 for (Candidate c : candidates) {
