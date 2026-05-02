@@ -137,6 +137,15 @@ public class JobDescription {
     }
 
     /**
+     * Sets the unique identifier.
+     *
+     * @param id the id to set
+     */
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    /**
      * Returns the job title.
      *
      * @return the jobTitle
@@ -335,6 +344,24 @@ public class JobDescription {
     }
 
     /**
+     * Sets the creation timestamp.
+     *
+     * @param createdAt the createdAt to set
+     */
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    /**
+     * Sets the updated timestamp.
+     *
+     * @param updatedAt the updatedAt to set
+     */
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    /**
      * Returns a new builder instance.
      *
      * @return the builder
@@ -369,7 +396,7 @@ public class JobDescription {
 
         /**
          * Sets the ID for the job description.
-         * 
+         *
          * @param id the ID to set
          * @return this builder instance
          */
@@ -380,7 +407,7 @@ public class JobDescription {
 
         /**
          * Sets the job title.
-         * 
+         *
          * @param jobTitle the job title to set
          * @return this builder instance
          */
@@ -391,7 +418,7 @@ public class JobDescription {
 
         /**
          * Sets the job description text.
-         * 
+         *
          * @param jobDescription the job description to set
          * @return this builder instance
          */
@@ -402,7 +429,7 @@ public class JobDescription {
 
         /**
          * Sets the list of required skills.
-         * 
+         *
          * @param skillsRequired the skills required to set
          * @return this builder instance
          */
@@ -413,7 +440,7 @@ public class JobDescription {
 
         /**
          * Sets the minimum experience required.
-         * 
+         *
          * @param minExperience the minimum experience to set
          * @return this builder instance
          */
@@ -424,7 +451,7 @@ public class JobDescription {
 
         /**
          * Sets the maximum experience required.
-         * 
+         *
          * @param maxExperience the maximum experience to set
          * @return this builder instance
          */
@@ -435,7 +462,7 @@ public class JobDescription {
 
         /**
          * Sets the minimum salary offered.
-         * 
+         *
          * @param minSalary the minimum salary to set
          * @return this builder instance
          */
@@ -446,7 +473,7 @@ public class JobDescription {
 
         /**
          * Sets the maximum salary offered.
-         * 
+         *
          * @param maxSalary the maximum salary to set
          * @return this builder instance
          */
@@ -457,7 +484,7 @@ public class JobDescription {
 
         /**
          * Sets the job location.
-         * 
+         *
          * @param location the location to set
          * @return this builder instance
          */
@@ -468,7 +495,7 @@ public class JobDescription {
 
         /**
          * Sets the job type.
-         * 
+         *
          * @param jobType the job type to set
          * @return this builder instance
          */
@@ -479,7 +506,7 @@ public class JobDescription {
 
         /**
          * Sets the status of the job description.
-         * 
+         *
          * @param status the status to set
          * @return this builder instance
          */
@@ -490,7 +517,7 @@ public class JobDescription {
 
         /**
          * Builds and returns a JobDescription instance based on the provided values.
-         * 
+         *
          * @return a new JobDescription instance
          */
         public JobDescription build() {
