@@ -110,6 +110,11 @@ public class Candidate {
     @JoinColumn(name = "candidate_user_id", unique = true)
     private CandidateUser candidateUser;
 
+    /** Stage where candidate was rejected. */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "rejected_stage")
+    private Stage rejectedStage;
+
     /**
      * Returns the unique identifier.
      *
@@ -407,5 +412,23 @@ public class Candidate {
      */
     public void setJdId(final UUID jobDescriptionId) {
         this.jdId = jobDescriptionId;
+    }
+
+    /**
+     * get Rejected Stage
+     * 
+     * @return Rejected Stage
+     */
+    public Stage getRejectedStage() {
+        return rejectedStage;
+    }
+
+    /**
+     * set rejected stage
+     * 
+     * @param rejectedStage
+     */
+    public void setRejectedStage(final Stage rejectedStage) {
+        this.rejectedStage = rejectedStage;
     }
 }

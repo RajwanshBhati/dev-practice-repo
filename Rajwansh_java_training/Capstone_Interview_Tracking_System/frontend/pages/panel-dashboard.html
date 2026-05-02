@@ -112,6 +112,12 @@
         <form id="feedback-form" class="feedback-form">
           <textarea id="feedback-comments" placeholder="Comments"></textarea>
 
+          <textarea
+            id="feedback-areas-covered"
+            placeholder="Areas Covered (e.g. Java, Spring Boot, SQL, DSA)"
+            required
+          ></textarea>
+
           <div class="feedback-grid">
             <input id="feedback-strength" type="text" placeholder="Strengths" />
             <input id="feedback-weakness" type="text" placeholder="Weakness" />
@@ -129,7 +135,6 @@
             <select id="feedback-status">
               <option value="SELECTED">Selected</option>
               <option value="REJECTED">Rejected</option>
-              <option value="HOLD">Hold</option>
             </select>
           </div>
 

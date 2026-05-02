@@ -1,110 +1,104 @@
-/**
- * Holds candidate data currently loaded on HR screen.
- */
+import { showToast } from "../utils/toast.js";
 let candidateList = [];
+let currentPage = 1;
+const pageSize = 5;
 
-/**
- * Stores candidate list for filtering and rendering.
- */
 export function setCandidateList(candidates) {
   candidateList = candidates || [];
 }
 
-/**
- * Returns all candidates from local state.
- */
 export function getCandidateList() {
   return candidateList;
 }
 
-/**
- * Renders complete candidate table for HR.
- */
 export function renderCandidateTable(candidates) {
+  const totalPages = Math.ceil((candidates || []).length / pageSize);
+  if (currentPage > totalPages) currentPage = 1;
+
+  const startIndex = (currentPage - 1) * pageSize;
+  const paginatedCandidates = (candidates || []).slice(
+    startIndex,
+    startIndex + pageSize,
+  );
   const container = document.getElementById("candidate-container");
   const emptyState = document.getElementById("candidate-empty-state");
   const loader = document.getElementById("candidate-table-loader");
 
-  loader.style.display = "none";
+  if (!container) return;
+
+  if (loader) loader.style.display = "none";
   container.innerHTML = "";
 
-  if (!candidates || candidates.length === 0) {
-    emptyState.style.display = "block";
+  if (!paginatedCandidates || paginatedCandidates.length === 0) {
+    if (emptyState) emptyState.style.display = "block";
     return;
   }
 
-  emptyState.style.display = "none";
+  if (emptyState) emptyState.style.display = "none";
 
-  container.innerHTML = candidates
+  container.innerHTML = paginatedCandidates
     .map((candidate) => {
       const candidateId =
         candidate.id || candidate.candidateId || candidate.candidateUserId;
 
+      const status = String(candidate.status || "PROFILING").toLowerCase();
+
       return `
-  <div class="candidate-card">
-    <div class="candidate-header">
-      <div class="candidate-avatar">
-        ${candidate.name?.charAt(0)?.toUpperCase() || "C"}
-      </div>
+        <div class="candidate-card">
+          <div class="candidate-profile">
+            <div class="candidate-avatar">
+              ${escapeHtml(candidate.name?.charAt(0)?.toUpperCase() || "C")}
+            </div>
 
-      <div>
-        <h3>${candidate.name || "-"}</h3>
-        <p>${candidate.email || "-"}</p>
-        <p>${candidate.mobileNumber || "-"}</p>
-      </div>
-    </div>
+            <div>
+              <h3 class="candidate-name">${escapeHtml(candidate.name || "-")}</h3>
+              <p class="candidate-contact">✉ ${escapeHtml(candidate.email || "-")}</p>
+              <p class="candidate-contact">☎ ${escapeHtml(candidate.mobileNumber || "-")}</p>
+            </div>
+          </div>
 
-    <div class="candidate-detail-grid">
-      <div><span>Job</span><strong>${candidate.jdTitle || candidate.jobTitle || "-"}</strong></div>
-      <div><span>Company</span><strong>${candidate.currentCompany || "-"}</strong></div>
-      <div><span>Location</span><strong>${candidate.preferredLocation || "-"}</strong></div>
-      <div><span>Source</span><strong>${candidate.source || "-"}</strong></div>
-      <div><span>Current CTC</span><strong>${candidate.currentCtc ?? "-"} LPA</strong></div>
-      <div><span>Expected CTC</span><strong>${candidate.expectedCtc ?? "-"} LPA</strong></div>
-    </div>
+          <div class="candidate-detail-grid">
+            ${renderInfoBox("Job", candidate.jdTitle || candidate.jobTitle || "-")}
+            ${renderInfoBox("Company", candidate.currentCompany || "-")}
+            ${renderInfoBox("Location", candidate.preferredLocation || "-")}
+            ${renderInfoBox("Source", candidate.source || "-")}
+            ${renderInfoBox("Current CTC", formatLpa(candidate.currentCtc))}
+            ${renderInfoBox("Expected CTC", formatLpa(candidate.expectedCtc))}
+            ${renderInfoBox("Total Experience", formatYears(candidate.totalExperience))}
+            ${renderInfoBox("Relevant Experience", formatYears(candidate.relevantExperience))}
+          </div>
 
-    <div class="experience-box">
-      <div>
-        <span>Total Experience</span>
-        <strong>${candidate.totalExperience ?? "-"} yrs</strong>
-      </div>
-      <div>
-        <span>Relevant Experience</span>
-        <strong>${candidate.relevantExperience ?? "-"} yrs</strong>
-      </div>
-    </div>
+          <div class="candidate-actions">
+            <span class="status ${status}">
+              ${formatStage(candidate.status)}
+            </span>
 
-    <div class="candidate-footer">
-      <span class="status ${String(candidate.status || "").toLowerCase()}">
-        ${candidate.status || "-"}
-      </span>
+            ${renderResumeLink(candidate.resumeUrl)}
 
-      ${renderResumeLink(candidate.resumeUrl)}
-
-      <select class="candidate-action-select" data-id="${candidateId}">
-        <option value="">Choose Action</option>
-        <option value="screening">Screening</option>
-        <option value="l1">Schedule L1</option>
-        <option value="l2">Schedule L2</option>
-        <option value="hr">Schedule HR</option>
-        <option value="reject">Reject</option>
-        <option value="select">Select</option>
-      </select>
-    </div>
-  </div>
-`;
+            <select class="candidate-action-select" data-id="${candidateId}">
+              <option value="">Move Stage</option>
+              <option value="screening">Screening</option>
+              <option value="l1">Schedule L1</option>
+              <option value="l2">Schedule L2</option>
+              <option value="hr">Schedule HR</option>
+              <option value="reject">Reject</option>
+              <option value="select">Select</option>
+            </select>
+          </div>
+        </div>
+      `;
     })
     .join("");
+
+  renderCandidatePagination(candidates.length);
 }
-/**
- * Filters candidates using search text and stage filter.
- */
+
 export function applyCandidateFilters() {
   const searchInput = document.getElementById("candidate-search-input");
   const stageFilter = document.getElementById("candidate-stage-filter");
 
-  const searchText = (searchInput.value || "").toLowerCase();
-  const selectedStage = stageFilter.value;
+  const searchText = (searchInput?.value || "").toLowerCase();
+  const selectedStage = stageFilter?.value || "";
 
   const filteredCandidates = candidateList.filter((candidate) => {
     const mergedText = [
@@ -129,60 +123,107 @@ export function applyCandidateFilters() {
   renderCandidateTable(filteredCandidates);
 }
 
-/**
- * Shows loader while candidate data is loading.
- */
+function renderCandidatePagination(totalItems) {
+  const pagination = document.getElementById("candidate-pagination");
+  if (!pagination) return;
+
+  const totalPages = Math.ceil(totalItems / pageSize);
+
+  if (totalPages <= 1) {
+    pagination.innerHTML = "";
+    return;
+  }
+
+  pagination.innerHTML = `
+    <button ${currentPage === 1 ? "disabled" : ""} id="candidate-prev-page">
+      Prev
+    </button>
+
+    <span>Page ${currentPage} of ${totalPages}</span>
+
+    <button ${currentPage === totalPages ? "disabled" : ""} id="candidate-next-page">
+      Next
+    </button>
+  `;
+
+  document
+    .getElementById("candidate-prev-page")
+    ?.addEventListener("click", () => {
+      currentPage--;
+      renderCandidateTable(getCandidateList());
+    });
+
+  document
+    .getElementById("candidate-next-page")
+    ?.addEventListener("click", () => {
+      currentPage++;
+      renderCandidateTable(getCandidateList());
+    });
+}
+
 export function showCandidateLoader() {
   const loader = document.getElementById("candidate-table-loader");
   const emptyState = document.getElementById("candidate-empty-state");
 
-  loader.style.display = "block";
-  emptyState.style.display = "none";
+  if (loader) loader.style.display = "block";
+  if (emptyState) emptyState.style.display = "none";
 }
 
-/**
- * Shows normal alert message.
- */
-export function showCandidateMessage(message) {
-  alert(message);
+export function showCandidateMessage(message, type = "success") {
+  showToast(message, type);
 }
 
-/**
- * Builds readable experience text.
- */
-function formatExperience(candidate) {
-  const total = candidate.totalExperience || "-";
-  const relevant = candidate.relevantExperience || "-";
-
-  return `${total} total / ${relevant} relevant`;
-}
-
-/**
- * Builds readable CTC text.
- */
-function formatCtc(candidate) {
-  const current = candidate.currentCtc ?? "-";
-  const expected = candidate.expectedCtc ?? "-";
-
+function renderInfoBox(label, value) {
   return `
-    <div class="ctc-box">
-      <div><strong>Currect CTC:</strong> ${current}</div>
-      <div><strong>Expected CTC:</strong> ${expected}</div>
+    <div class="info-box">
+      <span>${escapeHtml(label)}</span>
+      <strong>${escapeHtml(value)}</strong>
     </div>
   `;
 }
 
-/**
- * Renders resume link if candidate uploaded resume.
- */
 function renderResumeLink(resumeUrl) {
   if (!resumeUrl) {
-    return "-";
+    return `<span class="resume-link">No Resume</span>`;
   }
 
   const finalUrl = resumeUrl.startsWith("http")
     ? resumeUrl
     : `http://localhost:8080${resumeUrl}`;
 
-  return `<a href="${finalUrl}" target="_blank" class="resume-link">View Resume</a>`;
+  return `
+    <a href="${escapeHtml(finalUrl)}" target="_blank" class="resume-link">
+      View Resume
+    </a>
+  `;
+}
+
+function formatLpa(value) {
+  return value === null || value === undefined || value === ""
+    ? "-"
+    : `${value} LPA`;
+}
+
+function formatYears(value) {
+  return value === null || value === undefined || value === ""
+    ? "-"
+    : `${value} yrs`;
+}
+
+function formatStage(stage) {
+  if (!stage) return "New";
+
+  return String(stage)
+    .replaceAll("_", " ")
+    .toLowerCase()
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+function escapeHtml(value) {
+  return String(value ?? "-")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }

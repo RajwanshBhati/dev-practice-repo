@@ -37,15 +37,6 @@ public class CandidateRegisterRequest {
     @NotNull(message = "Gender is required")
     private Gender gender;
 
-    /** Password chosen by the candidate. */
-    @NotBlank(message = "Password is required")
-    @Size(min = 8, message = "Password must be at least 8 characters")
-    private String password;
-
-    /** Confirm password for validation. */
-    @NotBlank(message = "Confirm password is required")
-    private String confirmPassword;
-
     /**
      * Returns the full name.
      *
@@ -131,39 +122,4 @@ public class CandidateRegisterRequest {
         this.email = userEmail;
     }
 
-    /**
-     * Returns the password.
-     *
-     * @return the password
-     */
-    public String getPassword() {
-        return password;
-    }
-
-    /**
-     * Sets the password.
-     *
-     * @param userPassword the password to set
-     */
-    public void setPassword(final String userPassword) {
-        this.password = userPassword;
-    }
-
-    /**
-     * Returns the confirm password.
-     *
-     * @return the confirm password
-     */
-    public String getConfirmPassword() {
-        return confirmPassword;
-    }
-
-    /**
-     * Sets the confirm password.
-     *
-     * @param confirm the confirm password to set
-     */
-    public void setConfirmPassword(final String confirm) {
-        this.confirmPassword = confirm;
-    }
 }

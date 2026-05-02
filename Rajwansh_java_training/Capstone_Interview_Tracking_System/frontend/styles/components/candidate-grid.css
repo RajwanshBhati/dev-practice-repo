@@ -1,10 +1,13 @@
-.jd-grid {
+ .jd-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
 }
 
 .jd-card {
+  min-height: 275px;
+  display: flex;
+  flex-direction: column;
   background: #ffffff;
   padding: 22px;
   border-radius: 18px;
@@ -22,23 +25,32 @@
 .jd-card-header {
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
   gap: 12px;
   margin-bottom: 14px;
 }
 
 .jd-card-title {
+  flex: 1;
+  max-width: 210px;
+  line-height: 1.35;
   font-size: 1.15rem;
   font-weight: 900;
   color: #0f172a;
 }
 
 .badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 96px;
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 999px;
   background: #ffedd5;
   color: #9a3412;
-  padding: 6px 12px;
-  border-radius: 999px;
-  font-size: 0.78rem;
-  font-weight: 800;
+  font-size: 0.82rem;
+  font-weight: 900;
   white-space: nowrap;
 }
 
@@ -55,7 +67,7 @@
   flex-wrap: wrap;
   gap: 8px;
   min-height: 34px;
-  margin-bottom: 18px;
+  margin-bottom: auto;
 }
 
 .skill-chip,
@@ -73,6 +85,7 @@
   justify-content: space-between;
   align-items: center;
   gap: 12px;
+  margin-top: 18px;
 }
 
 .jd-card-salary {

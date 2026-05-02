@@ -9,7 +9,12 @@ import {
 
 import { renderTable, updateStats, showTableLoader } from "./jd/render.js";
 
-import { validateJDForm, buildPayload, initSkillInput } from "./jd/form.js";
+import {
+  validateJDForm,
+  buildPayload,
+  initSkillInput,
+  setModalLoading,
+} from "./jd/form.js";
 
 import {
   openCreateModal,
@@ -19,6 +24,8 @@ import {
   closeDeleteModal,
   setDeleteLoading,
 } from "./jd/modal.js";
+
+import { showFieldError, clearErrors } from "./validation.js";
 
 import { initHrCandidateSection } from "./pages/hr-candidate-main.js";
 import { showToast } from "./utils/toast.js";
@@ -152,12 +159,13 @@ async function loadFeedbackPage() {
             <th>Email</th>
             <th>Job Title</th>
             <th>Round</th>
+            <th>Given By</th>
             <th>Feedback</th>
           </tr>
         </thead>
         <tbody id="feedback-table-body">
           <tr>
-            <td colspan="5">Loading feedback...</td>
+            <td colspan="6">Loading feedback...</td>
           </tr>
         </tbody>
       </table>
@@ -185,18 +193,22 @@ async function loadFeedbackPage() {
       feedbackList.forEach((feedback) => {
         rows += `
           <tr>
-            <td>${candidate.name || "-"}</td>
-            <td>${candidate.email || "-"}</td>
-            <td>${candidate.jdTitle || candidate.jobTitle || "-"}</td>
-            <td>${feedback.stage || "-"}</td>
-            <td>
-              <strong>Comments:</strong> ${feedback.comments || "-"}<br/>
-              <strong>Strengths:</strong> ${feedback.strengths || "-"}<br/>
-              <strong>Weaknesses:</strong> ${feedback.weaknesses || "-"}<br/>
-              <strong>Rating:</strong> ${feedback.rating ?? "-"}<br/>
-              <strong>Decision:</strong> ${feedback.decision || "-"}
-            </td>
-          </tr>
+  <td>${candidate.name || "-"}</td>
+  <td>${candidate.email || "-"}</td>
+  <td>${candidate.jdTitle || candidate.jobTitle || "-"}</td>
+  <td>${feedback.stage || "-"}</td>
+  <td>
+    <strong>${feedback.panelName || "-"}</strong><br/>
+    <small>${feedback.panelEmail || "-"}</small>
+  </td>
+  <td>
+    <strong>Comments:</strong> ${feedback.comments || "-"}<br/>
+    <strong>Strengths:</strong> ${feedback.strengths || "-"}<br/>
+    <strong>Weaknesses:</strong> ${feedback.weaknesses || "-"}<br/>
+    <strong>Rating:</strong> ${feedback.rating ?? "-"}<br/>
+    <strong>Decision:</strong> ${feedback.decision || "-"}
+  </td>
+</tr>
         `;
       });
     }
@@ -204,15 +216,31 @@ async function loadFeedbackPage() {
     tbody.innerHTML =
       rows ||
       `<tr>
-        <td colspan="5">No feedback submitted yet.</td>
+        <td colspan="6">No feedback submitted yet.</td>
       </tr>`;
   } catch (error) {
     tbody.innerHTML = `
       <tr>
-        <td colspan="5">Failed to load feedback.</td>
+        <td colspan="6">Failed to load feedback.</td>
       </tr>
     `;
   }
+}
+
+function isAtLeast18(dobValue) {
+  if (!dobValue) return false;
+
+  const dob = new Date(dobValue);
+  const today = new Date();
+
+  let age = today.getFullYear() - dob.getFullYear();
+  const monthDiff = today.getMonth() - dob.getMonth();
+
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+    age--;
+  }
+
+  return age >= 18;
 }
 
 function initOnboardForm() {
@@ -222,8 +250,13 @@ function initOnboardForm() {
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
+    clearErrors();
 
     const msg = document.getElementById("onboard-msg");
+
+    if (msg) {
+      msg.textContent = "";
+    }
 
     const payload = {
       fullName: document.getElementById("candidate-name").value.trim(),
@@ -232,6 +265,55 @@ function initOnboardForm() {
       dob: document.getElementById("candidate-dob").value,
       gender: document.getElementById("candidate-gender").value,
     };
+
+    if (!payload.fullName) {
+      showFieldError("candidate-name", "Full name is required.");
+      return;
+    }
+
+    if (!payload.email) {
+      showFieldError("candidate-email", "Email is required.");
+      return;
+    }
+
+    if (!payload.mobileNumber) {
+      showFieldError("candidate-mobile", "Mobile number is required.");
+      return;
+    }
+
+    if (!/^[6-9]\d{9}$/.test(payload.mobileNumber)) {
+      showFieldError(
+        "candidate-mobile",
+        "Enter a valid 10-digit mobile number.",
+      );
+      return;
+    }
+
+    if (!payload.dob) {
+      showFieldError("candidate-dob", "Date of birth is required.");
+      return;
+    }
+
+    if (!isAtLeast18(payload.dob)) {
+      showFieldError(
+        "candidate-dob",
+        "Candidate must be at least 18 years old.",
+      );
+      return;
+    }
+
+    if (!payload.gender) {
+      showFieldError("candidate-gender", "Gender is required.");
+      return;
+    }
+
+    const btn = form.querySelector("button[type='submit']");
+    const oldText = btn?.textContent || "Onboard Candidate";
+
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = "Sending...";
+    }
 
     try {
       msg.textContent = "Sending email...";
@@ -243,9 +325,15 @@ function initOnboardForm() {
       msg.style.color = "#047857";
 
       form.reset();
+      clearErrors();
     } catch (err) {
       msg.textContent = err.message || "Failed to onboard candidate";
       msg.style.color = "#dc2626";
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = oldText;
+      }
     }
   });
 }
@@ -311,7 +399,7 @@ async function handleSubmit() {
 
   const payload = buildPayload();
   const isEditMode = Boolean(editingId);
-
+  setModalLoading(true);
   try {
     if (isEditMode) {
       const newStatus = document.getElementById("jd-status")?.value;
@@ -342,7 +430,19 @@ async function handleSubmit() {
     editingId = null;
   } catch (err) {
     showToast(err.message || "Something went wrong", "error");
+  } finally {
+    setModalLoading(false);
   }
+}
+
+function getStatusBadgeClass(status) {
+  const value = String(status || "").toLowerCase();
+
+  if (value === "active") return "badge-active";
+  if (value === "inactive") return "badge-inactive";
+  if (value === "closed") return "badge-closed";
+
+  return "badge-inactive";
 }
 
 async function handleConfirmDelete() {

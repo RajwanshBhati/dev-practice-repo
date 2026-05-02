@@ -5,16 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>HR Candidates</title>
 
-    <!-- Styles -->
-     <link rel="stylesheet" href="../styles/theme-polish.css" />
+    <link rel="stylesheet" href="../styles/theme-polish.css" />
     <link rel="stylesheet" href="../styles/hr-candidate.css" />
-
   </head>
 
   <body>
     <section class="candidate-section">
       <div class="page-header">
-        <div class="page-header-left">
+        <div>
           <h1>Candidates</h1>
           <p>Review candidate applications and manage interview rounds</p>
         </div>
@@ -41,62 +39,70 @@
         </select>
       </div>
 
-      <!-- Candidate Table -->
-<div id="candidate-container" class="candidate-grid"></div>
+      <div id="candidate-container" class="candidate-list"></div>
+      <div class="candidate-pagination" id="candidate-pagination"></div>
 
-        <!-- Schedule Modal -->
-        <div class="modal-overlay" id="schedule-modal" style="display: none">
-          <div class="modal-box">
-            <div class="modal-header">
-              <h2>Schedule Interview</h2>
-              <button type="button" id="schedule-modal-close">×</button>
-            </div>
+      <div class="empty-state" id="candidate-empty-state" style="display: none">
+        <h3>No candidates found</h3>
+        <p>
+          Candidate applications will appear here after they apply for a JD.
+        </p>
+      </div>
 
-            <div class="modal-body">
-              <input type="hidden" id="schedule-candidate-id" />
-              <input type="hidden" id="schedule-stage" />
+      <div class="table-loader" id="candidate-table-loader">
+        <div class="spinner-standalone"></div>
+        <p>Loading candidates...</p>
+      </div>
 
-              <label>Interview Date</label>
-              <input type="date" id="interview-date" />
+      <div class="modal-overlay" id="schedule-modal" style="display: none">
+        <div class="modal-box">
+          <div class="modal-header">
+            <h2>Schedule Interview</h2>
+            <button type="button" id="schedule-modal-close">×</button>
+          </div>
 
-              <label>Interview Time</label>
-              <input type="time" id="interview-time" />
+          <div class="modal-body">
+            <input type="hidden" id="schedule-candidate-id" />
+            <input type="hidden" id="schedule-stage" />
 
+            <label>Interview Date</label>
+            <input type="date" id="interview-date" />
+
+            <label>Interview Time</label>
+            <input type="time" id="interview-time" />
+            <div id="panel-selection-block">
               <label>Select Panel Members</label>
-              <select id="panel-select" multiple></select>
+
+              <div class="panel-dropdown">
+                <div id="panel-dropdown-toggle" class="panel-dropdown-toggle">
+                  Select Panel Members
+                </div>
+
+                <div
+                  id="panel-dropdown-menu"
+                  class="panel-dropdown-menu hidden"
+                >
+                  <div id="panel-checkbox-list"></div>
+                </div>
+              </div>
 
               <small>Select minimum 1 and maximum 2 panel members.</small>
-
-              <label>Focus Areas</label>
-              <textarea id="focus-areas" rows="4"></textarea>
             </div>
 
-            <div class="modal-footer">
-              <button type="button" id="schedule-cancel-btn">Cancel</button>
-              <button type="button" id="schedule-submit-btn">Schedule</button>
-            </div>
+            <label id="focus-area-label">Focus Areas</label>
+            <textarea id="focus-areas" rows="4"></textarea>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" id="schedule-cancel-btn">Cancel</button>
+            <button type="button" id="schedule-submit-btn">Schedule</button>
           </div>
         </div>
-        <!-- Empty state -->
-        <div
-          class="empty-state"
-          id="candidate-empty-state"
-          style="display: none"
-        >
-          <h3>No candidates found</h3>
-          <p>
-            Candidate applications will appear here after they apply for a JD.
-          </p>
-        </div>
-
-        <!-- Loader -->
-        <div class="table-loader" id="candidate-table-loader">
-          <div class="spinner-standalone"></div>
-          <p>Loading candidates...</p>
-        </div>
+      </div>
     </section>
+
     <div id="toast-container"></div>
-    <!-- JS -->
+
     <script type="module" src="../scripts/pages/hr-candidate-main.js"></script>
   </body>
 </html>

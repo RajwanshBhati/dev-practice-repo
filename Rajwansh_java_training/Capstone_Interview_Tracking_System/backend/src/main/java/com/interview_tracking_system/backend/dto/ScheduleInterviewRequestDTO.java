@@ -4,9 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 
 /**
  * Request DTO used by HR to schedule an interview.
@@ -28,8 +26,6 @@ public class ScheduleInterviewRequestDTO {
     /**
      * List of panel member IDs (min 1, max 2).
      */
-    @NotEmpty(message = "At least one panel is required")
-    @Size(max = 2, message = "Maximum 2 panels can be assigned")
     private List<Long> panelIds;
 
     /**

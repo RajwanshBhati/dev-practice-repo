@@ -1,49 +1,77 @@
 import {
   loadPanelDashboard,
   submitFeedback,
+  getPanelInterviewData,
 } from "../actions/panel-actions.js";
 
 import { clearAuthData, getName } from "../utils/authStorage.js";
 import { fetchJDs } from "../services/jd.service.js";
+import { renderPanelTable } from "../ui/panel-ui.js";
+
+function formatSalary(value) {
+  if (value === null || value === undefined || value === "") return "-";
+  return `₹${Number(value).toLocaleString("en-IN")}`;
+}
 
 function renderPanelJDs(jobs = []) {
   const grid = document.getElementById("panel-jd-grid");
   if (!grid) return;
 
   if (!Array.isArray(jobs) || jobs.length === 0) {
-    grid.innerHTML = `<p class="panel-empty-state">No JDs available.</p>`;
+    grid.innerHTML = `
+      <div class="panel-empty-state jd-empty">
+        <div class="empty-icon">📄</div>
+        <h3>No JDs available</h3>
+        <p>Job descriptions will appear here once HR creates them.</p>
+      </div>
+    `;
     return;
   }
 
   grid.innerHTML = jobs
-    .map(
-      (job) => `
-        <div class="panel-jd-card">
-          <h3>${job.jobTitle || "Untitled Job"}</h3>
+    .map((job) => {
+      const skills = Array.isArray(job.skillsRequired)
+        ? job.skillsRequired
+        : [];
 
-          <div class="job-meta">
-            <span>${job.location || "-"}</span>
-            <span>${job.jobType || "-"}</span>
-            <span>${job.minExperience || 0}-${job.maxExperience || 0} yrs</span>
+      return `
+        <article class="panel-jd-card">
+          <div class="jd-card-top">
+            <div>
+              <h3>${job.jobTitle || "Untitled Job"}</h3>
+              <p>${job.location || "-"}</p>
+            </div>
+            <span class="jd-status">${job.status || "ACTIVE"}</span>
           </div>
 
-          <p class="job-desc">${job.jobDescription || "No description available."}</p>
-
-          <div class="skills">
-            ${(job.skillsRequired || [])
-              .slice(0, 4)
-              .map((skill) => `<span class="skill">${skill}</span>`)
-              .join("")}
-          </div>
-
-          <p class="salary-text">
-            <strong>Salary:</strong> ₹${job.minSalary || "-"} - ₹${job.maxSalary || "-"}
+          <p class="job-desc">
+            ${job.jobDescription || "No description available."}
           </p>
 
+          <div class="jd-info-grid">
+            <div>
+              <span>Job Type</span>
+              <strong>${job.jobType || "-"}</strong>
+            </div>
+            <div>
+              <span>Experience</span>
+              <strong>${job.minExperience || 0}-${job.maxExperience || 0} yrs</strong>
+            </div>
+            <div>
+              <span>Salary</span>
+              <strong>${formatSalary(job.minSalary)} - ${formatSalary(job.maxSalary)}</strong>
+            </div>
+          </div>
+
+          <div class="jd-skills-simple">
+            <strong>Skills:</strong>
+            <span>${skills.length ? skills.join(", ") : "-"}</span>
+          </div>
+
           <button class="view-only-btn" disabled>View Only</button>
-        </div>
-      `,
-    )
+        </article>
+      `;
+    })
     .join("");
 }
 
@@ -52,6 +80,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const interviewSection = document.getElementById("panel-interview-section");
   const jdSection = document.getElementById("panel-jd-section");
+  const assignText = document.getElementById("assign");
+
   let jdLoaded = false;
 
   document.querySelectorAll(".nav-item").forEach((item) => {
@@ -63,7 +93,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       item.classList.add("active");
 
       const page = item.dataset.page;
-      const filter = item.dataset.filter;
+      const filter = item.dataset.filter || "all";
 
       if (page === "all-jds") {
         interviewSection.classList.add("hidden");
@@ -81,15 +111,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       interviewSection.classList.remove("hidden");
       jdSection.classList.add("hidden");
 
-      document.querySelectorAll("#panel-table-body tr").forEach((row) => {
-        const isSubmitted = row.querySelector(".submitted-chip");
-        const isPending = row.querySelector(".btn-feedback");
-
-        if (filter === "all") row.style.display = "";
+      if (assignText) {
         if (filter === "submitted")
-          row.style.display = isSubmitted ? "" : "none";
-        if (filter === "pending") row.style.display = isPending ? "" : "none";
-      });
+          assignText.textContent = "Submitted Feedback";
+        else if (filter === "pending")
+          assignText.textContent = "Pending Feedback";
+        else assignText.textContent = "Assigned Interviews";
+      }
+
+      renderPanelTable(getPanelInterviewData(), filter);
     });
   });
 

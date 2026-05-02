@@ -51,7 +51,20 @@ function renderJobs(jobs) {
 
     card.querySelector(".apply-btn").addEventListener("click", () => {
       localStorage.setItem("pendingApplyJdId", job.id);
-      window.location.href = "./pages/login.html";
+      const token = localStorage.getItem("accessToken");
+      const role = localStorage.getItem("role");
+
+      if (!token) {
+        window.location.href = "./pages/login.html";
+      } else if (role === "HR") {
+        window.location.href = "./pages/jd-management.html";
+      } else if (role === "CANDIDATE") {
+        window.location.href = "./pages/candidate-dashboard.html";
+      } else if (role === "PANEL") {
+        window.location.href = "./pages/panel-dashboard.html";
+      } else {
+        window.location.href = "./pages/login.html";
+      }
     });
 
     jobGrid.appendChild(card);
@@ -82,4 +95,38 @@ async function loadPublicJobs() {
   }
 }
 
-document.addEventListener("DOMContentLoaded", loadPublicJobs);
+function getDashboardPath(role) {
+  if (role === "HR") return "./pages/jd-management.html";
+  if (role === "CANDIDATE") return "./pages/candidate-dashboard.html";
+  if (role === "PANEL") return "./pages/panel-dashboard.html";
+  return "./pages/login.html";
+}
+
+function setupHomeAuthButtons() {
+  const token = localStorage.getItem("accessToken");
+  const role = localStorage.getItem("role");
+
+  const navActions = document.querySelector(".nav-actions");
+  const heroButtons = document.querySelector(".hero-buttons");
+
+  if (!token || !role) return;
+
+  const dashboardPath = getDashboardPath(role);
+
+  if (navActions) {
+    navActions.innerHTML = `
+      <a href="${dashboardPath}" class="btn btn-primary">Dashboard</a>
+    `;
+  }
+
+  if (heroButtons) {
+    heroButtons.innerHTML = `
+      <a href="${dashboardPath}" class="btn btn-primary">Go to Dashboard</a>
+    `;
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  setupHomeAuthButtons();
+  loadPublicJobs();
+});

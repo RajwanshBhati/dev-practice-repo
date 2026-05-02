@@ -14,17 +14,17 @@ import {
 let selectedJD = null;
 let selectedApplyJD = null;
 
-// Stage tracker config
-const STAGE_IDS = ["st-PROFILING", "st-L1", "st-L2", "st-HR"];
+const STAGE_IDS = ["st-PROFILING", "st-SCREENING", "st-L1", "st-L2", "st-HR"];
+
 const STAGE_MAP = {
   NOT_APPLIED: -1,
   PROFILING: 0,
-  SCREENING: 0,
-  L1_TECHNICAL: 1,
-  L2_TECHNICAL: 2,
-  HR_ROUND: 3,
-  REJECTED: 3,
-  SELECTED: 3,
+  SCREENING: 1,
+  L1_TECHNICAL: 2,
+  L2_TECHNICAL: 3,
+  HR_ROUND: 4,
+  REJECTED: 4,
+  SELECTED: 4,
 };
 
 // Formatting helpers
@@ -54,16 +54,19 @@ export function jobTypeBadgeClass(type) {
 }
 
 // Stage tracker renderer
-export function renderStageTracker(stage, status) {
+export function renderStageTracker(stage, status, rejectedStage = null) {
   const section = document.getElementById("stageSection");
   if (section) section.style.display = "block";
 
-  const activeIndex = STAGE_MAP[stage] ?? 0;
   const isRejected = status === "REJECTED";
+
+  const finalStage = isRejected ? rejectedStage || stage : stage;
+  const activeIndex = STAGE_MAP[finalStage] ?? 0;
 
   STAGE_IDS.forEach((id, i) => {
     const el = document.getElementById(id);
     if (!el) return;
+
     el.classList.remove("active", "done", "rejected");
 
     if (isRejected && i === activeIndex) {
@@ -245,6 +248,18 @@ export function closeApplyModal() {
 
 // DOM bootstrap
 document.addEventListener("DOMContentLoaded", async () => {
+  const resumeInput = document.getElementById("pResumeFile");
+  const resumeFileName = document.getElementById("resumeFileName");
+
+  if (resumeInput) {
+    resumeInput.addEventListener("change", () => {
+      if (resumeInput.files.length > 0) {
+        resumeFileName.textContent = resumeInput.files[0].name;
+      } else {
+        resumeFileName.textContent = "No file selected";
+      }
+    });
+  }
   const token = getToken();
   if (!token) {
     window.location.href = "login.html";

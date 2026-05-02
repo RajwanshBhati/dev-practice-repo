@@ -35,11 +35,24 @@ export async function applyCandidate(formData, token) {
 
   const text = await res.text();
 
+  let data;
+
   try {
-    return JSON.parse(text);
+    data = JSON.parse(text);
   } catch {
-    return { success: false, message: text };
+    data = { message: text };
   }
+
+  if (!res.ok) {
+    throw new Error(
+      data?.message ||
+        data?.error ||
+        data?.statusMessage ||
+        "Application submission failed",
+    );
+  }
+
+  return data;
 }
 export async function getCandidateStatus(token) {
   const res = await fetch(API.CANDIDATE.STATUS, {

@@ -52,7 +52,7 @@ public interface EmailService {
 
         /**
          * Send Candidate OnBoard Email
-         * 
+         *
          * @param toEmail
          * @param candidateName
          * @param temporaryPassword
@@ -61,6 +61,11 @@ public interface EmailService {
         void sendCandidateOnboardEmail(
                         String toEmail,
                         String candidateName,
-                        String temporaryPassword,
                         String activationToken);
+
+        void sendCandidateRegistrationEmail(
+                        String toEmail,
+                        String candidateName,
+                        String activationToken);
+
 }

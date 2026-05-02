@@ -1,7 +1,7 @@
 import {
   fetchCandidateProgress,
   fetchCandidateInterviews,
-} from "../services/candidate-service.js";
+} from "../services/candidate-register-service.js";
 
 import {
   renderCandidateProgress,

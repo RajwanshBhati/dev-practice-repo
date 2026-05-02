@@ -40,4 +40,13 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
      * @return list of feedback entries
      */
     List<Feedback> findByPanelId(Long panelId);
+
+    /**
+     * count by interview id
+     * 
+     * @param interviewId
+     * @return
+     */
+
+    long countByInterviewId(Long interviewId);
 }

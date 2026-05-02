@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -77,6 +78,59 @@ public class InterviewServiceImpl implements InterviewService {
         this.jobDescriptionRepository = jobDescriptionRepository;
     }
 
+    private void validateScheduleStage(final Candidate candidate, final Stage requestedStage) {
+
+        Stage currentStage = candidate.getStatus();
+
+        if (requestedStage == Stage.L1_TECHNICAL && currentStage != Stage.SCREENING) {
+            throw new RuntimeException("Candidate must be in Screening before scheduling L1 interview.");
+        }
+
+        if (requestedStage == Stage.L2_TECHNICAL) {
+            if (currentStage != Stage.L1_TECHNICAL) {
+                throw new RuntimeException("Candidate must complete L1 before scheduling L2 interview.");
+            }
+
+            validateLatestInterviewFeedback(candidate.getId(), Stage.L1_TECHNICAL);
+        }
+
+        if (requestedStage == Stage.HR_ROUND) {
+            if (currentStage != Stage.L2_TECHNICAL) {
+                throw new RuntimeException("Candidate must complete L2 before scheduling HR round.");
+            }
+
+            validateLatestInterviewFeedback(candidate.getId(), Stage.L2_TECHNICAL);
+        }
+    }
+
+    private void validateLatestInterviewFeedback(final Long candidateId, final Stage completedStage) {
+
+        List<Interview> interviews = interviewRepository.findByCandidateId(candidateId);
+
+        Interview latestInterview = null;
+
+        for (Interview interview : interviews) {
+            if (interview.getStage() == completedStage) {
+                latestInterview = interview;
+            }
+        }
+
+        if (latestInterview == null) {
+            throw new RuntimeException("Previous interview round is not scheduled.");
+        }
+
+        int assignedPanelCount = interviewPanelRepository
+                .findByInterviewId(latestInterview.getId())
+                .size();
+
+        long submittedFeedbackCount = feedbackRepository
+                .countByInterviewId(latestInterview.getId());
+
+        if (submittedFeedbackCount < assignedPanelCount) {
+            throw new RuntimeException("All assigned panel feedback is required before scheduling next round.");
+        }
+    }
+
     /**
      * Schedules L1 or L2 interview and assigns selected panels.
      *
@@ -91,13 +145,15 @@ public class InterviewServiceImpl implements InterviewService {
                 .orElseThrow(() -> new RuntimeException("Candidate not found"));
 
         Stage stage = Stage.valueOf(request.getStage());
+        validateScheduleStage(candidate, stage);
 
         List<Long> panelIds = request.getPanelIds();
 
-        if (panelIds == null || panelIds.isEmpty() || panelIds.size() > 2) {
+        if (stage == Stage.HR_ROUND) {
+            panelIds = new ArrayList<>();
+        } else if (panelIds == null || panelIds.isEmpty() || panelIds.size() > 2) {
             throw new RuntimeException("Panel selection must be between 1 and 2");
         }
-
         Interview interview = new Interview();
         interview.setCandidateId(candidate.getId());
         interview.setStage(stage);
@@ -175,6 +231,37 @@ public class InterviewServiceImpl implements InterviewService {
 
         Stage status = Stage.valueOf(statusValue.trim().toUpperCase());
 
+        // Check panel feedback before moving candidate to next stage
+        List<Interview> interviews = interviewRepository.findByCandidateId(candidate.getId());
+
+        Interview latestInterview = interviews.isEmpty()
+                ? null
+                : interviews.get(interviews.size() - 1);
+
+        if (latestInterview != null
+                && latestInterview.getStage() != Stage.HR_ROUND
+                && status != Stage.REJECTED
+                && status != Stage.SELECTED) {
+
+            int assignedPanelCount = interviewPanelRepository
+                    .findByInterviewId(latestInterview.getId())
+                    .size();
+
+            long submittedFeedbackCount = feedbackRepository
+                    .countByInterviewId(latestInterview.getId());
+
+            if (submittedFeedbackCount < assignedPanelCount) {
+                throw new RuntimeException(
+                        "All assigned panel feedback is required before moving candidate to next round.");
+            }
+        }
+
+        if (status == Stage.REJECTED) {
+            candidate.setRejectedStage(candidate.getStatus());
+        } else {
+            candidate.setRejectedStage(null);
+        }
+
         candidate.setStatus(status);
         candidateRepository.save(candidate);
 
@@ -199,8 +286,16 @@ public class InterviewServiceImpl implements InterviewService {
             throw new RuntimeException("Feedback already submitted");
         }
 
-        interviewRepository.findById(request.getInterviewId())
+        Interview interview = interviewRepository.findById(request.getInterviewId())
                 .orElseThrow(() -> new RuntimeException("Interview not found"));
+
+        LocalDateTime interviewDateTime = LocalDateTime.of(
+                interview.getDate(),
+                interview.getTime());
+
+        if (LocalDateTime.now().isBefore(interviewDateTime)) {
+            throw new RuntimeException("Feedback can be submitted only after interview time.");
+        }
 
         userRepository.findById(panelId)
                 .orElseThrow(() -> new RuntimeException("Panel not found"));

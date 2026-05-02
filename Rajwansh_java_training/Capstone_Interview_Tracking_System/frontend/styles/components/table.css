@@ -44,28 +44,6 @@
   color: var(--text-muted);
   margin-top: 2px;
 }
-.skills-cell {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-  max-width: 180px;
-}
-.skill-tag {
-  background: var(--primary-light);
-  color: var(--primary);
-  padding: 0.15rem 0.5rem;
-  border-radius: var(--radius-full);
-  font-size: 0.7rem;
-  font-weight: 500;
-}
-.skill-tag-more {
-  background: var(--bg);
-  color: var(--text-muted);
-  padding: 0.15rem 0.5rem;
-  border-radius: var(--radius-full);
-  font-size: 0.7rem;
-  font-weight: 500;
-}
 .action-btns {
   display: flex;
   align-items: center;

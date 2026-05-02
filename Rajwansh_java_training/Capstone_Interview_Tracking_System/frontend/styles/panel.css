@@ -1,161 +1,157 @@
-/* Panel Page Container */
-.panel-container {
-  padding: 20px;
-}
-
-/* Card Style */
-.panel-card {
-  background: #fff;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
-  margin-bottom: 20px;
-}
-
-/* Form Styling */
-.panel-form {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 15px;
-}
-
-.panel-form .form-group {
+.form-group {
   display: flex;
   flex-direction: column;
+  gap: 8px;
 }
 
-.panel-form input {
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
+.form-group label {
+  font-weight: 800;
+  color: #374151;
+}
+
+.form-group input {
+  width: 100%;
+  height: 50px;
+  border-radius: 14px;
+  border: 1px solid #fed7aa;
+  background: #fffaf6;
+  padding: 0 14px;
+  font-size: 0.95rem;
   outline: none;
-  transition: 0.2s;
 }
 
-.panel-form input:focus {
-  border-color: #4f46e5;
-  box-shadow: 0 0 0 2px rgba(79,70,229,0.1);
+.form-group input:focus {
+  border-color: #ea580c;
+  box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.15);
 }
 
-/* Full width button */
-.panel-form .full-width {
-  grid-column: span 2;
+.full-width {
+  grid-column: 1 / -1;
 }
 
-/* Button */
 .btn-create {
-  background: #4f46e5;
-  color: #fff;
-  padding: 10px;
+  width: 230px;
+  height: 52px;
   border: none;
-  border-radius: 8px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #ea580c, #78350f);
+  color: #ffffff;
+  font-weight: 900;
   cursor: pointer;
 }
 
 .btn-create:hover {
-  background: #4338ca;
+  box-shadow: 0 10px 24px rgba(234, 88, 12, 0.25);
 }
 
-/* Table */
-.panel-table {
+
+
+.panel-container {
   width: 100%;
-  border-collapse: collapse;
+  padding: 26px 28px;
+  display: grid;
+  gap: 24px;
 }
 
-.panel-table th,
-.panel-table td {
-  padding: 12px;
-  border-bottom: 1px solid #eee;
-  text-align: left;
-}
-
-.panel-table th {
-  background: #f9fafb;
-  font-weight: 600;
-}
-
-/* Status badge */
-.badge {
-  padding: 4px 10px;
+.panel-card {
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #fed7aa;
   border-radius: 20px;
-  font-size: 12px;
+  padding: 24px;
+  box-shadow: 0 14px 35px rgba(120, 53, 15, 0.08);
 }
 
-.badge-active {
-  background: #dcfce7;
-  color: #166534;
+.panel-card:first-child {
+  max-width: 780px;
+  margin: 0 auto;
 }
 
-.badge-pending {
-  background: #fef3c7;
-  color: #92400e;
+.panel-card h2 {
+  text-align: center;
+  font-size: 1.55rem;
+  font-weight: 900;
+  color: #78350f;
+  margin-bottom: 20px;
 }
 
-/* Panel Table Wrapper */
+.panel-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 18px;
+}
+
+.form-group input {
+  height: 44px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+}
+
+.btn-create {
+  width: 200px;
+  height: 46px;
+}
+
+.panel-card:last-child {
+  max-width: none;
+  margin: 0;
+}
+
 .panel-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
   border: 1px solid #fed7aa;
   border-radius: 18px;
-  overflow: hidden;
   background: #ffffff;
-  box-shadow: 0 15px 35px rgba(245, 158, 11, 0.08);
 }
 
-/* Table */
 .panel-table {
   width: 100%;
+  min-width: 1050px;
   border-collapse: collapse;
-  font-size: 14px;
 }
 
-/* Header */
 .panel-table thead {
   background: #fff7ed;
 }
 
 .panel-table th {
+  padding: 16px 18px;
   text-align: left;
-  padding: 14px;
-  color: #9a3412;
-  font-weight: 800;
+  color: #78350f;
+  font-size: 0.85rem;
+  font-weight: 900;
+  text-transform: uppercase;
 }
 
-/* Rows */
 .panel-table td {
-  padding: 14px;
-  border-top: 1px solid #fef3c7;
-  color: #334155;
+  padding: 16px 18px;
+  border-top: 1px solid #ffedd5;
+  color: #111827;
+  font-weight: 700;
+  white-space: nowrap;
 }
 
-.btn-create {
-  background: linear-gradient(135deg, #f59e0b, #fb923c); /* theme match */
-  color: #ffffff;
-  border: none;
-
-  padding: 10px 22px;
-  border-radius: 999px;
-
-  font-weight: 800;
-  font-size: 14px;
-  letter-spacing: 0.3px;
-
-  cursor: pointer;
-  transition: all 0.25s ease;
+.panel-table tbody tr:hover {
+  background: #fffaf6;
 }
 
-/* Hover effect */
-.btn-create:hover {
-  box-shadow: 0 10px 22px rgba(245, 158, 11, 0.3);
-  transform: translateY(-1px);
+.panel-empty {
+  text-align: center;
+  color: #6b7280;
+  padding: 28px !important;
 }
 
-/* Click effect */
-.btn-create:active {
-  transform: scale(0.97);
-}
+@media (max-width: 768px) {
+  .panel-container {
+    padding: 20px;
+  }
 
-/* Optional: icon add */
-.btn-create::before {
-  content: "+ ";
-  font-weight: bold;
-}
+  .panel-form {
+    grid-template-columns: 1fr;
+  }
 
+  .btn-create {
+    width: 100%;
+  }
+}

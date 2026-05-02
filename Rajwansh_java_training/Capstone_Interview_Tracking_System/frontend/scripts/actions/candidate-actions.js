@@ -10,6 +10,8 @@ import {
   closeApplyModal,
 } from "../candidate/candidate-dashboard.js";
 
+import { showFieldError, clearErrors } from "../validation.js";
+
 export let allJDs = [];
 export let appliedJdIds = [];
 export let candidateStatus = null;
@@ -68,47 +70,58 @@ export async function loadJDs() {
     if (noJobs) noJobs.classList.remove("hidden");
   }
 }
-
-// Load candidate application status
 export async function loadCandidateStatus() {
   const token = getToken();
-  if (!token) return;
+
+  if (!token) {
+    window.location.href = "login.html";
+    return;
+  }
 
   try {
     const data = await getCandidateStatus(token);
 
+    const stageSection = document.getElementById("stageSection");
+    const currentStatusEl = document.getElementById("candidate-current-status");
+    const finalStatus = document.getElementById("final-status");
+
     if (!data || data.status === "NOT_APPLIED") {
-      document.getElementById("stageSection").style.display = "none";
+      if (stageSection) stageSection.style.display = "none";
+      renderMyApplications(data);
       showBanner("You have not applied for any position yet.", "pending");
       return;
     }
 
+    if (stageSection) stageSection.style.display = "block";
+
     candidateStatus = data;
     appliedJdIds = data.status === "REJECTED" ? [] : [data.jdId];
+    renderMyApplications(data);
 
-    const stage = data.status;
     const status = data.status;
 
-    renderStageTracker(stage, status);
+    renderStageTracker(data.currentStage || status, status, data.rejectedStage);
 
-    document.getElementById("candidate-current-status").textContent = status;
+    if (currentStatusEl) {
+      currentStatusEl.textContent = status;
+    }
 
-    const finalStatus = document.getElementById("final-status");
-
-    if (status === "SELECTED") {
-      finalStatus.innerHTML = `
-        <div class="final-status selected">
-          <h2>Congratulations! You are selected.</h2>
-        </div>
-      `;
-    } else if (status === "REJECTED") {
-      finalStatus.innerHTML = `
-        <div class="final-status rejected">
-          <h2>Your application was rejected.</h2>
-        </div>
-      `;
-    } else {
-      finalStatus.innerHTML = "";
+    if (finalStatus) {
+      if (status === "SELECTED") {
+        finalStatus.innerHTML = `
+          <div class="final-status selected">
+            <h2>Congratulations! You are selected.</h2>
+          </div>
+        `;
+      } else if (status === "REJECTED") {
+        finalStatus.innerHTML = `
+          <div class="final-status rejected">
+            <h2>Your application was rejected.</h2>
+          </div>
+        `;
+      } else {
+        finalStatus.innerHTML = "";
+      }
     }
 
     const bannerMsg =
@@ -126,15 +139,31 @@ export async function loadCandidateStatus() {
           : "pending";
 
     showBanner(bannerMsg, bannerType);
-  } catch (err) {}
-}
+  } catch (err) {
+    console.error("Candidate status load failed:", err);
 
-// Handle application form submission
+    if (err.message?.includes("403")) {
+      showBanner(
+        "Session expired or access denied. Please login again.",
+        "rejected",
+      );
+      localStorage.clear();
+      setTimeout(() => {
+        window.location.href = "login.html";
+      }, 1200);
+      return;
+    }
+
+    showBanner("Unable to load candidate status.", "rejected");
+  }
+}
 export async function handleApplySubmit(e, selectedApplyJD) {
   e.preventDefault();
   hideFormMessages();
+  clearErrors();
 
   const token = getToken();
+
   if (!token) {
     window.location.href = "login.html";
     return;
@@ -173,50 +202,96 @@ export async function handleApplySubmit(e, selectedApplyJD) {
   }
 
   const requiredFields = [
-    { value: fullName, label: "Full Name" },
-    { value: email, label: "Email" },
-    { value: mobile, label: "Mobile Number" },
-    { value: currentOrg, label: "Current Organisation" },
-    { value: preferredLocation, label: "Preferred Location" },
-    { value: totalExp, label: "Total Experience" },
-    { value: relevantExp, label: "Relevant Experience" },
-    { value: currentCTC, label: "Current CTC" },
-    { value: expectedCTC, label: "Expected CTC" },
-    { value: noticePeriod, label: "Notice Period" },
-    { value: source, label: "Source" },
+    { id: "pFullName", value: fullName, message: "Full name is required." },
+    { id: "pEmail", value: email, message: "Email is required." },
+    { id: "pMobile", value: mobile, message: "Mobile number is required." },
+    {
+      id: "pCurrentOrg",
+      value: currentOrg,
+      message: "Current organisation is required.",
+    },
+    {
+      id: "pPreferredLocation",
+      value: preferredLocation,
+      message: "Preferred location is required.",
+    },
+    {
+      id: "pTotalExp",
+      value: totalExp,
+      message: "Total experience is required.",
+    },
+    {
+      id: "pRelevantExp",
+      value: relevantExp,
+      message: "Relevant experience is required.",
+    },
+    {
+      id: "pCurrentCTC",
+      value: currentCTC,
+      message: "Current CTC is required.",
+    },
+    {
+      id: "pExpectedCTC",
+      value: expectedCTC,
+      message: "Expected CTC is required.",
+    },
+    {
+      id: "pNoticePeriod",
+      value: noticePeriod,
+      message: "Notice period is required.",
+    },
+    { id: "pSource", value: source, message: "Source is required." },
   ];
 
-  const missingFields = requiredFields
-    .filter(
-      (field) =>
-        field.value === null ||
-        field.value === undefined ||
-        String(field.value).trim() === "",
-    )
-    .map((field) => field.label);
+  for (const field of requiredFields) {
+    if (
+      field.value === null ||
+      field.value === undefined ||
+      String(field.value).trim() === ""
+    ) {
+      showFieldError(field.id, field.message);
+      return;
+    }
+  }
 
-  if (missingFields.length > 0) {
-    showFormMsg(
-      "formError",
-      `Please fill required field(s): ${missingFields.join(", ")}`,
-      "error",
+  if (!/^[6-9]\d{9}$/.test(mobile)) {
+    showFieldError("pMobile", "Enter a valid 10-digit mobile number.");
+    return;
+  }
+
+  const totalExpNum = Number(totalExp);
+  const relevantExpNum = Number(relevantExp);
+  const currentCTCNum = Number(currentCTC);
+  const expectedCTCNum = Number(expectedCTC);
+
+  if (relevantExpNum > totalExpNum) {
+    showFieldError(
+      "pRelevantExp",
+      "Relevant experience cannot be greater than total experience.",
     );
     return;
   }
+
+  if (expectedCTCNum < currentCTCNum) {
+    showFieldError(
+      "pExpectedCTC",
+      "Expected CTC must be greater than current CTC.",
+    );
+    return;
+  }
+
   if (!resumeFile) {
-    showFormMsg("formError", "Resume required.", "error");
+    showFieldError("pResumeFile", "Resume is required.");
     return;
   }
-  if (!/^[6-9]\d{9}$/.test(mobile)) {
-    showFormMsg("formError", "Enter a valid 10-digit mobile number.", "error");
-    return;
-  }
+
   if (resumeFile.type !== "application/pdf") {
-    showFormMsg("formError", "Only PDF allowed.", "error");
+    showFieldError("pResumeFile", "Only PDF file is allowed.");
     return;
   }
 
   const btn = document.getElementById("submitProfilingBtn");
+
   if (btn) {
     btn.disabled = true;
     btn.textContent = "Submitting…";
@@ -253,6 +328,7 @@ export async function handleApplySubmit(e, selectedApplyJD) {
       });
 
       const detailApplyBtn = document.getElementById("detailApplyBtn");
+
       if (detailApplyBtn) {
         detailApplyBtn.disabled = true;
         detailApplyBtn.textContent = "Applied";
@@ -260,8 +336,23 @@ export async function handleApplySubmit(e, selectedApplyJD) {
 
       setTimeout(async () => {
         closeApplyModal();
+
         await loadCandidateStatus();
-        showBanner("Application submitted", "success");
+        await loadJDs();
+
+        document
+          .querySelector('[data-page="browse-jobs"]')
+          ?.classList.remove("active");
+        document
+          .querySelector('[data-page="my-applications"]')
+          ?.classList.add("active");
+
+        document.getElementById("browse-jobs-section")?.classList.add("hidden");
+        document
+          .getElementById("my-applications-section")
+          ?.classList.remove("hidden");
+
+        showBanner("Application submitted successfully", "success");
       }, 1200);
     } else {
       showFormMsg(
@@ -282,6 +373,46 @@ export async function handleApplySubmit(e, selectedApplyJD) {
       btn.textContent = "Submit Application";
     }
   }
+}
+function renderMyApplications(data) {
+  const list = document.getElementById("my-applications-list");
+  const details = document.getElementById("candidateStatusDetails");
+
+  if (!list) return;
+
+  if (!data || data.status === "NOT_APPLIED") {
+    list.innerHTML = `
+      <div class="application-empty-card">
+        <h3>No Applications Found</h3>
+        <p>You have not applied for any job yet.</p>
+      </div>
+    `;
+    if (details) details.style.display = "none";
+    return;
+  }
+
+  if (details) details.style.display = "block";
+
+  const jd = allJDs.find((item) => String(item.id) === String(data.jdId));
+
+  list.innerHTML = `
+    <div class="application-card">
+      <div>
+        <h3>${jd?.jobTitle || "Applied Job"}</h3>
+        <p>${jd?.location || "Location not available"}</p>
+      </div>
+
+      <div>
+        <span class="status-badge">${data.status}</span>
+      </div>
+
+      <div class="application-meta">
+        <p><strong>Candidate:</strong> ${data.name || "-"}</p>
+        <p><strong>Email:</strong> ${data.email || "-"}</p>
+        <p><strong>JD ID:</strong> ${data.jdId || "-"}</p>
+      </div>
+    </div>
+  `;
 }
 
 // Apply search/type filters to JD grid

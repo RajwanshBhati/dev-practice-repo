@@ -145,3 +145,28 @@
 
 .logout-btn:hover { background: var(--error-light); color: var(--error); }
 .logout-btn svg { width: 18px; height: 18px; }
+
+.sidebar-footer {
+  flex-wrap: wrap;
+}
+
+.sidebar-home-btn {
+  width: 100%;
+  min-height: 38px;
+  border-radius: 12px;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  color: #78350f;
+  font-size: 0.82rem;
+  font-weight: 900;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar-home-btn:hover {
+  background: #ffedd5;
+  color: #78350f;
+  text-decoration: none;
+}

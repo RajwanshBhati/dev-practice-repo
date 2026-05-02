@@ -9,25 +9,48 @@ function getToken() {
   return localStorage.getItem("accessToken");
 }
 
-// Here I create a panel
+function getValue(id) {
+  const element = document.getElementById(id);
+  return element ? element.value.trim() : "";
+}
+
 if (form) {
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const payload = {
-      fullName: document.getElementById("name").value.trim(),
-      email: document.getElementById("email").value.trim(),
-      mobile: document.getElementById("mobile").value.trim(),
-      organization: document.getElementById("organization").value.trim(),
-      designation: document.getElementById("designation").value.trim(),
+      fullName: getValue("name"),
+      email: getValue("email"),
+      mobile: getValue("mobile"),
+      organization: getValue("organization"),
+      designation: getValue("designation"),
     };
+
+    if (
+      !payload.fullName ||
+      !payload.email ||
+      !payload.mobile ||
+      !payload.organization ||
+      !payload.designation
+    ) {
+      showToast("Please fill all required fields", "error");
+      return;
+    }
+
+    const btn = form.querySelector("button[type='submit']");
+    const oldText = btn?.textContent || "Create Panel";
+
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = "Creating...";
+    }
 
     try {
       const res = await fetch(`${API}/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer " + getToken(),
+          Authorization: `Bearer ${getToken()}`,
         },
         body: JSON.stringify(payload),
       });
@@ -39,7 +62,6 @@ if (form) {
 
       if (!res.ok) {
         showToast(data.message || "Error creating panel", "error");
-
         return;
       }
 
@@ -48,6 +70,11 @@ if (form) {
       loadPanels();
     } catch (err) {
       showToast("Server error", "error");
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = oldText;
+      }
     }
   });
 }
@@ -56,29 +83,27 @@ async function loadPanels() {
   try {
     const token = getToken();
 
-    if (!token) {
-      return;
-    }
+    if (!token || !tableBody) return;
 
     const res = await fetch(`${API}/list`, {
       method: "GET",
       headers: {
-        Authorization: "Bearer " + token,
+        Authorization: `Bearer ${token}`,
       },
     });
 
-    if (!res.ok) {
-      return;
-    }
+    if (!res.ok) return;
 
     const data = await res.json();
-
-    if (!tableBody) return;
 
     tableBody.innerHTML = "";
 
     if (!data || data.length === 0) {
-      tableBody.innerHTML = `<tr><td colspan="6">No panel members found</td></tr>`;
+      tableBody.innerHTML = `
+        <tr>
+          <td colspan="5">No panel members found</td>
+        </tr>
+      `;
       return;
     }
 
@@ -95,12 +120,11 @@ async function loadPanels() {
 
       tableBody.appendChild(row);
     });
-  } catch (err) {}
+  } catch (err) {
+    console.error("Error loading panels:", err);
+  }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  loadPanels();
-});
+document.addEventListener("DOMContentLoaded", loadPanels);
 
 window.loadPanels = loadPanels;
-loadPanels();

@@ -23,6 +23,12 @@ public class CandidateResponseDTO {
     /** Job description ID applied for. */
     private UUID jdId;
 
+    /** Rejected Stage */
+    private Stage rejectedStage;
+
+    /** Current Stage */
+    private Stage currentStage;
+
     /**
      * Returns the candidate ID.
      *
@@ -111,5 +117,41 @@ public class CandidateResponseDTO {
      */
     public void setJdId(final UUID jobDescriptionId) {
         this.jdId = jobDescriptionId;
+    }
+
+    /**
+     * Rejected Stage
+     * 
+     * @return rejectedStage
+     */
+    public Stage getRejectedStage() {
+        return rejectedStage;
+    }
+
+    /**
+     * set the rejected stage
+     * 
+     * @param rejectedStage
+     */
+    public void setRejectedStage(final Stage rejectedStage) {
+        this.rejectedStage = rejectedStage;
+    }
+
+    /**
+     * get the current stage
+     * 
+     * @return currentStage
+     */
+    public Stage getCurrentStage() {
+        return currentStage;
+    }
+
+    /**
+     * set the current Stage
+     * 
+     * @param currentStage
+     */
+    public void setCurrentStage(final Stage currentStage) {
+        this.currentStage = currentStage;
     }
 }

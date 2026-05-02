@@ -126,3 +126,13 @@
 .btn-logout:active {
   transform: scale(0.96);
 }
+.error-text {
+  font-size: 0.8rem;
+  margin-top: 4px;
+  color: #dc2626;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}

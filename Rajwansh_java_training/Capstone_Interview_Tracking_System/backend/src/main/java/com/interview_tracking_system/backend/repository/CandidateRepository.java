@@ -80,5 +80,10 @@ public interface CandidateRepository extends JpaRepository<Candidate, Long> {
      */
     List<Candidate> findByEmailIgnoreCaseOrderByIdDesc(String email);
 
+    /**
+     * find all order by desc
+     */
     List<Candidate> findAllByOrderByIdDesc();
+
+    Optional<Candidate> findTopByMobileOrderByIdDesc(String mobile);
 }

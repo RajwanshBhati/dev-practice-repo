@@ -98,16 +98,10 @@ public class CandidateServiceImpl implements CandidateService {
                 || email.isEmpty()
                 || mobileNumber.isEmpty()
                 || request.getDob() == null
-                || request.getGender() == null
-                || request.getPassword() == null
-                || request.getConfirmPassword() == null) {
+                || request.getGender() == null) {
+
             LOGGER.warn("Candidate registration failed due to missing required fields for email: {}", email);
             throw new IllegalArgumentException("All fields are required.");
-        }
-
-        if (!request.getPassword().equals(request.getConfirmPassword())) {
-            LOGGER.warn("Password mismatch during candidate registration for email: {}", email);
-            throw new IllegalArgumentException(ERROR_PASSWORD_MISMATCH);
         }
 
         if (userRepository.existsByEmail(email)) {
@@ -119,6 +113,8 @@ public class CandidateServiceImpl implements CandidateService {
             LOGGER.warn("Candidate registration failed. Mobile already exists: {}", mobileNumber);
             throw new IllegalArgumentException("Mobile number already exists.");
         }
+        String temporaryPassword = "TEMP@" + UUID.randomUUID().toString().substring(0, 8);
+        String activationToken = UUID.randomUUID().toString();
 
         User user = new User();
         user.setName(fullName);
@@ -126,11 +122,17 @@ public class CandidateServiceImpl implements CandidateService {
         user.setMobile(mobileNumber);
         user.setDateOfBirth(request.getDob());
         user.setGender(request.getGender());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setPassword(null);
         user.setRole(Role.CANDIDATE);
         user.setStatus(UserStatus.ACTIVE);
+        user.setActivationToken(activationToken);
+        user.setActivationTokenExpiry(LocalDateTime.now().plusHours(24));
 
         userRepository.save(user);
+        emailService.sendCandidateRegistrationEmail(
+                email,
+                fullName,
+                activationToken);
         LOGGER.info("Candidate registered successfully with email: {}", email);
     }
 
@@ -201,9 +203,21 @@ public class CandidateServiceImpl implements CandidateService {
         }
 
         String fullMobile = mobileCode + mobileNumber;
-        if (candidateRepository.existsByEmailIgnoreCaseAndStatusNot(email, Stage.REJECTED)) {
+        Candidate existingCandidate = candidateRepository
+                .findTopByEmailIgnoreCaseOrderByIdDesc(email)
+                .orElse(null);
 
-            LOGGER.error("Candidate already applied: {} / {}", email, fullMobile);
+        Candidate mobileCandidate = candidateRepository
+                .findTopByMobileOrderByIdDesc(fullMobile)
+                .orElse(null);
+
+        if (mobileCandidate != null
+                && !mobileCandidate.getEmail().equalsIgnoreCase(email)
+                && mobileCandidate.getStatus() != Stage.REJECTED) {
+            throw new IllegalArgumentException("Mobile number already exists.");
+        }
+        if (existingCandidate != null && existingCandidate.getStatus() != Stage.REJECTED) {
+            LOGGER.error("Candidate already has active application: {}", email);
             throw new IllegalStateException(ERROR_ALREADY_APPLIED);
         }
         if (request.getJdId() == null) {
@@ -213,9 +227,11 @@ public class CandidateServiceImpl implements CandidateService {
             throw new IllegalArgumentException("Please provide a valid jdId.");
         }
 
-        Candidate candidate = new Candidate();
+        Candidate candidate = existingCandidate != null ? existingCandidate : new Candidate();
+
         candidate.setName(request.getName());
         candidate.setEmail(email.trim().toLowerCase());
+        candidate.setRejectedStage(null);
 
         candidate.setMobile(fullMobile);
 
@@ -298,6 +314,8 @@ public class CandidateServiceImpl implements CandidateService {
         dto.setEmail(candidate.getEmail());
         dto.setStatus(candidate.getStatus());
         dto.setJdId(candidate.getJdId());
+        dto.setCurrentStage(candidate.getStatus());
+        dto.setRejectedStage(candidate.getRejectedStage());
 
         return dto;
     }
@@ -316,6 +334,8 @@ public class CandidateServiceImpl implements CandidateService {
         dto.setEmail(candidate.getEmail());
         dto.setStatus(candidate.getStatus());
         dto.setJdId(candidate.getJdId());
+        dto.setCurrentStage(candidate.getStatus());
+        dto.setRejectedStage(candidate.getRejectedStage());
 
         return dto;
     }
@@ -375,7 +395,7 @@ public class CandidateServiceImpl implements CandidateService {
         user.setMobile(mobileNumber);
         user.setDateOfBirth(request.getDob());
         user.setGender(request.getGender());
-        user.setPassword(passwordEncoder.encode(temporaryPassword));
+        user.setPassword(null);
         user.setRole(Role.CANDIDATE);
         user.setStatus(UserStatus.PENDING);
         user.setActivationToken(activationToken);
@@ -392,7 +412,6 @@ public class CandidateServiceImpl implements CandidateService {
         emailService.sendCandidateOnboardEmail(
                 email,
                 fullName,
-                temporaryPassword,
                 activationToken);
     }
 }

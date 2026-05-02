@@ -31,9 +31,25 @@ function setupPasswordToggle(buttonId, inputId) {
 
   if (!button || !input) return;
 
+  const eyeOpen = `
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+      <circle cx="12" cy="12" r="3"/>
+    </svg>
+  `;
+
+  const eyeClosed = `
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a21.77 21.77 0 0 1 5.06-5.94M9.9 4.24A10.94 10.94 0 0 1 12 5c7 0 11 7 11 7a21.77 21.77 0 0 1-3.17 4.34M1 1l22 22"/>
+    </svg>
+  `;
+
   button.addEventListener("click", () => {
-    input.type = input.type === "password" ? "text" : "password";
-    button.textContent = input.type === "password" ? "Show" : "Hide";
+    const isPassword = input.type === "password";
+
+    input.type = isPassword ? "text" : "password";
+
+    button.innerHTML = isPassword ? eyeClosed : eyeOpen;
   });
 }
 

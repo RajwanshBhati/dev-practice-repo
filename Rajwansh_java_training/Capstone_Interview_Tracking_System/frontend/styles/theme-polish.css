@@ -155,15 +155,13 @@ textarea:focus {
 .badge,
 .skill,
 .job-meta span {
-  background: #ffedd5;
-  color: #9a3412;
   border-radius: 999px;
   padding: 8px 13px;
   font-weight: 900;
   font-size: 0.88rem;
 }
 
-.btn-feedback,
+.btn-feedback
 .submitted-chip {
   display: inline-flex;
   align-items: center;
@@ -206,4 +204,116 @@ textarea:focus {
 
 .hidden {
   display: none !important;
+}
+
+
+/* ===== Schedule Interview Panel Dropdown Fix ===== */
+
+#panelMembers,
+#panel-members,
+.panel-members-list,
+.panel-select-list {
+  width: 100%;
+  max-height: 120px;
+  min-height: 110px;
+  overflow-y: auto;
+  border: 1px solid #fdba74;
+  border-radius: 16px;
+  padding: 10px 12px;
+  background: #fff;
+  outline: none;
+  font-size: 0.95rem;
+  color: #1f2937;
+}
+
+/* select multiple option spacing */
+#panelMembers option,
+#panel-members option,
+.panel-members-list option,
+.panel-select-list option {
+  padding: 10px 12px;
+  border-radius: 10px;
+  margin-bottom: 4px;
+}
+
+/* selected option */
+#panelMembers option:checked,
+#panel-members option:checked,
+.panel-members-list option:checked,
+.panel-select-list option:checked {
+  background: #ffedd5;
+  color: #9a3412;
+  font-weight: 800;
+}
+
+/* scrollbar clean */
+#panelMembers::-webkit-scrollbar,
+#panel-members::-webkit-scrollbar,
+.panel-members-list::-webkit-scrollbar,
+.panel-select-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+#panelMembers::-webkit-scrollbar-thumb,
+#panel-members::-webkit-scrollbar-thumb,
+.panel-members-list::-webkit-scrollbar-thumb,
+.panel-select-list::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+}
+
+.badge-full-time,
+.badge.active {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.badge-contract,
+.badge.inactive {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.badge-remote {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
+.badge.closed {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.skill-chip,
+.jd-skill-chip {
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+
+.badge-active {
+  background: #dcfce7;
+  color: #047857;
+}
+
+.badge-inactive {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.badge-closed {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+.badge-full-time {
+  background: #ede9fe;
+  color: #5b21b6;
+}
+.badge-contract {
+  background: #ffedd5;
+  color: #9a3412;
+}
+.badge-remote {
+  background: #e0f2fe;
+  color: #075985;
 }

@@ -37,7 +37,19 @@ export async function changeCandidateStatus(payload) {
   });
 
   if (!response.ok) {
-    throw new Error("Failed to update status");
+    const errorText = await response.text();
+    let message = "Failed to update status";
+
+    try {
+      const errorJson = JSON.parse(errorText);
+      message = errorJson.message || errorJson.error || message;
+    } catch {
+      message = errorText || message;
+    }
+
+    message = message.replace("Something went wrong:", "").trim();
+
+    throw new Error(message);
   }
 }
 
@@ -49,7 +61,19 @@ export async function createInterviewSchedule(payload) {
   });
 
   if (!response.ok) {
-    throw new Error("Failed to schedule interview");
+    const errorText = await response.text();
+    let message = "Failed to schedule interview";
+
+    try {
+      const errorJson = JSON.parse(errorText);
+      message = errorJson.message || errorJson.error || message;
+    } catch {
+      message = errorText || message;
+    }
+
+    message = message.replace("Something went wrong:", "").trim();
+
+    throw new Error(message);
   }
 }
 
