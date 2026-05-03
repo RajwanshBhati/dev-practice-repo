@@ -8,12 +8,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import java.util.List;
 
 /**
@@ -70,35 +67,22 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         /**
          * Authenticate only if not already authenticated
          */
-        if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            if (jwtUtil.validateToken(token)) {
+        if (email != null
+                && SecurityContextHolder.getContext().getAuthentication() == null
+                && jwtUtil.validateToken(token)) {
 
-                String role = jwtUtil.extractRole(token);
+            String role = jwtUtil.extractRole(token);
 
-                // UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+            List<GrantedAuthority> authorities = List.of(
+                    new SimpleGrantedAuthority(role));
 
-                // if (userDetails != null) {
-                // UsernamePasswordAuthenticationToken authToken = new
-                // UsernamePasswordAuthenticationToken(
-                // userDetails,
-                // null,
-                // userDetails.getAuthorities());
+            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                    email,
+                    null,
+                    authorities);
 
-                // SecurityContextHolder.getContext().setAuthentication(authToken);
-                // }
-
-                List<GrantedAuthority> authorities = List.of(
-                        new SimpleGrantedAuthority(role));
-
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        email,
-                        null,
-                        authorities);
-
-                SecurityContextHolder.getContext().setAuthentication(authToken);
-
-            }
+            SecurityContextHolder.getContext().setAuthentication(authToken);
         }
 
         filterChain.doFilter(request, response);

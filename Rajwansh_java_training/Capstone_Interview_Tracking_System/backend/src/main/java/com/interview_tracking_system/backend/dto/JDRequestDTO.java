@@ -9,6 +9,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -106,14 +107,14 @@ public class JDRequestDTO {
      * Returns required skills
      */
     public List<String> getSkillsRequired() {
-        return skillsRequired;
+        return skillsRequired == null ? null : new ArrayList<>(skillsRequired);
     }
 
     /**
      * Sets required skills
      */
     public void setSkillsRequired(List<String> skillsRequired) {
-        this.skillsRequired = skillsRequired;
+        this.skillsRequired = skillsRequired == null ? null : new ArrayList<>(skillsRequired);
     }
 
     /**

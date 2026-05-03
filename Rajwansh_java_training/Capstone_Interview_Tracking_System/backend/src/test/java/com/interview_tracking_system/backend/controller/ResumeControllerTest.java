@@ -3,7 +3,8 @@ package com.interview_tracking_system.backend.controller;
 /**
  * Static imports for assertion methods.
  */
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * File utility import used to create test resume file.
@@ -31,48 +32,48 @@ import org.springframework.test.util.ReflectionTestUtils;
  */
 class ResumeControllerTest {
 
-    /**
-     * Temporary directory used to store resume files during test.
-     */
-    @TempDir
-    java.nio.file.Path tempDir;
+        /**
+         * Temporary directory used to store resume files during test.
+         */
+        @TempDir
+        java.nio.file.Path tempDir;
 
-    /**
-     * Tests resume view API for valid file, missing file and invalid path.
-     *
-     * @throws Exception if test file creation fails
-     */
-    @Test
-    void viewResumeShouldReturnPdfWhenFileExistsAndHandleBadPaths() throws Exception {
-        ResumeController controller = new ResumeController();
+        /**
+         * Tests resume view API for valid file, missing file and invalid path.
+         *
+         * @throws Exception if test file creation fails
+         */
+        @Test
+        void viewResumeShouldReturnPdfWhenFileExistsAndHandleBadPaths() throws Exception {
+                ResumeController controller = new ResumeController();
 
-        ReflectionTestUtils.setField(
-                controller,
-                "resumeUploadDir",
-                tempDir.toString());
+                ReflectionTestUtils.setField(
+                                controller,
+                                "resumeUploadDir",
+                                tempDir.toString());
 
-        Files.writeString(
-                tempDir.resolve("resume.pdf"),
-                "pdf");
+                Files.writeString(
+                                tempDir.resolve("resume.pdf"),
+                                "pdf");
 
-        var ok = controller.viewResume("resume.pdf");
+                var ok = controller.viewResume("resume.pdf");
 
-        assertEquals(
-                HttpStatus.OK,
-                ok.getStatusCode());
+                assertEquals(
+                                HttpStatus.OK,
+                                ok.getStatusCode());
 
-        assertEquals(
-                MediaType.APPLICATION_PDF,
-                ok.getHeaders().getContentType());
+                assertEquals(
+                                MediaType.APPLICATION_PDF,
+                                ok.getHeaders().getContentType());
 
-        assertNotNull(ok.getBody());
+                assertNotNull(ok.getBody());
 
-        assertEquals(
-                HttpStatus.NOT_FOUND,
-                controller.viewResume("missing.pdf").getStatusCode());
+                assertEquals(
+                                HttpStatus.NOT_FOUND,
+                                controller.viewResume("missing.pdf").getStatusCode());
 
-        assertEquals(
-                HttpStatus.BAD_REQUEST,
-                controller.viewResume("../secret.pdf").getStatusCode());
-    }
+                assertEquals(
+                                HttpStatus.BAD_REQUEST,
+                                controller.viewResume("../secret.pdf").getStatusCode());
+        }
 }

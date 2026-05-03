@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Service implementation of {@link AuthService} that handles
@@ -79,6 +80,7 @@ public class AuthServiceImpl implements AuthService {
      * @param jwtUtil                JWT utility
      * @param passwordEncoder        password encoder
      */
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Spring dependency injection stores framework-managed beans.")
     public AuthServiceImpl(AuthenticationManager authenticationManager,
             UserRepository userRepository,
             RefreshTokenRepository refreshTokenRepository,

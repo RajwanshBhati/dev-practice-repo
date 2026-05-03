@@ -115,7 +115,9 @@ public class JobDescription {
         this.id = id;
         this.jobTitle = jobTitle;
         this.jobDescription = jobDescription;
-        this.skillsRequired = skillsRequired;
+        this.skillsRequired = skillsRequired == null
+                ? null
+                : new ArrayList<>(skillsRequired);
         this.experienceMin = minExperience;
         this.experienceMax = maxExperience;
         this.salaryMin = minSalary;
@@ -434,7 +436,9 @@ public class JobDescription {
          * @return this builder instance
          */
         public Builder skillsRequired(List<String> skillsRequired) {
-            this.skillsRequired = skillsRequired;
+            this.skillsRequired = skillsRequired == null
+                    ? null
+                    : new ArrayList<>(skillsRequired);
             return this;
         }
 

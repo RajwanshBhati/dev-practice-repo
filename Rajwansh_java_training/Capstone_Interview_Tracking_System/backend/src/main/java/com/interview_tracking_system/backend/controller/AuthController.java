@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * REST controller for authentication endpoints.
@@ -32,6 +33,7 @@ public class AuthController {
 
         private final AuthService authService;
 
+        @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Spring dependency injection stores framework-managed beans.")
         public AuthController(AuthService authService) {
                 this.authService = authService;
         }

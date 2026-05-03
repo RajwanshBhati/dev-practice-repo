@@ -3,7 +3,9 @@ package com.interview_tracking_system.backend.services.impl;
 /**
  * Static imports for Mockito methods.
  */
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.any;
 
 /**
  * JUnit imports for test execution.

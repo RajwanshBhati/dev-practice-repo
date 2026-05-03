@@ -6,7 +6,6 @@ import com.interview_tracking_system.backend.dto.JDResponseDTO;
 import com.interview_tracking_system.backend.enums.JDStatus;
 import com.interview_tracking_system.backend.enums.JobType;
 import com.interview_tracking_system.backend.service.JDService;
-import com.interview_tracking_system.backend.service.impl.JDServiceImpl;
 import com.interview_tracking_system.backend.constants.ApiEndpoints;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -21,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.util.List;
 import java.util.UUID;
@@ -38,6 +38,7 @@ public class JDController {
         /**
          * Constructor injection (no Lombok used)
          */
+        @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Spring dependency injection stores framework-managed beans.")
         public JDController(JDService jdService) {
                 this.jdService = jdService;
         }

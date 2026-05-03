@@ -15,6 +15,7 @@ import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Represents a candidate in the interview tracking system.
@@ -200,6 +201,7 @@ public class Candidate {
      *
      * @return candidate user entity
      */
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "JPA relationship entity reference is intentionally returned.")
     public CandidateUser getCandidateUser() {
         return candidateUser;
     }
@@ -209,6 +211,7 @@ public class Candidate {
      *
      * @param candidateUser candidate user entity
      */
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Spring dependency injection stores framework-managed beans.")
     public void setCandidateUser(CandidateUser candidateUser) {
         this.candidateUser = candidateUser;
     }

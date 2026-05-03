@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Represents a registered candidate user in the system.
@@ -109,6 +110,7 @@ public class CandidateUser {
      *
      * @return the candidate profile of this user
      */
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "JPA relationship entity reference is intentionally returned.")
     public Candidate getCandidate() {
         return candidate;
     }
@@ -118,6 +120,7 @@ public class CandidateUser {
      *
      * @param candidateProfile the candidate profile to set
      */
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Spring dependency injection stores framework-managed beans.")
     public void setCandidate(final Candidate candidateProfile) {
         this.candidate = candidateProfile;
     }

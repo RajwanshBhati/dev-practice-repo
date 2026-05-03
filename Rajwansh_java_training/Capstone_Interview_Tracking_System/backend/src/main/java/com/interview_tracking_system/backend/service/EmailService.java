@@ -55,7 +55,6 @@ public interface EmailService {
          *
          * @param toEmail
          * @param candidateName
-         * @param temporaryPassword
          * @param activationToken
          */
         void sendCandidateOnboardEmail(

@@ -1,7 +1,7 @@
 package com.interview_tracking_system.backend.services;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 
 import com.interview_tracking_system.backend.dto.HRCandidateFullDTO;
 import com.interview_tracking_system.backend.entity.Candidate;

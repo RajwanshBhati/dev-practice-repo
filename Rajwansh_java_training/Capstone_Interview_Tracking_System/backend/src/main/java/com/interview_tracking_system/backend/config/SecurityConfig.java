@@ -19,6 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.util.List;
 
@@ -35,6 +36,7 @@ public class SecurityConfig {
      * @param jwtAuthFilter      JWT authentication filter
      * @param userDetailsService custom user details service
      */
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Spring dependency injection stores framework-managed beans.")
     public SecurityConfig(JwtAuthFilter jwtAuthFilter,
             CustomUserDetailsService userDetailsService) {
         this.jwtAuthFilter = jwtAuthFilter;

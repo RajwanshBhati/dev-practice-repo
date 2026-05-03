@@ -3,9 +3,13 @@ package com.interview_tracking_system.backend.controller;
 /**
  * Static imports for assertions and Mockito methods.
  */
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.eq;
 /**
  * DTO imports used for JD controller testing.
  */

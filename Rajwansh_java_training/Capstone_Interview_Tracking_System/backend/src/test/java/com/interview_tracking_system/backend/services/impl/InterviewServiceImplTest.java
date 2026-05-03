@@ -81,7 +81,6 @@ class InterviewServiceImplTest {
                 candidateRepository,
                 interviewRepository,
                 interviewPanelRepository,
-                panelRepository,
                 feedbackRepository,
                 emailService,
                 userRepository,

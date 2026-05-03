@@ -1,6 +1,9 @@
 package com.interview_tracking_system.backend.services.impl;
 
-import com.interview_tracking_system.backend.dto.*;
+import com.interview_tracking_system.backend.dto.ChangePasswordRequestDTO;
+import com.interview_tracking_system.backend.dto.LoginRequestDTO;
+import com.interview_tracking_system.backend.dto.LoginResponseDTO;
+import com.interview_tracking_system.backend.dto.RefreshTokenRequestDTO;
 import com.interview_tracking_system.backend.entity.RefreshToken;
 import com.interview_tracking_system.backend.entity.User;
 import com.interview_tracking_system.backend.enums.Role;
@@ -26,10 +29,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
 
 /**
  * Unit test class for AuthServiceImpl.

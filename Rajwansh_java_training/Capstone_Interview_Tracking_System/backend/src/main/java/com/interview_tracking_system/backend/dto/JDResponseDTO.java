@@ -5,6 +5,7 @@ import com.interview_tracking_system.backend.enums.JobType;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -98,7 +99,9 @@ public class JDResponseDTO {
         this.id = id;
         this.jobTitle = jobTitle;
         this.jobDescription = jobDescription;
-        this.skillsRequired = skillsRequired;
+        this.skillsRequired = skillsRequired == null
+                ? null
+                : new ArrayList<>(skillsRequired);
         this.minExperience = minExperience;
         this.maxExperience = maxExperience;
         this.minSalary = minSalary;
@@ -156,14 +159,14 @@ public class JDResponseDTO {
      * Returns required skills
      */
     public List<String> getSkillsRequired() {
-        return skillsRequired;
+        return skillsRequired == null ? null : new ArrayList<>(skillsRequired);
     }
 
     /**
      * Sets required skills
      */
     public void setSkillsRequired(List<String> skillsRequired) {
-        this.skillsRequired = skillsRequired;
+        this.skillsRequired = skillsRequired == null ? null : new ArrayList<>(skillsRequired);
     }
 
     /**

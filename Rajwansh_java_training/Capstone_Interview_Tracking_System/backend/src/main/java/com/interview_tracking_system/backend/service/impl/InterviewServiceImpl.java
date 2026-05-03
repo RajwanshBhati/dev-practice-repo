@@ -15,7 +15,6 @@ import com.interview_tracking_system.backend.repository.CandidateRepository;
 import com.interview_tracking_system.backend.repository.FeedbackRepository;
 import com.interview_tracking_system.backend.repository.InterviewPanelRepository;
 import com.interview_tracking_system.backend.repository.InterviewRepository;
-import com.interview_tracking_system.backend.repository.PanelRepository;
 import com.interview_tracking_system.backend.service.EmailService;
 import com.interview_tracking_system.backend.service.InterviewService;
 import com.interview_tracking_system.backend.entity.User;
@@ -64,7 +63,6 @@ public class InterviewServiceImpl implements InterviewService {
     public InterviewServiceImpl(final CandidateRepository candidateRepository,
             final InterviewRepository interviewRepository,
             final InterviewPanelRepository interviewPanelRepository,
-            final PanelRepository panelRepository,
             final FeedbackRepository feedbackRepository,
             final EmailService emailService,
             final UserRepository userRepository,

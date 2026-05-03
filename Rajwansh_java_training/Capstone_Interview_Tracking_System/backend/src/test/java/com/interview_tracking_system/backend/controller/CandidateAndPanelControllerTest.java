@@ -3,11 +3,14 @@ package com.interview_tracking_system.backend.controller;
 /**
  * Required static imports for assertions and mocking.
  */
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.nullable;
-import static org.mockito.Mockito.*;
 
 /**
  * DTO imports used for request and response testing.
@@ -172,7 +175,6 @@ class CandidateAndPanelControllerTest {
                 assertEquals(1, panelController.getAllPanels().size());
 
                 User panel = new User();
-                // panel.setId(2L);
                 panel.setEmail("panel@test.com");
 
                 when(userRepository.findByEmailIgnoreCase("panel@test.com"))

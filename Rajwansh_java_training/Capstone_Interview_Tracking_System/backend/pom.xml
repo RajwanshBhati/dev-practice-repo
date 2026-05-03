@@ -103,6 +103,13 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+    <groupId>com.github.spotbugs</groupId>
+    <artifactId>spotbugs-annotations</artifactId>
+    <version>4.8.6</version>
+    <scope>provided</scope>
+</dependency>
+
     </dependencies>
 
     <build>
@@ -159,10 +166,22 @@
 
             <!-- PMD -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-pmd-plugin</artifactId>
-                <version>3.23.0</version>
-            </plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-pmd-plugin</artifactId>
+    <version>3.23.0</version>
+    <configuration>
+        <targetJdk>17</targetJdk>
+        <printFailingErrors>true</printFailingErrors>
+    </configuration>
+    <executions>
+        <execution>
+            <phase>verify</phase>
+            <goals>
+                <goal>check</goal>
+            </goals>
+        </execution>
+    </executions>
+</plugin>
 
             <!-- SpotBugs -->
             <plugin>

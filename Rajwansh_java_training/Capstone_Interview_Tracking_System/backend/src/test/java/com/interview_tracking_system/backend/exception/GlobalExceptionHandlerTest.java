@@ -3,7 +3,8 @@ package com.interview_tracking_system.backend.exception;
 /**
  * Static imports for assertion methods.
  */
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * JUnit import for test methods.
@@ -25,41 +26,41 @@ import org.springframework.validation.FieldError;
  */
 class GlobalExceptionHandlerTest {
 
-    /**
-     * Tests all exception handler methods for correct status codes and messages.
-     */
-    @Test
-    void handlersShouldReturnExpectedStatusCodes() {
+        /**
+         * Tests all exception handler methods for correct status codes and messages.
+         */
+        @Test
+        void handlersShouldReturnExpectedStatusCodes() {
 
-        GlobalExceptionHandler handler = new GlobalExceptionHandler();
+                GlobalExceptionHandler handler = new GlobalExceptionHandler();
 
-        assertEquals(
-                HttpStatus.NOT_FOUND,
-                handler.handleNotFound(new ResourceNotFoundException("missing"))
-                        .getStatusCode());
+                assertEquals(
+                                HttpStatus.NOT_FOUND,
+                                handler.handleNotFound(new ResourceNotFoundException("missing"))
+                                                .getStatusCode());
 
-        assertEquals(
-                HttpStatus.BAD_REQUEST,
-                handler.handleBadRequest(new InvalidRequestException("bad"))
-                        .getStatusCode());
+                assertEquals(
+                                HttpStatus.BAD_REQUEST,
+                                handler.handleBadRequest(new InvalidRequestException("bad"))
+                                                .getStatusCode());
 
-        assertEquals(
-                HttpStatus.INTERNAL_SERVER_ERROR,
-                handler.handleGeneric(new RuntimeException("boom"))
-                        .getStatusCode());
+                assertEquals(
+                                HttpStatus.INTERNAL_SERVER_ERROR,
+                                handler.handleGeneric(new RuntimeException("boom"))
+                                                .getStatusCode());
 
-        BindException bindException = new BindException(new Object(), "request");
+                BindException bindException = new BindException(new Object(), "request");
 
-        bindException.addError(
-                new FieldError("request", "email", "Email required"));
+                bindException.addError(
+                                new FieldError("request", "email", "Email required"));
 
-        var response = handler.handleBindException(bindException);
+                var response = handler.handleBindException(bindException);
 
-        assertEquals(
-                HttpStatus.BAD_REQUEST,
-                response.getStatusCode());
+                assertEquals(
+                                HttpStatus.BAD_REQUEST,
+                                response.getStatusCode());
 
-        assertTrue(
-                response.getBody().getMessage().contains("email"));
-    }
+                assertTrue(
+                                response.getBody().getMessage().contains("email"));
+        }
 }

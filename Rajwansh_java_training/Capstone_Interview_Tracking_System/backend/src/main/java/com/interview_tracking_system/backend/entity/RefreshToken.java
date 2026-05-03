@@ -10,6 +10,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.UUID;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Stores refresh tokens issued during login.
@@ -59,6 +60,7 @@ public class RefreshToken {
     /**
      * All-args constructor.
      */
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Spring dependency injection stores framework-managed beans.")
     public RefreshToken(UUID id, String token, User user, LocalDateTime expiryDate) {
         this.id = id;
         this.token = token;
@@ -97,6 +99,7 @@ public class RefreshToken {
     /**
      * Returns the user.
      */
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "JPA relationship entity reference is intentionally returned.")
     public User getUser() {
         return user;
     }
@@ -104,6 +107,7 @@ public class RefreshToken {
     /**
      * Sets the user.
      */
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Spring dependency injection stores framework-managed beans.")
     public void setUser(User user) {
         this.user = user;
     }

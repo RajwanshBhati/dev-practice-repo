@@ -1,6 +1,7 @@
 package com.interview_tracking_system.backend.dto;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
@@ -58,11 +59,11 @@ public class ScheduleInterviewRequestDTO {
     }
 
     public List<Long> getPanelIds() {
-        return panelIds;
+        return panelIds == null ? null : new ArrayList<>(panelIds);
     }
 
     public void setPanelIds(List<Long> panelIds) {
-        this.panelIds = panelIds;
+        this.panelIds = panelIds == null ? null : new ArrayList<>(panelIds);
     }
 
     public LocalDateTime getInterviewTime() {

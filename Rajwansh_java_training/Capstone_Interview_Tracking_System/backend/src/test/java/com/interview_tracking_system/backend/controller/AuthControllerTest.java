@@ -1,7 +1,10 @@
 package com.interview_tracking_system.backend.controller;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
 
 import com.interview_tracking_system.backend.dto.ChangePasswordRequestDTO;
 import com.interview_tracking_system.backend.dto.LoginRequestDTO;

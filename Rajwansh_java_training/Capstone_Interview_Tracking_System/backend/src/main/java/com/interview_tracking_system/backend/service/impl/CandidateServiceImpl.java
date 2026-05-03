@@ -27,7 +27,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import static com.interview_tracking_system.backend.constants.CandidateConstants.ERROR_EMAIL_EXISTS;
-import static com.interview_tracking_system.backend.constants.CandidateConstants.ERROR_PASSWORD_MISMATCH;
 import static com.interview_tracking_system.backend.constants.CandidateConstants.ERROR_INVALID_CREDENTIALS;
 import static com.interview_tracking_system.backend.constants.CandidateConstants.ERROR_ALREADY_APPLIED;
 import static com.interview_tracking_system.backend.constants.CandidateConstants.ERROR_NOT_LOGGED_IN;
@@ -113,7 +112,6 @@ public class CandidateServiceImpl implements CandidateService {
             LOGGER.warn("Candidate registration failed. Mobile already exists: {}", mobileNumber);
             throw new IllegalArgumentException("Mobile number already exists.");
         }
-        String temporaryPassword = "TEMP@" + UUID.randomUUID().toString().substring(0, 8);
         String activationToken = UUID.randomUUID().toString();
 
         User user = new User();
@@ -266,8 +264,15 @@ public class CandidateServiceImpl implements CandidateService {
             throw new IllegalArgumentException("Resume file is required");
         }
 
+        String originalFileName = resumeFile.getOriginalFilename();
+
+        if (originalFileName == null || originalFileName.isBlank()) {
+            LOGGER.warn("Resume upload failed. Invalid file name for email: {}", email);
+            throw new IllegalArgumentException("Resume file name is required");
+        }
+
         try {
-            String fileName = StringUtils.cleanPath(resumeFile.getOriginalFilename());
+            String fileName = StringUtils.cleanPath(originalFileName);
             String cleanedEmail = email.replaceAll("[^a-zA-Z0-9._-]", "_");
             String storedName = String.format("%s_%d_%s", cleanedEmail, System.currentTimeMillis(), fileName);
 
@@ -382,7 +387,6 @@ public class CandidateServiceImpl implements CandidateService {
          * Temporary password is sent to candidate through email.
          * Activation token is used to activate the account securely.
          */
-        String temporaryPassword = "TEMP@" + UUID.randomUUID().toString().substring(0, 8);
         String activationToken = UUID.randomUUID().toString();
 
         /*
