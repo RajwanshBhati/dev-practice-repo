@@ -6,6 +6,7 @@ package com.interview_tracking_system.backend.controller;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.*;
 
 /**
@@ -63,100 +64,101 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 @ExtendWith(MockitoExtension.class)
 class InterviewAndHRControllerTest {
 
-    /**
-     * Mocked dependencies.
-     */
-    @Mock
-    private InterviewService interviewService;
-    @Mock
-    private UserRepository userRepository;
-    @Mock
-    private HRDashboardService hrDashboardService;
+        /**
+         * Mocked dependencies.
+         */
+        @Mock
+        private InterviewService interviewService;
+        @Mock
+        private UserRepository userRepository;
+        @Mock
+        private HRDashboardService hrDashboardService;
 
-    /**
-     * Controllers under test.
-     */
-    private InterviewController interviewController;
-    private HRDashboardController hrController;
+        /**
+         * Controllers under test.
+         */
+        private InterviewController interviewController;
+        private HRDashboardController hrController;
 
-    /**
-     * Initializes controllers before each test.
-     */
-    @BeforeEach
-    void setUp() {
-        interviewController = new InterviewController(interviewService, userRepository);
-        hrController = new HRDashboardController(hrDashboardService, interviewService);
-    }
+        /**
+         * Initializes controllers before each test.
+         */
+        @BeforeEach
+        void setUp() {
+                interviewController = new InterviewController(interviewService, userRepository);
+                hrController = new HRDashboardController(hrDashboardService, interviewService);
+        }
 
-    /**
-     * Tests all InterviewController methods.
-     */
-    @Test
-    void interviewControllerMethodsShouldDelegate() {
+        /**
+         * Tests all InterviewController methods.
+         */
+        @Test
+        void interviewControllerMethodsShouldDelegate() {
 
-        ScheduleInterviewRequestDTO schedule = new ScheduleInterviewRequestDTO();
-        interviewController.scheduleInterview(schedule);
-        verify(interviewService).scheduleInterview(schedule);
+                ScheduleInterviewRequestDTO schedule = new ScheduleInterviewRequestDTO();
+                interviewController.scheduleInterview(schedule);
+                verify(interviewService).scheduleInterview(schedule);
 
-        UpdateCandidateStatusDTO status = new UpdateCandidateStatusDTO();
-        interviewController.updateCandidateStatus(status);
-        verify(interviewService).updateCandidateStatus(status);
+                UpdateCandidateStatusDTO status = new UpdateCandidateStatusDTO();
+                interviewController.updateCandidateStatus(status);
+                verify(interviewService).updateCandidateStatus(status);
 
-        User panel = new User();
-        panel.setEmail("panel@test.com");
+                User panel = new User();
+                panel.setEmail("panel@test.com");
 
-        when(userRepository.findByEmailIgnoreCase("panel@test.com"))
-                .thenReturn(Optional.of(panel));
+                when(userRepository.findByEmailIgnoreCase("panel@test.com"))
+                                .thenReturn(Optional.of(panel));
 
-        SubmitFeedbackRequestDTO feedback = new SubmitFeedbackRequestDTO();
-        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken("panel@test.com", "x");
+                SubmitFeedbackRequestDTO feedback = new SubmitFeedbackRequestDTO();
+                UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken("panel@test.com",
+                                "x");
 
-        interviewController.submitFeedback(auth, feedback);
+                interviewController.submitFeedback(auth, feedback);
 
-        verify(interviewService).submitFeedback(anyLong(), eq(feedback));
+                verify(interviewService).submitFeedback(nullable(Long.class), eq(feedback));
 
-        PanelInterviewDTO dto = new PanelInterviewDTO();
-        dto.setInterviewId(10L);
+                PanelInterviewDTO dto = new PanelInterviewDTO();
+                dto.setInterviewId(10L);
 
-        when(interviewService.getPanelInterviews(2L))
-                .thenReturn(List.of(dto));
+                when(interviewService.getPanelInterviews(anyLong()))
+                                .thenReturn(List.of(dto));
 
-        assertEquals(
-                10L,
-                interviewController.getPanelInterviews(2L).get(0).getInterviewId());
+                assertEquals(
+                                10L,
+                                interviewController.getPanelInterviews(2L).get(0).getInterviewId());
 
-        when(interviewService.getCandidateInterviews(1L))
-                .thenReturn(List.of(10L));
+                when(interviewService.getCandidateInterviews(1L))
+                                .thenReturn(List.of(10L));
 
-        assertEquals(
-                List.of(10L),
-                interviewController.getCandidateInterviews(1L));
-    }
+                assertEquals(
+                                List.of(10L),
+                                interviewController.getCandidateInterviews(1L));
+        }
 
-    /**
-     * Tests all HRDashboardController methods.
-     */
-    @Test
-    void hrControllerMethodsShouldDelegate() {
+        /**
+         * Tests all HRDashboardController methods.
+         */
+        @Test
+        void hrControllerMethodsShouldDelegate() {
 
-        HRCandidateFullDTO candidate = new HRCandidateFullDTO();
-        candidate.setId(1L);
+                HRCandidateFullDTO candidate = new HRCandidateFullDTO();
+                candidate.setId(1L);
 
-        when(hrDashboardService.getAllCandidatesForHR())
-                .thenReturn(List.of(candidate));
+                when(hrDashboardService.getAllCandidatesForHR())
+                                .thenReturn(List.of(candidate));
 
-        assertEquals(
-                1,
-                hrController.getCandidates().getBody().size());
+                assertEquals(
+                                1,
+                                hrController.getCandidates().getBody().size());
 
-        HRFeedbackDTO feedback = new HRFeedbackDTO();
-        feedback.setCandidateId(1L);
+                HRFeedbackDTO feedback = new HRFeedbackDTO();
+                feedback.setCandidateId(1L);
 
-        when(interviewService.getFeedbackForCandidate(1L))
-                .thenReturn(List.of(feedback));
+                when(interviewService.getFeedbackForCandidate(1L))
+                                .thenReturn(List.of(feedback));
 
-        assertEquals(
-                1,
-                hrController.getCandidateFeedback(1L).size());
-    }
+                assertEquals(
+                                1,
+                                hrController.getCandidateFeedback(1L).size());
+        }
 }

@@ -62,126 +62,123 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 @ExtendWith(MockitoExtension.class)
 class JwtAndUserDetailsTest {
 
-    /**
-     * Mocked user repository.
-     */
-    @Mock
-    private UserRepository userRepository;
+        /**
+         * Mocked user repository.
+         */
+        @Mock
+        private UserRepository userRepository;
 
-    /**
-     * Mocked servlet filter chain.
-     */
-    @Mock
-    private FilterChain filterChain;
+        /**
+         * Mocked servlet filter chain.
+         */
+        @Mock
+        private FilterChain filterChain;
 
-    /**
-     * Tests JWT token generation, email extraction, role extraction and validation.
-     */
-    @Test
-    void jwtUtilShouldGenerateExtractAndValidateToken() {
-        JwtUtil util = new JwtUtil();
+        /**
+         * Tests JWT token generation, email extraction, role extraction and validation.
+         */
+        @Test
+        void jwtUtilShouldGenerateExtractAndValidateToken() {
+                JwtUtil util = new JwtUtil();
 
-        String token = util.generateAccessToken("raj@test.com", "HR");
+                String token = util.generateAccessToken("raj@test.com", "HR");
 
-        assertEquals("raj@test.com", util.extractEmail(token));
-        assertEquals("ROLE_HR", util.extractRole(token));
-        assertTrue(util.validateToken(token));
-        assertFalse(util.validateToken("invalid.token.value"));
-    }
+                assertEquals("raj@test.com", util.extractEmail(token));
+                assertEquals("ROLE_HR", util.extractRole(token));
+                assertTrue(util.validateToken(token));
+                assertFalse(util.validateToken("invalid.token.value"));
+        }
 
-    /**
-     * Tests user loading from repository and missing user exception.
-     */
-    @Test
-    void customUserDetailsShouldLoadUserAndThrowWhenMissing() {
-        User user = new User();
-        user.setEmail("hr@test.com");
-        user.setPassword("encoded");
-        user.setRole(Role.HR);
-        user.setStatus(UserStatus.ACTIVE);
+        /**
+         * Tests user loading from repository and missing user exception.
+         */
+        @Test
+        void customUserDetailsShouldLoadUserAndThrowWhenMissing() {
+                User user = new User();
+                user.setEmail("hr@test.com");
+                user.setPassword("encoded");
+                user.setRole(Role.HR);
+                user.setStatus(UserStatus.ACTIVE);
 
-        when(userRepository.findByEmailIgnoreCase("hr@test.com"))
-                .thenReturn(Optional.of(user));
+                when(userRepository.findByEmailIgnoreCase("hr@test.com"))
+                                .thenReturn(Optional.of(user));
 
-        CustomUserDetailsService service = new CustomUserDetailsService(userRepository);
+                CustomUserDetailsService service = new CustomUserDetailsService(userRepository);
 
-        UserDetails details = service.loadUserByUsername("hr@test.com");
+                UserDetails details = service.loadUserByUsername("hr@test.com");
 
-        assertEquals("hr@test.com", details.getUsername());
+                assertEquals("hr@test.com", details.getUsername());
 
-        assertTrue(
-                details.getAuthorities()
-                        .stream()
-                        .anyMatch(authority -> authority.getAuthority().equals("ROLE_HR")));
+                assertTrue(
+                                details.getAuthorities()
+                                                .stream()
+                                                .anyMatch(authority -> authority.getAuthority().equals("ROLE_HR")));
 
-        when(userRepository.findByEmailIgnoreCase("missing@test.com"))
-                .thenReturn(Optional.empty());
+                when(userRepository.findByEmailIgnoreCase("missing@test.com"))
+                                .thenReturn(Optional.empty());
 
-        assertThrows(
-                UsernameNotFoundException.class,
-                () -> service.loadUserByUsername("missing@test.com"));
-    }
+                assertThrows(
+                                UsernameNotFoundException.class,
+                                () -> service.loadUserByUsername("missing@test.com"));
+        }
 
-    /**
-     * Tests JWT filter with valid bearer token.
-     *
-     * @throws Exception if filter execution fails
-     */
-    @Test
-    void jwtAuthFilterShouldPopulateSecurityContextForValidBearerToken() throws Exception {
-        JwtUtil jwtUtil = spy(new JwtUtil());
-        CustomUserDetailsService detailsService = mock(CustomUserDetailsService.class);
-        JwtAuthFilter filter = new JwtAuthFilter(jwtUtil, detailsService);
+        /**
+         * Tests JWT filter with valid bearer token.
+         *
+         * @throws Exception if filter execution fails
+         */
+        @Test
+        void jwtAuthFilterShouldPopulateSecurityContextForValidBearerToken() throws Exception {
+                JwtUtil jwtUtil = spy(new JwtUtil());
+                CustomUserDetailsService detailsService = mock(CustomUserDetailsService.class);
+                JwtAuthFilter filter = new JwtAuthFilter(jwtUtil, detailsService);
 
-        String token = jwtUtil.generateAccessToken("hr@test.com", "HR");
+                String token = jwtUtil.generateAccessToken("hr@test.com", "HR");
 
-        UserDetails details = org.springframework.security.core.userdetails.User
-                .withUsername("hr@test.com")
-                .password("x")
-                .roles("HR")
-                .build();
+                UserDetails details = org.springframework.security.core.userdetails.User
+                                .withUsername("hr@test.com")
+                                .password("x")
+                                .roles("HR")
+                                .build();
 
-        when(detailsService.loadUserByUsername("hr@test.com"))
-                .thenReturn(details);
+                MockHttpServletRequest request = new MockHttpServletRequest();
+                request.addHeader("Authorization", "Bearer " + token);
 
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        request.addHeader("Authorization", "Bearer " + token);
+                MockHttpServletResponse response = new MockHttpServletResponse();
 
-        MockHttpServletResponse response = new MockHttpServletResponse();
+                SecurityContextHolder.clearContext();
 
-        SecurityContextHolder.clearContext();
+                filter.doFilter(request, response, filterChain);
 
-        filter.doFilter(request, response, filterChain);
+                assertEquals(
+                                "hr@test.com",
+                                SecurityContextHolder.getContext().getAuthentication().getName());
 
-        assertEquals(
-                "hr@test.com",
-                SecurityContextHolder.getContext().getAuthentication().getName());
+                verify(filterChain).doFilter(request, response);
 
-        verify(filterChain).doFilter(request, response);
+                SecurityContextHolder.clearContext();
+        }
 
-        SecurityContextHolder.clearContext();
-    }
+        /**
+         * Tests JWT filter when authorization header is missing.
+         *
+         * @throws Exception if filter execution fails
+         */
+        @Test
+        void jwtAuthFilterShouldContinueWithoutBearerToken() throws Exception {
+                JwtAuthFilter filter = new JwtAuthFilter(
+                                new JwtUtil(),
+                                mock(CustomUserDetailsService.class));
 
-    /**
-     * Tests JWT filter when authorization header is missing.
-     *
-     * @throws Exception if filter execution fails
-     */
-    @Test
-    void jwtAuthFilterShouldContinueWithoutBearerToken() throws Exception {
-        JwtAuthFilter filter = new JwtAuthFilter(
-                new JwtUtil(),
-                mock(CustomUserDetailsService.class));
+                MockHttpServletRequest request = new MockHttpServletRequest();
+                MockHttpServletResponse response = new MockHttpServletResponse();
 
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        MockHttpServletResponse response = new MockHttpServletResponse();
+                SecurityContextHolder.clearContext();
 
-        SecurityContextHolder.clearContext();
+                filter.doFilter(request, response, filterChain);
 
-        filter.doFilter(request, response, filterChain);
+                assertNull(SecurityContextHolder.getContext().getAuthentication());
 
-        assertNull(SecurityContextHolder.getContext().getAuthentication());
-
-        verify(filterChain).doFilter(request, response);
-    }
+                verify(filterChain).doFilter(request, response);
+        }
 }

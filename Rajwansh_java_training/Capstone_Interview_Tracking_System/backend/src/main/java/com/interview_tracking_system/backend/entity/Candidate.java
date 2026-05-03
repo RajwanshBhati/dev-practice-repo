@@ -125,6 +125,14 @@ public class Candidate {
     }
 
     /**
+     * set id
+     */
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    /**
      * Returns the candidate's name.
      *
      * @return the name of the candidate
@@ -416,7 +424,7 @@ public class Candidate {
 
     /**
      * get Rejected Stage
-     * 
+     *
      * @return Rejected Stage
      */
     public Stage getRejectedStage() {
@@ -425,7 +433,7 @@ public class Candidate {
 
     /**
      * set rejected stage
-     * 
+     *
      * @param rejectedStage
      */
     public void setRejectedStage(final Stage rejectedStage) {

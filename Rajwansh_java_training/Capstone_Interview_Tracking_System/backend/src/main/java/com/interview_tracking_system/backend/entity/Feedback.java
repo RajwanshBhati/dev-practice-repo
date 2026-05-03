@@ -62,6 +62,10 @@ public class Feedback {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     /**
      * Returns the foreign key ID of the associated interview.
      *

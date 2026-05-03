@@ -63,7 +63,7 @@ public class User {
 
     /**
      * Gets the gender
-     * 
+     *
      * @return gender
      */
     public Gender getGender() {
@@ -72,7 +72,7 @@ public class User {
 
     /**
      * Sets the Gender
-     * 
+     *
      * @param gender
      */
     public void setGender(Gender gender) {
@@ -176,6 +176,10 @@ public class User {
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {

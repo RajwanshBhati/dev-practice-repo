@@ -64,6 +64,15 @@ public class Interview {
     }
 
     /**
+     * set id
+     * 
+     * @param id
+     */
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    /**
      * Returns the foreign key ID of the associated candidate.
      *
      * @return the candidateId
