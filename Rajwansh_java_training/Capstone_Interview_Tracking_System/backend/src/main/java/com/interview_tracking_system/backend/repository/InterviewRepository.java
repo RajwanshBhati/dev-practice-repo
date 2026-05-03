@@ -14,6 +14,7 @@ import java.util.List;
  */
 public interface InterviewRepository extends JpaRepository<Interview, Long> {
 
+    /** Logger for this repository. */
     Logger LOGGER = LoggerFactory.getLogger(InterviewRepository.class);
 
     /**

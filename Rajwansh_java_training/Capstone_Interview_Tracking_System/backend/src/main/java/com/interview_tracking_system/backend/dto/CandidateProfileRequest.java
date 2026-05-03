@@ -52,36 +52,36 @@ public class CandidateProfileRequest {
     private UUID jdId;
 
     /**
-     * Returns the name.
+     * Returns the candidate name.
      *
-     * @return the candidate name
+     * @return candidate name
      */
     public String getName() {
         return name;
     }
 
     /**
-     * Sets the name.
+     * Sets the candidate name.
      *
-     * @param candidateName the name to set
+     * @param candidateName name to set
      */
     public void setName(final String candidateName) {
         this.name = candidateName;
     }
 
     /**
-     * Returns the email.
+     * Returns the email address.
      *
-     * @return the email address
+     * @return email address
      */
     public String getEmail() {
         return email;
     }
 
     /**
-     * Sets the email.
+     * Sets the email address.
      *
-     * @param candidateEmail the email to set
+     * @param candidateEmail email to set
      */
     public void setEmail(final String candidateEmail) {
         this.email = candidateEmail;
@@ -90,7 +90,7 @@ public class CandidateProfileRequest {
     /**
      * Returns the mobile country code.
      *
-     * @return the mobile code
+     * @return mobile code
      */
     public String getMobileCode() {
         return mobileCode;
@@ -99,16 +99,16 @@ public class CandidateProfileRequest {
     /**
      * Sets the mobile country code.
      *
-     * @param code the mobile code to set
+     * @param mobileCountryCode code to set
      */
-    public void setMobileCode(final String code) {
-        this.mobileCode = code;
+    public void setMobileCode(final String mobileCountryCode) {
+        this.mobileCode = mobileCountryCode;
     }
 
     /**
      * Returns the mobile number.
      *
-     * @return the mobile number
+     * @return mobile number
      */
     public String getMobileNumber() {
         return mobileNumber;
@@ -117,16 +117,16 @@ public class CandidateProfileRequest {
     /**
      * Sets the mobile number.
      *
-     * @param number the mobile number to set
+     * @param mobile number to set
      */
-    public void setMobileNumber(final String number) {
-        this.mobileNumber = number;
+    public void setMobileNumber(final String mobile) {
+        this.mobileNumber = mobile;
     }
 
     /**
      * Returns the date of birth.
      *
-     * @return the date of birth
+     * @return date of birth
      */
     public LocalDate getDateOfBirth() {
         return dateOfBirth;
@@ -135,7 +135,7 @@ public class CandidateProfileRequest {
     /**
      * Sets the date of birth.
      *
-     * @param dob the date of birth to set
+     * @param dob date of birth
      */
     public void setDateOfBirth(final LocalDate dob) {
         this.dateOfBirth = dob;
@@ -144,7 +144,7 @@ public class CandidateProfileRequest {
     /**
      * Returns the current company.
      *
-     * @return the current organization
+     * @return current company
      */
     public String getCurrentCompany() {
         return currentCompany;
@@ -153,7 +153,7 @@ public class CandidateProfileRequest {
     /**
      * Sets the current company.
      *
-     * @param company the current organization to set
+     * @param company company to set
      */
     public void setCurrentCompany(final String company) {
         this.currentCompany = company;
@@ -162,7 +162,7 @@ public class CandidateProfileRequest {
     /**
      * Returns total experience.
      *
-     * @return total years of experience
+     * @return total experience
      */
     public double getTotalExp() {
         return totalExp;
@@ -171,16 +171,16 @@ public class CandidateProfileRequest {
     /**
      * Sets total experience.
      *
-     * @param exp total years of experience to set
+     * @param experience total experience
      */
-    public void setTotalExp(final double exp) {
-        this.totalExp = exp;
+    public void setTotalExp(final double experience) {
+        this.totalExp = experience;
     }
 
     /**
      * Returns relevant experience.
      *
-     * @return relevant years of experience
+     * @return relevant experience
      */
     public double getRelevantExp() {
         return relevantExp;
@@ -189,16 +189,16 @@ public class CandidateProfileRequest {
     /**
      * Sets relevant experience.
      *
-     * @param exp relevant years of experience to set
+     * @param experience relevant experience
      */
-    public void setRelevantExp(final double exp) {
-        this.relevantExp = exp;
+    public void setRelevantExp(final double experience) {
+        this.relevantExp = experience;
     }
 
     /**
      * Returns current CTC.
      *
-     * @return the current cost to company
+     * @return current CTC
      */
     public BigDecimal getCurrentCtc() {
         return currentCtc;
@@ -207,7 +207,7 @@ public class CandidateProfileRequest {
     /**
      * Sets current CTC.
      *
-     * @param ctc the current cost to company to set
+     * @param ctc current CTC
      */
     public void setCurrentCtc(final BigDecimal ctc) {
         this.currentCtc = ctc;
@@ -216,7 +216,7 @@ public class CandidateProfileRequest {
     /**
      * Returns expected CTC.
      *
-     * @return the expected cost to company
+     * @return expected CTC
      */
     public BigDecimal getExpectedCtc() {
         return expectedCtc;
@@ -225,7 +225,7 @@ public class CandidateProfileRequest {
     /**
      * Sets expected CTC.
      *
-     * @param ctc the expected cost to company to set
+     * @param ctc expected CTC
      */
     public void setExpectedCtc(final BigDecimal ctc) {
         this.expectedCtc = ctc;
@@ -234,7 +234,7 @@ public class CandidateProfileRequest {
     /**
      * Returns notice period.
      *
-     * @return the notice period in days
+     * @return notice period
      */
     public int getNoticePeriod() {
         return noticePeriod;
@@ -243,16 +243,16 @@ public class CandidateProfileRequest {
     /**
      * Sets notice period.
      *
-     * @param period the notice period in days to set
+     * @param notice notice period
      */
-    public void setNoticePeriod(final int period) {
-        this.noticePeriod = period;
+    public void setNoticePeriod(final int notice) {
+        this.noticePeriod = notice;
     }
 
     /**
      * Returns preferred location.
      *
-     * @return the preferred job location
+     * @return preferred location
      */
     public String getPreferredLocation() {
         return preferredLocation;
@@ -261,43 +261,43 @@ public class CandidateProfileRequest {
     /**
      * Sets preferred location.
      *
-     * @param location the preferred job location to set
+     * @param location preferred location
      */
     public void setPreferredLocation(final String location) {
         this.preferredLocation = location;
     }
 
     /**
-     * Returns the source.
+     * Returns application source.
      *
-     * @return the source through which candidate applied
+     * @return source
      */
     public String getSource() {
         return source;
     }
 
     /**
-     * Sets the source.
+     * Sets application source.
      *
-     * @param applicationSource the source to set
+     * @param applicationSource source
      */
     public void setSource(final String applicationSource) {
         this.source = applicationSource;
     }
 
     /**
-     * Returns the JD ID.
+     * Returns job description ID.
      *
-     * @return the job description ID
+     * @return JD ID
      */
     public UUID getJdId() {
         return jdId;
     }
 
     /**
-     * Sets the JD ID.
+     * Sets job description ID.
      *
-     * @param jobDescriptionId the job description ID to set
+     * @param jobDescriptionId JD ID
      */
     public void setJdId(final UUID jobDescriptionId) {
         this.jdId = jobDescriptionId;

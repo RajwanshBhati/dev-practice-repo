@@ -4,41 +4,26 @@ import com.interview_tracking_system.backend.enums.Role;
 
 /**
  * Response body after successful login.
- * Returns JWT access token, refresh token, and basic user info.
+ * Returns JWT access token, refresh token, and user details.
  */
 public class LoginResponseDTO {
 
-    /**
-     * Short-lived JWT access token.
-     * Sent in Authorization header as Bearer token for all protected APIs.
-     */
+    /** JWT access token. */
     private String accessToken;
 
-    /**
-     * Long-lived refresh token.
-     * Used to get a new access token when it expires.
-     */
+    /** Refresh token. */
     private String refreshToken;
 
-    /**
-     * Token type — always "Bearer".
-     */
+    /** Token type — always Bearer. */
     private String tokenType = "Bearer";
 
-    /**
-     * Logged-in user's name.
-     */
+    /** Logged-in user's name. */
     private String name;
 
-    /**
-     * Logged-in user's email.
-     */
+    /** Logged-in user's email. */
     private String email;
 
-    /**
-     * Role of the logged-in user.
-     * Frontend uses this to show/hide role-specific UI.
-     */
+    /** Logged-in user's role. */
     private Role role;
 
     /**
@@ -48,11 +33,23 @@ public class LoginResponseDTO {
     }
 
     /**
-     * All args constructor.
+     * Creates login response DTO.
+     *
+     * @param accessToken  access token
+     * @param refreshToken refresh token
+     * @param tokenType    token type
+     * @param name         user name
+     * @param email        user email
+     * @param role         user role
      */
-    public LoginResponseDTO(String accessToken, String refreshToken,
-            String tokenType, String name,
-            String email, Role role) {
+    public LoginResponseDTO(
+            final String accessToken,
+            final String refreshToken,
+            final String tokenType,
+            final String name,
+            final String email,
+            final Role role) {
+
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
         this.tokenType = tokenType;
@@ -61,209 +58,192 @@ public class LoginResponseDTO {
         this.role = role;
     }
 
-    /**
-     * Gets the access token.
-     * 
-     * @return accessToken
-     */
-
+    /** @return access token */
     public String getAccessToken() {
         return accessToken;
     }
 
-    /**
-     * Gets the refresh token.
-     * 
-     * @return refreshToken
-     */
+    /** @return refresh token */
     public String getRefreshToken() {
         return refreshToken;
     }
 
-    /**
-     * Gets the token type.
-     * 
-     * @return tokenType
-     */
+    /** @return token type */
     public String getTokenType() {
         return tokenType;
     }
 
-    /**
-     * Gets the name of the user.
-     * 
-     * @return name
-     */
+    /** @return user name */
     public String getName() {
         return name;
     }
 
-    /**
-     * Gets the email of the user.
-     * 
-     * @return email
-     */
+    /** @return email */
     public String getEmail() {
         return email;
     }
 
-    /**
-     * Gets the role of the user.
-     * 
-     * @return role
-     */
+    /** @return role */
     public Role getRole() {
         return role;
     }
 
     /**
-     * Set access token
-     * 
-     * @param accessToken
+     * Sets access token.
+     *
+     * @param token access token
      */
-
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
+    public void setAccessToken(final String token) {
+        this.accessToken = token;
     }
 
     /**
-     * Set refresh token
-     * 
-     * @param refreshToken
+     * Sets refresh token.
+     *
+     * @param token refresh token
      */
-    public void setRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
+    public void setRefreshToken(final String token) {
+        this.refreshToken = token;
     }
 
     /**
-     * Set token type
-     * 
-     * @param tokenType
+     * Sets token type.
+     *
+     * @param type token type
      */
-    public void setTokenType(String tokenType) {
-        this.tokenType = tokenType;
+    public void setTokenType(final String type) {
+        this.tokenType = type;
     }
 
     /**
-     * Set name
-     * 
-     * @param name
+     * Sets user name.
+     *
+     * @param userName name
      */
-    public void setName(String name) {
-        this.name = name;
+    public void setName(final String userName) {
+        this.name = userName;
     }
 
     /**
-     * Set email
-     * 
-     * @param email
+     * Sets email.
+     *
+     * @param userEmail email
      */
-    public void setEmail(String email) {
-        this.email = email;
+    public void setEmail(final String userEmail) {
+        this.email = userEmail;
     }
 
     /**
-     * Set role
-     * 
-     * @param role
+     * Sets role.
+     *
+     * @param userRole role
      */
-    public void setRole(Role role) {
-        this.role = role;
+    public void setRole(final Role userRole) {
+        this.role = userRole;
     }
 
     /**
-     * Builder for LoginResponseDTO to simplify object creation.
+     * Returns builder instance.
+     *
+     * @return builder
      */
-
     public static Builder builder() {
         return new Builder();
     }
 
     /**
      * Builder class for LoginResponseDTO.
-     * Allows chaining of setter methods for cleaner code.
      */
-    public static class Builder {
-        /* Required fields for login response */
+    public static final class Builder {
+
+        /** JWT access token. */
         private String accessToken;
-        /* Optional fields with default values */
+
+        /** Refresh token. */
         private String refreshToken;
-        /* Token type is always "Bearer" for this application */
+
+        /** Token type — always Bearer. */
         private String tokenType = "Bearer";
-        /* User info to return on login */
+
+        /** Logged-in user's name. */
         private String name;
-        /* User's email to return on login */
+
+        /** Logged-in user's email. */
         private String email;
-        /* User's role to return on login */
+
+        /** Logged-in user's role. */
         private Role role;
 
         /**
-         * Builder methods for each field. Returns the builder for chaining.
+         * Sets access token.
+         *
+         * @param token access token
+         * @return this builder instance
          */
-        public Builder accessToken(String accessToken) {
-            this.accessToken = accessToken;
+        public Builder accessToken(final String token) {
+            this.accessToken = token;
             return this;
         }
 
         /**
-         * Builder method for refresh token.
-         * 
-         * @param refreshToken the refresh token to set
-         * @return the builder instance
+         * Sets refresh token.
+         *
+         * @param token refresh token
+         * @return this builder instance
          */
-        public Builder refreshToken(String refreshToken) {
-            this.refreshToken = refreshToken;
+        public Builder refreshToken(final String token) {
+            this.refreshToken = token;
             return this;
         }
 
         /**
-         * Builder method for token type.
-         * 
-         * @param tokenType the token type to set
-         * @return the builder instance
+         * Sets token type.
+         *
+         * @param type token type
+         * @return this builder instance
          */
-        public Builder tokenType(String tokenType) {
-            this.tokenType = tokenType;
+        public Builder tokenType(final String type) {
+            this.tokenType = type;
             return this;
         }
 
         /**
-         * Builder method for user name.
-         * 
-         * @param name the name to set
-         * @return the builder instance
+         * Sets user name.
+         *
+         * @param userName user name
+         * @return this builder instance
          */
-        public Builder name(String name) {
-            this.name = name;
+        public Builder name(final String userName) {
+            this.name = userName;
             return this;
         }
 
         /**
-         * Builder method for user email.
-         * 
-         * @param email the email to set
-         * @return the builder instance
+         * Sets user email.
+         *
+         * @param userEmail user email
+         * @return this builder instance
          */
-        public Builder email(String email) {
-            this.email = email;
+        public Builder email(final String userEmail) {
+            this.email = userEmail;
             return this;
         }
 
         /**
-         * Builder method for user role.
-         * 
-         * @param role the role to set
-         * @return the builder instance
+         * Sets user role.
+         *
+         * @param userRole user role
+         * @return this builder instance
          */
-        public Builder role(Role role) {
-            this.role = role;
+        public Builder role(final Role userRole) {
+            this.role = userRole;
             return this;
         }
 
         /**
-         * Builds the LoginResponseDTO object with the set fields.
-         * 
-         * @return a new LoginResponseDTO instance
+         * Builds LoginResponseDTO.
+         *
+         * @return LoginResponseDTO
          */
         public LoginResponseDTO build() {
             return new LoginResponseDTO(

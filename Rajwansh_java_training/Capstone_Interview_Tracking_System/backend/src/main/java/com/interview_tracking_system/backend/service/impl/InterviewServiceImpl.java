@@ -39,14 +39,28 @@ import java.util.Optional;
 @Service
 public class InterviewServiceImpl implements InterviewService {
 
+    /** Logger for this service. */
     private static final Logger LOGGER = LoggerFactory.getLogger(InterviewServiceImpl.class);
 
+    /** Repository for candidate data. */
     private final CandidateRepository candidateRepository;
+
+    /** Repository for interview data. */
     private final InterviewRepository interviewRepository;
+
+    /** Repository for interview panel mappings. */
     private final InterviewPanelRepository interviewPanelRepository;
+
+    /** Repository for user data. */
     private final UserRepository userRepository;
+
+    /** Repository for feedback data. */
     private final FeedbackRepository feedbackRepository;
+
+    /** Service for sending emails. */
     private final EmailService emailService;
+
+    /** Repository for job description data. */
     private final JobDescriptionRepository jobDescriptionRepository;
 
     /**
@@ -56,9 +70,10 @@ public class InterviewServiceImpl implements InterviewService {
      * @param candidateRepository      candidate repository
      * @param interviewRepository      interview repository
      * @param interviewPanelRepository interview panel mapping repository
-     * @param panelRepository          panel repository
      * @param feedbackRepository       feedback repository
      * @param emailService             email service
+     * @param userRepository           user repository
+     * @param jobDescriptionRepository job description repository
      */
     public InterviewServiceImpl(final CandidateRepository candidateRepository,
             final InterviewRepository interviewRepository,
@@ -397,8 +412,15 @@ public class InterviewServiceImpl implements InterviewService {
         return interviewIds;
     }
 
+    /**
+     * Returns all feedback submitted for interviews of a candidate.
+     * This method is final to prevent unsafe subclassing.
+     *
+     * @param candidateId candidate id
+     * @return list of feedback DTOs
+     */
     @Override
-    public List<HRFeedbackDTO> getFeedbackForCandidate(final Long candidateId) {
+    public final List<HRFeedbackDTO> getFeedbackForCandidate(final Long candidateId) {
 
         LOGGER.info("Fetching feedback for candidate {}", candidateId);
 
@@ -418,8 +440,9 @@ public class InterviewServiceImpl implements InterviewService {
                 Candidate candidate = candidateRepository.findById(candidateId)
                         .orElse(null);
 
-                if (candidate == null)
+                if (candidate == null) {
                     continue;
+                }
 
                 HRFeedbackDTO dto = new HRFeedbackDTO();
 

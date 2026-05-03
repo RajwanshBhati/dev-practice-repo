@@ -1,6 +1,7 @@
 package com.interview_tracking_system.backend.entity;
 
 import com.interview_tracking_system.backend.enums.Stage;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -10,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.Table;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -33,7 +35,7 @@ public class Interview {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /** Foreign key referencing the candidate for this interview. */
+    /** Candidate ID for this interview. */
     @Column(name = "candidate_id", nullable = false)
     private Long candidateId;
 
@@ -42,11 +44,11 @@ public class Interview {
     @Column(nullable = false, length = STAGE_LENGTH)
     private Stage stage;
 
-    /** Scheduled date of the interview. */
+    /** Scheduled interview date. */
     @Column(nullable = false)
     private LocalDate date;
 
-    /** Scheduled time of the interview. */
+    /** Scheduled interview time. */
     @Column(nullable = false)
     private LocalTime time;
 
@@ -55,110 +57,110 @@ public class Interview {
     private String focusArea;
 
     /**
-     * Returns the interview id.
+     * Returns interview ID.
      *
-     * @return the id
+     * @return interview ID
      */
     public Long getId() {
         return id;
     }
 
     /**
-     * set id
-     * 
-     * @param id
+     * Sets interview ID.
+     *
+     * @param interviewId interview ID
      */
-    public void setId(Long id) {
-        this.id = id;
+    public void setId(final Long interviewId) {
+        this.id = interviewId;
     }
 
     /**
-     * Returns the foreign key ID of the associated candidate.
+     * Returns candidate ID.
      *
-     * @return the candidateId
+     * @return candidate ID
      */
     public Long getCandidateId() {
         return candidateId;
     }
 
     /**
-     * Sets the foreign key ID of the associated candidate.
+     * Sets candidate ID.
      *
-     * @param interviewCandidateId the candidate ID to set
+     * @param candidateRef candidate ID
      */
-    public void setCandidateId(final Long interviewCandidateId) {
-        this.candidateId = interviewCandidateId;
+    public void setCandidateId(final Long candidateRef) {
+        this.candidateId = candidateRef;
     }
 
     /**
-     * Returns the interview stage.
+     * Returns interview stage.
      *
-     * @return the stage
+     * @return stage
      */
     public Stage getStage() {
         return stage;
     }
 
     /**
-     * Sets the interview stage.
+     * Sets interview stage.
      *
-     * @param interviewStage the stage to set
+     * @param interviewStage stage
      */
     public void setStage(final Stage interviewStage) {
         this.stage = interviewStage;
     }
 
     /**
-     * Returns the interview date.
+     * Returns interview date.
      *
-     * @return the date
+     * @return date
      */
     public LocalDate getDate() {
         return date;
     }
 
     /**
-     * Sets the interview date.
+     * Sets interview date.
      *
-     * @param interviewDate the date to set
+     * @param interviewDate date
      */
     public void setDate(final LocalDate interviewDate) {
         this.date = interviewDate;
     }
 
     /**
-     * Returns the interview time.
+     * Returns interview time.
      *
-     * @return the time
+     * @return time
      */
     public LocalTime getTime() {
         return time;
     }
 
     /**
-     * Sets the interview time.
+     * Sets interview time.
      *
-     * @param interviewTime the time to set
+     * @param interviewTime time
      */
     public void setTime(final LocalTime interviewTime) {
         this.time = interviewTime;
     }
 
     /**
-     * Returns the focus area.
+     * Returns focus area.
      *
-     * @return the focus area
+     * @return focus area
      */
     public String getFocusArea() {
         return focusArea;
     }
 
     /**
-     * Sets the focus area.
+     * Sets focus area.
      *
-     * @param area the focus area to set
+     * @param focus focus area
      */
-    public void setFocusArea(final String area) {
-        this.focusArea = area;
+    public void setFocusArea(final String focus) {
+        this.focusArea = focus;
     }
 }

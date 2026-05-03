@@ -2,6 +2,7 @@ package com.interview_tracking_system.backend.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+
 import com.interview_tracking_system.backend.constants.ValidationMessages;
 
 /**
@@ -10,6 +11,8 @@ import com.interview_tracking_system.backend.constants.ValidationMessages;
  */
 public class ChangePasswordRequestDTO {
 
+    /** Minimum password length. */
+    private static final int MIN_PASSWORD_LENGTH = 8;
     /**
      * Activation token received via email.
      */
@@ -20,7 +23,7 @@ public class ChangePasswordRequestDTO {
      * New password — minimum 8 characters.
      */
     @NotBlank(message = ValidationMessages.NEW_PASSWORD_REQUIRED)
-    @Size(min = 8, message = ValidationMessages.PASSWORD_MIN_LENGTH)
+    @Size(min = MIN_PASSWORD_LENGTH, message = ValidationMessages.PASSWORD_MIN_LENGTH)
     private String newPassword;
 
     /**
@@ -36,20 +39,23 @@ public class ChangePasswordRequestDTO {
     }
 
     /**
-     * All-args constructor.
+     * Creates request with all fields.
      *
-     * @param token           the activation token
-     * @param newPassword     the new password
-     * @param confirmPassword the confirmation of the new password
+     * @param token           activation token
+     * @param newPassword     new password
+     * @param confirmPassword confirm password
      */
-    public ChangePasswordRequestDTO(String token, String newPassword, String confirmPassword) {
+    public ChangePasswordRequestDTO(
+            final String token,
+            final String newPassword,
+            final String confirmPassword) {
         this.token = token;
         this.newPassword = newPassword;
         this.confirmPassword = confirmPassword;
     }
 
     /**
-     * Gets the token.
+     * Returns the token.
      *
      * @return token
      */
@@ -58,47 +64,47 @@ public class ChangePasswordRequestDTO {
     }
 
     /**
-     * Gets the new password.
+     * Returns the new password.
      *
-     * @return newPassword
+     * @return new password
      */
     public String getNewPassword() {
         return newPassword;
     }
 
     /**
-     * Gets the confirm password.
+     * Returns the confirm password.
      *
-     * @return confirmPassword
+     * @return confirm password
      */
     public String getConfirmPassword() {
         return confirmPassword;
     }
 
     /**
-     * Set token
+     * Sets the token.
      *
-     * @param token the token to set
+     * @param requestToken token value
      */
-    public void setToken(String token) {
-        this.token = token;
+    public void setToken(final String requestToken) {
+        this.token = requestToken;
     }
 
     /**
-     * Set new password
+     * Sets the new password.
      *
-     * @param newPassword the new password to set
+     * @param password new password
      */
-    public void setNewPassword(String newPassword) {
-        this.newPassword = newPassword;
+    public void setNewPassword(final String password) {
+        this.newPassword = password;
     }
 
     /**
-     * Set confirm password
+     * Sets the confirm password.
      *
-     * @param confirmPassword the confirm password to set
+     * @param confirmPwd confirm password
      */
-    public void setConfirmPassword(String confirmPassword) {
-        this.confirmPassword = confirmPassword;
+    public void setConfirmPassword(final String confirmPwd) {
+        this.confirmPassword = confirmPwd;
     }
 }

@@ -13,6 +13,7 @@ import java.util.List;
  */
 public interface InterviewPanelRepository extends JpaRepository<InterviewPanel, Long> {
 
+    /** Logger for this repository. */
     Logger LOGGER = LoggerFactory.getLogger(InterviewPanelRepository.class);
 
     /**

@@ -4,32 +4,38 @@ import java.time.LocalDateTime;
 
 /**
  * Generic API response wrapper used across all modules.
- * Wraps data with success flag, message, and timestamp.
+ *
+ * @param <T> type of response data
  */
 public class ApiResponse<T> {
 
     /** Success flag. */
     private boolean success;
+
     /** Message describing the response. */
     private String message;
+
     /** Actual response data. */
     private T data;
-    /** Timestamp of when the response is created. */
+
+    /** Timestamp when the response is created. */
     private LocalDateTime timestamp;
 
-    /** Default constructor initializes timestamp. */
+    /**
+     * Initializes API response with current timestamp.
+     */
     public ApiResponse() {
         this.timestamp = LocalDateTime.now();
     }
 
     /**
-     * Parameterized constructor to create response with all fields.
-     * 
-     * @param success
-     * @param message
-     * @param data
+     * Creates API response with success flag, message, data, and timestamp.
+     *
+     * @param success response success status
+     * @param message response message
+     * @param data    response data
      */
-    public ApiResponse(boolean success, String message, T data) {
+    public ApiResponse(final boolean success, final String message, final T data) {
         this.success = success;
         this.message = message;
         this.data = data;
@@ -37,53 +43,97 @@ public class ApiResponse<T> {
     }
 
     /**
-     * Factory method for success responses.
+     * Creates a success API response.
+     *
+     * @param message response message
+     * @param data    response data
+     * @param <T>     type of response data
+     * @return success API response
      */
-    public static <T> ApiResponse<T> success(String message, T data) {
+    public static <T> ApiResponse<T> success(final String message, final T data) {
         return new ApiResponse<>(true, message, data);
     }
 
     /**
-     * Factory method for error responses.
+     * Creates an error API response.
+     *
+     * @param message error message
+     * @param <T>     type of response data
+     * @return error API response
      */
-    public static <T> ApiResponse<T> error(String message) {
+    public static <T> ApiResponse<T> error(final String message) {
         return new ApiResponse<>(false, message, null);
     }
 
     /**
-     * Getters and setters for all fields.
-     * 
-     * @return
+     * Returns success flag.
+     *
+     * @return success flag
      */
     public boolean isSuccess() {
         return success;
     }
 
+    /**
+     * Returns response message.
+     *
+     * @return response message
+     */
     public String getMessage() {
         return message;
     }
 
+    /**
+     * Returns response data.
+     *
+     * @return response data
+     */
     public T getData() {
         return data;
     }
 
+    /**
+     * Returns response timestamp.
+     *
+     * @return response timestamp
+     */
     public LocalDateTime getTimestamp() {
         return timestamp;
     }
 
-    public void setSuccess(boolean success) {
-        this.success = success;
+    /**
+     * Sets success flag.
+     *
+     * @param responseSuccess success flag
+     */
+    public void setSuccess(final boolean responseSuccess) {
+        this.success = responseSuccess;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    /**
+     * Sets response message.
+     *
+     * @param responseMessage response message
+     */
+    public void setMessage(final String responseMessage) {
+        this.message = responseMessage;
     }
 
-    public void setData(T data) {
-        this.data = data;
+    /**
+     * Sets response data.
+     *
+     * @param responseData response data
+     */
+    public void setData(final T responseData) {
+        this.data = responseData;
     }
 
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
+    /**
+     * Sets response timestamp.
+     *
+     * @param responseTimestamp response timestamp
+     */
+    public void setTimestamp(final LocalDateTime responseTimestamp) {
+        this.timestamp = responseTimestamp;
     }
 }

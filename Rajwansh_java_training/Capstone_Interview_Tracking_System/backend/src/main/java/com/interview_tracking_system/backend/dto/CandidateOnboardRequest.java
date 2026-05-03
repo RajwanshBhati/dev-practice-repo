@@ -1,25 +1,33 @@
 package com.interview_tracking_system.backend.dto;
 
 import java.time.LocalDate;
+
 import com.interview_tracking_system.backend.enums.Gender;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
+/**
+ * DTO for candidate onboarding request.
+ * Contains personal details required for candidate registration.
+ */
 public class CandidateOnboardRequest {
+
+    /** Maximum allowed length for name fields. */
+    private static final int MAX_NAME_LENGTH = 80;
 
     /**
      * Full name of the candidate.
      */
     @NotBlank(message = "Full name is required")
-    @Size(min = 2, max = 80, message = "Full name must be between 2 and 80 characters")
+    @Size(min = 2, max = MAX_NAME_LENGTH, message = "Full name must be between 2 and 80 characters")
     private String fullName;
 
     /**
      * Email address of the candidate.
-     * This is used as a unique identifier for login and communication.
      */
     @NotBlank(message = "Email is required")
     @Email(message = "Invalid email format")
@@ -27,7 +35,6 @@ public class CandidateOnboardRequest {
 
     /**
      * Mobile number of the candidate.
-     * Used for contact and verification purposes.
      */
     @NotBlank(message = "Mobile number is required")
     @Pattern(regexp = "^[6-9]\\d{9}$", message = "Enter a valid 10-digit mobile number")
@@ -40,13 +47,13 @@ public class CandidateOnboardRequest {
     private LocalDate dob;
 
     /**
-     * Gender of the candidate
+     * Gender of the candidate.
      */
     @NotNull(message = "Gender is required")
     private Gender gender;
 
     /**
-     * Gets the gender of the candidate
+     * Returns the gender of the candidate.
      *
      * @return gender
      */
@@ -55,18 +62,18 @@ public class CandidateOnboardRequest {
     }
 
     /**
-     * sets the gender
+     * Sets the gender of the candidate.
      *
-     * @param gender
+     * @param candidateGender gender value
      */
-    public void setGender(Gender gender) {
-        this.gender = gender;
+    public void setGender(final Gender candidateGender) {
+        this.gender = candidateGender;
     }
 
     /**
-     * Gets the full name of the candidate.
+     * Returns the full name of the candidate.
      *
-     * @return full name of the candidate
+     * @return full name
      */
     public String getFullName() {
         return fullName;
@@ -75,34 +82,34 @@ public class CandidateOnboardRequest {
     /**
      * Sets the full name of the candidate.
      *
-     * @param fullName candidate's full name
+     * @param candidateFullName full name
      */
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
+    public void setFullName(final String candidateFullName) {
+        this.fullName = candidateFullName;
     }
 
     /**
-     * Gets the email address of the candidate.
+     * Returns the email of the candidate.
      *
-     * @return candidate email
+     * @return email
      */
     public String getEmail() {
         return email;
     }
 
     /**
-     * Sets the email address of the candidate.
+     * Sets the email of the candidate.
      *
-     * @param email candidate email
+     * @param candidateEmail email
      */
-    public void setEmail(String email) {
-        this.email = email;
+    public void setEmail(final String candidateEmail) {
+        this.email = candidateEmail;
     }
 
     /**
-     * Gets the mobile number of the candidate.
+     * Returns the mobile number of the candidate.
      *
-     * @return candidate mobile number
+     * @return mobile number
      */
     public String getMobileNumber() {
         return mobileNumber;
@@ -111,16 +118,16 @@ public class CandidateOnboardRequest {
     /**
      * Sets the mobile number of the candidate.
      *
-     * @param mobileNumber candidate mobile number
+     * @param candidateMobileNumber mobile number
      */
-    public void setMobileNumber(String mobileNumber) {
-        this.mobileNumber = mobileNumber;
+    public void setMobileNumber(final String candidateMobileNumber) {
+        this.mobileNumber = candidateMobileNumber;
     }
 
     /**
-     * Gets the date of birth of the candidate.
+     * Returns the date of birth of the candidate.
      *
-     * @return candidate date of birth
+     * @return date of birth
      */
     public LocalDate getDob() {
         return dob;
@@ -129,9 +136,9 @@ public class CandidateOnboardRequest {
     /**
      * Sets the date of birth of the candidate.
      *
-     * @param dob candidate date of birth
+     * @param candidateDob date of birth
      */
-    public void setDob(LocalDate dob) {
-        this.dob = dob;
+    public void setDob(final LocalDate candidateDob) {
+        this.dob = candidateDob;
     }
 }

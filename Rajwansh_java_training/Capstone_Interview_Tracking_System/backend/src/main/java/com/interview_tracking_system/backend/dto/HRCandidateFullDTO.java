@@ -1,73 +1,76 @@
 package com.interview_tracking_system.backend.dto;
 
+/**
+ * DTO representing complete candidate details for HR dashboard.
+ */
 public class HRCandidateFullDTO {
 
-    /** Unique identifier of the candidate */
+    /** Unique identifier of the candidate. */
     private Long id;
 
-    /** Full name of the candidate */
+    /** Full name of the candidate. */
     private String name;
 
-    /** Email address of the candidate */
+    /** Email address of the candidate. */
     private String email;
 
-    /** Mobile number of the candidate */
+    /** Mobile number of the candidate. */
     private String mobileNumber;
 
-    /** Current company where the candidate is working */
+    /** Current company where the candidate is working. */
     private String currentCompany;
 
-    /** Current CTC of the candidate */
+    /** Current CTC of the candidate. */
     private Double currentCtc;
 
-    /** Expected CTC of the candidate */
+    /** Expected CTC of the candidate. */
     private Double expectedCtc;
 
-    /** Total years of experience of the candidate */
+    /** Total years of experience of the candidate. */
     private Integer totalExperience;
 
-    /** Relevant years of experience for the applied role */
+    /** Relevant years of experience for the applied role. */
     private Integer relevantExperience;
 
-    /** Preferred job location of the candidate */
+    /** Preferred job location of the candidate. */
     private String preferredLocation;
 
-    /** Notice period in days */
+    /** Notice period in days. */
     private Integer noticePeriod;
 
-    /** Source through which candidate applied */
+    /** Source through which candidate applied. */
     private String source;
 
-    /** Job title for which candidate applied */
+    /** Job title for which candidate applied. */
     private String jobTitle;
 
-    /** Current hiring status of the candidate */
+    /** Current hiring status of the candidate. */
     private String status;
 
-    /** URL to access the candidate's resume */
+    /** URL to access the candidate's resume. */
     private String resumeUrl;
 
     /**
-     * Returns candidate id
-     * 
-     * @return candidate id
+     * Returns candidate ID.
+     *
+     * @return candidate ID
      */
     public Long getId() {
         return id;
     }
 
     /**
-     * Sets candidate id
-     * 
-     * @param id candidate id
+     * Sets candidate ID.
+     *
+     * @param candidateId candidate ID
      */
-    public void setId(final Long id) {
-        this.id = id;
+    public void setId(final Long candidateId) {
+        this.id = candidateId;
     }
 
     /**
-     * Returns resume URL
-     * 
+     * Returns resume URL.
+     *
      * @return resume URL
      */
     public String getResumeUrl() {
@@ -75,17 +78,17 @@ public class HRCandidateFullDTO {
     }
 
     /**
-     * Sets resume URL
-     * 
+     * Sets resume URL.
+     *
      * @param resumeUrl resume URL
      */
-    public void setResumeUrl(String resumeUrl) {
+    public void setResumeUrl(final String resumeUrl) {
         this.resumeUrl = resumeUrl;
     }
 
     /**
-     * Returns candidate name
-     * 
+     * Returns candidate name.
+     *
      * @return name
      */
     public String getName() {
@@ -93,17 +96,17 @@ public class HRCandidateFullDTO {
     }
 
     /**
-     * Sets candidate name
-     * 
-     * @param name candidate name
+     * Sets candidate name.
+     *
+     * @param candidateName name
      */
-    public void setName(String name) {
-        this.name = name;
+    public void setName(final String candidateName) {
+        this.name = candidateName;
     }
 
     /**
-     * Returns candidate email
-     * 
+     * Returns candidate email.
+     *
      * @return email
      */
     public String getEmail() {
@@ -111,17 +114,17 @@ public class HRCandidateFullDTO {
     }
 
     /**
-     * Sets candidate email
-     * 
-     * @param email email
+     * Sets candidate email.
+     *
+     * @param candidateEmail email
      */
-    public void setEmail(String email) {
-        this.email = email;
+    public void setEmail(final String candidateEmail) {
+        this.email = candidateEmail;
     }
 
     /**
-     * Returns candidate mobile number
-     * 
+     * Returns mobile number.
+     *
      * @return mobile number
      */
     public String getMobileNumber() {
@@ -129,17 +132,17 @@ public class HRCandidateFullDTO {
     }
 
     /**
-     * Sets candidate mobile number
-     * 
-     * @param mobileNumber mobile number
+     * Sets mobile number.
+     *
+     * @param mobile number
      */
-    public void setMobileNumber(String mobileNumber) {
-        this.mobileNumber = mobileNumber;
+    public void setMobileNumber(final String mobile) {
+        this.mobileNumber = mobile;
     }
 
     /**
-     * Returns current company
-     * 
+     * Returns current company.
+     *
      * @return current company
      */
     public String getCurrentCompany() {
@@ -147,17 +150,17 @@ public class HRCandidateFullDTO {
     }
 
     /**
-     * Sets current company
-     * 
-     * @param currentCompany company name
+     * Sets current company.
+     *
+     * @param company company name
      */
-    public void setCurrentCompany(String currentCompany) {
-        this.currentCompany = currentCompany;
+    public void setCurrentCompany(final String company) {
+        this.currentCompany = company;
     }
 
     /**
-     * Returns current CTC
-     * 
+     * Returns current CTC.
+     *
      * @return current CTC
      */
     public Double getCurrentCtc() {
@@ -165,17 +168,17 @@ public class HRCandidateFullDTO {
     }
 
     /**
-     * Sets current CTC
-     * 
-     * @param currentCtc current salary
+     * Sets current CTC.
+     *
+     * @param ctc current salary
      */
-    public void setCurrentCtc(Double currentCtc) {
-        this.currentCtc = currentCtc;
+    public void setCurrentCtc(final Double ctc) {
+        this.currentCtc = ctc;
     }
 
     /**
-     * Returns expected CTC
-     * 
+     * Returns expected CTC.
+     *
      * @return expected CTC
      */
     public Double getExpectedCtc() {
@@ -183,17 +186,17 @@ public class HRCandidateFullDTO {
     }
 
     /**
-     * Sets expected CTC
-     * 
-     * @param expectedCtc expected salary
+     * Sets expected CTC.
+     *
+     * @param ctc expected salary
      */
-    public void setExpectedCtc(Double expectedCtc) {
-        this.expectedCtc = expectedCtc;
+    public void setExpectedCtc(final Double ctc) {
+        this.expectedCtc = ctc;
     }
 
     /**
-     * Returns total experience
-     * 
+     * Returns total experience.
+     *
      * @return total experience
      */
     public Integer getTotalExperience() {
@@ -201,17 +204,17 @@ public class HRCandidateFullDTO {
     }
 
     /**
-     * Sets total experience
-     * 
-     * @param totalExperience experience in years
+     * Sets total experience.
+     *
+     * @param experience total experience
      */
-    public void setTotalExperience(Integer totalExperience) {
-        this.totalExperience = totalExperience;
+    public void setTotalExperience(final Integer experience) {
+        this.totalExperience = experience;
     }
 
     /**
-     * Returns relevant experience
-     * 
+     * Returns relevant experience.
+     *
      * @return relevant experience
      */
     public Integer getRelevantExperience() {
@@ -219,53 +222,53 @@ public class HRCandidateFullDTO {
     }
 
     /**
-     * Sets relevant experience
-     * 
-     * @param relevantExperience relevant years
+     * Sets relevant experience.
+     *
+     * @param experience relevant experience
      */
-    public void setRelevantExperience(Integer relevantExperience) {
-        this.relevantExperience = relevantExperience;
+    public void setRelevantExperience(final Integer experience) {
+        this.relevantExperience = experience;
     }
 
     /**
-     * Returns preferred location
-     * 
-     * @return location
+     * Returns preferred location.
+     *
+     * @return preferred location
      */
     public String getPreferredLocation() {
         return preferredLocation;
     }
 
     /**
-     * Sets preferred location
-     * 
-     * @param preferredLocation location
+     * Sets preferred location.
+     *
+     * @param location preferred location
      */
-    public void setPreferredLocation(String preferredLocation) {
-        this.preferredLocation = preferredLocation;
+    public void setPreferredLocation(final String location) {
+        this.preferredLocation = location;
     }
 
     /**
-     * Returns notice period
-     * 
-     * @return notice period in days
+     * Returns notice period.
+     *
+     * @return notice period
      */
     public Integer getNoticePeriod() {
         return noticePeriod;
     }
 
     /**
-     * Sets notice period
-     * 
-     * @param noticePeriod days
+     * Sets notice period.
+     *
+     * @param notice notice period
      */
-    public void setNoticePeriod(Integer noticePeriod) {
-        this.noticePeriod = noticePeriod;
+    public void setNoticePeriod(final Integer notice) {
+        this.noticePeriod = notice;
     }
 
     /**
-     * Returns source
-     * 
+     * Returns source.
+     *
      * @return source
      */
     public String getSource() {
@@ -273,17 +276,17 @@ public class HRCandidateFullDTO {
     }
 
     /**
-     * Sets source
-     * 
-     * @param source source
+     * Sets source.
+     *
+     * @param applicationSource source
      */
-    public void setSource(String source) {
-        this.source = source;
+    public void setSource(final String applicationSource) {
+        this.source = applicationSource;
     }
 
     /**
-     * Returns job title
-     * 
+     * Returns job title.
+     *
      * @return job title
      */
     public String getJobTitle() {
@@ -291,17 +294,17 @@ public class HRCandidateFullDTO {
     }
 
     /**
-     * Sets job title
-     * 
-     * @param jobTitle job title
+     * Sets job title.
+     *
+     * @param title job title
      */
-    public void setJobTitle(String jobTitle) {
-        this.jobTitle = jobTitle;
+    public void setJobTitle(final String title) {
+        this.jobTitle = title;
     }
 
     /**
-     * Returns candidate status
-     * 
+     * Returns candidate status.
+     *
      * @return status
      */
     public String getStatus() {
@@ -309,11 +312,11 @@ public class HRCandidateFullDTO {
     }
 
     /**
-     * Sets candidate status
-     * 
-     * @param status status
+     * Sets candidate status.
+     *
+     * @param candidateStatus status
      */
-    public void setStatus(String status) {
-        this.status = status;
+    public void setStatus(final String candidateStatus) {
+        this.status = candidateStatus;
     }
 }

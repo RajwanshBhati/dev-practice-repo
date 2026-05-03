@@ -15,32 +15,33 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Loads application users for Spring Security authentication.
+ */
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    /** Logger for debugging authentication flow */
+    /** Logger for authentication flow. */
     private static final Logger LOGGER = LoggerFactory.getLogger(CustomUserDetailsService.class);
 
-    /** Repository for all users (HR, Panel, Candidate) */
+    /** Repository for all users. */
     private final UserRepository userRepository;
 
     /**
-     * Constructor for dependency injection.
+     * Creates CustomUserDetailsService with user repository.
      *
-     * @param userRepository repository for all users
+     * @param repository user repository
      */
-    public CustomUserDetailsService(final UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public CustomUserDetailsService(final UserRepository repository) {
+        this.userRepository = repository;
     }
 
     /**
-     * Loads user details by email (case-insensitive).
+     * Loads user details by email.
      *
-     * Supports all user types: HR, Panel, and Candidate from single users table.
-     *
-     * @param email user email (username)
-     * @return UserDetails object for authentication with assigned role
-     * @throws UsernameNotFoundException if user not found
+     * @param email user email
+     * @return user details for authentication
+     * @throws UsernameNotFoundException when user is not found
      */
     @Override
     public UserDetails loadUserByUsername(final String email)

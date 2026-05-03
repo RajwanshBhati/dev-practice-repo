@@ -3,84 +3,115 @@ package com.interview_tracking_system.backend.controller;
 import com.interview_tracking_system.backend.constants.ApiEndpoints;
 import com.interview_tracking_system.backend.dto.PanelActivationRequest;
 import com.interview_tracking_system.backend.dto.PanelCreateRequest;
-import com.interview_tracking_system.backend.service.PanelService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.GetMapping;
 import com.interview_tracking_system.backend.dto.PanelInterviewDTO;
 import com.interview_tracking_system.backend.entity.User;
 import com.interview_tracking_system.backend.repository.UserRepository;
 import com.interview_tracking_system.backend.service.InterviewService;
-import org.springframework.security.core.Authentication;
+import com.interview_tracking_system.backend.service.PanelService;
 import jakarta.validation.Valid;
-
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Controller for Panel module
+ * Controller for Panel module.
  */
 @RestController
 @RequestMapping(ApiEndpoints.PANEL)
-public class PanelController {
+public final class PanelController {
 
-    private static final Logger logger = LoggerFactory.getLogger(PanelController.class);
+    /**
+     * Logger instance.
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(PanelController.class);
 
+    /**
+     * Panel service.
+     */
     private final PanelService panelService;
+
+    /**
+     * Interview service.
+     */
     private final InterviewService interviewService;
+
+    /**
+     * User repository.
+     */
     private final UserRepository userRepository;
 
-    public PanelController(PanelService panelService,
-            InterviewService interviewService,
-            UserRepository userRepository) {
+    /**
+     * Constructor for PanelController.
+     *
+     * @param panelService     the panel service
+     * @param interviewService the interview service
+     * @param userRepository   the user repository
+     */
+    public PanelController(final PanelService panelService,
+            final InterviewService interviewService,
+            final UserRepository userRepository) {
         this.panelService = panelService;
         this.interviewService = interviewService;
         this.userRepository = userRepository;
     }
 
     /**
-     * Create panel member
+     * Creates a panel member.
+     *
+     * @param request the panel create request
+     * @return response message
      */
     @PostMapping(ApiEndpoints.CREATE)
-    public String createPanel(@Valid @RequestBody PanelCreateRequest request) {
-        logger.info("API: Create Panel");
+    public String createPanel(@Valid @RequestBody final PanelCreateRequest request) {
+        LOGGER.info("API: Create Panel");
         return panelService.createPanel(request);
     }
 
     /**
-     * Activate panel account
+     * Activates a panel account.
+     *
+     * @param request the activation request
+     * @return response message
      */
     @PostMapping(ApiEndpoints.ACTIVATE)
-    public String activatePanel(@Valid @RequestBody PanelActivationRequest request) {
-        logger.info("API: Activate Panel");
+    public String activatePanel(@Valid @RequestBody final PanelActivationRequest request) {
+        LOGGER.info("API: Activate Panel");
         return panelService.activatePanel(request);
     }
 
     /**
-     * Get all panel members
+     * Fetches all panel members.
+     *
+     * @return list of panel members
      */
     @GetMapping(ApiEndpoints.LIST)
     public List<PanelCreateRequest> getAllPanels() {
-        logger.info("API: Get Panels");
+        LOGGER.info("API: Get Panels");
         return panelService.getAllPanels();
     }
 
     /**
-     * Fetch panel dashboard interviews for logged-in panel
+     * Fetches panel interviews for logged-in user.
+     *
+     * @param authentication the authentication object
+     * @return list of panel interviews
      */
     @GetMapping(ApiEndpoints.GETPANEL)
     public List<PanelInterviewDTO> getPanelInterviews(final Authentication authentication) {
 
         String email = authentication.getName();
 
-        logger.info("API: Fetch Panel Interviews for {}", email);
+        LOGGER.info("API: Fetch Panel Interviews for {}", email);
 
         User panelUser = userRepository.findByEmailIgnoreCase(email)
                 .orElseThrow(() -> {
-                    logger.error("Panel not found for email: {}", email);
+                    LOGGER.error("Panel not found for email: {}", email);
                     return new RuntimeException("Panel not found");
                 });
 

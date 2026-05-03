@@ -12,10 +12,6 @@ public final class ValidationMessages {
     private ValidationMessages() {
     }
 
-    /**
-     * Authentication validation messages
-     */
-
     /** Validation message when refresh token is missing. */
     public static final String REFRESH_TOKEN_REQUIRED = "Refresh token is required";
 
@@ -30,10 +26,6 @@ public final class ValidationMessages {
 
     /** Validation message when confirm password is missing. */
     public static final String CONFIRM_PASSWORD_REQUIRED = "Confirm password is required";
-
-    /**
-     * Job Description validation messages
-     */
 
     /** Validation message when job title is missing. */
     public static final String JOB_TITLE_REQUIRED = "Job title is required";

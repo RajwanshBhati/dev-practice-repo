@@ -5,55 +5,87 @@ package com.interview_tracking_system.backend.dto;
  */
 public class UpdateCandidateStatusDTO {
 
-    /**
-     * Candidate ID whose status needs to be updated.
-     */
+    /** Candidate ID whose status needs to be updated. */
     private Long candidateId;
 
-    /**
-     * New stage of the candidate (SCREENING, L1_TECHNICAL, L2_TECHNICAL, etc.)
-     */
+    /** New stage of the candidate. */
     private String stage;
 
-    /**
-     * Final decision.
-     */
+    /** Final decision. */
     private String decision;
 
-    /**
-     * Optional remarks by HR.
-     */
+    /** Optional remarks by HR. */
     private String remarks;
 
+    /**
+     * Returns candidate ID.
+     *
+     * @return candidate ID
+     */
     public Long getCandidateId() {
         return candidateId;
     }
 
-    public void setCandidateId(Long candidateId) {
-        this.candidateId = candidateId;
+    /**
+     * Sets candidate ID.
+     *
+     * @param id candidate ID
+     */
+    public void setCandidateId(final Long id) {
+        this.candidateId = id;
     }
 
+    /**
+     * Returns stage.
+     *
+     * @return stage
+     */
     public String getStage() {
         return stage;
     }
 
-    public void setStage(String stage) {
-        this.stage = stage;
+    /**
+     * Sets stage.
+     *
+     * @param candidateStage stage
+     */
+    public void setStage(final String candidateStage) {
+        this.stage = candidateStage;
     }
 
+    /**
+     * Returns decision.
+     *
+     * @return decision
+     */
     public String getDecision() {
         return decision;
     }
 
-    public void setDecision(String decision) {
-        this.decision = decision;
+    /**
+     * Sets decision.
+     *
+     * @param candidateDecision decision
+     */
+    public void setDecision(final String candidateDecision) {
+        this.decision = candidateDecision;
     }
 
+    /**
+     * Returns remarks.
+     *
+     * @return remarks
+     */
     public String getRemarks() {
         return remarks;
     }
 
-    public void setRemarks(String remarks) {
-        this.remarks = remarks;
+    /**
+     * Sets remarks.
+     *
+     * @param hrRemarks remarks
+     */
+    public void setRemarks(final String hrRemarks) {
+        this.remarks = hrRemarks;
     }
 }

@@ -5,148 +5,145 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
+/**
+ * Request DTO for creating a panel member.
+ */
 public class PanelCreateRequest {
 
-    /**
-     * Unique id of panel member.
-     */
+    /** Unique ID of panel member. */
     private Long id;
 
-    /**
-     * Full name of the panel member being registered. Must not be null or blank.
-     */
+    /** Maximum allowed length for name fields. */
+    private static final int MAX_NAME_LENGTH = 80;
+
+    /** Full name of the panel member. */
     @NotBlank(message = "Panel name is required")
-    @Size(min = 2, max = 80, message = "Panel name must be between 2 and 80 characters")
+    @Size(min = 2, max = MAX_NAME_LENGTH, message = "Panel name must be between 2 and 80 characters")
     private String fullName;
 
-    /**
-     * Email address of the panel member. Must be unique across all panel members.
-     */
+    /** Email address of the panel member. */
     @NotBlank(message = "Email is required")
     @Email(message = "Invalid email format")
     private String email;
 
-    /** Mobile phone number of the panel member. Optional. */
+    /** Mobile phone number of the panel member. */
     @NotBlank(message = "Mobile number is required")
     @Pattern(regexp = "^[6-9]\\d{9}$", message = "Enter a valid 10-digit mobile number")
     private String mobile;
 
-    /** Organization the panel member belongs to. Optional. */
+    /** Organization the panel member belongs to. */
     @NotBlank(message = "Organization is required")
     private String organization;
 
-    /** Job designation or title of the panel member. */
+    /** Job designation of the panel member. */
     @NotBlank(message = "Designation is required")
     private String designation;
 
     /**
-     * Returns panel id.
+     * Returns panel ID.
      *
-     * @return panel id
+     * @return panel ID
      */
     public Long getId() {
         return id;
     }
 
     /**
-     * Sets panel id.
+     * Sets panel ID.
      *
-     * @param id panel id
+     * @param panelId panel ID
      */
-    public void setId(final Long id) {
-        this.id = id;
+    public void setId(final Long panelId) {
+        this.id = panelId;
     }
 
     /**
-     * Returns the full name of the panel member.
+     * Returns full name.
      *
-     * @return the full name
+     * @return full name
      */
     public String getFullName() {
         return fullName;
     }
 
-    public String getOrganization() {
-        return organization;
-    }
-
     /**
-     * Sets the full name of the panel member.
+     * Sets full name.
      *
-     * @param fullName the full name to set; must not be null or blank
+     * @param name full name
      */
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
+    public void setFullName(final String name) {
+        this.fullName = name;
     }
 
     /**
-     * Returns the email address of the panel member.
+     * Returns email.
      *
-     * @return the email address
+     * @return email
      */
     public String getEmail() {
         return email;
     }
 
     /**
-     * Sets the email address of the panel member.
+     * Sets email.
      *
-     * @param email the email to set; must be unique and non-null
+     * @param userEmail email
      */
-    public void setEmail(final String email) {
-        this.email = email;
+    public void setEmail(final String userEmail) {
+        this.email = userEmail;
     }
 
     /**
-     * Returns the mobile phone number of the panel member.
+     * Returns mobile number.
      *
-     * @return the mobile number
+     * @return mobile number
      */
     public String getMobile() {
         return mobile;
     }
 
     /**
-     * Sets the mobile phone number of the panel member.
+     * Sets mobile number.
      *
-     * @param mobile the mobile number to set; optional
+     * @param mobileNumber mobile number
      */
-    public void setMobile(final String mobile) {
-        this.mobile = mobile;
+    public void setMobile(final String mobileNumber) {
+        this.mobile = mobileNumber;
     }
 
     /**
-     * Returns the organization the panel member belongs to.
+     * Returns organization.
      *
-     * @return the organization name
-     *         public String getOrganization() {
-     *         return organization;
-     *         }
-     *
-     *         /**
-     *         Sets the organization the panel member belongs to.
-     *
-     * @param organization the organization name to set; optional
+     * @return organization
      */
-    public void setOrganization(final String organization) {
-        this.organization = organization;
+    public String getOrganization() {
+        return organization;
     }
 
     /**
-     * Returns the job designation or title of the panel member.
+     * Sets organization.
      *
-     * @return the designation
+     * @param org organization name
+     */
+    public void setOrganization(final String org) {
+        this.organization = org;
+    }
+
+    /**
+     * Returns designation.
+     *
+     * @return designation
      */
     public String getDesignation() {
         return designation;
     }
 
     /**
-     * Sets the job designation or title of the panel member.
+     * Sets designation.
      *
-     * @param designation the designation to set; optional
+     * @param roleDesignation designation
      */
-    public void setDesignation(final String designation) {
-        this.designation = designation;
+    public void setDesignation(final String roleDesignation) {
+        this.designation = roleDesignation;
     }
 }

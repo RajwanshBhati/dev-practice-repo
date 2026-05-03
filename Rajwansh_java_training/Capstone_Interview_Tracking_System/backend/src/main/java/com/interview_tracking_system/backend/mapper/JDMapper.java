@@ -3,18 +3,23 @@ package com.interview_tracking_system.backend.mapper;
 import com.interview_tracking_system.backend.dto.JDRequestDTO;
 import com.interview_tracking_system.backend.dto.JDResponseDTO;
 import com.interview_tracking_system.backend.entity.JobDescription;
-import org.springframework.stereotype.Component;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.stereotype.Component;
 
+/**
+ * Mapper for converting between JobDescription entity and DTOs.
+ */
 @Component
-public class JDMapper {
+public final class JDMapper {
 
     /**
-     * Convert Request DTO → Entity
+     * Converts request DTO to entity.
+     *
+     * @param dto request DTO
+     * @return JobDescription entity
      */
-    public JobDescription toEntity(JDRequestDTO dto) {
+    public JobDescription toEntity(final JDRequestDTO dto) {
 
         if (dto == null) {
             return null;
@@ -36,9 +41,12 @@ public class JDMapper {
     }
 
     /**
-     * Convert Entity → Response DTO
+     * Converts entity to response DTO.
+     *
+     * @param jd JobDescription entity
+     * @return response DTO
      */
-    public JDResponseDTO toResponseDTO(JobDescription jd) {
+    public JDResponseDTO toResponseDTO(final JobDescription jd) {
 
         if (jd == null) {
             return null;
@@ -64,9 +72,12 @@ public class JDMapper {
     }
 
     /**
-     * Null-safe list handling
+     * Returns a null-safe copy of list.
+     *
+     * @param list input list
+     * @return safe list
      */
-    private List<String> safeList(List<String> list) {
+    private List<String> safeList(final List<String> list) {
         return (list == null) ? new ArrayList<>() : new ArrayList<>(list);
     }
 }

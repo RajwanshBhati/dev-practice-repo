@@ -1,9 +1,15 @@
 package com.interview_tracking_system.backend.service.impl;
 
-import com.interview_tracking_system.backend.dto.LoginRequestDTO;
+import static com.interview_tracking_system.backend.constants.CandidateConstants.ERROR_ALREADY_APPLIED;
+import static com.interview_tracking_system.backend.constants.CandidateConstants.ERROR_EMAIL_EXISTS;
+import static com.interview_tracking_system.backend.constants.CandidateConstants.ERROR_INVALID_CREDENTIALS;
+import static com.interview_tracking_system.backend.constants.CandidateConstants.ERROR_NOT_LOGGED_IN;
+
+import com.interview_tracking_system.backend.dto.CandidateOnboardRequest;
 import com.interview_tracking_system.backend.dto.CandidateProfileRequest;
 import com.interview_tracking_system.backend.dto.CandidateRegisterRequest;
 import com.interview_tracking_system.backend.dto.CandidateResponseDTO;
+import com.interview_tracking_system.backend.dto.LoginRequestDTO;
 import com.interview_tracking_system.backend.entity.Candidate;
 import com.interview_tracking_system.backend.entity.User;
 import com.interview_tracking_system.backend.enums.Role;
@@ -13,105 +19,129 @@ import com.interview_tracking_system.backend.repository.CandidateRepository;
 import com.interview_tracking_system.backend.repository.UserRepository;
 import com.interview_tracking_system.backend.service.CandidateService;
 import com.interview_tracking_system.backend.service.EmailService;
-import com.interview_tracking_system.backend.dto.CandidateOnboardRequest;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.UUID;
-
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import static com.interview_tracking_system.backend.constants.CandidateConstants.ERROR_EMAIL_EXISTS;
-import static com.interview_tracking_system.backend.constants.CandidateConstants.ERROR_INVALID_CREDENTIALS;
-import static com.interview_tracking_system.backend.constants.CandidateConstants.ERROR_ALREADY_APPLIED;
-import static com.interview_tracking_system.backend.constants.CandidateConstants.ERROR_NOT_LOGGED_IN;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-
+/**
+ * Service implementation for candidate operations.
+ */
 @Service
 public class CandidateServiceImpl implements CandidateService {
 
+    /**
+     * Activation token expiry hours.
+     */
+    private static final int ACTIVATION_EXPIRY_HOURS = 24;
+
+    /**
+     * Mobile number validation pattern.
+     */
+    private static final String MOBILE_PATTERN = "^[6-9]\\d{9}$";
+
+    /**
+     * Resume URL prefix.
+     */
+    private static final String RESUME_API_PREFIX = "/api/resumes/";
+
+    /**
+     * Logger instance.
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(CandidateServiceImpl.class);
+
+    /**
+     * Resume upload directory.
+     */
     @Value("${resume.upload-dir:uploads/resumes}")
     private String resumeUploadDir;
 
-    /** Logger instance for logging service activity */
-    private static final Logger LOGGER = LoggerFactory.getLogger(CandidateServiceImpl.class);
-
-    /** Repository for all users (HR, Panel, Candidate) */
+    /**
+     * User repository.
+     */
     private final UserRepository userRepository;
 
-    /** Repository for candidate job applications */
+    /**
+     * Candidate repository.
+     */
     private final CandidateRepository candidateRepository;
 
-    /** Email service for sending notifications */
+    /**
+     * Email service.
+     */
     private final EmailService emailService;
 
-    /** Password encoder for hashing passwords */
+    /**
+     * Password encoder.
+     */
     private final PasswordEncoder passwordEncoder;
 
     /**
-     * Constructor for dependency injection.
+     * Constructs candidate service implementation.
      *
-     * @param userRepository      repository for users
-     * @param candidateRepository repository for candidate data
-     * @param emailService        email service
-     * @param passwordEncoder     password encoder bean
+     * @param injectedUserRepository      user repository
+     * @param injectedCandidateRepository candidate repository
+     * @param injectedEmailService        email service
+     * @param injectedPasswordEncoder     password encoder
      */
     public CandidateServiceImpl(
-            final UserRepository userRepository,
-            final CandidateRepository candidateRepository,
-            final EmailService emailService,
-            final PasswordEncoder passwordEncoder) {
+            final UserRepository injectedUserRepository,
+            final CandidateRepository injectedCandidateRepository,
+            final EmailService injectedEmailService,
+            final PasswordEncoder injectedPasswordEncoder) {
 
-        this.userRepository = userRepository;
-        this.candidateRepository = candidateRepository;
-        this.emailService = emailService;
-        this.passwordEncoder = passwordEncoder;
+        this.userRepository = injectedUserRepository;
+        this.candidateRepository = injectedCandidateRepository;
+        this.emailService = injectedEmailService;
+        this.passwordEncoder = injectedPasswordEncoder;
     }
 
     /**
-     * Registers a new candidate user in the users table with ROLE_CANDIDATE.
+     * Registers a candidate user.
      *
-     * @param request the candidate registration request
-     * @throws IllegalArgumentException if validation fails
+     * @param request candidate registration request
      */
-
     @Override
     public void register(final CandidateRegisterRequest request) {
-        LOGGER.info("Candidate registration request received for email: {}", request.getEmail());
+        LOGGER.info(
+                "Candidate registration request received for email: {}",
+                request.getEmail());
 
-        String fullName = request.getFullName() == null ? "" : request.getFullName().trim();
-        String email = request.getEmail() == null ? "" : request.getEmail().trim().toLowerCase();
-        String mobileNumber = request.getMobileNumber() == null ? "" : request.getMobileNumber().trim();
+        String fullName = normalize(request.getFullName());
+        String email = normalizeEmail(request.getEmail());
+        String mobileNumber = normalize(request.getMobileNumber());
 
-        if (fullName.isEmpty()
-                || email.isEmpty()
-                || mobileNumber.isEmpty()
-                || request.getDob() == null
-                || request.getGender() == null) {
-
-            LOGGER.warn("Candidate registration failed due to missing required fields for email: {}", email);
-            throw new IllegalArgumentException("All fields are required.");
-        }
+        validateCandidateBasicFields(
+                fullName,
+                email,
+                mobileNumber,
+                request.getDob(),
+                request.getGender());
 
         if (userRepository.existsByEmail(email)) {
-            LOGGER.warn("Candidate registration failed. Email already exists: {}", email);
+            LOGGER.warn(
+                    "Candidate registration failed. Email already exists: {}",
+                    email);
             throw new IllegalArgumentException(ERROR_EMAIL_EXISTS);
         }
 
         if (userRepository.existsByMobile(mobileNumber)) {
-            LOGGER.warn("Candidate registration failed. Mobile already exists: {}", mobileNumber);
+            LOGGER.warn(
+                    "Candidate registration failed. Mobile already exists: {}",
+                    mobileNumber);
             throw new IllegalArgumentException("Mobile number already exists.");
         }
+
         String activationToken = UUID.randomUUID().toString();
 
         User user = new User();
@@ -124,57 +154,54 @@ public class CandidateServiceImpl implements CandidateService {
         user.setRole(Role.CANDIDATE);
         user.setStatus(UserStatus.ACTIVE);
         user.setActivationToken(activationToken);
-        user.setActivationTokenExpiry(LocalDateTime.now().plusHours(24));
+        user.setActivationTokenExpiry(
+                LocalDateTime.now().plusHours(ACTIVATION_EXPIRY_HOURS));
 
         userRepository.save(user);
+
         emailService.sendCandidateRegistrationEmail(
                 email,
                 fullName,
                 activationToken);
+
         LOGGER.info("Candidate registered successfully with email: {}", email);
     }
 
     /**
-     * Authenticates a candidate user.
+     * Logs in a candidate user.
      *
-     * @param request login request containing email and password
-     * @return authenticated User
-     * @throws IllegalArgumentException if credentials are invalid
+     * @param request login request
+     * @return authenticated user
      */
     @Override
     public User login(final LoginRequestDTO request) {
-
-        if (LOGGER.isInfoEnabled()) {
-            LOGGER.info("Login attempt for email: {}", request.getEmail());
-        }
+        LOGGER.info("Login attempt for email: {}", request.getEmail());
 
         User user = userRepository.findByEmailIgnoreCase(request.getEmail())
                 .orElseThrow(() -> {
-                    if (LOGGER.isErrorEnabled()) {
-                        LOGGER.error("User not found: {}", request.getEmail());
-                    }
-                    return new IllegalArgumentException(ERROR_INVALID_CREDENTIALS);
+                    LOGGER.error("User not found: {}", request.getEmail());
+                    return new IllegalArgumentException(
+                            ERROR_INVALID_CREDENTIALS);
                 });
 
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            if (LOGGER.isErrorEnabled()) {
-                LOGGER.error("Invalid password for email: {}", request.getEmail());
-            }
+        if (!passwordEncoder.matches(
+                request.getPassword(),
+                user.getPassword())) {
+            LOGGER.error("Invalid password for email: {}", request.getEmail());
             throw new IllegalArgumentException(ERROR_INVALID_CREDENTIALS);
         }
 
-        if (LOGGER.isInfoEnabled()) {
-            LOGGER.info("Login successful for email: {}", request.getEmail());
-        }
+        LOGGER.info("Login successful for email: {}", request.getEmail());
         return user;
     }
 
     /**
-     * Applies the candidate to a job using profile details.
+     * Applies candidate to a job.
      *
-     * @param request candidate profile details
-     * @param email   authenticated user's email (extracted from JWT)
-     * @return CandidateResponseDTO containing saved application data
+     * @param request    candidate profile request
+     * @param resumeFile resume file
+     * @param email      authenticated email
+     * @return candidate response
      */
     @Override
     public CandidateResponseDTO applyToJob(
@@ -182,25 +209,24 @@ public class CandidateServiceImpl implements CandidateService {
             final MultipartFile resumeFile,
             final String email) {
 
-        if (LOGGER.isInfoEnabled()) {
-            LOGGER.info("Apply job request received for email: {}", email);
-        }
+        LOGGER.info("Apply job request received for email: {}", email);
 
         userRepository.findByEmailIgnoreCase(email)
                 .orElseThrow(() -> {
-                    if (LOGGER.isErrorEnabled()) {
-                        LOGGER.error("User not found: {}", email);
-                    }
+                    LOGGER.error("User not found: {}", email);
                     return new IllegalStateException(ERROR_NOT_LOGGED_IN);
                 });
-        String mobileCode = request.getMobileCode() == null ? "" : request.getMobileCode().trim();
-        String mobileNumber = request.getMobileNumber() == null ? "" : request.getMobileNumber().trim();
 
-        if (!mobileNumber.matches("^[6-9]\\d{9}$")) {
-            throw new IllegalArgumentException("Enter a valid 10-digit mobile number.");
+        String mobileCode = normalize(request.getMobileCode());
+        String mobileNumber = normalize(request.getMobileNumber());
+
+        if (!mobileNumber.matches(MOBILE_PATTERN)) {
+            throw new IllegalArgumentException(
+                    "Enter a valid 10-digit mobile number.");
         }
 
         String fullMobile = mobileCode + mobileNumber;
+
         Candidate existingCandidate = candidateRepository
                 .findTopByEmailIgnoreCaseOrderByIdDesc(email)
                 .orElse(null);
@@ -214,14 +240,15 @@ public class CandidateServiceImpl implements CandidateService {
                 && mobileCandidate.getStatus() != Stage.REJECTED) {
             throw new IllegalArgumentException("Mobile number already exists.");
         }
-        if (existingCandidate != null && existingCandidate.getStatus() != Stage.REJECTED) {
+
+        if (existingCandidate != null
+                && existingCandidate.getStatus() != Stage.REJECTED) {
             LOGGER.error("Candidate already has active application: {}", email);
             throw new IllegalStateException(ERROR_ALREADY_APPLIED);
         }
+
         if (request.getJdId() == null) {
-            if (LOGGER.isErrorEnabled()) {
-                LOGGER.error("Invalid or missing jdId for email: {}", email);
-            }
+            LOGGER.error("Invalid or missing jdId for email: {}", email);
             throw new IllegalArgumentException("Please provide a valid jdId.");
         }
 
@@ -230,12 +257,12 @@ public class CandidateServiceImpl implements CandidateService {
         candidate.setName(request.getName());
         candidate.setEmail(email.trim().toLowerCase());
         candidate.setRejectedStage(null);
-
         candidate.setMobile(fullMobile);
-
         candidate.setDateOfBirth(request.getDateOfBirth());
+
         LOGGER.info("Storing resume file for candidate email: {}", email);
         candidate.setResumeUrl(storeResumeFile(resumeFile, email));
+
         candidate.setCurrentCompany(request.getCurrentCompany());
         candidate.setTotalExp(request.getTotalExp());
         candidate.setRelevantExp(request.getRelevantExp());
@@ -247,58 +274,25 @@ public class CandidateServiceImpl implements CandidateService {
         candidate.setJdId(request.getJdId());
         candidate.setStatus(Stage.PROFILING);
 
-        Candidate saved = candidateRepository.save(candidate);
+        Candidate savedCandidate = candidateRepository.save(candidate);
 
         emailService.sendProfilingCompletedEmail(email, request.getName());
 
-        if (LOGGER.isInfoEnabled()) {
-            LOGGER.info("Candidate applied successfully for JD: {}", request.getJdId());
-        }
+        LOGGER.info(
+                "Candidate applied successfully for JD: {}",
+                request.getJdId());
 
-        return mapToResponse(saved);
-    }
-
-    private String storeResumeFile(final MultipartFile resumeFile, final String email) {
-        if (resumeFile == null || resumeFile.isEmpty()) {
-            LOGGER.warn("Resume upload failed. Empty resume file for email: {}", email);
-            throw new IllegalArgumentException("Resume file is required");
-        }
-
-        String originalFileName = resumeFile.getOriginalFilename();
-
-        if (originalFileName == null || originalFileName.isBlank()) {
-            LOGGER.warn("Resume upload failed. Invalid file name for email: {}", email);
-            throw new IllegalArgumentException("Resume file name is required");
-        }
-
-        try {
-            String fileName = StringUtils.cleanPath(originalFileName);
-            String cleanedEmail = email.replaceAll("[^a-zA-Z0-9._-]", "_");
-            String storedName = String.format("%s_%d_%s", cleanedEmail, System.currentTimeMillis(), fileName);
-
-            Path uploadPath = Paths.get(resumeUploadDir).toAbsolutePath().normalize();
-            Files.createDirectories(uploadPath);
-
-            Path targetLocation = uploadPath.resolve(storedName);
-            Files.copy(resumeFile.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
-            LOGGER.info("Resume stored successfully for email: {} with file name: {}", email, storedName);
-
-            return "/api/resumes/" + storedName;
-        } catch (IOException ex) {
-            LOGGER.error("Failed to store resume file for email: {}", email, ex);
-            throw new IllegalStateException("Could not store resume file. Please try again.", ex);
-        }
+        return mapToResponse(savedCandidate);
     }
 
     /**
-     * Retrieves the current application status of the candidate.
+     * Returns candidate application status.
      *
-     * @param email authenticated user's email (from JWT)
-     * @return CandidateResponseDTO containing application status
+     * @param email authenticated email
+     * @return candidate response
      */
     @Override
     public CandidateResponseDTO getMyStatus(final String email) {
-
         LOGGER.info("Getting candidate status for email: {}", email);
 
         CandidateResponseDTO dto = new CandidateResponseDTO();
@@ -309,7 +303,6 @@ public class CandidateServiceImpl implements CandidateService {
 
         if (candidate == null) {
             LOGGER.warn("Candidate profile not found for email: {}", email);
-
             dto.setStatus(Stage.NOT_APPLIED);
             return dto;
         }
@@ -326,13 +319,125 @@ public class CandidateServiceImpl implements CandidateService {
     }
 
     /**
-     * Maps Candidate entity to response DTO.
+     * Onboards candidate by HR.
      *
-     * @param candidate entity object
-     * @return CandidateResponseDTO
+     * @param request candidate onboard request
+     */
+    @Override
+    public void onboardCandidate(final CandidateOnboardRequest request) {
+        String fullName = normalize(request.getFullName());
+        String email = normalizeEmail(request.getEmail());
+        String mobileNumber = normalize(request.getMobileNumber());
+
+        validateCandidateBasicFields(
+                fullName,
+                email,
+                mobileNumber,
+                request.getDob(),
+                request.getGender());
+
+        if (userRepository.existsByEmail(email)) {
+            throw new IllegalArgumentException("Email already exists.");
+        }
+
+        if (userRepository.existsByMobile(mobileNumber)) {
+            throw new IllegalArgumentException("Mobile number already exists.");
+        }
+
+        String activationToken = UUID.randomUUID().toString();
+
+        User user = new User();
+        user.setName(fullName);
+        user.setEmail(email);
+        user.setMobile(mobileNumber);
+        user.setDateOfBirth(request.getDob());
+        user.setGender(request.getGender());
+        user.setPassword(null);
+        user.setRole(Role.CANDIDATE);
+        user.setStatus(UserStatus.PENDING);
+        user.setActivationToken(activationToken);
+        user.setActivationTokenExpiry(
+                LocalDateTime.now().plusHours(ACTIVATION_EXPIRY_HOURS));
+
+        userRepository.save(user);
+
+        emailService.sendCandidateOnboardEmail(
+                email,
+                fullName,
+                activationToken);
+    }
+
+    /**
+     * Stores resume file.
+     *
+     * @param resumeFile resume file
+     * @param email      candidate email
+     * @return resume URL
+     */
+    private String storeResumeFile(
+            final MultipartFile resumeFile,
+            final String email) {
+
+        if (resumeFile == null || resumeFile.isEmpty()) {
+            LOGGER.warn(
+                    "Resume upload failed. Empty resume file for email: {}",
+                    email);
+            throw new IllegalArgumentException("Resume file is required");
+        }
+
+        String originalFileName = resumeFile.getOriginalFilename();
+
+        if (originalFileName == null || originalFileName.isBlank()) {
+            LOGGER.warn(
+                    "Resume upload failed. Invalid file name for email: {}",
+                    email);
+            throw new IllegalArgumentException(
+                    "Resume file name is required");
+        }
+
+        try {
+            String fileName = StringUtils.cleanPath(originalFileName);
+            String cleanedEmail = email.replaceAll("[^a-zA-Z0-9._-]", "_");
+            String storedName = String.format(
+                    "%s_%d_%s",
+                    cleanedEmail,
+                    System.currentTimeMillis(),
+                    fileName);
+
+            Path uploadPath = Paths.get(resumeUploadDir)
+                    .toAbsolutePath()
+                    .normalize();
+
+            Files.createDirectories(uploadPath);
+
+            Path targetLocation = uploadPath.resolve(storedName);
+
+            Files.copy(
+                    resumeFile.getInputStream(),
+                    targetLocation,
+                    StandardCopyOption.REPLACE_EXISTING);
+
+            LOGGER.info(
+                    "Resume stored successfully for email: {} with file name: {}",
+                    email,
+                    storedName);
+
+            return RESUME_API_PREFIX + storedName;
+        } catch (IOException ex) {
+            LOGGER.error("Failed to store resume file for email: {}", email, ex);
+            throw new IllegalStateException(
+                    "Could not store resume file. Please try again.",
+                    ex);
+        }
+    }
+
+    /**
+     * Maps candidate entity to DTO.
+     *
+     * @param candidate candidate entity
+     * @return candidate response
      */
     private CandidateResponseDTO mapToResponse(final Candidate candidate) {
-
         CandidateResponseDTO dto = new CandidateResponseDTO();
         dto.setId(candidate.getId());
         dto.setName(candidate.getName());
@@ -345,77 +450,51 @@ public class CandidateServiceImpl implements CandidateService {
         return dto;
     }
 
-    @Override
-    public void onboardCandidate(final CandidateOnboardRequest request) {
+    /**
+     * Normalizes text value.
+     *
+     * @param value input value
+     * @return normalized value
+     */
+    private String normalize(final String value) {
+        return value == null ? "" : value.trim();
+    }
 
-        /*
-         * Trim input values to remove extra spaces.
-         * Email is converted to lowercase to avoid duplicate case issues.
-         */
-        String fullName = request.getFullName() == null ? "" : request.getFullName().trim();
-        String email = request.getEmail() == null ? "" : request.getEmail().trim().toLowerCase();
-        String mobileNumber = request.getMobileNumber() == null ? "" : request.getMobileNumber().trim();
+    /**
+     * Normalizes email value.
+     *
+     * @param email email value
+     * @return normalized email
+     */
+    private String normalizeEmail(final String email) {
+        return email == null ? "" : email.trim().toLowerCase();
+    }
 
-        /*
-         * Validate mandatory fields.
-         * Candidate cannot be onboarded if any required field is missing.
-         */
+    /**
+     * Validates candidate basic fields.
+     *
+     * @param fullName     full name
+     * @param email        email
+     * @param mobileNumber mobile number
+     * @param dob          date of birth
+     * @param gender       gender
+     */
+    private void validateCandidateBasicFields(
+            final String fullName,
+            final String email,
+            final String mobileNumber,
+            final Object dob,
+            final Object gender) {
+
         if (fullName.isEmpty()
                 || email.isEmpty()
                 || mobileNumber.isEmpty()
-                || request.getDob() == null
-                || request.getGender() == null) {
+                || dob == null
+                || gender == null) {
+            LOGGER.warn(
+                    "Candidate validation failed due to missing fields for email: {}",
+                    email);
             throw new IllegalArgumentException("All fields are required.");
         }
-
-        /*
-         * Check whether email is already registered in the system.
-         */
-        if (userRepository.existsByEmail(email)) {
-            throw new IllegalArgumentException("Email already exists.");
-        }
-
-        /*
-         * Check whether mobile number is already registered in the system.
-         */
-        if (userRepository.existsByMobile(mobileNumber)) {
-            throw new IllegalArgumentException("Mobile number already exists.");
-        }
-
-        /*
-         * Generate temporary password and activation token.
-         * Temporary password is sent to candidate through email.
-         * Activation token is used to activate the account securely.
-         */
-        String activationToken = UUID.randomUUID().toString();
-
-        /*
-         * Create a new user account for the candidate.
-         * Candidate status remains PENDING until account activation.
-         */
-        User user = new User();
-        user.setName(fullName);
-        user.setEmail(email);
-        user.setMobile(mobileNumber);
-        user.setDateOfBirth(request.getDob());
-        user.setGender(request.getGender());
-        user.setPassword(null);
-        user.setRole(Role.CANDIDATE);
-        user.setStatus(UserStatus.PENDING);
-        user.setActivationToken(activationToken);
-        user.setActivationTokenExpiry(LocalDateTime.now().plusHours(24));
-
-        /*
-         * Save candidate user details into the database.
-         */
-        userRepository.save(user);
-
-        /*
-         * Send onboarding email with temporary password and activation token.
-         */
-        emailService.sendCandidateOnboardEmail(
-                email,
-                fullName,
-                activationToken);
     }
 }

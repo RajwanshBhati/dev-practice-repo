@@ -1,6 +1,9 @@
 package com.interview_tracking_system.backend.entity;
 
 import com.interview_tracking_system.backend.enums.Stage;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -12,10 +15,10 @@ import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Represents a candidate in the interview tracking system.
@@ -36,9 +39,7 @@ public class Candidate {
     /** Scale for CTC decimal fields. */
     private static final int CTC_SCALE = 2;
 
-    /**
-     * Unique identifier for the candidate.
-     */
+    /** Unique identifier for the candidate. */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -55,7 +56,7 @@ public class Candidate {
     @Column(unique = true, nullable = false, length = MOBILE_LENGTH, name = "mobile_number")
     private String mobile;
 
-    /** date of birth */
+    /** Date of birth. */
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
 
@@ -91,7 +92,7 @@ public class Candidate {
     @Column(name = "preferred_location", nullable = false)
     private String preferredLocation;
 
-    /** Source through which candidate applied (e.g. LinkedIn, Naukri, Referral). */
+    /** Source through which candidate applied. */
     @Column(name = "source")
     private String source;
 
@@ -104,9 +105,7 @@ public class Candidate {
     @Column(name = "jd_id", nullable = true)
     private UUID jdId;
 
-    /**
-     * Associated candidate user account (one-to-one relationship).
-     */
+    /** Associated candidate user account. */
     @OneToOne
     @JoinColumn(name = "candidate_user_id", unique = true)
     private CandidateUser candidateUser;
@@ -117,89 +116,297 @@ public class Candidate {
     private Stage rejectedStage;
 
     /**
-     * Returns the unique identifier.
+     * Returns candidate ID.
      *
-     * @return the candidate ID
+     * @return candidate ID
      */
     public Long getId() {
         return id;
     }
 
     /**
-     * set id
+     * Sets candidate ID.
+     *
+     * @param candidateId candidate ID
      */
-
-    public void setId(Long id) {
-        this.id = id;
+    public void setId(final Long candidateId) {
+        this.id = candidateId;
     }
 
     /**
-     * Returns the candidate's name.
+     * Returns candidate name.
      *
-     * @return the name of the candidate
+     * @return candidate name
      */
     public String getName() {
         return name;
     }
 
     /**
-     * Sets the candidate's name.
+     * Sets candidate name.
      *
-     * @param candidateName the name to set
+     * @param candidateName candidate name
      */
     public void setName(final String candidateName) {
         this.name = candidateName;
     }
 
     /**
-     * Returns the candidate's email.
+     * Returns candidate email.
      *
-     * @return the email address of the candidate
+     * @return candidate email
      */
     public String getEmail() {
         return email;
     }
 
     /**
-     * Gets the date of birth of the candidate.
+     * Sets candidate email.
      *
-     * @return candidate's date of birth
+     * @param candidateEmail candidate email
+     */
+    public void setEmail(final String candidateEmail) {
+        this.email = candidateEmail;
+    }
+
+    /**
+     * Returns candidate mobile number.
+     *
+     * @return mobile number
+     */
+    public String getMobile() {
+        return mobile;
+    }
+
+    /**
+     * Sets candidate mobile number.
+     *
+     * @param candidateMobile mobile number
+     */
+    public void setMobile(final String candidateMobile) {
+        this.mobile = candidateMobile;
+    }
+
+    /**
+     * Returns date of birth.
+     *
+     * @return date of birth
      */
     public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
 
     /**
-     * Sets the date of birth of the candidate.
+     * Sets date of birth.
      *
-     * @param dateOfBirth candidate's date of birth
+     * @param dob date of birth
      */
-    public void setDateOfBirth(LocalDate dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
+    public void setDateOfBirth(final LocalDate dob) {
+        this.dateOfBirth = dob;
     }
 
     /**
-     * Gets the source through which candidate applied.
+     * Returns resume URL.
      *
-     * @return application source (e.g. LinkedIn, Naukri)
+     * @return resume URL
+     */
+    public String getResumeUrl() {
+        return resumeUrl;
+    }
+
+    /**
+     * Sets resume URL.
+     *
+     * @param url resume URL
+     */
+    public void setResumeUrl(final String url) {
+        this.resumeUrl = url;
+    }
+
+    /**
+     * Returns current company.
+     *
+     * @return current company
+     */
+    public String getCurrentCompany() {
+        return currentCompany;
+    }
+
+    /**
+     * Sets current company.
+     *
+     * @param company current company
+     */
+    public void setCurrentCompany(final String company) {
+        this.currentCompany = company;
+    }
+
+    /**
+     * Returns total experience.
+     *
+     * @return total experience
+     */
+    public double getTotalExp() {
+        return totalExp;
+    }
+
+    /**
+     * Sets total experience.
+     *
+     * @param exp total experience
+     */
+    public void setTotalExp(final double exp) {
+        this.totalExp = exp;
+    }
+
+    /**
+     * Returns relevant experience.
+     *
+     * @return relevant experience
+     */
+    public double getRelevantExp() {
+        return relevantExp;
+    }
+
+    /**
+     * Sets relevant experience.
+     *
+     * @param exp relevant experience
+     */
+    public void setRelevantExp(final double exp) {
+        this.relevantExp = exp;
+    }
+
+    /**
+     * Returns current CTC.
+     *
+     * @return current CTC
+     */
+    public BigDecimal getCurrentCtc() {
+        return currentCtc;
+    }
+
+    /**
+     * Sets current CTC.
+     *
+     * @param ctc current CTC
+     */
+    public void setCurrentCtc(final BigDecimal ctc) {
+        this.currentCtc = ctc;
+    }
+
+    /**
+     * Returns expected CTC.
+     *
+     * @return expected CTC
+     */
+    public BigDecimal getExpectedCtc() {
+        return expectedCtc;
+    }
+
+    /**
+     * Sets expected CTC.
+     *
+     * @param ctc expected CTC
+     */
+    public void setExpectedCtc(final BigDecimal ctc) {
+        this.expectedCtc = ctc;
+    }
+
+    /**
+     * Returns notice period.
+     *
+     * @return notice period
+     */
+    public int getNoticePeriod() {
+        return noticePeriod;
+    }
+
+    /**
+     * Sets notice period.
+     *
+     * @param period notice period
+     */
+    public void setNoticePeriod(final int period) {
+        this.noticePeriod = period;
+    }
+
+    /**
+     * Returns preferred location.
+     *
+     * @return preferred location
+     */
+    public String getPreferredLocation() {
+        return preferredLocation;
+    }
+
+    /**
+     * Sets preferred location.
+     *
+     * @param location preferred location
+     */
+    public void setPreferredLocation(final String location) {
+        this.preferredLocation = location;
+    }
+
+    /**
+     * Returns application source.
+     *
+     * @return source
      */
     public String getSource() {
         return source;
     }
 
     /**
-     * Sets the source through which candidate applied.
+     * Sets application source.
      *
-     * @param source application source
+     * @param candidateSource source
      */
-    public void setSource(String source) {
-        this.source = source;
+    public void setSource(final String candidateSource) {
+        this.source = candidateSource;
     }
 
     /**
-     * Gets the associated candidate user account.
+     * Returns current candidate status.
      *
-     * @return candidate user entity
+     * @return status
+     */
+    public Stage getStatus() {
+        return status;
+    }
+
+    /**
+     * Sets current candidate status.
+     *
+     * @param candidateStatus status
+     */
+    public void setStatus(final Stage candidateStatus) {
+        this.status = candidateStatus;
+    }
+
+    /**
+     * Returns job description ID.
+     *
+     * @return job description ID
+     */
+    public UUID getJdId() {
+        return jdId;
+    }
+
+    /**
+     * Sets job description ID.
+     *
+     * @param jobDescriptionId job description ID
+     */
+    public void setJdId(final UUID jobDescriptionId) {
+        this.jdId = jobDescriptionId;
+    }
+
+    /**
+     * Returns associated candidate user.
+     *
+     * @return candidate user
      */
     @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "JPA relationship entity reference is intentionally returned.")
     public CandidateUser getCandidateUser() {
@@ -207,239 +414,30 @@ public class Candidate {
     }
 
     /**
-     * Sets the associated candidate user account.
+     * Sets associated candidate user.
      *
-     * @param candidateUser candidate user entity
+     * @param user candidate user
      */
-    @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Spring dependency injection stores framework-managed beans.")
-    public void setCandidateUser(CandidateUser candidateUser) {
-        this.candidateUser = candidateUser;
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "JPA relationship entity reference is intentionally stored.")
+    public void setCandidateUser(final CandidateUser user) {
+        this.candidateUser = user;
     }
 
     /**
-     * Sets the candidate's email.
+     * Returns rejected stage.
      *
-     * @param candidateEmail the email address to set
-     */
-    public void setEmail(final String candidateEmail) {
-        this.email = candidateEmail;
-    }
-
-    /**
-     * Returns the candidate's mobile number.
-     *
-     * @return the mobile number of the candidate
-     */
-    public String getMobile() {
-        return mobile;
-    }
-
-    /**
-     * Sets the candidate's mobile number.
-     *
-     * @param candidateMobile the mobile number to set
-     */
-    public void setMobile(final String candidateMobile) {
-        this.mobile = candidateMobile;
-    }
-
-    /**
-     * Returns the resume URL.
-     *
-     * @return the URL of the candidate's resume
-     */
-    public String getResumeUrl() {
-        return resumeUrl;
-    }
-
-    /**
-     * Sets the resume URL.
-     *
-     * @param url the URL to set for the candidate's resume
-     */
-    public void setResumeUrl(final String url) {
-        this.resumeUrl = url;
-    }
-
-    /**
-     * Returns the current company name.
-     *
-     * @return the current employer of the candidate
-     */
-    public String getCurrentCompany() {
-        return currentCompany;
-    }
-
-    /**
-     * Sets the current company name.
-     *
-     * @param company the current employer to set for the candidate
-     */
-    public void setCurrentCompany(final String company) {
-        this.currentCompany = company;
-    }
-
-    /**
-     * Returns total years of experience.
-     *
-     * @return total years of work experience
-     */
-    public double getTotalExp() {
-        return totalExp;
-    }
-
-    /**
-     * Sets total years of experience.
-     *
-     * @param exp total years of work experience to set
-     */
-    public void setTotalExp(final double exp) {
-        this.totalExp = exp;
-    }
-
-    /**
-     * Returns relevant years of experience.
-     *
-     * @return relevant years of work experience
-     */
-    public double getRelevantExp() {
-        return relevantExp;
-    }
-
-    /**
-     * Sets relevant years of experience.
-     *
-     * @param exp relevant years of work experience to set
-     */
-    public void setRelevantExp(final double exp) {
-        this.relevantExp = exp;
-    }
-
-    /**
-     * Returns the current CTC.
-     *
-     * @return the current cost to company
-     */
-    public BigDecimal getCurrentCtc() {
-        return currentCtc;
-    }
-
-    /**
-     * Sets the current CTC.
-     *
-     * @param ctc the current cost to company to set
-     */
-    public void setCurrentCtc(final BigDecimal ctc) {
-        this.currentCtc = ctc;
-    }
-
-    /**
-     * Returns the expected CTC.
-     *
-     * @return the expected cost to company
-     */
-    public BigDecimal getExpectedCtc() {
-        return expectedCtc;
-    }
-
-    /**
-     * Sets the expected CTC.
-     *
-     * @param ctc the expected cost to company to set
-     */
-    public void setExpectedCtc(final BigDecimal ctc) {
-        this.expectedCtc = ctc;
-    }
-
-    /**
-     * Returns the notice period in days.
-     *
-     * @return the notice period
-     */
-    public int getNoticePeriod() {
-        return noticePeriod;
-    }
-
-    /**
-     * Sets the notice period in days.
-     *
-     * @param period the notice period to set
-     */
-    public void setNoticePeriod(final int period) {
-        this.noticePeriod = period;
-    }
-
-    /**
-     * Returns the preferred location.
-     *
-     * @return the preferred job location
-     */
-    public String getPreferredLocation() {
-        return preferredLocation;
-    }
-
-    /**
-     * Sets the preferred location.
-     *
-     * @param location the preferred job location to set
-     */
-    public void setPreferredLocation(final String location) {
-        this.preferredLocation = location;
-    }
-
-    /**
-     * Returns the current interview stage.
-     *
-     * @return the current stage of the candidate in the interview process
-     */
-    public Stage getStatus() {
-        return status;
-    }
-
-    /**
-     * Sets the current interview stage.
-     *
-     * @param candidateStatus the current stage of the candidate in the interview
-     *                        process to set
-     */
-    public void setStatus(final Stage candidateStatus) {
-        this.status = candidateStatus;
-    }
-
-    /**
-     * Returns the foreign key ID of the associated job description.
-     *
-     * @return the job description ID associated with this candidate
-     */
-    public UUID getJdId() {
-        return jdId;
-    }
-
-    /**
-     * Sets the foreign key ID of the associated job description.
-     *
-     * @param jobDescriptionId the job description ID to associate with this
-     *                         candidate
-     */
-    public void setJdId(final UUID jobDescriptionId) {
-        this.jdId = jobDescriptionId;
-    }
-
-    /**
-     * get Rejected Stage
-     *
-     * @return Rejected Stage
+     * @return rejected stage
      */
     public Stage getRejectedStage() {
         return rejectedStage;
     }
 
     /**
-     * set rejected stage
+     * Sets rejected stage.
      *
-     * @param rejectedStage
+     * @param stage rejected stage
      */
-    public void setRejectedStage(final Stage rejectedStage) {
-        this.rejectedStage = rejectedStage;
+    public void setRejectedStage(final Stage stage) {
+        this.rejectedStage = stage;
     }
 }

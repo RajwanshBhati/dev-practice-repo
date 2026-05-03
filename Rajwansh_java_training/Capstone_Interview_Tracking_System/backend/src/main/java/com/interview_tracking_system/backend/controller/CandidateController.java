@@ -9,6 +9,10 @@ import com.interview_tracking_system.backend.dto.LoginRequestDTO;
 import com.interview_tracking_system.backend.entity.User;
 import com.interview_tracking_system.backend.security.JwtUtil;
 import com.interview_tracking_system.backend.service.CandidateService;
+import jakarta.validation.Valid;
+import java.beans.PropertyEditorSupport;
+import java.util.Objects;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -25,36 +29,35 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import java.beans.PropertyEditorSupport;
-import java.util.UUID;
-import java.util.Objects;
 import com.interview_tracking_system.backend.dto.CandidateOnboardRequest;
-import jakarta.validation.Valid;
 
+/**
+ * Controller for candidate operations.
+ */
 @RestController
 @RequestMapping(CandidateApiConstants.BASE_URL)
-public class CandidateController {
+public final class CandidateController {
 
     /**
-     * Logger instance for logging controller activities.
+     * Logger instance.
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(CandidateController.class);
 
     /**
-     * Service layer for candidate operations.
+     * Candidate service.
      */
     private final CandidateService candidateService;
 
     /**
-     * Utility class for handling JWT operations.
+     * JWT utility.
      */
     private final JwtUtil jwtUtil;
 
     /**
      * Constructor for dependency injection.
      *
-     * @param candidateService service handling candidate business logic
-     * @param jwtUtil          utility for JWT generation and validation
+     * @param candidateService the candidate service
+     * @param jwtUtil          the JWT utility
      */
     public CandidateController(final CandidateService candidateService,
             final JwtUtil jwtUtil) {
@@ -62,6 +65,11 @@ public class CandidateController {
         this.jwtUtil = jwtUtil;
     }
 
+    /**
+     * Initializes binder for UUID conversion.
+     *
+     * @param binder the web data binder
+     */
     @InitBinder
     public void initBinder(final WebDataBinder binder) {
         binder.registerCustomEditor(UUID.class, new PropertyEditorSupport() {
@@ -83,8 +91,8 @@ public class CandidateController {
     /**
      * Registers a new candidate.
      *
-     * @param request request body containing registration details
-     * @return success message with HTTP 201 status
+     * @param request request body
+     * @return success message
      */
     @PostMapping(CandidateApiConstants.REGISTER_URL)
     public ResponseEntity<String> register(
@@ -101,10 +109,10 @@ public class CandidateController {
     }
 
     /**
-     * Authenticates a candidate and returns a JWT token.
+     * Logs in a candidate.
      *
-     * @param request login request containing email and password
-     * @return JWT token if authentication is successful
+     * @param request login request
+     * @return JWT token
      */
     @PostMapping(CandidateApiConstants.LOGIN_URL)
     public ResponseEntity<String> login(@Valid @RequestBody final LoginRequestDTO request) {
@@ -123,11 +131,12 @@ public class CandidateController {
     }
 
     /**
-     * Applies the logged-in candidate to a job using JWT authentication.
+     * Applies candidate to a job.
      *
-     * @param request    request body containing candidate profile details
-     * @param authHeader Authorization header containing Bearer token
-     * @return saved candidate response with HTTP 201 status
+     * @param request    profile request
+     * @param resumeFile resume file
+     * @param authHeader authorization header
+     * @return response DTO
      */
     @PostMapping(value = CandidateApiConstants.APPLY_URL, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<CandidateResponseDTO> applyToJob(
@@ -150,10 +159,10 @@ public class CandidateController {
     }
 
     /**
-     * Fetches the current application status of the logged-in candidate.
+     * Fetches candidate application status.
      *
-     * @param authHeader Authorization header containing Bearer token
-     * @return candidate application status
+     * @param authHeader authorization header
+     * @return candidate response
      */
     @GetMapping(CandidateApiConstants.STATUS_URL)
     public ResponseEntity<CandidateResponseDTO> getMyStatus(
@@ -172,12 +181,9 @@ public class CandidateController {
     }
 
     /**
-     * Logs out the candidate.
+     * Logs out candidate.
      *
-     * Note: Since JWT is stateless, logout is handled on client-side
-     * by discarding the token.
-     *
-     * @return logout success message
+     * @return logout message
      */
     @PostMapping(CandidateApiConstants.LOGOUT_URL)
     public ResponseEntity<String> logout() {
@@ -187,8 +193,15 @@ public class CandidateController {
         return ResponseEntity.ok(ApiMessages.LOGOUT_SUCCESS);
     }
 
+    /**
+     * Onboards candidate by HR.
+     *
+     * @param request onboard request
+     * @return success message
+     */
     @PostMapping("/onboard")
-    public ResponseEntity<String> onboardCandidate(@Valid @RequestBody final CandidateOnboardRequest request) {
+    public ResponseEntity<String> onboardCandidate(
+            @Valid @RequestBody final CandidateOnboardRequest request) {
 
         LOGGER.info("HR onboard candidate request received for email: {}", request.getEmail());
 

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import com.interview_tracking_system.backend.entity.User;
 import com.interview_tracking_system.backend.repository.UserRepository;
 import org.springframework.security.core.Authentication;
+import com.interview_tracking_system.backend.constants.ApiEndpoints;
 
 import com.interview_tracking_system.backend.dto.PanelInterviewDTO;
 import jakarta.validation.Valid;
@@ -26,18 +27,23 @@ import java.util.List;
  * Controller for interview workflow APIs.
  */
 @RestController
-@RequestMapping("/api/interview")
+@RequestMapping(ApiEndpoints.INTERVIEW)
 public class InterviewController {
 
+    /** Logger instance. */
     private static final Logger LOGGER = LoggerFactory.getLogger(InterviewController.class);
 
+    /** Interview service. */
     private final InterviewService interviewService;
+
+    /** User repository. */
     private final UserRepository userRepository;
 
     /**
      * Constructor injection for interview service.
      *
      * @param interviewService service layer
+     * @param userRepository   user repository
      */
     public InterviewController(final InterviewService interviewService, final UserRepository userRepository) {
         this.interviewService = interviewService;
@@ -50,7 +56,7 @@ public class InterviewController {
      *
      * @param request schedule request
      */
-    @PostMapping("/schedule")
+    @PostMapping(ApiEndpoints.INTERVIEW_SCHEDULE)
     public void scheduleInterview(@Valid @RequestBody final ScheduleInterviewRequestDTO request) {
 
         LOGGER.info("Received request to schedule interview");
@@ -63,7 +69,7 @@ public class InterviewController {
      *
      * @param request update request
      */
-    @PostMapping("/status")
+    @PostMapping(ApiEndpoints.INTERVIEW_STATUS)
     public void updateCandidateStatus(@Valid @RequestBody final UpdateCandidateStatusDTO request) {
 
         LOGGER.info("Received request to update candidate status");
@@ -74,10 +80,10 @@ public class InterviewController {
     /**
      * Panel submits feedback after interview.
      *
-     * @param panelId panel id (from frontend/session)
-     * @param request feedback request
+     * @param authentication spring security authentication
+     * @param request        feedback request
      */
-    @PostMapping("/feedback")
+    @PostMapping(ApiEndpoints.INTERVIEW_FEEDBACK)
     public void submitFeedback(final Authentication authentication,
             @Valid @RequestBody final SubmitFeedbackRequestDTO request) {
 
@@ -97,7 +103,7 @@ public class InterviewController {
      * @param panelId panel id
      * @return list of interview ids
      */
-    @GetMapping("/panel/{panelId}")
+    @GetMapping(ApiEndpoints.INTERVIEW_PANEL + "/{panelId}")
     public List<PanelInterviewDTO> getPanelInterviews(@PathVariable final Long panelId) {
 
         LOGGER.info("Fetching panel interviews for panel {}", panelId);
@@ -111,7 +117,7 @@ public class InterviewController {
      * @param candidateId candidate id
      * @return list of interview ids
      */
-    @GetMapping("/candidate/{candidateId}")
+    @GetMapping(ApiEndpoints.INTERVIEW_CANDIDATE + "/{candidateId}")
     public List<Long> getCandidateInterviews(@PathVariable final Long candidateId) {
 
         LOGGER.info("Fetching interviews for candidate {}", candidateId);

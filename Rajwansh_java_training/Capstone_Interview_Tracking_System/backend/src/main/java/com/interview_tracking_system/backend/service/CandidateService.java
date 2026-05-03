@@ -47,9 +47,9 @@ public interface CandidateService {
     CandidateResponseDTO getMyStatus(String email);
 
     /**
-     * Onboard Candidate
-     * 
-     * @param request
+     * Onboard candidate into the system.
+     *
+     * @param request the onboard request details
      */
     void onboardCandidate(CandidateOnboardRequest request);
 }

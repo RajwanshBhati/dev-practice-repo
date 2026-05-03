@@ -78,8 +78,9 @@
 	<!-- <property name="headerFile" value="${checkstyle.header.file}"/> -->
 	<!-- <property name="fileExtensions" value="java"/> -->
 	<!-- </module> -->
-
+     <module name="SuppressWarningsFilter" />
 	<module name="TreeWalker">
+	<module name="SuppressWarningsHolder" />
 
 		<!-- Checks for Javadoc comments. -->
 		<!-- See https://checkstyle.org/config_javadoc.html -->
@@ -89,6 +90,7 @@
 		<module name="JavadocVariable" />
 		<module name="JavadocStyle" />
 		<module name="MissingJavadocMethod" />
+
 
 		<!-- Checks for Naming Conventions. -->
 		<!-- See https://checkstyle.org/config_naming.html -->
@@ -180,6 +182,7 @@
 				default="checkstyle-xpath-suppressions.xml" />
 			<property name="optional" value="true" />
 		</module>
+
 
 	</module>
 

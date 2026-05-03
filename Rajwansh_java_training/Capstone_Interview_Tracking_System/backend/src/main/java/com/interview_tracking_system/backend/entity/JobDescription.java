@@ -106,27 +106,42 @@ public class JobDescription {
 
     /**
      * All-args constructor.
+     *
+     * @param jdId             the unique identifier
+     * @param title            the job title
+     * @param description      the job description text
+     * @param skills           the list of required skills
+     * @param minExperience    the minimum experience required
+     * @param maxExperience    the maximum experience required
+     * @param minSalary        the minimum salary offered
+     * @param maxSalary        the maximum salary offered
+     * @param jobLocation      the job location
+     * @param type             the job type
+     * @param jdStatus         the current status
+     * @param createdTimestamp the creation timestamp
+     * @param updatedTimestamp the last updated timestamp
      */
-    public JobDescription(UUID id, String jobTitle, String jobDescription,
-            List<String> skillsRequired, Integer minExperience,
-            Integer maxExperience, BigDecimal minSalary, BigDecimal maxSalary,
-            String location, JobType jobType, JDStatus status,
-            LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.id = id;
-        this.jobTitle = jobTitle;
-        this.jobDescription = jobDescription;
-        this.skillsRequired = skillsRequired == null
+    @SuppressWarnings("checkstyle:ParameterNumber")
+    public JobDescription(final UUID jdId, final String title, final String description,
+            final List<String> skills, final Integer minExperience,
+            final Integer maxExperience, final BigDecimal minSalary, final BigDecimal maxSalary,
+            final String jobLocation, final JobType type, final JDStatus jdStatus,
+            final LocalDateTime createdTimestamp, final LocalDateTime updatedTimestamp) {
+        this.id = jdId;
+        this.jobTitle = title;
+        this.jobDescription = description;
+        this.skillsRequired = skills == null
                 ? null
-                : new ArrayList<>(skillsRequired);
+                : new ArrayList<>(skills);
         this.experienceMin = minExperience;
         this.experienceMax = maxExperience;
         this.salaryMin = minSalary;
         this.salaryMax = maxSalary;
-        this.location = location;
-        this.jobType = jobType;
-        this.status = status;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+        this.location = jobLocation;
+        this.jobType = type;
+        this.status = jdStatus;
+        this.createdAt = createdTimestamp;
+        this.updatedAt = updatedTimestamp;
     }
 
     /**
@@ -143,7 +158,7 @@ public class JobDescription {
      *
      * @param id the id to set
      */
-    public void setId(UUID id) {
+    public void setId(final UUID id) {
         this.id = id;
     }
 
@@ -321,10 +336,10 @@ public class JobDescription {
     /**
      * Sets the current status of the job description.
      *
-     * @param status the status to set
+     * @param jdStatus the status to set
      */
-    public void setStatus(final JDStatus status) {
-        this.status = status;
+    public void setStatus(final JDStatus jdStatus) {
+        this.status = jdStatus;
     }
 
     /**
@@ -348,19 +363,19 @@ public class JobDescription {
     /**
      * Sets the creation timestamp.
      *
-     * @param createdAt the createdAt to set
+     * @param createdTimestamp the createdAt to set
      */
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+    public void setCreatedAt(final LocalDateTime createdTimestamp) {
+        this.createdAt = createdTimestamp;
     }
 
     /**
      * Sets the updated timestamp.
      *
-     * @param updatedAt the updatedAt to set
+     * @param updatedTimestamp the updatedAt to set
      */
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
+    public void setUpdatedAt(final LocalDateTime updatedTimestamp) {
+        this.updatedAt = updatedTimestamp;
     }
 
     /**
@@ -399,123 +414,123 @@ public class JobDescription {
         /**
          * Sets the ID for the job description.
          *
-         * @param id the ID to set
+         * @param jdId the ID to set
          * @return this builder instance
          */
-        public Builder id(UUID id) {
-            this.id = id;
+        public Builder id(final UUID jdId) {
+            this.id = jdId;
             return this;
         }
 
         /**
          * Sets the job title.
          *
-         * @param jobTitle the job title to set
+         * @param title the job title to set
          * @return this builder instance
          */
-        public Builder jobTitle(String jobTitle) {
-            this.jobTitle = jobTitle;
+        public Builder jobTitle(final String title) {
+            this.jobTitle = title;
             return this;
         }
 
         /**
          * Sets the job description text.
          *
-         * @param jobDescription the job description to set
+         * @param description the job description to set
          * @return this builder instance
          */
-        public Builder jobDescription(String jobDescription) {
-            this.jobDescription = jobDescription;
+        public Builder jobDescription(final String description) {
+            this.jobDescription = description;
             return this;
         }
 
         /**
          * Sets the list of required skills.
          *
-         * @param skillsRequired the skills required to set
+         * @param skills the skills required to set
          * @return this builder instance
          */
-        public Builder skillsRequired(List<String> skillsRequired) {
-            this.skillsRequired = skillsRequired == null
+        public Builder skillsRequired(final List<String> skills) {
+            this.skillsRequired = skills == null
                     ? null
-                    : new ArrayList<>(skillsRequired);
+                    : new ArrayList<>(skills);
             return this;
         }
 
         /**
          * Sets the minimum experience required.
          *
-         * @param minExperience the minimum experience to set
+         * @param minExp the minimum experience to set
          * @return this builder instance
          */
-        public Builder minExperience(Integer minExperience) {
-            this.minExperience = minExperience;
+        public Builder minExperience(final Integer minExp) {
+            this.minExperience = minExp;
             return this;
         }
 
         /**
          * Sets the maximum experience required.
          *
-         * @param maxExperience the maximum experience to set
+         * @param maxExp the maximum experience to set
          * @return this builder instance
          */
-        public Builder maxExperience(Integer maxExperience) {
-            this.maxExperience = maxExperience;
+        public Builder maxExperience(final Integer maxExp) {
+            this.maxExperience = maxExp;
             return this;
         }
 
         /**
          * Sets the minimum salary offered.
          *
-         * @param minSalary the minimum salary to set
+         * @param minSal the minimum salary to set
          * @return this builder instance
          */
-        public Builder minSalary(BigDecimal minSalary) {
-            this.minSalary = minSalary;
+        public Builder minSalary(final BigDecimal minSal) {
+            this.minSalary = minSal;
             return this;
         }
 
         /**
          * Sets the maximum salary offered.
          *
-         * @param maxSalary the maximum salary to set
+         * @param maxSal the maximum salary to set
          * @return this builder instance
          */
-        public Builder maxSalary(BigDecimal maxSalary) {
-            this.maxSalary = maxSalary;
+        public Builder maxSalary(final BigDecimal maxSal) {
+            this.maxSalary = maxSal;
             return this;
         }
 
         /**
          * Sets the job location.
          *
-         * @param location the location to set
+         * @param jobLocation the location to set
          * @return this builder instance
          */
-        public Builder location(String location) {
-            this.location = location;
+        public Builder location(final String jobLocation) {
+            this.location = jobLocation;
             return this;
         }
 
         /**
          * Sets the job type.
          *
-         * @param jobType the job type to set
+         * @param type the job type to set
          * @return this builder instance
          */
-        public Builder jobType(JobType jobType) {
-            this.jobType = jobType;
+        public Builder jobType(final JobType type) {
+            this.jobType = type;
             return this;
         }
 
         /**
          * Sets the status of the job description.
          *
-         * @param status the status to set
+         * @param jdStatus the status to set
          * @return this builder instance
          */
-        public Builder status(JDStatus status) {
-            this.status = status;
+        public Builder status(final JDStatus jdStatus) {
+            this.status = jdStatus;
             return this;
         }
 

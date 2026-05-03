@@ -1,272 +1,392 @@
 package com.interview_tracking_system.backend.entity;
 
+import com.interview_tracking_system.backend.enums.Gender;
 import com.interview_tracking_system.backend.enums.Role;
 import com.interview_tracking_system.backend.enums.UserStatus;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.Id;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.EnumType;
+import jakarta.persistence.Id;
 import jakarta.persistence.Index;
+import jakarta.persistence.Table;
+
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import com.interview_tracking_system.backend.enums.Gender;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+/**
+ * Represents a user in the interview tracking system.
+ */
 @Entity
 @Table(name = "users", indexes = {
         @Index(name = "idx_user_email", columnList = "email")
 })
 public class User {
 
-    /**
-     * Unique identifier for the user (Primary Key).
-     */
+    /** Unique identifier for the user. */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /**
-     * Full name of the user.
-     */
+    /** Full name of the user. */
     @Column(nullable = false)
     private String name;
 
-    /**
-     * Unique email used for login.
-     */
+    /** Unique email used for login. */
     @Column(nullable = false, unique = true)
     private String email;
 
-    /**
-     * Date BOB
-     */
+    /** Date of birth of the user. */
     @Column
     private LocalDate dateOfBirth;
 
-    /**
-     * Gender
-     */
-
+    /** Gender of the user. */
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    /**
-     * Mobile number of the user (optional but unique if provided).
-     */
+    /** Mobile number of the user. */
     @Column(unique = true)
     private String mobile;
 
-    /**
-     * Gets the gender
-     *
-     * @return gender
-     */
-    public Gender getGender() {
-        return gender;
-    }
-
-    /**
-     * Sets the Gender
-     *
-     * @param gender
-     */
-    public void setGender(Gender gender) {
-        this.gender = gender;
-    }
-
-    /**
-     * Encrypted password of the user.
-     */
+    /** Encrypted password of the user. */
     @Column(nullable = false)
     private String password;
 
-    /**
-     * Role of the user in the system (HR, PANEL, CANDIDATE).
-     */
+    /** Role of the user in the system. */
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
 
-    /**
-     * Current status of the user account.
-     * Possible values: ACTIVE, INACTIVE, LOCKED.
-     */
+    /** Current status of the user account. */
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserStatus status = UserStatus.ACTIVE;
 
-    /**
-     * Organisation the user belongs to.
-     */
+    /** Organisation the user belongs to. */
     @Column
     private String organisation;
 
-    /**
-     * Job designation of the user.
-     */
+    /** Job designation of the user. */
     @Column
     private String designation;
 
-    /**
-     * Activation token for account setup or verification.
-     */
+    /** Activation token for account setup or verification. */
     @Column(name = "activation_token")
     private String activationToken;
 
-    /**
-     * Expiry time of activation token.
-     */
+    /** Expiry time of activation token. */
     @Column(name = "activation_token_expiry")
     private LocalDateTime activationTokenExpiry;
 
-    /**
-     * Timestamp when user was created.
-     */
+    /** Timestamp when user was created. */
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
-    /**
-     * Timestamp when user was last updated.
-     */
+    /** Timestamp when user was last updated. */
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    public LocalDate getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public void setDateOfBirth(LocalDate dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-
     /**
      * Default constructor for JPA.
      */
-
     public User() {
     }
 
-    public User(String name, String email, String mobile, String password,
-            Role role, UserStatus status, String organisation,
-            String designation, String activationToken,
-            LocalDateTime activationTokenExpiry) {
-        this.name = name;
-        this.email = email;
-        this.mobile = mobile;
-        this.password = password;
-        this.role = role;
-        this.status = (status != null) ? status : UserStatus.ACTIVE;
-        this.organisation = organisation;
-        this.designation = designation;
-        this.activationToken = activationToken;
-        this.activationTokenExpiry = activationTokenExpiry;
+    /**
+     * Creates a user with required account details.
+     *
+     * @param userName         user name
+     * @param userEmail        user email
+     * @param userMobile       user mobile
+     * @param userPassword     encrypted password
+     * @param userRole         user role
+     * @param userStatus       user status
+     * @param userOrganisation user organisation
+     * @param userDesignation  user designation
+     * @param token            activation token
+     * @param tokenExpiry      activation token expiry
+     */
+    @SuppressWarnings("checkstyle:ParameterNumber")
+    public User(
+            final String userName,
+            final String userEmail,
+            final String userMobile,
+            final String userPassword,
+            final Role userRole,
+            final UserStatus userStatus,
+            final String userOrganisation,
+            final String userDesignation,
+            final String token,
+            final LocalDateTime tokenExpiry) {
+        this.name = userName;
+        this.email = userEmail;
+        this.mobile = userMobile;
+        this.password = userPassword;
+        this.role = userRole;
+        this.status = userStatus == null ? UserStatus.ACTIVE : userStatus;
+        this.organisation = userOrganisation;
+        this.designation = userDesignation;
+        this.activationToken = token;
+        this.activationTokenExpiry = tokenExpiry;
     }
 
     /**
+     * Returns user ID.
      *
-     * @return
+     * @return user ID
      */
-
-    public Long getId() {
+    public final Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    /**
+     * Sets user ID.
+     *
+     * @param userId user ID
+     */
+    public final void setId(final Long userId) {
+        this.id = userId;
     }
 
-    public String getName() {
+    /**
+     * Returns user name.
+     *
+     * @return user name
+     */
+    public final String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    /**
+     * Sets user name.
+     *
+     * @param userName user name
+     */
+    public final void setName(final String userName) {
+        this.name = userName;
     }
 
-    public String getEmail() {
+    /**
+     * Returns email.
+     *
+     * @return email
+     */
+    public final String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    /**
+     * Sets email.
+     *
+     * @param userEmail email
+     */
+    public final void setEmail(final String userEmail) {
+        this.email = userEmail;
     }
 
-    public String getMobile() {
+    /**
+     * Returns date of birth.
+     *
+     * @return date of birth
+     */
+    public final LocalDate getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    /**
+     * Sets date of birth.
+     *
+     * @param dob date of birth
+     */
+    public final void setDateOfBirth(final LocalDate dob) {
+        this.dateOfBirth = dob;
+    }
+
+    /**
+     * Returns gender.
+     *
+     * @return gender
+     */
+    public final Gender getGender() {
+        return gender;
+    }
+
+    /**
+     * Sets gender.
+     *
+     * @param userGender gender
+     */
+    public final void setGender(final Gender userGender) {
+        this.gender = userGender;
+    }
+
+    /**
+     * Returns mobile number.
+     *
+     * @return mobile number
+     */
+    public final String getMobile() {
         return mobile;
     }
 
-    public void setMobile(String mobile) {
-        this.mobile = mobile;
+    /**
+     * Sets mobile number.
+     *
+     * @param userMobile mobile number
+     */
+    public final void setMobile(final String userMobile) {
+        this.mobile = userMobile;
     }
 
-    public String getPassword() {
+    /**
+     * Returns password.
+     *
+     * @return password
+     */
+    public final String getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    /**
+     * Sets password.
+     *
+     * @param userPassword password
+     */
+    public final void setPassword(final String userPassword) {
+        this.password = userPassword;
     }
 
-    public Role getRole() {
+    /**
+     * Returns role.
+     *
+     * @return role
+     */
+    public final Role getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
+    /**
+     * Sets role.
+     *
+     * @param userRole role
+     */
+    public final void setRole(final Role userRole) {
+        this.role = userRole;
     }
 
-    public UserStatus getStatus() {
+    /**
+     * Returns user status.
+     *
+     * @return user status
+     */
+    public final UserStatus getStatus() {
         return status;
     }
 
-    public void setStatus(UserStatus status) {
-        this.status = status;
+    /**
+     * Sets user status.
+     *
+     * @param userStatus status
+     */
+    public final void setStatus(final UserStatus userStatus) {
+        this.status = userStatus;
     }
 
-    public String getOrganisation() {
+    /**
+     * Returns organisation.
+     *
+     * @return organisation
+     */
+    public final String getOrganisation() {
         return organisation;
     }
 
-    public void setOrganisation(String organisation) {
-        this.organisation = organisation;
+    /**
+     * Sets organisation.
+     *
+     * @param userOrganisation organisation
+     */
+    public final void setOrganisation(final String userOrganisation) {
+        this.organisation = userOrganisation;
     }
 
-    public String getDesignation() {
+    /**
+     * Returns designation.
+     *
+     * @return designation
+     */
+    public final String getDesignation() {
         return designation;
     }
 
-    public void setDesignation(String designation) {
-        this.designation = designation;
+    /**
+     * Sets designation.
+     *
+     * @param userDesignation designation
+     */
+    public final void setDesignation(final String userDesignation) {
+        this.designation = userDesignation;
     }
 
-    public String getActivationToken() {
+    /**
+     * Returns activation token.
+     *
+     * @return activation token
+     */
+    public final String getActivationToken() {
         return activationToken;
     }
 
-    public void setActivationToken(String activationToken) {
-        this.activationToken = activationToken;
+    /**
+     * Sets activation token.
+     *
+     * @param token activation token
+     */
+    public final void setActivationToken(final String token) {
+        this.activationToken = token;
     }
 
-    public LocalDateTime getActivationTokenExpiry() {
+    /**
+     * Returns activation token expiry.
+     *
+     * @return activation token expiry
+     */
+    public final LocalDateTime getActivationTokenExpiry() {
         return activationTokenExpiry;
     }
 
-    public void setActivationTokenExpiry(LocalDateTime activationTokenExpiry) {
-        this.activationTokenExpiry = activationTokenExpiry;
+    /**
+     * Sets activation token expiry.
+     *
+     * @param tokenExpiry activation token expiry
+     */
+    public final void setActivationTokenExpiry(final LocalDateTime tokenExpiry) {
+        this.activationTokenExpiry = tokenExpiry;
     }
 
-    public LocalDateTime getCreatedAt() {
+    /**
+     * Returns created timestamp.
+     *
+     * @return created timestamp
+     */
+    public final LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public LocalDateTime getUpdatedAt() {
+    /**
+     * Returns updated timestamp.
+     *
+     * @return updated timestamp
+     */
+    public final LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
 }

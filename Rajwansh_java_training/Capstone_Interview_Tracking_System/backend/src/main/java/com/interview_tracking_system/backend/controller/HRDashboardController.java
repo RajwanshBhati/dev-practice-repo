@@ -23,13 +23,20 @@ import java.util.List;
 @RequestMapping(ApiEndpoints.SHOWHR)
 public class HRDashboardController {
 
+    /** Logger instance. */
     private static final Logger LOGGER = LoggerFactory.getLogger(HRDashboardController.class);
 
+    /** HR dashboard service. */
     private final HRDashboardService hrDashboardService;
+
+    /** Interview service. */
     private final InterviewService interviewService;
 
     /**
      * Constructor injection.
+     *
+     * @param hrDashboardService HR dashboard service
+     * @param interviewService   interview service
      */
     public HRDashboardController(final HRDashboardService hrDashboardService,
             final InterviewService interviewService) {

@@ -10,92 +10,88 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * Response DTO for Job Description API
+ * Response DTO for Job Description API.
  */
 public class JDResponseDTO {
 
-    /**
-     * Unique identifier for the Job Description
-     */
+    /** Job description ID. */
     private UUID id;
 
-    /**
-     * Title of the job position
-     */
+    /** Job title. */
     private String jobTitle;
 
-    /**
-     * Detailed description of the job role and responsibilities
-     */
+    /** Job description text. */
     private String jobDescription;
 
-    /**
-     * List of skills required for the job
-     */
+    /** List of required skills. */
     private List<String> skillsRequired;
 
-    /**
-     * Minimum years of experience required
-     */
+    /** Minimum experience required. */
     private Integer minExperience;
 
-    /**
-     * Maximum years of experience required
-     */
+    /** Maximum experience required. */
     private Integer maxExperience;
 
-    /**
-     * Minimum salary offered
-     */
+    /** Minimum salary offered. */
     private BigDecimal minSalary;
 
-    /**
-     * Maximum salary offered
-     */
+    /** Maximum salary offered. */
     private BigDecimal maxSalary;
 
-    /**
-     * Location of the job
-     */
+    /** Job location. */
     private String location;
 
-    /**
-     * Type of the job
-     */
+    /** Job type. */
     private JobType jobType;
 
-    /**
-     * Current status of the Job Description
-     */
+    /** Job status. */
     private JDStatus status;
 
-    /**
-     * Timestamp when the Job Description was created
-     */
+    /** Created timestamp. */
     private LocalDateTime createdAt;
 
-    /**
-     * Timestamp when the Job Description was last updated
-     */
+    /** Updated timestamp. */
     private LocalDateTime updatedAt;
 
     /**
-     * Default constructor
+     * Default constructor.
      */
     public JDResponseDTO() {
     }
 
     /**
-     * Parameterized constructor to initialize all fields
+     * Constructs JDResponseDTO.
+     *
+     * @param id             job description ID
+     * @param jobTitle       job title
+     * @param jobDescription job description
+     * @param skillsRequired required skills
+     * @param minExperience  minimum experience
+     * @param maxExperience  maximum experience
+     * @param minSalary      minimum salary
+     * @param maxSalary      maximum salary
+     * @param location       job location
+     * @param jobType        job type
+     * @param status         job status
+     * @param createdAt      created timestamp
+     * @param updatedAt      updated timestamp
      */
-    public JDResponseDTO(UUID id, String jobTitle, String jobDescription,
-            List<String> skillsRequired,
-            Integer minExperience, Integer maxExperience,
-            BigDecimal minSalary, BigDecimal maxSalary,
-            String location, JobType jobType,
-            JDStatus status,
-            LocalDateTime createdAt,
-            LocalDateTime updatedAt) {
+    @SuppressWarnings("checkstyle:ParameterNumber")
+    public JDResponseDTO(
+            final UUID id,
+            final String jobTitle,
+            final String jobDescription,
+            final List<String> skillsRequired,
+            final Integer minExperience,
+            final Integer maxExperience,
+            final BigDecimal minSalary,
+            final BigDecimal maxSalary,
+            final String location,
+            final JobType jobType,
+            final JDStatus status,
+            final LocalDateTime createdAt,
+            final LocalDateTime updatedAt) {
+
         this.id = id;
         this.jobTitle = jobTitle;
         this.jobDescription = jobDescription;
@@ -114,184 +110,236 @@ public class JDResponseDTO {
     }
 
     /**
-     * Returns job description id
+     * Returns job description ID.
+     *
+     * @return ID
      */
     public UUID getId() {
         return id;
     }
 
     /**
-     * Sets job description id
+     * Sets job description ID.
+     *
+     * @param jdId ID
      */
-    public void setId(UUID id) {
-        this.id = id;
+    public void setId(final UUID jdId) {
+        this.id = jdId;
     }
 
     /**
-     * Returns job title
+     * Returns job title.
+     *
+     * @return job title
      */
     public String getJobTitle() {
         return jobTitle;
     }
 
     /**
-     * Sets job title
+     * Sets job title.
+     *
+     * @param title job title
      */
-    public void setJobTitle(String jobTitle) {
-        this.jobTitle = jobTitle;
+    public void setJobTitle(final String title) {
+        this.jobTitle = title;
     }
 
     /**
-     * Returns job description
+     * Returns job description.
+     *
+     * @return job description
      */
     public String getJobDescription() {
         return jobDescription;
     }
 
     /**
-     * Sets job description
+     * Sets job description.
+     *
+     * @param description job description
      */
-    public void setJobDescription(String jobDescription) {
-        this.jobDescription = jobDescription;
+    public void setJobDescription(final String description) {
+        this.jobDescription = description;
     }
 
     /**
-     * Returns required skills
+     * Returns required skills.
+     *
+     * @return skills list
      */
     public List<String> getSkillsRequired() {
         return skillsRequired == null ? null : new ArrayList<>(skillsRequired);
     }
 
     /**
-     * Sets required skills
+     * Sets required skills.
+     *
+     * @param skills skills list
      */
-    public void setSkillsRequired(List<String> skillsRequired) {
-        this.skillsRequired = skillsRequired == null ? null : new ArrayList<>(skillsRequired);
+    public void setSkillsRequired(final List<String> skills) {
+        this.skillsRequired = skills == null ? null : new ArrayList<>(skills);
     }
 
     /**
-     * Returns minimum experience
+     * Returns minimum experience.
+     *
+     * @return minimum experience
      */
     public Integer getMinExperience() {
         return minExperience;
     }
 
     /**
-     * Sets minimum experience
+     * Sets minimum experience.
+     *
+     * @param minExp minimum experience
      */
-    public void setMinExperience(Integer minExperience) {
-        this.minExperience = minExperience;
+    public void setMinExperience(final Integer minExp) {
+        this.minExperience = minExp;
     }
 
     /**
-     * Returns maximum experience
+     * Returns maximum experience.
+     *
+     * @return maximum experience
      */
     public Integer getMaxExperience() {
         return maxExperience;
     }
 
     /**
-     * Sets maximum experience
+     * Sets maximum experience.
+     *
+     * @param maxExp maximum experience
      */
-    public void setMaxExperience(Integer maxExperience) {
-        this.maxExperience = maxExperience;
+    public void setMaxExperience(final Integer maxExp) {
+        this.maxExperience = maxExp;
     }
 
     /**
-     * Returns minimum salary
+     * Returns minimum salary.
+     *
+     * @return minimum salary
      */
     public BigDecimal getMinSalary() {
         return minSalary;
     }
 
     /**
-     * Sets minimum salary
+     * Sets minimum salary.
+     *
+     * @param minSal minimum salary
      */
-    public void setMinSalary(BigDecimal minSalary) {
-        this.minSalary = minSalary;
+    public void setMinSalary(final BigDecimal minSal) {
+        this.minSalary = minSal;
     }
 
     /**
-     * Returns maximum salary
+     * Returns maximum salary.
+     *
+     * @return maximum salary
      */
     public BigDecimal getMaxSalary() {
         return maxSalary;
     }
 
     /**
-     * Sets maximum salary
+     * Sets maximum salary.
+     *
+     * @param maxSal maximum salary
      */
-    public void setMaxSalary(BigDecimal maxSalary) {
-        this.maxSalary = maxSalary;
+    public void setMaxSalary(final BigDecimal maxSal) {
+        this.maxSalary = maxSal;
     }
 
     /**
-     * Returns location
+     * Returns job location.
+     *
+     * @return location
      */
     public String getLocation() {
         return location;
     }
 
     /**
-     * Sets location
+     * Sets job location.
+     *
+     * @param jobLocation location
      */
-    public void setLocation(String location) {
-        this.location = location;
+    public void setLocation(final String jobLocation) {
+        this.location = jobLocation;
     }
 
     /**
-     * Returns job type
+     * Returns job type.
+     *
+     * @return job type
      */
     public JobType getJobType() {
         return jobType;
     }
 
     /**
-     * Sets job type
+     * Sets job type.
+     *
+     * @param type job type
      */
-    public void setJobType(JobType jobType) {
-        this.jobType = jobType;
+    public void setJobType(final JobType type) {
+        this.jobType = type;
     }
 
     /**
-     * Returns job status
+     * Returns job status.
+     *
+     * @return status
      */
     public JDStatus getStatus() {
         return status;
     }
 
     /**
-     * Sets job status
+     * Sets job status.
+     *
+     * @param jobStatus status
      */
-    public void setStatus(JDStatus status) {
-        this.status = status;
+    public void setStatus(final JDStatus jobStatus) {
+        this.status = jobStatus;
     }
 
     /**
-     * Returns creation timestamp
+     * Returns created timestamp.
+     *
+     * @return created timestamp
      */
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
     /**
-     * Sets creation timestamp
+     * Sets created timestamp.
+     *
+     * @param created created timestamp
      */
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+    public void setCreatedAt(final LocalDateTime created) {
+        this.createdAt = created;
     }
 
     /**
-     * Returns last updated timestamp
+     * Returns updated timestamp.
+     *
+     * @return updated timestamp
      */
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
 
     /**
-     * Sets last updated timestamp
+     * Sets updated timestamp.
+     *
+     * @param updated updated timestamp
      */
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
+    public void setUpdatedAt(final LocalDateTime updated) {
+        this.updatedAt = updated;
     }
 }

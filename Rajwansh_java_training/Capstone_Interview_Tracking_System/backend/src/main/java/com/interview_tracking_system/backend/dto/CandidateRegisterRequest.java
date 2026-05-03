@@ -14,9 +14,12 @@ import java.time.LocalDate;
  */
 public class CandidateRegisterRequest {
 
+    /** Maximum allowed length for name fields. */
+    private static final int MAX_NAME_LENGTH = 80;
+
     /** Full name of the candidate. */
     @NotBlank(message = "Full name is required")
-    @Size(min = 2, max = 80, message = "Full name must be between 2 and 80 characters")
+    @Size(min = 2, max = MAX_NAME_LENGTH, message = "Full name must be between 2 and 80 characters")
     private String fullName;
 
     /** Email address of the candidate. */
@@ -24,23 +27,23 @@ public class CandidateRegisterRequest {
     @Email(message = "Invalid email format")
     private String email;
 
-    /** Mobile No. of the candidadte */
+    /** Mobile number of the candidate. */
     @NotBlank(message = "Mobile number is required")
     @Pattern(regexp = "^[6-9]\\d{9}$", message = "Enter a valid 10-digit mobile number")
     private String mobileNumber;
 
-    /* DOB of candidate */
+    /** Date of birth of the candidate. */
     @NotNull(message = "Date of birth is required")
     private LocalDate dob;
 
-    /** Gender of candidate */
+    /** Gender of the candidate. */
     @NotNull(message = "Gender is required")
     private Gender gender;
 
     /**
      * Returns the full name.
      *
-     * @return the full name
+     * @return full name
      */
     public String getFullName() {
         return fullName;
@@ -49,45 +52,50 @@ public class CandidateRegisterRequest {
     /**
      * Sets the full name.
      *
-     * @param name the full name to set
+     * @param candidateFullName full name
      */
-    public void setFullName(final String name) {
-        this.fullName = name;
+    public void setFullName(final String candidateFullName) {
+        this.fullName = candidateFullName;
     }
 
     /**
-     * get the mobile number
+     * Returns the mobile number.
      *
-     * @return Mobile Number
+     * @return mobile number
      */
-
     public String getMobileNumber() {
         return mobileNumber;
     }
 
-    public void setMobileNumber(String mobileNumber) {
-        this.mobileNumber = mobileNumber;
+    /**
+     * Sets the mobile number.
+     *
+     * @param candidateMobileNumber mobile number
+     */
+    public void setMobileNumber(final String candidateMobileNumber) {
+        this.mobileNumber = candidateMobileNumber;
     }
 
     /**
-     * get the DOB
+     * Returns the date of birth.
      *
-     * @return DOB;
+     * @return date of birth
      */
-
     public LocalDate getDob() {
         return dob;
     }
 
     /**
-     * Sets the dob.
+     * Sets the date of birth.
+     *
+     * @param candidateDob date of birth
      */
-    public void setDob(LocalDate dob) {
-        this.dob = dob;
+    public void setDob(final LocalDate candidateDob) {
+        this.dob = candidateDob;
     }
 
     /**
-     * Gets the Gender
+     * Returns the gender.
      *
      * @return gender
      */
@@ -96,30 +104,29 @@ public class CandidateRegisterRequest {
     }
 
     /**
-     * Sets the gender
+     * Sets the gender.
      *
-     * @param gender
+     * @param candidateGender gender
      */
-    public void setGender(Gender gender) {
-        this.gender = gender;
+    public void setGender(final Gender candidateGender) {
+        this.gender = candidateGender;
     }
 
     /**
-     * Returns the email.
+     * Returns the email address.
      *
-     * @return the email address
+     * @return email address
      */
     public String getEmail() {
         return email;
     }
 
     /**
-     * Sets the email.
+     * Sets the email address.
      *
-     * @param userEmail the email to set
+     * @param candidateEmail email
      */
-    public void setEmail(final String userEmail) {
-        this.email = userEmail;
+    public void setEmail(final String candidateEmail) {
+        this.email = candidateEmail;
     }
-
 }

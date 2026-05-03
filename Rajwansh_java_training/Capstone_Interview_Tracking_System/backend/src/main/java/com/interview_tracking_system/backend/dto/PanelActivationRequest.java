@@ -1,76 +1,77 @@
 package com.interview_tracking_system.backend.dto;
 
+/**
+ * Request DTO for panel activation.
+ * Contains activation token and password details.
+ */
 public class PanelActivationRequest {
 
     /**
      * One-time activation token sent to the panel member's registered email.
-     * Used to verify the identity of the account being activated.
      */
     private String token;
 
     /**
-     * Desired password chosen by the panel member during activation.
+     * Desired password chosen by the panel member.
      */
     private String password;
 
     /**
      * Confirmation of the desired password.
-     * Must exactly match
      */
     private String confirmPassword;
 
     /**
-     * Returns the one-time activation token.
+     * Returns the activation token.
      *
-     * @return the activation token
+     * @return activation token
      */
     public String getToken() {
         return token;
     }
 
     /**
-     * Sets the one-time activation token.
+     * Sets the activation token.
      *
-     * @param token the activation token to set; must not be null or blank
+     * @param activationToken token value
      */
-    public void setToken(final String token) {
-        this.token = token;
+    public void setToken(final String activationToken) {
+        this.token = activationToken;
     }
 
     /**
-     * Returns the plain-text password provided by the panel member.
+     * Returns the password.
      *
-     * @return the plain-text password
+     * @return password
      */
     public String getPassword() {
         return password;
     }
 
     /**
-     * Sets the plain-text password chosen by the panel member.
+     * Sets the password.
      *
-     * @param password the password to set; must not be null or blank,
-     *                 and should satisfy the application's password policy
+     * @param newPassword password value
      */
-    public void setPassword(final String password) {
-        this.password = password;
+    public void setPassword(final String newPassword) {
+        this.password = newPassword;
     }
 
     /**
-     * Returns the confirmation password provided by the panel member.
+     * Returns the confirm password.
      *
-     * @return the confirmation password
+     * @return confirm password
      */
     public String getConfirmPassword() {
         return confirmPassword;
     }
 
     /**
-     * Sets the confirmation password.
+     * Sets the confirm password.
      *
-     * @param confirmPassword the confirmation password to set;
+     * @param confirmPwd confirm password value
      */
-    public void setConfirmPassword(final String confirmPassword) {
-        this.confirmPassword = confirmPassword;
+    public void setConfirmPassword(final String confirmPwd) {
+        this.confirmPassword = confirmPwd;
     }
 }

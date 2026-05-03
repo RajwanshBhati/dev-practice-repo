@@ -33,9 +33,12 @@ public class ResumeController {
 
     /**
      * Fetches a resume file by its name and returns it as a resource.
+     *
+     * @param fileName name of the resume file
+     * @return resume file as a downloadable resource
      */
     @GetMapping(ApiEndpoints.RESUME_FILE)
-    public ResponseEntity<Resource> viewResume(@PathVariable String fileName) throws Exception {
+    public ResponseEntity<Resource> viewResume(@PathVariable final String fileName) throws Exception {
 
         Path basePath = Paths.get(resumeUploadDir).toAbsolutePath().normalize();
 

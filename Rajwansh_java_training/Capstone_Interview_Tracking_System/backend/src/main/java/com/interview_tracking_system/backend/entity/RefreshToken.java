@@ -1,5 +1,7 @@
 package com.interview_tracking_system.backend.entity;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -8,46 +10,32 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Stores refresh tokens issued during login.
- * Used to issue new access tokens without re-login.
- * One active refresh token per user at a time.
- * Tokens have an expiry time after which they are invalid.
  */
 @Entity
 @Table(name = "refresh_tokens")
 public class RefreshToken {
 
-    /**
-     * Primary key.
-     */
+    /** Primary key. */
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    /**
-     * The actual token string stored in DB.
-     * Matched against token sent by client.
-     */
+    /** Token string stored in database. */
     @Column(name = "token", nullable = false, unique = true)
     private String token;
 
-    /**
-     * User this refresh token belongs to.
-     * One-to-one: one active token per user.
-     */
+    /** User this refresh token belongs to. */
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    /**
-     * Expiry timestamp.
-     * Token rejected if current time is past this value.
-     */
+    /** Expiry timestamp of refresh token. */
     @Column(name = "expiry_date", nullable = false)
     private LocalDateTime expiryDate;
 
@@ -58,46 +46,65 @@ public class RefreshToken {
     }
 
     /**
-     * All-args constructor.
+     * Creates refresh token with all fields.
+     *
+     * @param refreshTokenId  refresh token ID
+     * @param refreshToken    token value
+     * @param tokenUser       user entity
+     * @param tokenExpiryDate token expiry date
      */
-    @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Spring dependency injection stores framework-managed beans.")
-    public RefreshToken(UUID id, String token, User user, LocalDateTime expiryDate) {
-        this.id = id;
-        this.token = token;
-        this.user = user;
-        this.expiryDate = expiryDate;
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "JPA relationship entity reference is intentionally stored.")
+    public RefreshToken(
+            final UUID refreshTokenId,
+            final String refreshToken,
+            final User tokenUser,
+            final LocalDateTime tokenExpiryDate) {
+        this.id = refreshTokenId;
+        this.token = refreshToken;
+        this.user = tokenUser;
+        this.expiryDate = tokenExpiryDate;
     }
 
     /**
-     * Returns the id.
+     * Returns refresh token ID.
+     *
+     * @return refresh token ID
      */
     public UUID getId() {
         return id;
     }
 
     /**
-     * Sets the id.
+     * Sets refresh token ID.
+     *
+     * @param refreshTokenId refresh token ID
      */
-    public void setId(UUID id) {
-        this.id = id;
+    public void setId(final UUID refreshTokenId) {
+        this.id = refreshTokenId;
     }
 
     /**
-     * Returns the token.
+     * Returns token value.
+     *
+     * @return token value
      */
     public String getToken() {
         return token;
     }
 
     /**
-     * Sets the token.
+     * Sets token value.
+     *
+     * @param refreshToken token value
      */
-    public void setToken(String token) {
-        this.token = token;
+    public void setToken(final String refreshToken) {
+        this.token = refreshToken;
     }
 
     /**
-     * Returns the user.
+     * Returns user entity.
+     *
+     * @return user entity
      */
     @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "JPA relationship entity reference is intentionally returned.")
     public User getUser() {
@@ -105,15 +112,19 @@ public class RefreshToken {
     }
 
     /**
-     * Sets the user.
+     * Sets user entity.
+     *
+     * @param tokenUser user entity
      */
-    @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Spring dependency injection stores framework-managed beans.")
-    public void setUser(User user) {
-        this.user = user;
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "JPA relationship entity reference is intentionally stored.")
+    public void setUser(final User tokenUser) {
+        this.user = tokenUser;
     }
 
     /**
      * Returns expiry date.
+     *
+     * @return expiry date
      */
     public LocalDateTime getExpiryDate() {
         return expiryDate;
@@ -121,13 +132,15 @@ public class RefreshToken {
 
     /**
      * Sets expiry date.
+     *
+     * @param tokenExpiryDate expiry date
      */
-    public void setExpiryDate(LocalDateTime expiryDate) {
-        this.expiryDate = expiryDate;
+    public void setExpiryDate(final LocalDateTime tokenExpiryDate) {
+        this.expiryDate = tokenExpiryDate;
     }
 
     /**
-     * Checks if this refresh token has expired.
+     * Checks whether refresh token has expired.
      *
      * @return true if token is expired
      */

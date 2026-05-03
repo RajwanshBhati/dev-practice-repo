@@ -14,6 +14,7 @@ import java.util.Optional;
  */
 public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
 
+    /** Logger for this repository. */
     Logger LOGGER = LoggerFactory.getLogger(FeedbackRepository.class);
 
     /**
@@ -42,11 +43,10 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
     List<Feedback> findByPanelId(Long panelId);
 
     /**
-     * count by interview id
-     * 
-     * @param interviewId
-     * @return
+     * Count feedback entries submitted for a specific interview.
+     *
+     * @param interviewId interview id
+     * @return count of feedback entries
      */
-
     long countByInterviewId(Long interviewId);
 }

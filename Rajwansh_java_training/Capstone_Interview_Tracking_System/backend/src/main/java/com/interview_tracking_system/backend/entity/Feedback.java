@@ -1,6 +1,7 @@
 package com.interview_tracking_system.backend.entity;
 
 import com.interview_tracking_system.backend.enums.FeedbackStatus;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -20,18 +21,16 @@ public class Feedback {
     /** Maximum length for comments field. */
     private static final int COMMENTS_LENGTH = 1000;
 
-    /**
-     * Unique identifier for the feedback.
-     */
+    /** Unique identifier for the feedback. */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /** Foreign key referencing the interview this feedback belongs to. */
+    /** Interview ID this feedback belongs to. */
     @Column(name = "interview_id", nullable = false)
     private Long interviewId;
 
-    /** Foreign key referencing the panel member who submitted this feedback. */
+    /** Panel ID who submitted the feedback. */
     @Column(name = "panel_id", nullable = false)
     private Long panelId;
 
@@ -54,139 +53,144 @@ public class Feedback {
     private FeedbackStatus status;
 
     /**
-     * Returns the unique identifier.
+     * Returns feedback ID.
      *
-     * @return the id
+     * @return feedback ID
      */
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    /**
+     * Sets feedback ID.
+     *
+     * @param feedbackId feedback ID
+     */
+    public void setId(final Long feedbackId) {
+        this.id = feedbackId;
     }
 
     /**
-     * Returns the foreign key ID of the associated interview.
+     * Returns interview ID.
      *
-     * @return the interviewId
+     * @return interview ID
      */
     public Long getInterviewId() {
         return interviewId;
     }
 
     /**
-     * Sets the foreign key ID of the associated interview.
+     * Sets interview ID.
      *
-     * @param interviewRef the interviewId to set
+     * @param interviewRef interview ID
      */
     public void setInterviewId(final Long interviewRef) {
         this.interviewId = interviewRef;
     }
 
     /**
-     * Returns the foreign key ID of the panel member.
+     * Returns panel ID.
      *
-     * @return the panelId
+     * @return panel ID
      */
     public Long getPanelId() {
         return panelId;
     }
 
     /**
-     * Sets the foreign key ID of the panel member.
+     * Sets panel ID.
      *
-     * @param panelRef the panelId to set
+     * @param panelRef panel ID
      */
     public void setPanelId(final Long panelRef) {
         this.panelId = panelRef;
     }
 
     /**
-     * Returns the comments.
+     * Returns comments.
      *
-     * @return the comments
+     * @return comments
      */
     public String getComments() {
         return comments;
     }
 
     /**
-     * Sets the comments.
+     * Sets comments.
      *
-     * @param feedbackComments the comments to set
+     * @param feedbackComments comments
      */
     public void setComments(final String feedbackComments) {
         this.comments = feedbackComments;
     }
 
     /**
-     * Returns the candidate's strengths.
+     * Returns candidate strengths.
      *
-     * @return the strength
+     * @return strengths
      */
     public String getStrength() {
         return strength;
     }
 
     /**
-     * Sets the candidate's strengths.
+     * Sets candidate strengths.
      *
-     * @param candidateStrength the strengths to set
+     * @param candidateStrength strengths
      */
     public void setStrength(final String candidateStrength) {
         this.strength = candidateStrength;
     }
 
     /**
-     * Returns the candidate's weaknesses.
+     * Returns candidate weaknesses.
      *
-     * @return the weakness
+     * @return weaknesses
      */
     public String getWeakness() {
         return weakness;
     }
 
     /**
-     * Sets the candidate's weaknesses.
+     * Sets candidate weaknesses.
      *
-     * @param candidateWeakness the weaknesses to set
+     * @param candidateWeakness weaknesses
      */
     public void setWeakness(final String candidateWeakness) {
         this.weakness = candidateWeakness;
     }
 
     /**
-     * Returns the numeric rating.
+     * Returns rating.
      *
-     * @return the rating
+     * @return rating
      */
     public int getRating() {
         return rating;
     }
 
     /**
-     * Sets the numeric rating.
+     * Sets rating.
      *
-     * @param feedbackRating the rating to set
+     * @param feedbackRating rating
      */
     public void setRating(final int feedbackRating) {
         this.rating = feedbackRating;
     }
 
     /**
-     * Returns the feedback status.
+     * Returns feedback status.
      *
-     * @return the status
+     * @return status
      */
     public FeedbackStatus getStatus() {
         return status;
     }
 
     /**
-     * Sets the feedback status.
+     * Sets feedback status.
      *
-     * @param feedbackStatus the status to set
+     * @param feedbackStatus status
      */
     public void setStatus(final FeedbackStatus feedbackStatus) {
         this.status = feedbackStatus;

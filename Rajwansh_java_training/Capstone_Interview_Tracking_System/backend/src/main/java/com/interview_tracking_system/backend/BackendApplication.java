@@ -3,15 +3,24 @@ package com.interview_tracking_system.backend;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+/**
+ * Main Spring Boot application class.
+ */
 @SpringBootApplication
-public class BackendApplication {
+public final class BackendApplication {
 
     /**
-     * Main method to start the Spring Boot application
-     * 
-     * @param args
+     * Private constructor to prevent instantiation.
      */
-    public static void main(String[] args) {
+    private BackendApplication() {
+    }
+
+    /**
+     * Main method to start the Spring Boot application.
+     *
+     * @param args command line arguments
+     */
+    public static void main(final String[] args) {
         SpringApplication.run(BackendApplication.class, args);
     }
 }

@@ -4,34 +4,61 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.List;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import java.io.IOException;
-import java.util.List;
 
 /**
- * JWT Authentication Filter
+ * JWT Authentication Filter.
  */
 @Component
-public class JwtAuthFilter extends OncePerRequestFilter {
+public final class JwtAuthFilter extends OncePerRequestFilter {
 
+    /**
+     * Bearer token prefix length.
+     */
+    private static final int BEARER_PREFIX_LENGTH = 7;
+
+    /**
+     * JWT utility.
+     */
     private final JwtUtil jwtUtil;
+
+    /**
+     * Custom user details service.
+     */
     private final CustomUserDetailsService userDetailsService;
 
-    public JwtAuthFilter(JwtUtil jwtUtil,
-            CustomUserDetailsService userDetailsService) {
+    /**
+     * Creates JWT authentication filter.
+     *
+     * @param jwtUtil            the JWT utility
+     * @param userDetailsService the custom user details service
+     */
+    public JwtAuthFilter(final JwtUtil jwtUtil,
+            final CustomUserDetailsService userDetailsService) {
         this.jwtUtil = jwtUtil;
         this.userDetailsService = userDetailsService;
     }
 
+    /**
+     * Filters requests and sets authentication when JWT token is valid.
+     *
+     * @param request     the HTTP request
+     * @param response    the HTTP response
+     * @param filterChain the filter chain
+     * @throws ServletException if servlet processing fails
+     * @throws IOException      if input or output processing fails
+     */
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
-            HttpServletResponse response,
-            FilterChain filterChain)
+    protected void doFilterInternal(final HttpServletRequest request,
+            final HttpServletResponse response,
+            final FilterChain filterChain)
             throws ServletException, IOException {
 
         String path = request.getServletPath();
@@ -44,9 +71,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             return;
         }
 
-        /**
-         * Get Authorization header
-         */
         String authHeader = request.getHeader("Authorization");
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -54,7 +78,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             return;
         }
 
-        String token = authHeader.substring(7);
+        String token = authHeader.substring(BEARER_PREFIX_LENGTH);
         String email;
 
         try {
@@ -63,10 +87,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-
-        /**
-         * Authenticate only if not already authenticated
-         */
 
         if (email != null
                 && SecurityContextHolder.getContext().getAuthentication() == null

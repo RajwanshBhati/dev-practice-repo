@@ -28,18 +28,18 @@ public class LoginRequestDTO {
     }
 
     /**
-     * All-args constructor.
+     * Creates login request with email and password.
      *
-     * @param email    user email
-     * @param password user password
+     * @param userEmail    user email
+     * @param userPassword user password
      */
-    public LoginRequestDTO(String email, String password) {
-        this.email = email;
-        this.password = password;
+    public LoginRequestDTO(final String userEmail, final String userPassword) {
+        this.email = userEmail;
+        this.password = userPassword;
     }
 
     /**
-     * Gets the email.
+     * Returns the email.
      *
      * @return email
      */
@@ -48,7 +48,7 @@ public class LoginRequestDTO {
     }
 
     /**
-     * Gets the password.
+     * Returns the password.
      *
      * @return password
      */
@@ -57,20 +57,20 @@ public class LoginRequestDTO {
     }
 
     /**
-     * Set email
+     * Sets the email.
      *
-     * @param email email to set
+     * @param requestEmail email
      */
-    public void setEmail(String email) {
-        this.email = email;
+    public void setEmail(final String requestEmail) {
+        this.email = requestEmail;
     }
 
     /**
-     * Set password
+     * Sets the password.
      *
-     * @param password password to set
+     * @param requestPassword password
      */
-    public void setPassword(String password) {
-        this.password = password;
+    public void setPassword(final String requestPassword) {
+        this.password = requestPassword;
     }
 }

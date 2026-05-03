@@ -51,17 +51,24 @@ public interface EmailService {
                         String interviewDateTime);
 
         /**
-         * Send Candidate OnBoard Email
+         * Sends candidate onboard email with activation token.
          *
-         * @param toEmail
-         * @param candidateName
-         * @param activationToken
+         * @param toEmail         the recipient email address
+         * @param candidateName   the name of the candidate
+         * @param activationToken the activation token
          */
         void sendCandidateOnboardEmail(
                         String toEmail,
                         String candidateName,
                         String activationToken);
 
+        /**
+         * Sends candidate registration confirmation email.
+         *
+         * @param toEmail         the recipient email address
+         * @param candidateName   the name of the candidate
+         * @param activationToken the activation token
+         */
         void sendCandidateRegistrationEmail(
                         String toEmail,
                         String candidateName,

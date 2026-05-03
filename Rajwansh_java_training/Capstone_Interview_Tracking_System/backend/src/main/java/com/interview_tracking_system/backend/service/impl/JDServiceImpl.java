@@ -26,30 +26,40 @@ import java.util.Objects;
  * Handles all business logic related to JD CRUD operations.
  */
 @Service
-public class JDServiceImpl implements JDService {
+public final class JDServiceImpl implements JDService {
 
-    private static final Logger log = LoggerFactory.getLogger(JDServiceImpl.class);
+    /** Logger instance. */
+    private static final Logger LOGGER = LoggerFactory.getLogger(JDServiceImpl.class);
 
+    /** Job description repository. */
     private final JobDescriptionRepository jdRepository;
+
+    /** JD mapper. */
     private final JDMapper jdMapper;
 
     /**
-     * Constructor injection
+     * Constructor injection.
+     *
+     * @param jdRepository job description repository
+     * @param jdMapper     mapper
      */
-    public JDServiceImpl(JobDescriptionRepository jdRepository,
-            JDMapper jdMapper) {
+    public JDServiceImpl(final JobDescriptionRepository jdRepository,
+            final JDMapper jdMapper) {
         this.jdRepository = jdRepository;
         this.jdMapper = jdMapper;
     }
 
     /**
      * Create a new Job Description.
+     *
+     * @param requestDTO request data
+     * @return created JD
      */
     @Override
     @Transactional
-    public JDResponseDTO createJD(JDRequestDTO requestDTO) {
+    public JDResponseDTO createJD(final JDRequestDTO requestDTO) {
 
-        log.info("Creating new Job Description: " + requestDTO.getJobTitle());
+        LOGGER.info("Creating new Job Description: {}", requestDTO.getJobTitle());
 
         validateExperienceRange(requestDTO.getMinExperience(), requestDTO.getMaxExperience());
         validateSalaryRange(requestDTO);
@@ -57,17 +67,20 @@ public class JDServiceImpl implements JDService {
         JobDescription jd = jdMapper.toEntity(requestDTO);
         JobDescription saved = jdRepository.save(jd);
 
-        log.info("Job Description created with ID: " + saved.getId());
+        LOGGER.info("Job Description created with ID: {}", saved.getId());
         return jdMapper.toResponseDTO(saved);
     }
 
     /**
      * Get Job Description by ID.
+     *
+     * @param id JD id
+     * @return JD response
      */
     @Override
-    public JDResponseDTO getJDById(UUID id) {
+    public JDResponseDTO getJDById(final UUID id) {
 
-        log.info("Fetching JD with ID: " + id);
+        LOGGER.info("Fetching JD with ID: {}", id);
 
         JobDescription jd = findJDOrThrow(id);
         return jdMapper.toResponseDTO(jd);
@@ -75,11 +88,13 @@ public class JDServiceImpl implements JDService {
 
     /**
      * Get all Job Descriptions.
+     *
+     * @return list of JDs
      */
     @Override
     public List<JDResponseDTO> getAllJDs() {
 
-        log.info("Fetching all Job Descriptions");
+        LOGGER.info("Fetching all Job Descriptions");
 
         return jdRepository.findAllByOrderByCreatedAtDesc()
                 .stream()
@@ -89,11 +104,13 @@ public class JDServiceImpl implements JDService {
 
     /**
      * Get all active Job Descriptions.
+     *
+     * @return list of active JDs
      */
     @Override
     public List<JDResponseDTO> getActiveJDs() {
 
-        log.info("Fetching ACTIVE Job Descriptions");
+        LOGGER.info("Fetching ACTIVE Job Descriptions");
 
         return jdRepository.findByStatusOrderByCreatedAtDesc(JDStatus.ACTIVE)
                 .stream()
@@ -103,12 +120,16 @@ public class JDServiceImpl implements JDService {
 
     /**
      * Update existing Job Description.
+     *
+     * @param id         JD id
+     * @param requestDTO request data
+     * @return updated JD
      */
     @Override
     @Transactional
-    public JDResponseDTO updateJD(UUID id, JDRequestDTO requestDTO) {
+    public JDResponseDTO updateJD(final UUID id, final JDRequestDTO requestDTO) {
 
-        log.info("Updating JD with ID: " + id);
+        LOGGER.info("Updating JD with ID: {}", id);
 
         validateExperienceRange(requestDTO.getMinExperience(), requestDTO.getMaxExperience());
         validateSalaryRange(requestDTO);
@@ -127,18 +148,22 @@ public class JDServiceImpl implements JDService {
 
         JobDescription updated = jdRepository.save(jd);
 
-        log.info("JD updated successfully: " + id);
+        LOGGER.info("JD updated successfully: {}", id);
         return jdMapper.toResponseDTO(updated);
     }
 
     /**
      * Update JD status.
+     *
+     * @param id     JD id
+     * @param status status
+     * @return updated JD
      */
     @Override
     @Transactional
-    public JDResponseDTO updateJDStatus(UUID id, JDStatus status) {
+    public JDResponseDTO updateJDStatus(final UUID id, final JDStatus status) {
 
-        log.info("Updating status of JD " + id + " to " + status);
+        LOGGER.info("Updating status of JD {} to {}", id, status);
 
         JobDescription jd = findJDOrThrow(id);
         jd.setStatus(status);
@@ -148,27 +173,37 @@ public class JDServiceImpl implements JDService {
 
     /**
      * Delete Job Description.
+     *
+     * @param id JD id
      */
     @Override
     @Transactional
-    public void deleteJD(UUID id) {
+    public void deleteJD(final UUID id) {
 
-        log.info("Deleting JD with ID: " + id);
+        LOGGER.info("Deleting JD with ID: {}", id);
 
         JobDescription jd = findJDOrThrow(id);
         jdRepository.delete(jd);
 
-        log.info("JD deleted: " + id);
+        LOGGER.info("JD deleted: {}", id);
     }
 
     /**
      * Search Job Descriptions.
+     *
+     * @param status   status
+     * @param jobType  job type
+     * @param location location
+     * @param title    title
+     * @return list of JDs
      */
     @Override
-    public List<JDResponseDTO> searchJDs(JDStatus status, JobType jobType,
-            String location, String title) {
+    public List<JDResponseDTO> searchJDs(final JDStatus status,
+            final JobType jobType,
+            final String location,
+            final String title) {
 
-        log.info("Searching JDs");
+        LOGGER.info("Searching JDs");
 
         return jdRepository.searchJDs(status, jobType, location, title)
                 .stream()
@@ -178,8 +213,11 @@ public class JDServiceImpl implements JDService {
 
     /**
      * Find JD or throw exception if not found.
+     *
+     * @param id JD id
+     * @return JD entity
      */
-    private JobDescription findJDOrThrow(UUID id) {
+    private JobDescription findJDOrThrow(final UUID id) {
         return jdRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Job Description not found with ID: " + id));
@@ -187,9 +225,14 @@ public class JDServiceImpl implements JDService {
 
     /**
      * Validate experience range.
+     *
+     * @param min minimum experience
+     * @param max maximum experience
      */
-    private void validateExperienceRange(Integer min, Integer max) {
-        if (Objects.nonNull(min) && Objects.nonNull(max) && min > max) {
+    private void validateExperienceRange(final Integer min, final Integer max) {
+        if (Objects.nonNull(min)
+                && Objects.nonNull(max)
+                && min > max) {
             throw new InvalidRequestException(
                     "Min experience cannot be greater than max experience");
         }
@@ -197,11 +240,13 @@ public class JDServiceImpl implements JDService {
 
     /**
      * Validate salary range.
+     *
+     * @param dto request DTO
      */
-    private void validateSalaryRange(JDRequestDTO dto) {
-        if (Objects.nonNull(dto.getMinSalary()) &&
-                Objects.nonNull(dto.getMaxSalary()) &&
-                dto.getMinSalary().compareTo(dto.getMaxSalary()) > 0) {
+    private void validateSalaryRange(final JDRequestDTO dto) {
+        if (Objects.nonNull(dto.getMinSalary())
+                && Objects.nonNull(dto.getMaxSalary())
+                && dto.getMinSalary().compareTo(dto.getMaxSalary()) > 0) {
             throw new InvalidRequestException(
                     "Min salary cannot be greater than max salary");
         }

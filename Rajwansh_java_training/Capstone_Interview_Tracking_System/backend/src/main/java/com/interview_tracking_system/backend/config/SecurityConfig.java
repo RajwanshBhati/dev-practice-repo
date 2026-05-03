@@ -2,6 +2,8 @@ package com.interview_tracking_system.backend.config;
 
 import com.interview_tracking_system.backend.security.CustomUserDetailsService;
 import com.interview_tracking_system.backend.security.JwtAuthFilter;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -19,15 +21,18 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-import java.util.List;
-
+/**
+ * Security configuration for the application.
+ */
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
 
+    /** JWT authentication filter. */
     private final JwtAuthFilter jwtAuthFilter;
+
+    /** Custom user details service. */
     private final CustomUserDetailsService userDetailsService;
 
     /**
@@ -37,8 +42,8 @@ public class SecurityConfig {
      * @param userDetailsService custom user details service
      */
     @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Spring dependency injection stores framework-managed beans.")
-    public SecurityConfig(JwtAuthFilter jwtAuthFilter,
-            CustomUserDetailsService userDetailsService) {
+    public SecurityConfig(final JwtAuthFilter jwtAuthFilter,
+            final CustomUserDetailsService userDetailsService) {
         this.jwtAuthFilter = jwtAuthFilter;
         this.userDetailsService = userDetailsService;
     }
@@ -51,89 +56,55 @@ public class SecurityConfig {
      * @throws Exception if configuration fails
      */
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(final HttpSecurity http) throws Exception {
 
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
-
-                /**
-                 * Set session management to stateless since we're using JWT for authentication.
-                 */
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
                 .authorizeHttpRequests(auth -> auth
 
-                        /**
-                         * Authentication endpoints are public.
-                         * Users must be able to register and login without a token.
-                         */
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers("/api/resumes/**").permitAll()
-
-                        /**
-                         * Panel activation is triggered via email link.
-                         * At this point, panel users are not authenticated yet.
-                         */
                         .requestMatchers("/api/v1/panel/activate").permitAll()
 
-                        /**
-                         * Panel creation is restricted to HR users.
-                         * Only HR should onboard panel members into the system.
-                         */
                         .requestMatchers("/api/v1/panel/create").hasRole("HR")
 
-                        /**
-                         * Interview scheduling and candidate status updates are controlled by HR.
-                         * This ensures the recruitment workflow is managed centrally.
-                         */
                         .requestMatchers("/api/interview/schedule").hasRole("HR")
                         .requestMatchers("/api/interview/status").hasAnyAuthority("HR", "ROLE_HR")
 
-                        /**
-                         * Panel users can only:
-                         * 1. View interviews assigned to them
-                         * 2. Submit feedback for those interviews
-                         * They should not have access to HR-level operations.
-                         */
                         .requestMatchers("/api/interview/feedback/**").hasRole("PANEL")
                         .requestMatchers("/api/interview/panel/**").hasRole("PANEL")
+
                         .requestMatchers(
                                 "/api/candidates/register",
                                 "/api/candidates/login")
                         .permitAll()
-                        /**
-                         * Candidates can only track their own interview progress and status.
-                         * They are not allowed to access feedback or administrative actions.
-                         */
+
                         .requestMatchers("/api/interview/candidate/**").hasRole("CANDIDATE")
 
-                        /**
-                         * Existing role-based APIs for each module.
-                         */
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/hr/jd").permitAll()
-                        // .requestMatchers("/api/hr/**").hasRole("HR")
-                        // .requestMatchers("/api/panel/**").hasRole("PANEL")
-                        // .requestMatchers("/api/candidates/**").hasRole("CANDIDATE")
 
                         .requestMatchers("/api/hr/**").hasAnyAuthority("HR", "ROLE_HR")
                         .requestMatchers("/api/panel/**").hasAnyAuthority("PANEL", "ROLE_PANEL")
                         .requestMatchers("/api/candidates/onboard").hasAnyAuthority("HR", "ROLE_HR")
                         .requestMatchers("/api/candidates/**").hasAnyAuthority("CANDIDATE", "ROLE_CANDIDATE")
 
-                        /**
-                         * Any other request must be authenticated.
-                         */
                         .anyRequest().authenticated())
 
-                /* Add JWT filter before username/password authentication */
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
+    /**
+     * Configures CORS settings.
+     *
+     * @return CorsConfigurationSource instance
+     */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
 
@@ -160,7 +131,7 @@ public class SecurityConfig {
     /**
      * Password encoder bean using BCrypt hashing algorithm.
      *
-     * @return BCryptPasswordEncoder instance
+     * @return PasswordEncoder instance
      */
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -170,7 +141,7 @@ public class SecurityConfig {
     /**
      * Authentication provider for user authentication.
      *
-     * @return DaoAuthenticationProvider configured with user details service
+     * @return AuthenticationProvider instance
      */
     @Bean
     public AuthenticationProvider authenticationProvider() {
@@ -186,13 +157,13 @@ public class SecurityConfig {
     /**
      * Provides AuthenticationManager for authentication process.
      *
-     * @param config Authentication configuration
+     * @param config authentication configuration
      * @return AuthenticationManager instance
-     * @throws Exception if authentication manager cannot be created
+     * @throws Exception if creation fails
      */
     @Bean
     public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration config) throws Exception {
+            final AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 }

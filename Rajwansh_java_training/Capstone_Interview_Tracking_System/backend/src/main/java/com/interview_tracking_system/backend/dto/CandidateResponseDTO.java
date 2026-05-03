@@ -17,22 +17,22 @@ public class CandidateResponseDTO {
     /** Email of the candidate. */
     private String email;
 
-    /** Current stage of the candidate. */
+    /** Current status of the candidate. */
     private Stage status;
 
     /** Job description ID applied for. */
     private UUID jdId;
 
-    /** Rejected Stage */
+    /** Stage at which candidate was rejected. */
     private Stage rejectedStage;
 
-    /** Current Stage */
+    /** Current stage of the candidate. */
     private Stage currentStage;
 
     /**
      * Returns the candidate ID.
      *
-     * @return the ID
+     * @return candidate ID
      */
     public Long getId() {
         return id;
@@ -41,117 +41,117 @@ public class CandidateResponseDTO {
     /**
      * Sets the candidate ID.
      *
-     * @param candidateId the ID to set
+     * @param candidateId candidate ID
      */
     public void setId(final Long candidateId) {
         this.id = candidateId;
     }
 
     /**
-     * Returns the name.
+     * Returns the candidate name.
      *
-     * @return the candidate name
+     * @return name
      */
     public String getName() {
         return name;
     }
 
     /**
-     * Sets the name.
+     * Sets the candidate name.
      *
-     * @param candidateName the name to set
+     * @param candidateName name
      */
     public void setName(final String candidateName) {
         this.name = candidateName;
     }
 
     /**
-     * Returns the email.
+     * Returns the email address.
      *
-     * @return the email address
+     * @return email
      */
     public String getEmail() {
         return email;
     }
 
     /**
-     * Sets the email.
+     * Sets the email address.
      *
-     * @param candidateEmail the email to set
+     * @param candidateEmail email
      */
     public void setEmail(final String candidateEmail) {
         this.email = candidateEmail;
     }
 
     /**
-     * Returns the current stage.
+     * Returns the current status.
      *
-     * @return the interview stage
+     * @return status
      */
     public Stage getStatus() {
         return status;
     }
 
     /**
-     * Sets the current stage.
+     * Sets the current status.
      *
-     * @param candidateStatus the stage to set
+     * @param candidateStatus status
      */
     public void setStatus(final Stage candidateStatus) {
         this.status = candidateStatus;
     }
 
     /**
-     * Returns the JD ID.
+     * Returns the job description ID.
      *
-     * @return the job description ID
+     * @return JD ID
      */
     public UUID getJdId() {
         return jdId;
     }
 
     /**
-     * Sets the JD ID.
+     * Sets the job description ID.
      *
-     * @param jobDescriptionId the JD ID to set
+     * @param jobDescriptionId JD ID
      */
     public void setJdId(final UUID jobDescriptionId) {
         this.jdId = jobDescriptionId;
     }
 
     /**
-     * Rejected Stage
-     * 
-     * @return rejectedStage
+     * Returns the rejected stage.
+     *
+     * @return rejected stage
      */
     public Stage getRejectedStage() {
         return rejectedStage;
     }
 
     /**
-     * set the rejected stage
-     * 
-     * @param rejectedStage
+     * Sets the rejected stage.
+     *
+     * @param candidateRejectedStage rejected stage
      */
-    public void setRejectedStage(final Stage rejectedStage) {
-        this.rejectedStage = rejectedStage;
+    public void setRejectedStage(final Stage candidateRejectedStage) {
+        this.rejectedStage = candidateRejectedStage;
     }
 
     /**
-     * get the current stage
-     * 
-     * @return currentStage
+     * Returns the current stage.
+     *
+     * @return current stage
      */
     public Stage getCurrentStage() {
         return currentStage;
     }
 
     /**
-     * set the current Stage
-     * 
-     * @param currentStage
+     * Sets the current stage.
+     *
+     * @param candidateCurrentStage current stage
      */
-    public void setCurrentStage(final Stage currentStage) {
-        this.currentStage = currentStage;
+    public void setCurrentStage(final Stage candidateCurrentStage) {
+        this.currentStage = candidateCurrentStage;
     }
 }

@@ -17,22 +17,31 @@ import java.util.List;
 @Service
 public class HRDashboardService {
 
+        /** Logger for this service. */
         private static final Logger LOGGER = LoggerFactory.getLogger(HRDashboardService.class);
 
+        /** Repository for candidate data. */
         private final CandidateRepository candidateRepository;
+
+        /** Repository for job description data. */
         private final JobDescriptionRepository jobDescriptionRepository;
 
         /**
          * Constructor for dependency injection.
+         *
+         * @param candidateRepository      candidate repository
+         * @param jobDescriptionRepository job description repository
          */
-        public HRDashboardService(CandidateRepository candidateRepository,
-                        JobDescriptionRepository jobDescriptionRepository) {
+        public HRDashboardService(final CandidateRepository candidateRepository,
+                        final JobDescriptionRepository jobDescriptionRepository) {
                 this.candidateRepository = candidateRepository;
                 this.jobDescriptionRepository = jobDescriptionRepository;
         }
 
         /**
          * Fetches all candidates for HR dashboard view.
+         *
+         * @return list of candidate DTOs for HR
          */
         public List<HRCandidateFullDTO> getAllCandidatesForHR() {
 

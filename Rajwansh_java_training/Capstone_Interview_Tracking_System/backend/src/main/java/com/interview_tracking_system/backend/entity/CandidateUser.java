@@ -1,5 +1,7 @@
 package com.interview_tracking_system.backend.entity;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,7 +12,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Represents a registered candidate user in the system.
@@ -43,72 +44,81 @@ public class CandidateUser {
     private Candidate candidate;
 
     /**
-     * Returns the unique identifier.
+     * Returns candidate user ID.
      *
-     * @return the candidate user ID
+     * @return candidate user ID
      */
     public Long getId() {
         return id;
     }
 
     /**
-     * Returns the full name.
+     * Sets candidate user ID.
      *
-     * @return the full name of the candidate user
+     * @param candidateUserId candidate user ID
+     */
+    public void setId(final Long candidateUserId) {
+        this.id = candidateUserId;
+    }
+
+    /**
+     * Returns full name.
+     *
+     * @return full name
      */
     public String getFullName() {
         return fullName;
     }
 
     /**
-     * Sets the full name.
+     * Sets full name.
      *
-     * @param name the full name to set
+     * @param name full name
      */
     public void setFullName(final String name) {
         this.fullName = name;
     }
 
     /**
-     * Returns the email address.
+     * Returns email address.
      *
-     * @return the email of the candidate user
+     * @return email address
      */
     public String getEmail() {
         return email;
     }
 
     /**
-     * Sets the email address.
+     * Sets email address.
      *
-     * @param userEmail the email to set
+     * @param userEmail email address
      */
     public void setEmail(final String userEmail) {
         this.email = userEmail;
     }
 
     /**
-     * Returns the encoded password.
+     * Returns encoded password.
      *
-     * @return the password of the candidate user
+     * @return encoded password
      */
     public String getPassword() {
         return password;
     }
 
     /**
-     * Sets the encoded password.
+     * Sets encoded password.
      *
-     * @param userPassword the password to set
+     * @param userPassword encoded password
      */
     public void setPassword(final String userPassword) {
         this.password = userPassword;
     }
 
     /**
-     * Returns the linked candidate profile.
+     * Returns linked candidate profile.
      *
-     * @return the candidate profile of this user
+     * @return candidate profile
      */
     @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "JPA relationship entity reference is intentionally returned.")
     public Candidate getCandidate() {
@@ -116,11 +126,11 @@ public class CandidateUser {
     }
 
     /**
-     * Sets the linked candidate profile.
+     * Sets linked candidate profile.
      *
-     * @param candidateProfile the candidate profile to set
+     * @param candidateProfile candidate profile
      */
-    @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Spring dependency injection stores framework-managed beans.")
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "JPA relationship entity reference is intentionally stored.")
     public void setCandidate(final Candidate candidateProfile) {
         this.candidate = candidateProfile;
     }

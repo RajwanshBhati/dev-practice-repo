@@ -19,33 +19,32 @@ public class RefreshTokenRequestDTO {
      * Default constructor.
      */
     public RefreshTokenRequestDTO() {
-
     }
 
     /**
-     * All-args constructor.
+     * Creates refresh token request.
      *
-     * @param refreshToken the refresh token to set
+     * @param token refresh token
      */
-    public RefreshTokenRequestDTO(String refreshToken) {
-        this.refreshToken = refreshToken;
+    public RefreshTokenRequestDTO(final String token) {
+        this.refreshToken = token;
     }
 
     /**
-     * Gets the refresh token.
+     * Returns the refresh token.
      *
-     * @return refreshToken
+     * @return refresh token
      */
     public String getRefreshToken() {
         return refreshToken;
     }
 
     /**
-     * Set refresh token
+     * Sets the refresh token.
      *
-     * @param refreshToken the refresh token to set
+     * @param token refresh token
      */
-    public void setRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
+    public void setRefreshToken(final String token) {
+        this.refreshToken = token;
     }
 }

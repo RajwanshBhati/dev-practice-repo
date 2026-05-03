@@ -9,52 +9,84 @@ import com.interview_tracking_system.backend.enums.UserStatus;
 import com.interview_tracking_system.backend.repository.UserRepository;
 import com.interview_tracking_system.backend.service.EmailService;
 import com.interview_tracking_system.backend.service.PanelService;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
+/**
+ * Implementation of PanelService.
+ */
 @Service
-public class PanelServiceImpl implements PanelService {
+public final class PanelServiceImpl implements PanelService {
 
-    private static final Logger logger = LoggerFactory.getLogger(PanelServiceImpl.class);
+    /**
+     * Logger instance.
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(PanelServiceImpl.class);
 
+    /**
+     * Token expiry hours.
+     */
+    private static final int TOKEN_EXPIRY_HOURS = 24;
+
+    /**
+     * User repository.
+     */
     private final UserRepository userRepository;
+
+    /**
+     * Email service.
+     */
     private final EmailService emailService;
+
+    /**
+     * Password encoder.
+     */
     private final PasswordEncoder passwordEncoder;
 
-    public PanelServiceImpl(UserRepository userRepository,
-            EmailService emailService,
-            PasswordEncoder passwordEncoder) {
+    /**
+     * Constructor.
+     *
+     * @param userRepository  user repository
+     * @param emailService    email service
+     * @param passwordEncoder password encoder
+     */
+    public PanelServiceImpl(final UserRepository userRepository,
+            final EmailService emailService,
+            final PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.emailService = emailService;
         this.passwordEncoder = passwordEncoder;
     }
 
     /**
-     * Create panel user and send activation email
+     * Creates panel user and sends activation email.
+     *
+     * @param request panel create request
+     * @return success message
      */
     @Override
     @Transactional
-    public String createPanel(PanelCreateRequest request) {
+    public String createPanel(final PanelCreateRequest request) {
 
-        logger.info("Creating panel user: {}", request.getEmail());
+        LOGGER.info("Creating panel user: {}", request.getEmail());
+
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new RuntimeException("Email already exists");
         }
 
-        logger.info("Panel created successfully with email: {}", request.getEmail());
+        LOGGER.info("Panel created successfully with email: {}", request.getEmail());
 
         String token = UUID.randomUUID().toString();
 
         User user = new User();
-        logger.info("FULL NAME FROM REQUEST: {}", request.getFullName());
+        LOGGER.info("FULL NAME FROM REQUEST: {}", request.getFullName());
         user.setName(request.getFullName());
 
         user.setEmail(request.getEmail());
@@ -68,7 +100,7 @@ public class PanelServiceImpl implements PanelService {
         user.setPassword(passwordEncoder.encode("TEMP123"));
 
         user.setActivationToken(token);
-        user.setActivationTokenExpiry(LocalDateTime.now().plusHours(24));
+        user.setActivationTokenExpiry(LocalDateTime.now().plusHours(TOKEN_EXPIRY_HOURS));
 
         userRepository.save(user);
 
@@ -79,19 +111,22 @@ public class PanelServiceImpl implements PanelService {
                 request.getFullName(),
                 activationToken);
 
-        logger.info("Panel activation email sent: {}", request.getEmail());
+        LOGGER.info("Panel activation email sent: {}", request.getEmail());
 
         return MessageConstants.PANEL_CREATED;
     }
 
     /**
-     * Activate panel user
+     * Activates panel user.
+     *
+     * @param request activation request
+     * @return success message
      */
     @Override
     @Transactional
-    public String activatePanel(PanelActivationRequest request) {
+    public String activatePanel(final PanelActivationRequest request) {
 
-        logger.info("Activating panel user");
+        LOGGER.info("Activating panel user");
 
         if (!request.getPassword().equals(request.getConfirmPassword())) {
             throw new RuntimeException(MessageConstants.PASSWORD_MISMATCH);
@@ -100,8 +135,8 @@ public class PanelServiceImpl implements PanelService {
         User user = userRepository.findByActivationToken(request.getToken())
                 .orElseThrow(() -> new RuntimeException(MessageConstants.INVALID_TOKEN));
 
-        if (user.getActivationTokenExpiry() == null ||
-                user.getActivationTokenExpiry().isBefore(LocalDateTime.now())) {
+        if (user.getActivationTokenExpiry() == null
+                || user.getActivationTokenExpiry().isBefore(LocalDateTime.now())) {
             throw new RuntimeException(MessageConstants.INVALID_TOKEN);
         }
 
@@ -113,18 +148,20 @@ public class PanelServiceImpl implements PanelService {
 
         userRepository.save(user);
 
-        logger.info("Panel activated successfully: {}", user.getEmail());
+        LOGGER.info("Panel activated successfully: {}", user.getEmail());
 
         return MessageConstants.PANEL_ACTIVATED;
     }
 
     /**
-     * Get all panel users
+     * Fetches all panel users.
+     *
+     * @return list of panel users
      */
     @Override
     public List<PanelCreateRequest> getAllPanels() {
 
-        logger.info("Fetching all panel users");
+        LOGGER.info("Fetching all panel users");
 
         List<User> panels = userRepository.findByRoleOrderByCreatedAtDesc(Role.PANEL);
 

@@ -27,54 +27,63 @@ public class InterviewPanel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /** Foreign key referencing the interview. */
+    /** Interview ID reference. */
     @Column(name = "interview_id", nullable = false)
     private Long interviewId;
 
-    /** Foreign key referencing the panel member. */
+    /** Panel member ID reference. */
     @Column(name = "panel_id", nullable = false)
     private Long panelId;
 
     /**
-     * Returns the unique identifier.
+     * Returns mapping ID.
      *
-     * @return the id
+     * @return mapping ID
      */
     public Long getId() {
         return id;
     }
 
     /**
-     * Returns the foreign key ID of the associated interview.
+     * Sets mapping ID.
      *
-     * @return the interviewId
+     * @param mappingId mapping ID
+     */
+    public void setId(final Long mappingId) {
+        this.id = mappingId;
+    }
+
+    /**
+     * Returns interview ID.
+     *
+     * @return interview ID
      */
     public Long getInterviewId() {
         return interviewId;
     }
 
     /**
-     * Sets the foreign key ID of the associated interview.
+     * Sets interview ID.
      *
-     * @param interviewRef the interviewId to set
+     * @param interviewRef interview ID
      */
     public void setInterviewId(final Long interviewRef) {
         this.interviewId = interviewRef;
     }
 
     /**
-     * Returns the foreign key ID of the associated panel member.
+     * Returns panel ID.
      *
-     * @return the panelId
+     * @return panel ID
      */
     public Long getPanelId() {
         return panelId;
     }
 
     /**
-     * Sets the foreign key ID of the associated panel member.
+     * Sets panel ID.
      *
-     * @param panelRef the panelId to set
+     * @param panelRef panel ID
      */
     public void setPanelId(final Long panelRef) {
         this.panelId = panelRef;

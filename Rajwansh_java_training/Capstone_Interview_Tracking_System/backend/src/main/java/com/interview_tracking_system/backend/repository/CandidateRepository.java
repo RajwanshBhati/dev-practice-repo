@@ -81,9 +81,17 @@ public interface CandidateRepository extends JpaRepository<Candidate, Long> {
     List<Candidate> findByEmailIgnoreCaseOrderByIdDesc(String email);
 
     /**
-     * find all order by desc
+     * Finds all candidates ordered by ID descending.
+     *
+     * @return list of all candidates newest first
      */
     List<Candidate> findAllByOrderByIdDesc();
 
+    /**
+     * Finds the most recent candidate entry by mobile number.
+     *
+     * @param mobile the mobile number to search
+     * @return an Optional containing the latest candidate record if found
+     */
     Optional<Candidate> findTopByMobileOrderByIdDesc(String mobile);
 }

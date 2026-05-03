@@ -1,99 +1,134 @@
 package com.interview_tracking_system.backend.constants;
 
 /**
- * Central place for all API endpoints
+ * Central place for all API endpoints.
  */
 public final class ApiEndpoints {
 
     /**
-     * Base path for all API endpoints
+     * Base path for all API endpoints.
      */
-
     public static final String BASE_API = "/api";
 
     /**
-     * Base path for authentication endpoints
+     * Base path for authentication endpoints.
      */
     public static final String BASE_AUTH = "/api/auth";
 
     /**
-     * Login endpoint
+     * Login endpoint.
      */
     public static final String LOGIN = "/login";
 
     /**
-     * Refresh token endpoint
+     * Refresh token endpoint.
      */
     public static final String REFRESH = "/refresh";
 
     /**
-     * Logout endpoint
+     * Logout endpoint.
      */
     public static final String LOGOUT = "/logout";
 
     /**
-     * Activate account endpoint
+     * Activate account endpoint.
      */
     public static final String ACTIVATE = "/activate";
 
+    /**
+     * Base path for HR job description endpoints.
+     */
     public static final String HR_JD = "/hr/jd";
 
     /**
-     * Base path for all API endpoints
-     *
+     * Job description endpoint.
      */
-
     public static final String JD = "/jd";
 
     /**
-     * Search endpoint for job descriptions
+     * Search endpoint for job descriptions.
      */
     public static final String JD_SEARCH = HR_JD + "/search";
 
+    /**
+     * Base path for versioned API endpoints.
+     */
     public static final String BASE = "/api/v1";
 
     /**
-     * Resume file endpoint
+     * Resume file endpoint.
      */
     public static final String RESUME_FILE = "/{fileName:.+}";
 
     /**
-     * Panel endpoints
+     * Panel endpoints.
      */
     public static final String PANEL = BASE + "/panel";
+
     /**
-     * create panel endpoints
+     * Create panel endpoints.
      */
     public static final String CREATE = "/create";
+
     /**
-     * Show List endpoints
+     * Show list endpoints.
      */
     public static final String LIST = "/list";
 
     /**
-     * Interviewer endpoints
+     * Interviewer endpoints.
      */
     public static final String GETPANEL = "/interviews";
 
     /**
-     * HR endpoints
+     * HR endpoints.
      */
     public static final String SHOWHR = "/api/hr";
 
     /**
-     * Candidate endpoints
+     * Candidate endpoints.
      */
     public static final String SHOWCANDIDATE = "/candidates";
 
     /**
-     * Feedback endpoints
+     * Feedback endpoints.
      */
     public static final String SHOWFEED = "/feedback";
 
     /**
-     * Resume endpoints
+     * Resume endpoints.
      */
     public static final String RESUMES = BASE_API + "/resumes";
+
+    /**
+     * Interview base endpoints.
+     */
+    public static final String INTERVIEW = BASE_API + "/interview";
+
+    /**
+     * Schedule interview endpoint.
+     */
+    public static final String INTERVIEW_SCHEDULE = "/schedule";
+
+    /**
+     * Update candidate status endpoint.
+     */
+    public static final String INTERVIEW_STATUS = "/status";
+
+    /**
+     * Submit feedback endpoint.
+     */
+    public static final String INTERVIEW_FEEDBACK = "/feedback";
+
+    /**
+     * Panel interview fetch endpoint.
+     */
+    public static final String INTERVIEW_PANEL = "/panel";
+
+    /**
+     * Candidate interview fetch endpoint.
+     */
+    public static final String INTERVIEW_CANDIDATE = "/candidate";
 
     private ApiEndpoints() {
 
