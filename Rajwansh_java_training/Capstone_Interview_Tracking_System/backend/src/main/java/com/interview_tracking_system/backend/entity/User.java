@@ -143,7 +143,7 @@ public class User {
      *
      * @return user ID
      */
-    public final Long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -152,7 +152,7 @@ public class User {
      *
      * @param userId user ID
      */
-    public final void setId(final Long userId) {
+    public void setId(final Long userId) {
         this.id = userId;
     }
 
@@ -161,7 +161,7 @@ public class User {
      *
      * @return user name
      */
-    public final String getName() {
+    public String getName() {
         return name;
     }
 
@@ -170,7 +170,7 @@ public class User {
      *
      * @param userName user name
      */
-    public final void setName(final String userName) {
+    public void setName(final String userName) {
         this.name = userName;
     }
 
@@ -179,7 +179,7 @@ public class User {
      *
      * @return email
      */
-    public final String getEmail() {
+    public String getEmail() {
         return email;
     }
 
@@ -188,7 +188,7 @@ public class User {
      *
      * @param userEmail email
      */
-    public final void setEmail(final String userEmail) {
+    public void setEmail(final String userEmail) {
         this.email = userEmail;
     }
 
@@ -197,7 +197,7 @@ public class User {
      *
      * @return date of birth
      */
-    public final LocalDate getDateOfBirth() {
+    public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
 
@@ -206,7 +206,7 @@ public class User {
      *
      * @param dob date of birth
      */
-    public final void setDateOfBirth(final LocalDate dob) {
+    public void setDateOfBirth(final LocalDate dob) {
         this.dateOfBirth = dob;
     }
 
@@ -215,7 +215,7 @@ public class User {
      *
      * @return gender
      */
-    public final Gender getGender() {
+    public Gender getGender() {
         return gender;
     }
 
@@ -224,7 +224,7 @@ public class User {
      *
      * @param userGender gender
      */
-    public final void setGender(final Gender userGender) {
+    public void setGender(final Gender userGender) {
         this.gender = userGender;
     }
 
@@ -233,7 +233,7 @@ public class User {
      *
      * @return mobile number
      */
-    public final String getMobile() {
+    public String getMobile() {
         return mobile;
     }
 
@@ -242,7 +242,7 @@ public class User {
      *
      * @param userMobile mobile number
      */
-    public final void setMobile(final String userMobile) {
+    public void setMobile(final String userMobile) {
         this.mobile = userMobile;
     }
 
@@ -251,7 +251,7 @@ public class User {
      *
      * @return password
      */
-    public final String getPassword() {
+    public String getPassword() {
         return password;
     }
 
@@ -260,7 +260,7 @@ public class User {
      *
      * @param userPassword password
      */
-    public final void setPassword(final String userPassword) {
+    public void setPassword(final String userPassword) {
         this.password = userPassword;
     }
 
@@ -269,7 +269,7 @@ public class User {
      *
      * @return role
      */
-    public final Role getRole() {
+    public Role getRole() {
         return role;
     }
 
@@ -278,7 +278,7 @@ public class User {
      *
      * @param userRole role
      */
-    public final void setRole(final Role userRole) {
+    public void setRole(final Role userRole) {
         this.role = userRole;
     }
 
@@ -287,7 +287,7 @@ public class User {
      *
      * @return user status
      */
-    public final UserStatus getStatus() {
+    public UserStatus getStatus() {
         return status;
     }
 
@@ -296,7 +296,7 @@ public class User {
      *
      * @param userStatus status
      */
-    public final void setStatus(final UserStatus userStatus) {
+    public void setStatus(final UserStatus userStatus) {
         this.status = userStatus;
     }
 
@@ -305,7 +305,7 @@ public class User {
      *
      * @return organisation
      */
-    public final String getOrganisation() {
+    public String getOrganisation() {
         return organisation;
     }
 
@@ -314,7 +314,7 @@ public class User {
      *
      * @param userOrganisation organisation
      */
-    public final void setOrganisation(final String userOrganisation) {
+    public void setOrganisation(final String userOrganisation) {
         this.organisation = userOrganisation;
     }
 
@@ -323,7 +323,7 @@ public class User {
      *
      * @return designation
      */
-    public final String getDesignation() {
+    public String getDesignation() {
         return designation;
     }
 
@@ -332,7 +332,7 @@ public class User {
      *
      * @param userDesignation designation
      */
-    public final void setDesignation(final String userDesignation) {
+    public void setDesignation(final String userDesignation) {
         this.designation = userDesignation;
     }
 
@@ -341,7 +341,7 @@ public class User {
      *
      * @return activation token
      */
-    public final String getActivationToken() {
+    public String getActivationToken() {
         return activationToken;
     }
 
@@ -350,7 +350,7 @@ public class User {
      *
      * @param token activation token
      */
-    public final void setActivationToken(final String token) {
+    public void setActivationToken(final String token) {
         this.activationToken = token;
     }
 
@@ -359,7 +359,7 @@ public class User {
      *
      * @return activation token expiry
      */
-    public final LocalDateTime getActivationTokenExpiry() {
+    public LocalDateTime getActivationTokenExpiry() {
         return activationTokenExpiry;
     }
 
@@ -368,7 +368,7 @@ public class User {
      *
      * @param tokenExpiry activation token expiry
      */
-    public final void setActivationTokenExpiry(final LocalDateTime tokenExpiry) {
+    public void setActivationTokenExpiry(final LocalDateTime tokenExpiry) {
         this.activationTokenExpiry = tokenExpiry;
     }
 
@@ -377,7 +377,7 @@ public class User {
      *
      * @return created timestamp
      */
-    public final LocalDateTime getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
@@ -386,7 +386,7 @@ public class User {
      *
      * @return updated timestamp
      */
-    public final LocalDateTime getUpdatedAt() {
+    public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
 }

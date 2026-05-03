@@ -26,7 +26,7 @@ import java.util.Objects;
  * Handles all business logic related to JD CRUD operations.
  */
 @Service
-public final class JDServiceImpl implements JDService {
+public class JDServiceImpl implements JDService {
 
     /** Logger instance. */
     private static final Logger LOGGER = LoggerFactory.getLogger(JDServiceImpl.class);

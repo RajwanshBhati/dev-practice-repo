@@ -3,7 +3,7 @@ package com.interview_tracking_system.backend.exception;
 /**
  * Thrown when requested resource is not found in database.
  */
-public final class ResourceNotFoundException extends RuntimeException {
+public class ResourceNotFoundException extends RuntimeException {
 
     /**
      * Constructs exception with message.

@@ -9,7 +9,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * Configuration class for web-related settings.
  */
 @Configuration
-public final class WebConfig {
+public class WebConfig {
 
     /**
      * Configures CORS mappings for the application.

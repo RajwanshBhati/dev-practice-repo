@@ -36,7 +36,7 @@ import com.interview_tracking_system.backend.dto.CandidateOnboardRequest;
  */
 @RestController
 @RequestMapping(CandidateApiConstants.BASE_URL)
-public final class CandidateController {
+public class CandidateController {
 
     /**
      * Logger instance.

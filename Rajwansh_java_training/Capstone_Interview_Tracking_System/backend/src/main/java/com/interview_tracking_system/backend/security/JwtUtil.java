@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
  * Utility class for JWT operations.
  */
 @Component
-public final class JwtUtil {
+public class JwtUtil {
 
     /**
      * JWT secret key.

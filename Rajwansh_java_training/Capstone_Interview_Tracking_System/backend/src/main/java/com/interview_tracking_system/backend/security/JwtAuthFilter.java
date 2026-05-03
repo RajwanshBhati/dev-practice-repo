@@ -17,7 +17,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
  * JWT Authentication Filter.
  */
 @Component
-public final class JwtAuthFilter extends OncePerRequestFilter {
+public class JwtAuthFilter extends OncePerRequestFilter {
 
     /**
      * Bearer token prefix length.

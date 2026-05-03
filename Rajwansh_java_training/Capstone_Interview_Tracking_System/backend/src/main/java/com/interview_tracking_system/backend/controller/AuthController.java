@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping(ApiEndpoints.BASE_AUTH)
-public final class AuthController {
+public class AuthController {
 
         /**
          * Logger instance.

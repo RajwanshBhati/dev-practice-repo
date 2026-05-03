@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Implementation of PanelService.
  */
 @Service
-public final class PanelServiceImpl implements PanelService {
+public class PanelServiceImpl implements PanelService {
 
     /**
      * Logger instance.

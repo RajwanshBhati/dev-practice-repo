@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
  * Seeds default HR user at application startup.
  */
 @Component
-public final class DataSeeder implements ApplicationRunner {
+public class DataSeeder implements ApplicationRunner {
 
     /**
      * Logger instance.

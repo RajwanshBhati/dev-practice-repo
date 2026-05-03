@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping(ApiEndpoints.PANEL)
-public final class PanelController {
+public class PanelController {
 
     /**
      * Logger instance.

@@ -48,7 +48,7 @@ public final class ApiEndpoints {
     /**
      * Search endpoint for job descriptions.
      */
-    public static final String JD_SEARCH = HR_JD + "/search";
+    public static final String JD_SEARCH = "/search";
 
     /**
      * Base path for versioned API endpoints.
