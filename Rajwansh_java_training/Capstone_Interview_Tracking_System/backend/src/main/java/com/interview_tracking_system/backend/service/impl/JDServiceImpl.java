@@ -65,7 +65,7 @@ public class JDServiceImpl implements JDService {
         validateSalaryRange(requestDTO);
 
         JobDescription jd = jdMapper.toEntity(requestDTO);
-        JobDescription saved = jdRepository.save(jd);
+        JobDescription saved = jdRepository.saveAndFlush(jd);
 
         LOGGER.info("Job Description created with ID: {}", saved.getId());
         return jdMapper.toResponseDTO(saved);

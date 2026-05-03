@@ -14,12 +14,13 @@ import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
 
 /**
  * REST controller for authentication endpoints.
@@ -96,10 +97,25 @@ public class AuthController {
          * @return the logout response
          */
         @PostMapping(ApiEndpoints.LOGOUT)
-        public ResponseEntity<ApiResponse<Void>> logout(
-                        @AuthenticationPrincipal final UserDetails userDetails) {
+        public ResponseEntity<ApiResponse<Void>> logout() {
 
-                String username = userDetails.getUsername();
+                Authentication authentication = SecurityContextHolder
+                                .getContext()
+                                .getAuthentication();
+
+                if (authentication == null || authentication.getPrincipal() == null) {
+                        throw new RuntimeException("User not authenticated");
+                }
+
+                Object principal = authentication.getPrincipal();
+
+                String username;
+
+                if (principal instanceof UserDetails) {
+                        username = ((UserDetails) principal).getUsername();
+                } else {
+                        username = principal.toString();
+                }
 
                 LOGGER.info(LogMessages.LOGOUT_REQUEST, username);
 

@@ -7,6 +7,8 @@ import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
+
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 /**
@@ -72,18 +74,32 @@ public class JwtUtil {
     }
 
     /**
-     * Validates token.
+     * validate token
      *
-     * @param token JWT token
+     * @param token
+     * @param userDetails
      * @return true if token is valid
      */
-    public boolean validateToken(final String token) {
-        try {
-            getClaims(token);
-            return true;
-        } catch (JwtException | IllegalArgumentException e) {
+    public boolean validateToken(final String token, final UserDetails userDetails) {
+
+        if (userDetails == null) {
             return false;
         }
+
+        String email = extractEmail(token);
+
+        return email.equals(userDetails.getUsername()) && !isTokenExpired(token);
+    }
+
+    /**
+     * Is token expired
+     *
+     * @param token
+     * @return true or false
+     */
+    private boolean isTokenExpired(final String token) {
+        Date expiration = getClaims(token).getExpiration();
+        return expiration.before(new Date());
     }
 
     /**

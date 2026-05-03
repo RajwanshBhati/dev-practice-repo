@@ -65,11 +65,15 @@ public interface JobDescriptionRepository extends JpaRepository<JobDescription, 
          * @param title    the job title to filter by
          * @return list of matching job descriptions
          */
-        @Query("SELECT jd FROM JobDescription jd WHERE "
-                        + "(:status IS NULL OR jd.status = :status) AND "
-                        + "(:jobType IS NULL OR jd.jobType = :jobType) AND "
-                        + "(:location IS NULL OR LOWER(jd.location) LIKE LOWER(CONCAT('%', :location, '%'))) AND "
-                        + "(:title IS NULL OR LOWER(jd.jobTitle) LIKE LOWER(CONCAT('%', :title, '%')))")
+        @Query("""
+                        SELECT jd FROM JobDescription jd
+                        WHERE (:status IS NULL OR jd.status = :status)
+                        AND (:jobType IS NULL OR jd.jobType = :jobType)
+                        AND (CAST(:location AS string) IS NULL
+                             OR LOWER(jd.location) LIKE LOWER(CONCAT('%', CAST(:location AS string), '%')))
+                        AND (CAST(:title AS string) IS NULL
+                             OR LOWER(jd.jobTitle) LIKE LOWER(CONCAT('%', CAST(:title AS string), '%')))
+                        """)
         List<JobDescription> searchJDs(
                         @Param("status") JDStatus status,
                         @Param("jobType") JobType jobType,
