@@ -1,6 +1,7 @@
 import { getCandidateStatus, applyCandidate } from "../candidate/candidate.js";
 import { API } from "../config/candidate-api.js";
 import { filterJDs } from "../utils/candidate-filters.js";
+import { REQUIRED_FIELDS } from "../constants/validation-constants.js";
 import {
   renderGrid,
   renderStageTracker,
@@ -201,54 +202,24 @@ export async function handleApplySubmit(e, selectedApplyJD) {
     return;
   }
 
-  const requiredFields = [
-    { id: "pFullName", value: fullName, message: "Full name is required." },
-    { id: "pEmail", value: email, message: "Email is required." },
-    { id: "pMobile", value: mobile, message: "Mobile number is required." },
-    {
-      id: "pCurrentOrg",
-      value: currentOrg,
-      message: "Current organisation is required.",
-    },
-    {
-      id: "pPreferredLocation",
-      value: preferredLocation,
-      message: "Preferred location is required.",
-    },
-    {
-      id: "pTotalExp",
-      value: totalExp,
-      message: "Total experience is required.",
-    },
-    {
-      id: "pRelevantExp",
-      value: relevantExp,
-      message: "Relevant experience is required.",
-    },
-    {
-      id: "pCurrentCTC",
-      value: currentCTC,
-      message: "Current CTC is required.",
-    },
-    {
-      id: "pExpectedCTC",
-      value: expectedCTC,
-      message: "Expected CTC is required.",
-    },
-    {
-      id: "pNoticePeriod",
-      value: noticePeriod,
-      message: "Notice period is required.",
-    },
-    { id: "pSource", value: source, message: "Source is required." },
-  ];
+  const formValues = {
+    fullName,
+    email,
+    mobile,
+    currentOrg,
+    preferredLocation,
+    totalExp,
+    relevantExp,
+    currentCTC,
+    expectedCTC,
+    noticePeriod,
+    source,
+  };
 
-  for (const field of requiredFields) {
-    if (
-      field.value === null ||
-      field.value === undefined ||
-      String(field.value).trim() === ""
-    ) {
+  for (const field of REQUIRED_FIELDS) {
+    const value = formValues[field.key];
+
+    if (value === null || value === undefined || String(value).trim() === "") {
       showFieldError(field.id, field.message);
       return;
     }
