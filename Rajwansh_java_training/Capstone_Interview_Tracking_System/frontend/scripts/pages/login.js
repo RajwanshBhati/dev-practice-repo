@@ -1,6 +1,7 @@
 import { loginAPI } from "../services/authService.js";
 import { storeAuthData } from "../utils/authStorage.js";
 import { redirectByRole } from "../utils/redirect.js";
+import { encryptPassword } from "../utils/password.js";
 
 const form = document.getElementById("loginForm");
 const message = document.getElementById("loginMessage");
@@ -46,7 +47,8 @@ form?.addEventListener("submit", async (e) => {
   setLoginLoading(true);
 
   try {
-    const result = await loginAPI(email, password);
+    const encryptedPassword = await encryptPassword(password);
+    const result = await loginAPI(email, encryptedPassword);
 
     if (!result?.success || !result?.data) {
       showMessage(result?.message || "Login failed.");

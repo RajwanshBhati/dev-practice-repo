@@ -1,4 +1,5 @@
 import { showToast } from "./utils/toast.js";
+import { encryptPassword } from "./utils/password.js";
 
 const API_BASE = "http://localhost:8080/api/v1/panel";
 
@@ -100,6 +101,9 @@ form.addEventListener("submit", async (e) => {
   try {
     setLoading(true);
 
+    const encryptedPassword = await encryptPassword(password);
+    const encryptedConfirmPassword = await encryptPassword(confirmPassword);
+
     const response = await fetch(`${API_BASE}/activate`, {
       method: "POST",
       headers: {
@@ -107,8 +111,8 @@ form.addEventListener("submit", async (e) => {
       },
       body: JSON.stringify({
         token,
-        password,
-        confirmPassword,
+        password: encryptedPassword,
+        confirmPassword: encryptedConfirmPassword,
       }),
     });
 
