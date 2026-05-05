@@ -1,80 +1,40 @@
 package com.interview_tracking_system.backend.services.impl;
 
-/**
- * Static imports for assertions and Mockito methods.
- */
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-/**
- * DTO imports used for JD service testing.
- */
 import com.interview_tracking_system.backend.dto.JDRequestDTO;
 import com.interview_tracking_system.backend.dto.JDResponseDTO;
-
-/**
- * Entity import used for JD test data.
- */
 import com.interview_tracking_system.backend.entity.JobDescription;
-
-/**
- * Enum imports used for JD status and job type.
- */
 import com.interview_tracking_system.backend.enums.JDStatus;
 import com.interview_tracking_system.backend.enums.JobType;
-
-/**
- * Exception imports used for validation testing.
- */
 import com.interview_tracking_system.backend.exception.InvalidRequestException;
 import com.interview_tracking_system.backend.exception.ResourceNotFoundException;
-
-/**
- * Mapper import used for DTO and entity conversion.
- */
 import com.interview_tracking_system.backend.mapper.JDMapper;
-
-/**
- * Repository import used for mocking database calls.
- */
 import com.interview_tracking_system.backend.repository.JobDescriptionRepository;
-import com.interview_tracking_system.backend.service.impl.JDServiceImpl;
 
-/**
- * Java utility imports.
- */
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-/**
- * JUnit imports used for testing.
- */
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-
-/**
- * Mockito imports used for mocking dependencies.
- */
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * This class tests JDServiceImpl.
- *
- * It verifies JD create, update, search, status update,
- * delete and validation failure scenarios.
  */
 @ExtendWith(MockitoExtension.class)
 class JDServiceImplTest {
 
     /**
-     * Mocked JD repository.
+     * Mocked repository.
      */
     @Mock
     private JobDescriptionRepository repository;
@@ -82,31 +42,62 @@ class JDServiceImplTest {
     /**
      * Service under test.
      */
-    private JDServiceImpl service;
+    private com.interview_tracking_system.backend.service.impl.JDServiceImpl service;
 
     /**
-     * Initializes service before each test.
+     * Initializes test setup.
      */
     @BeforeEach
     void setUp() {
-        service = new JDServiceImpl(repository, new JDMapper());
+        service = new com.interview_tracking_system.backend.service.impl.JDServiceImpl(
+                repository, new JDMapper());
     }
 
     /**
-     * Tests positive JD service flow.
+     * Tests positive JD operations.
      */
     @Test
     void createUpdateSearchAndDeleteShouldWork() {
-        JDRequestDTO request = request();
 
+        JDRequestDTO request = request();
+        UUID jdId = UUID.randomUUID();
+
+        // FIX: createJD uses saveAndFlush, so mock saveAndFlush (not save)
+        when(repository.saveAndFlush(any(JobDescription.class)))
+                .thenAnswer(invocation -> {
+                    JobDescription jd = invocation.getArgument(0);
+                    if (jd.getId() == null) {
+                        jd.setId(jdId);
+                    }
+                    if (jd.getStatus() == null) {
+                        jd.setStatus(JDStatus.ACTIVE);
+                    }
+                    return jd;
+                });
+
+        JDResponseDTO created = service.createJD(request);
+
+        assertEquals("Java Developer", created.getJobTitle());
+
+        // Build the saved entity for subsequent mocks
         JobDescription saved = new JDMapper().toEntity(request);
-        saved.setId(UUID.randomUUID());
+        saved.setId(jdId);
         saved.setStatus(JDStatus.ACTIVE);
 
+        // FIX: updateJD, updateJDStatus use save(), so mock save separately
         when(repository.save(any(JobDescription.class)))
-                .thenReturn(saved);
+                .thenAnswer(invocation -> {
+                    JobDescription jd = invocation.getArgument(0);
+                    if (jd.getId() == null) {
+                        jd.setId(jdId);
+                    }
+                    if (jd.getStatus() == null) {
+                        jd.setStatus(JDStatus.ACTIVE);
+                    }
+                    return jd;
+                });
 
-        when(repository.findById(saved.getId()))
+        when(repository.findById(jdId))
                 .thenReturn(Optional.of(saved));
 
         when(repository.findAllByOrderByCreatedAtDesc())
@@ -115,38 +106,52 @@ class JDServiceImplTest {
         when(repository.findByStatusOrderByCreatedAtDesc(JDStatus.ACTIVE))
                 .thenReturn(List.of(saved));
 
-        when(repository.searchJDs(JDStatus.ACTIVE, JobType.FULL_TIME, "Pune", "Java"))
+        when(repository.searchJDs(
+                JDStatus.ACTIVE,
+                JobType.FULL_TIME,
+                "Pune",
+                "Java"))
                 .thenReturn(List.of(saved));
-
-        JDResponseDTO created = service.createJD(request);
-
-        assertEquals("Java Developer", created.getJobTitle());
-        assertEquals("Java Developer", service.getJDById(saved.getId()).getJobTitle());
-        assertEquals(1, service.getAllJDs().size());
-        assertEquals(1, service.getActiveJDs().size());
-
-        assertEquals(
-                1,
-                service.searchJDs(JDStatus.ACTIVE, JobType.FULL_TIME, "Pune", "Java").size());
-
-        assertEquals(
-                JDStatus.CLOSED,
-                service.updateJDStatus(saved.getId(), JDStatus.CLOSED).getStatus());
 
         assertEquals(
                 "Java Developer",
-                service.updateJD(saved.getId(), request).getJobTitle());
+                service.getJDById(jdId).getJobTitle());
 
-        service.deleteJD(saved.getId());
+        assertEquals(
+                1,
+                service.getAllJDs().size());
+
+        assertEquals(
+                1,
+                service.getActiveJDs().size());
+
+        assertEquals(
+                1,
+                service.searchJDs(
+                        JDStatus.ACTIVE,
+                        JobType.FULL_TIME,
+                        "Pune",
+                        "Java").size());
+
+        assertEquals(
+                JDStatus.CLOSED,
+                service.updateJDStatus(jdId, JDStatus.CLOSED).getStatus());
+
+        assertEquals(
+                "Java Developer",
+                service.updateJD(jdId, request).getJobTitle());
+
+        service.deleteJD(jdId);
 
         verify(repository).delete(saved);
     }
 
     /**
-     * Tests validation failures and missing JD scenarios.
+     * Tests invalid ranges and missing JD.
      */
     @Test
     void invalidRangesAndMissingJDShouldThrow() {
+
         JDRequestDTO invalidExp = request();
         invalidExp.setMinExperience(6);
         invalidExp.setMaxExperience(2);
@@ -174,11 +179,12 @@ class JDServiceImplTest {
     }
 
     /**
-     * Creates test JD request data.
+     * Creates test request.
      *
-     * @return test JD request
+     * @return request DTO
      */
     private JDRequestDTO request() {
+
         JDRequestDTO request = new JDRequestDTO();
         request.setJobTitle("Java Developer");
         request.setJobDescription("Backend role");
@@ -189,6 +195,7 @@ class JDServiceImplTest {
         request.setMaxSalary(new BigDecimal("1200000"));
         request.setLocation("Pune");
         request.setJobType(JobType.FULL_TIME);
+
         return request;
     }
 }

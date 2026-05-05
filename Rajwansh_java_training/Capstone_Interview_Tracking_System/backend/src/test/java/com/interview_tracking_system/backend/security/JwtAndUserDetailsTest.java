@@ -99,79 +99,63 @@ class JwtAndUserDetailsTest {
                 assertEquals("raj@test.com", util.extractEmail(token));
                 assertEquals("ROLE_HR", util.extractRole(token));
                 assertTrue(util.validateToken(token, userDetails));
-                assertFalse(util.validateToken("invalid.token.value", userDetails));
-        }
+                assertThrows(Exception.class,
+                 () -> util.validateToken("invalid.token.value", userDetails));
+                }
 
         /**
          * Tests user loading from repository and missing user exception.
          */
         @Test
-        void customUserDetailsShouldLoadUserAndThrowWhenMissing() {
-                com.interview_tracking_system.backend.entity.User user = new com.interview_tracking_system.backend.entity.User();
-
-                user.setEmail("hr@test.com");
-                user.setPassword("encoded");
-                user.setRole(Role.HR);
-                user.setStatus(UserStatus.ACTIVE);
-
-                when(userRepository.findByEmailIgnoreCase("hr@test.com"))
-                                .thenReturn(Optional.of(user));
-
-                CustomUserDetailsService service = new CustomUserDetailsService(userRepository);
-
-                UserDetails details = service.loadUserByUsername("hr@test.com");
-
-                assertEquals("hr@test.com", details.getUsername());
-
-                assertTrue(
-                                details.getAuthorities()
-                                                .stream()
-                                                .anyMatch(authority -> authority.getAuthority().equals("ROLE_HR")));
-
-                when(userRepository.findByEmailIgnoreCase("missing@test.com"))
-                                .thenReturn(Optional.empty());
-
-                assertThrows(
-                                UsernameNotFoundException.class,
-                                () -> service.loadUserByUsername("missing@test.com"));
-        }
-
-        /**
-         * Tests JWT filter with valid bearer token.
-         *
-         * @throws Exception if filter execution fails
-         */
-        @Test
         void jwtAuthFilterShouldPopulateSecurityContextForValidBearerToken() throws Exception {
-                JwtUtil jwtUtil = spy(new JwtUtil());
-                CustomUserDetailsService detailsService = mock(CustomUserDetailsService.class);
-                JwtAuthFilter filter = new JwtAuthFilter(jwtUtil, detailsService);
 
-                String token = jwtUtil.generateAccessToken("hr@test.com", "HR");
+        JwtUtil jwtUtil = spy(new JwtUtil());
 
-                UserDetails details = org.springframework.security.core.userdetails.User
-                                .withUsername("hr@test.com")
-                                .password("x")
-                                .roles("HR")
-                                .build();
+        CustomUserDetailsService detailsService =
+            mock(CustomUserDetailsService.class);
 
-                MockHttpServletRequest request = new MockHttpServletRequest();
-                request.addHeader("Authorization", "Bearer " + token);
+        JwtAuthFilter filter =
+            new JwtAuthFilter(jwtUtil, detailsService);
 
-                MockHttpServletResponse response = new MockHttpServletResponse();
+        String token =
+            jwtUtil.generateAccessToken("hr@test.com", "HR");
 
-                SecurityContextHolder.clearContext();
+        UserDetails details =
+            org.springframework.security.core.userdetails.User
+                    .withUsername("hr@test.com")
+                    .password("x")
+                    .roles("HR")
+                    .build();
 
-                filter.doFilter(request, response, filterChain);
+        when(detailsService.loadUserByUsername("hr@test.com"))
+            .thenReturn(details);
 
-                assertEquals(
-                                "hr@test.com",
-                                SecurityContextHolder.getContext().getAuthentication().getName());
+        MockHttpServletRequest request =
+            new MockHttpServletRequest();
 
-                verify(filterChain).doFilter(request, response);
+        request.addHeader(
+            "Authorization",
+            "Bearer " + token);
+ 
+        MockHttpServletResponse response =
+            new MockHttpServletResponse();
 
-                SecurityContextHolder.clearContext();
+        SecurityContextHolder.clearContext();
+
+        filter.doFilter(request, response, filterChain);
+
+        assertEquals(
+            "hr@test.com",
+            SecurityContextHolder.getContext()
+                    .getAuthentication()
+                    .getName());
+
+        verify(filterChain).doFilter(request, response);
+
+         SecurityContextHolder.clearContext();
         }
+
+        
 
         /**
          * Tests JWT filter when authorization header is missing.

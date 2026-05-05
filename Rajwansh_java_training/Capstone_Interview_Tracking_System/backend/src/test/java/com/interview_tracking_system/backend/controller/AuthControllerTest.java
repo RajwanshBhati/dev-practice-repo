@@ -2,9 +2,8 @@ package com.interview_tracking_system.backend.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.interview_tracking_system.backend.dto.ChangePasswordRequestDTO;
 import com.interview_tracking_system.backend.dto.LoginRequestDTO;
@@ -12,13 +11,16 @@ import com.interview_tracking_system.backend.dto.LoginResponseDTO;
 import com.interview_tracking_system.backend.dto.RefreshTokenRequestDTO;
 import com.interview_tracking_system.backend.enums.Role;
 import com.interview_tracking_system.backend.service.AuthService;
+
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
  * Unit test class for {@link AuthController}.
@@ -43,18 +45,16 @@ class AuthControllerTest {
     @BeforeEach
     void setUp() {
         controller = new AuthController(service);
+        SecurityContextHolder.clearContext();
     }
 
     /**
-     * Verifies that all authentication endpoints:
-     * correctly delegate to {@link AuthService} and return expected responses.
+     * Verifies that all authentication endpoints correctly delegate
+     * to {@link AuthService} and return expected responses.
      */
     @Test
     void allAuthEndpointsShouldDelegateToService() {
 
-        /**
-         * Test login endpoint delegation.
-         */
         LoginResponseDTO response = new LoginResponseDTO();
         response.setEmail("hr@test.com");
         response.setRole(Role.HR);
@@ -68,9 +68,6 @@ class AuthControllerTest {
                 "hr@test.com",
                 controller.login(login).getBody().getData().getEmail());
 
-        /**
-         * Test refresh token endpoint delegation.
-         */
         RefreshTokenRequestDTO refresh = new RefreshTokenRequestDTO();
         refresh.setRefreshToken("r");
 
@@ -80,21 +77,18 @@ class AuthControllerTest {
                 Role.HR,
                 controller.refresh(refresh).getBody().getData().getRole());
 
-        /**
-         * Test logout endpoint delegation.
-         */
-        UserDetails principal = User.withUsername("hr@test.com")
-                .password("x")
-                .roles("HR")
-                .build();
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(
+                        "hr@test.com",
+                        null,
+                        List.of()));
 
         assertTrue(controller.logout().getBody().isSuccess());
 
         verify(service).logout("hr@test.com");
 
-        /**
-         * Test activation (set password via token) delegation.
-         */
+        SecurityContextHolder.clearContext();
+
         ChangePasswordRequestDTO change = new ChangePasswordRequestDTO();
 
         assertTrue(controller.activate(change).getBody().isSuccess());

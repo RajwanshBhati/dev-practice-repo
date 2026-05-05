@@ -37,7 +37,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyString;
-
+import java.util.Base64;
 /**
  * Unit test class for AuthServiceImpl.
  * Covers login, refresh token, logout, and activation flows.
@@ -87,7 +87,10 @@ class AuthServiceImplTest {
     void loginsuccess() {
         LoginRequestDTO request = new LoginRequestDTO();
         request.setEmail(TEST_EMAIL);
-        request.setPassword("123");
+        request.setPassword(
+    Base64.getEncoder()
+        .encodeToString("123".getBytes())
+);
 
         when(userRepository.findByEmailIgnoreCase(anyString()))
                 .thenReturn(Optional.of(user));
@@ -128,7 +131,8 @@ class AuthServiceImplTest {
     void logininvalidPassword() {
         LoginRequestDTO request = new LoginRequestDTO();
         request.setEmail(TEST_EMAIL);
-        request.setPassword("wrong");
+        request.setPassword(
+        Base64.getEncoder().encodeToString("wrong".getBytes()));
 
         when(userRepository.findByEmailIgnoreCase(anyString()))
                 .thenReturn(Optional.of(user));
@@ -149,7 +153,8 @@ class AuthServiceImplTest {
 
         LoginRequestDTO request = new LoginRequestDTO();
         request.setEmail(TEST_EMAIL);
-        request.setPassword("123");
+        request.setPassword(
+        Base64.getEncoder().encodeToString("123".getBytes()));
 
         when(userRepository.findByEmailIgnoreCase(anyString()))
                 .thenReturn(Optional.of(user));

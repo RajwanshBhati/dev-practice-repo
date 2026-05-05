@@ -67,6 +67,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
  * Spring security import used for password encoding.
  */
 import org.springframework.security.crypto.password.PasswordEncoder;
+import java.util.Base64;
 
 /**
  * This class tests PanelServiceImpl.
@@ -146,8 +147,11 @@ class PanelServiceImplTest {
 
         PanelActivationRequest activate = new PanelActivationRequest();
         activate.setToken("token");
-        activate.setPassword("Password@1");
-        activate.setConfirmPassword("Password@1");
+        String encodedPassword = Base64.getEncoder()
+        .encodeToString("Password@1".getBytes());
+
+        activate.setPassword(encodedPassword);
+        activate.setConfirmPassword(encodedPassword);
 
         assertEquals(
                 MessageConstants.PANEL_ACTIVATED,
@@ -180,8 +184,8 @@ class PanelServiceImplTest {
 
         PanelActivationRequest mismatch = new PanelActivationRequest();
         mismatch.setToken("token");
-        mismatch.setPassword("one");
-        mismatch.setConfirmPassword("two");
+        mismatch.setPassword(Base64.getEncoder().encodeToString("one".getBytes()));
+        mismatch.setConfirmPassword(Base64.getEncoder().encodeToString("two".getBytes()));
 
         assertThrows(
                 RuntimeException.class,
