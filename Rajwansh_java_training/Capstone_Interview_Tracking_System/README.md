@@ -83,7 +83,7 @@ Candidates can apply for jobs and monitor their application status, while panel 
 ## API Overview
 
 Base URL:
-http://localhost:8080/api
+http://localhost:8080/
 
 ### Authentication
 - POST /api/auth/login
