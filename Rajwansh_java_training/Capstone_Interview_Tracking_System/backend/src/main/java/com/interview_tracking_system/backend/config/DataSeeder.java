@@ -5,9 +5,6 @@ import com.interview_tracking_system.backend.enums.Role;
 import com.interview_tracking_system.backend.enums.UserStatus;
 import com.interview_tracking_system.backend.repository.UserRepository;
 
-import java.nio.charset.StandardCharsets;
-import java.security.NoSuchAlgorithmException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,7 +12,6 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import java.security.MessageDigest;
 
 /**
  * Seeds default HR user at application startup.
@@ -68,23 +64,6 @@ public class DataSeeder implements ApplicationRunner {
         this.passwordEncoder = passwordEncoder;
     }
 
-    private String sha256Hex(final String input) {
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hash = digest.digest(input.getBytes(StandardCharsets.UTF_8));
-
-            StringBuilder hex = new StringBuilder();
-
-            for (byte b : hash) {
-                hex.append(String.format("%02x", b));
-            }
-
-            return hex.toString();
-        } catch (NoSuchAlgorithmException exception) {
-            throw new IllegalStateException("SHA-256 algorithm not available", exception);
-        }
-    }
-
     /**
      * Seeds default HR user if not already present.
      *
@@ -102,7 +81,7 @@ public class DataSeeder implements ApplicationRunner {
         hr.setName(hrName);
         hr.setEmail(hrEmail);
         hr.setMobile("0000000000");
-        hr.setPassword(passwordEncoder.encode(sha256Hex(hrPassword)));
+        hr.setPassword(passwordEncoder.encode(hrPassword));
         hr.setRole(Role.HR);
         hr.setStatus(UserStatus.ACTIVE);
 

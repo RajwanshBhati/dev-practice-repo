@@ -244,7 +244,6 @@ public class InterviewServiceImpl implements InterviewService {
 
         Stage status = Stage.valueOf(statusValue.trim().toUpperCase());
 
-        // Check panel feedback before moving candidate to next stage
         List<Interview> interviews = interviewRepository.findByCandidateId(candidate.getId());
 
         Interview latestInterview = interviews.isEmpty()

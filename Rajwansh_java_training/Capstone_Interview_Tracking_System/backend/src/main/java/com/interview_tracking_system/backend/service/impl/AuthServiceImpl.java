@@ -13,6 +13,7 @@ import com.interview_tracking_system.backend.exception.ResourceNotFoundException
 import com.interview_tracking_system.backend.repository.RefreshTokenRepository;
 import com.interview_tracking_system.backend.repository.UserRepository;
 import com.interview_tracking_system.backend.security.JwtUtil;
+import com.interview_tracking_system.backend.security.PasswordDecodeUtil;
 import com.interview_tracking_system.backend.service.AuthService;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.time.LocalDateTime;
@@ -34,8 +35,8 @@ public class AuthServiceImpl implements AuthService {
         /** Logger instance. */
         private static final Logger LOGGER = LoggerFactory.getLogger(AuthServiceImpl.class);
 
-        /** Authentication manager. */
-        private final AuthenticationManager authenticationManager;
+        // /** Authentication manager. */
+        // private final AuthenticationManager authenticationManager;
 
         /** User repository. */
         private final UserRepository userRepository;
@@ -64,13 +65,13 @@ public class AuthServiceImpl implements AuthService {
          */
         @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Spring dependency injection")
         public AuthServiceImpl(
-                        final AuthenticationManager authManager,
+                        // final AuthenticationManager authManager,
                         final UserRepository userRepo,
                         final RefreshTokenRepository refreshRepo,
                         final JwtUtil jwtUtility,
                         final PasswordEncoder encoder) {
 
-                this.authenticationManager = authManager;
+                // this.authenticationManager = authManager;
                 this.userRepository = userRepo;
                 this.refreshTokenRepository = refreshRepo;
                 this.jwtUtil = jwtUtility;
@@ -95,9 +96,10 @@ public class AuthServiceImpl implements AuthService {
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 ErrorMessages.USER_NOT_FOUND));
 
-                if (!passwordEncoder.matches(
-                                loginRequestDTO.getPassword(),
-                                user.getPassword())) {
+                String decodedPassword = PasswordDecodeUtil.decodeBase64Password(
+                                loginRequestDTO.getPassword());
+
+                if (!passwordEncoder.matches(decodedPassword, user.getPassword())) {
                         throw new InvalidRequestException("Invalid credentials");
                 }
 
@@ -203,15 +205,15 @@ public class AuthServiceImpl implements AuthService {
                         throw new InvalidRequestException(
                                         ErrorMessages.ACTIVATION_TOKEN_EXPIRED);
                 }
+                String decodedPassword = PasswordDecodeUtil.decodeBase64Password(request.getNewPassword());
+                String decodedConfirmPassword = PasswordDecodeUtil.decodeBase64Password(request.getConfirmPassword());
 
-                if (!request.getNewPassword()
-                                .equals(request.getConfirmPassword())) {
+                if (!decodedPassword.equals(decodedConfirmPassword)) {
                         throw new InvalidRequestException(
                                         ErrorMessages.PASSWORD_MISMATCH);
                 }
 
-                user.setPassword(
-                                passwordEncoder.encode(request.getNewPassword()));
+                user.setPassword(passwordEncoder.encode(decodedPassword));
                 user.setStatus(UserStatus.ACTIVE);
                 user.setActivationToken(null);
                 user.setActivationTokenExpiry(null);

@@ -7,6 +7,7 @@ import com.interview_tracking_system.backend.entity.User;
 import com.interview_tracking_system.backend.enums.Role;
 import com.interview_tracking_system.backend.enums.UserStatus;
 import com.interview_tracking_system.backend.repository.UserRepository;
+import com.interview_tracking_system.backend.security.PasswordDecodeUtil;
 import com.interview_tracking_system.backend.service.EmailService;
 import com.interview_tracking_system.backend.service.PanelService;
 import java.time.LocalDateTime;
@@ -128,7 +129,10 @@ public class PanelServiceImpl implements PanelService {
 
         LOGGER.info("Activating panel user");
 
-        if (!request.getPassword().equals(request.getConfirmPassword())) {
+        String decodedPassword = PasswordDecodeUtil.decodeBase64Password(request.getPassword());
+        String decodedConfirmPassword = PasswordDecodeUtil.decodeBase64Password(request.getConfirmPassword());
+
+        if (!decodedPassword.equals(decodedConfirmPassword)) {
             throw new RuntimeException(MessageConstants.PASSWORD_MISMATCH);
         }
 
@@ -140,7 +144,7 @@ public class PanelServiceImpl implements PanelService {
             throw new RuntimeException(MessageConstants.INVALID_TOKEN);
         }
 
-        user.setPassword(passwordEncoder.encode(request.getConfirmPassword()));
+        user.setPassword(passwordEncoder.encode(decodedPassword));
         user.setStatus(UserStatus.ACTIVE);
 
         user.setActivationToken(null);

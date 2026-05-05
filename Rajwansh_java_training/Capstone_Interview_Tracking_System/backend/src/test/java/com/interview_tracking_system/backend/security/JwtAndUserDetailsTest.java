@@ -17,7 +17,7 @@ import static org.mockito.Mockito.spy;
 /**
  * Entity and enum imports used for user security testing.
  */
-import com.interview_tracking_system.backend.entity.User;
+
 import com.interview_tracking_system.backend.enums.Role;
 import com.interview_tracking_system.backend.enums.UserStatus;
 
@@ -60,6 +60,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.core.userdetails.User;
 
 /**
  * This class tests JWT utility, custom user details service and JWT filter.
@@ -90,11 +91,15 @@ class JwtAndUserDetailsTest {
                 JwtUtil util = new JwtUtil();
 
                 String token = util.generateAccessToken("raj@test.com", "HR");
-
+                UserDetails userDetails = User
+                                .withUsername("raj@test.com")
+                                .password("password")
+                                .roles("HR")
+                                .build();
                 assertEquals("raj@test.com", util.extractEmail(token));
                 assertEquals("ROLE_HR", util.extractRole(token));
-                assertTrue(util.validateToken(token));
-                assertFalse(util.validateToken("invalid.token.value"));
+                assertTrue(util.validateToken(token, userDetails));
+                assertFalse(util.validateToken("invalid.token.value", userDetails));
         }
 
         /**
@@ -102,7 +107,8 @@ class JwtAndUserDetailsTest {
          */
         @Test
         void customUserDetailsShouldLoadUserAndThrowWhenMissing() {
-                User user = new User();
+                com.interview_tracking_system.backend.entity.User user = new com.interview_tracking_system.backend.entity.User();
+
                 user.setEmail("hr@test.com");
                 user.setPassword("encoded");
                 user.setRole(Role.HR);

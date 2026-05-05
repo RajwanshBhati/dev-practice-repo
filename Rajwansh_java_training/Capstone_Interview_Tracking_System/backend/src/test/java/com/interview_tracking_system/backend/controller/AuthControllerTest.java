@@ -88,7 +88,7 @@ class AuthControllerTest {
                 .roles("HR")
                 .build();
 
-        assertTrue(controller.logout(principal).getBody().isSuccess());
+        assertTrue(controller.logout().getBody().isSuccess());
 
         verify(service).logout("hr@test.com");
 
