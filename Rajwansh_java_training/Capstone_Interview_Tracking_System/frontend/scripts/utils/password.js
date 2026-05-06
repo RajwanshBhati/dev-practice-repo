@@ -13,7 +13,7 @@ export function setupPasswordToggle(toggleBtnId, inputId) {
 }
 
 export function encodePasswordBase64(password) {
-  return btoa(unescape(encodeURIComponent(password)));
+  return btoa(String.fromCharCode(...new TextEncoder().encode(password)));
 }
 
 export function evaluatePasswordStrength(password) {
