@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TalentBridge ATS</title>
+  <link rel="stylesheet" href="./styles/home.css" />
+  <link rel="stylesheet" href="../styles/theme-polish.css" />
+</head>
+<body>
+  <nav class="home-nav">
+    <div class="logo">TalentBridge</div>
+    <div class="nav-actions">
+      <a href="./pages/login.html" class="btn btn-outline">Login</a>
+      <a href="./pages/candidate-register.html" class="btn btn-primary">Sign in / Register</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-content">
+      <p class="tag">Interview Tracking System</p>
+      <h1>Manage hiring, interviews, candidates and feedback in one place.</h1>
+      <p>
+        TalentBridge helps HR teams publish job descriptions, candidates apply for jobs,
+        panels give feedback, and HR tracks the complete hiring journey.
+      </p>
+
+      <div class="hero-buttons">
+        <a href="./pages/login.html" class="btn btn-primary">Login</a>
+        <a href="./pages/candidate-register.html" class="btn btn-secondary">
+          Register Candidate
+        </a>
+      </div>
+    </div>
+
+    <div class="hero-card">
+      <h3>Features and Functionality</h3>
+      <ul>
+        <li>HR Dashboard</li>
+        <li>JD Management</li>
+        <li>Candidate Registration</li>
+        <li>Interview Scheduling</li>
+        <li>Panel Feedback</li>
+        <li>Application Tracking</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="jobs-section">
+    <div class="section-title">
+      <p>Open Positions</p>
+      <h2>Available Job Descriptions</h2>
+      <span>Jobs are visible to everyone. Login/Register is required only when applying.</span>
+    </div>
+
+    <div id="homeLoader" class="loader">Loading jobs...</div>
+    <div id="homeJobGrid" class="job-grid"></div>
+    <div id="noJobs" class="no-jobs hidden">No jobs available right now.</div>
+  </section>
+
+  <script type="module" src="./scripts/home.js"></script>
+</body>
+</html>

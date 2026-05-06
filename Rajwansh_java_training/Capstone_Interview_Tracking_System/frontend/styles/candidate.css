@@ -1,0 +1,13 @@
+@import url("../styles/base/reset.css");
+@import url("./base/variable.css");
+@import url("./components/candidate-application.css");
+@import url("./components/candidate-grid.css");
+
+@import url("./components/candidate-loader.css");
+@import url("./components/candidate-modal.css");
+@import url("./components/candidate-form.css");
+@import url("./components/candidate-navbar.css");
+@import url("./layout/candidate-dashboard.css");
+@import url("./layout/candidate-layout.css");
+@import url("./components/candidate-filter.css");
+

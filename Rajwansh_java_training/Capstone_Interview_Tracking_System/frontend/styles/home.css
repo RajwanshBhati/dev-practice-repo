@@ -1,0 +1,266 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Inter, Arial, sans-serif;
+}
+
+:root {
+  --primary: #b45309;
+  --primary-dark: #78350f;
+  --secondary: #047857;
+  --bg: #fff7ed;
+  --card: #ffffff;
+  --text: #1f2937;
+  --muted: #6b7280;
+  --border: #fed7aa;
+}
+
+body {
+  background: linear-gradient(135deg, #fff7ed, #ecfdf5);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+.home-nav {
+  width: 100%;
+  padding: 22px 8%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--primary-dark);
+}
+
+.nav-actions,
+.hero-buttons {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  padding: 12px 22px;
+  border-radius: 999px;
+  font-weight: 700;
+  transition: 0.25s ease;
+  display: inline-block;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white;
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, var(--secondary), #064e3b);
+  color: white;
+}
+
+.btn-outline {
+  border: 1px solid var(--primary);
+  color: var(--primary-dark);
+  background: white;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(120, 53, 15, 0.18);
+}
+
+.hero {
+  padding: 70px 8%;
+  display: grid;
+  grid-template-columns: 1.4fr 0.8fr;
+  gap: 45px;
+  align-items: center;
+}
+
+.tag {
+  color: var(--secondary);
+  font-weight: 800;
+  margin-bottom: 14px;
+}
+
+.hero h1 {
+  font-size: clamp(2.3rem, 5vw, 4.8rem);
+  line-height: 1.05;
+  color: var(--primary-dark);
+  margin-bottom: 22px;
+}
+
+.hero p {
+  color: var(--muted);
+  font-size: 1.08rem;
+  line-height: 1.8;
+  max-width: 720px;
+}
+
+.hero-buttons {
+  margin-top: 30px;
+}
+
+.hero-card {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  padding: 32px;
+  box-shadow: 0 24px 60px rgba(120, 53, 15, 0.14);
+}
+
+.hero-card h3 {
+  font-size: 1.5rem;
+  color: var(--primary-dark);
+  margin-bottom: 20px;
+}
+
+.hero-card li {
+  list-style: none;
+  padding: 14px 0;
+  border-bottom: 1px solid #ffedd5;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.jobs-section {
+  padding: 40px 8% 80px;
+}
+
+.section-title {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.section-title p {
+  color: var(--secondary);
+  font-weight: 800;
+}
+
+.section-title h2 {
+  font-size: 2.4rem;
+  color: var(--primary-dark);
+  margin: 8px 0;
+}
+
+.section-title span {
+  color: var(--muted);
+}
+
+.loader,
+.no-jobs {
+  text-align: center;
+  padding: 25px;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.hidden {
+  display: none;
+}
+
+.job-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  align-items: stretch;
+}
+
+.job-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 18px 40px rgba(120, 53, 15, 0.1);
+  transition: 0.25s ease;
+
+  display: flex;
+  flex-direction: column;
+  min-height: 340px;
+  height: 100%;
+  overflow: hidden;
+}
+
+
+.job-card:hover {
+  transform: translateY(-5px);
+}
+
+.job-card h3 {
+  color: var(--primary-dark);
+  font-size: 1.3rem;
+  margin-bottom: 10px;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.job-meta {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 14px 0;
+}
+
+.job-meta span,
+.skill {
+  background: #ffedd5;
+  color: #9a3412;
+  padding: 7px 12px;
+  border-radius: 999px;
+  font-size: 0.83rem;
+  font-weight: 700;
+}
+
+.job-desc {
+  color: var(--muted);
+  line-height: 1.6;
+  margin: 14px 0;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+
+  word-break: break-word;
+}
+
+
+.skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 16px 0;
+
+  max-height: 76px;
+  overflow: hidden;
+}
+
+.job-card p:last-of-type {
+  margin-top: auto;
+  margin-bottom: 0;
+}
+
+.apply-btn {
+  width: 100%;
+  margin-top: 8px;
+}
+
+@media (max-width: 850px) {
+  .hero {
+    grid-template-columns: 1fr;
+    padding-top: 35px;
+  }
+
+  .home-nav {
+    flex-direction: column;
+    gap: 16px;
+  }
+}

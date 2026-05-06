@@ -1,6 +1,5 @@
 package com.springrest.restapi.service;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.springrest.restapi.model.User;
 import com.springrest.restapi.repository.UserRepository;

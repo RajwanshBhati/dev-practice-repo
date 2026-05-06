@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Register - TalentBridge</title>
+    <link rel="stylesheet" href="../styles/register.css" />
+    <link rel="stylesheet" href="../styles/theme-polish.css" />
+  </head>
+  <body>
+    <a href="../index.html" class="floating-home">Back</a>
+
+    <main class="register-page">
+      <!-- LEFT SIDE -->
+      <section class="register-left">
+        <h1>Create your profile</h1>
+        <p>
+          Register once, apply for jobs, track your interview stages and manage
+          your career journey.
+        </p>
+      </section>
+
+      <!-- RIGHT CARD -->
+      <section class="register-card">
+        <h2>Candidate Register</h2>
+        <p class="subtitle">Fill your details</p>
+
+        <form id="registerForm">
+          <div class="form-grid">
+            <div class="form-group full">
+              <label>Full Name</label>
+              <input type="text" id="name" required />
+               <span class="error-text" id="nameError"></span>
+            </div>
+
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" id="email" required />
+                <span class="error-text" id="emailError"></span>
+            </div>
+
+            <div class="form-group">
+              <label>Mobile Number</label>
+              <input type="tel" id="mobileNumber" maxlength="10" required />
+              <span class="error-text" id="mobileNumberError"></span>
+            </div>
+
+            <div class="form-group">
+              <label>Date of Birth</label>
+              <input type="date" id="dob" required />
+              <span class="error-text" id="dobError"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="gender">Gender</label>
+              <select id="gender" required>
+                <option value="">Select Gender</option>
+                <option value="MALE">Male</option>
+                <option value="FEMALE">Female</option>
+                <option value="OTHER">Other</option>
+              </select>
+              <span class="error-text" id="genderError"></span>
+            </div>
+
+          <button type="submit" id="registerBtn" class="register-btn">
+            Create Account
+          </button>
+        </form>
+          <p id="msg"></p>
+        </form>
+
+        <p class="login-link">
+          Already registered?
+          <a href="login.html">Login here</a>
+        </p>
+      </section>
+    </main>
+      <div id="toast" class="toast"></div>
+   <script type="module" src="../scripts/services/candidate-register-service.js"></script>
+  </body>
+</html>

@@ -1,0 +1,11 @@
+.success-state {
+  text-align: center;
+}
+
+.success-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 1rem;
+  background: var(--success-light);
+  border-radius: 50%;
+}

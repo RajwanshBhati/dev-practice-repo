@@ -1,0 +1,157 @@
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-weight: 800;
+  color: #374151;
+}
+
+.form-group input {
+  width: 100%;
+  height: 50px;
+  border-radius: 14px;
+  border: 1px solid #fed7aa;
+  background: #fffaf6;
+  padding: 0 14px;
+  font-size: 0.95rem;
+  outline: none;
+}
+
+.form-group input:focus {
+  border-color: #ea580c;
+  box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.15);
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+.btn-create {
+  width: 230px;
+  height: 52px;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #ea580c, #78350f);
+  color: #ffffff;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.btn-create:hover {
+  box-shadow: 0 10px 24px rgba(234, 88, 12, 0.25);
+}
+
+
+
+.panel-container {
+  width: 100%;
+  padding: 26px 28px;
+  display: grid;
+  gap: 24px;
+}
+
+.panel-card {
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #fed7aa;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 14px 35px rgba(120, 53, 15, 0.08);
+}
+
+.panel-card:first-child {
+  max-width: 780px;
+  margin: 0 auto;
+}
+
+.panel-card h2 {
+  text-align: center;
+  font-size: 1.55rem;
+  font-weight: 900;
+  color: #78350f;
+  margin-bottom: 20px;
+}
+
+.panel-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 18px;
+}
+
+.form-group input {
+  height: 44px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+}
+
+.btn-create {
+  width: 200px;
+  height: 46px;
+}
+
+.panel-card:last-child {
+  max-width: none;
+  margin: 0;
+}
+
+.panel-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid #fed7aa;
+  border-radius: 18px;
+  background: #ffffff;
+}
+
+.panel-table {
+  width: 100%;
+  min-width: 1050px;
+  border-collapse: collapse;
+}
+
+.panel-table thead {
+  background: #fff7ed;
+}
+
+.panel-table th {
+  padding: 16px 18px;
+  text-align: left;
+  color: #78350f;
+  font-size: 0.85rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.panel-table td {
+  padding: 16px 18px;
+  border-top: 1px solid #ffedd5;
+  color: #111827;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.panel-table tbody tr:hover {
+  background: #fffaf6;
+}
+
+.panel-empty {
+  text-align: center;
+  color: #6b7280;
+  padding: 28px !important;
+}
+
+@media (max-width: 768px) {
+  .panel-container {
+    padding: 20px;
+  }
+
+  .panel-form {
+    grid-template-columns: 1fr;
+  }
+
+  .btn-create {
+    width: 100%;
+  }
+}
