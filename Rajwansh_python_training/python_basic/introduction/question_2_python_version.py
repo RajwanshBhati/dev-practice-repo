@@ -1,11 +1,7 @@
 import platform
 
+# Fetch the Python version installed on the system
+python_version = platform.python_version()
 
-def get_python_version() -> str:
-    """Return the Python version."""
-    return platform.python_version()
-
-
-if __name__ == "__main__":
-    # Fetch version dynamically from the system
-    print(f"Python Version: {get_python_version()}")
+# Display the Python version
+print("Python Version:", python_version)
