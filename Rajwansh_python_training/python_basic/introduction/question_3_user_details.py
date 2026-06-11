@@ -1,8 +1,8 @@
-# Taking user's name as input
+# input() is used to take input from the user
 name = input("Enter your name: ")
 
-# Taking user's age as input
-age = input("Enter your age: ")
+# int() converts the input string into an integer
+age = int(input("Enter your age: "))
 
-# Displaying a formatted message using an f-string
+# f-string is used to insert variable values into a string
 print(f"Hello {name}! You are {age} years old.")
