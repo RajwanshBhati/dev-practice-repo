@@ -1,3 +1,8 @@
+"""
+Question 12:
+Print numbers from 1 to 100 using loop.
+"""
+
 START_NUMBER = 1
 END_NUMBER = 100
 

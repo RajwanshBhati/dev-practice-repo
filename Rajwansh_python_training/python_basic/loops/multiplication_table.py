@@ -1,3 +1,8 @@
+"""
+Question 13:
+Print multiplication table of a number.
+"""
+
 TABLE_LIMIT = 10
 
 

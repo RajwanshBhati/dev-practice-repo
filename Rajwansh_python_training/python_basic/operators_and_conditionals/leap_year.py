@@ -1,3 +1,8 @@
+"""
+Question 11:
+Check whether a year is a leap year.
+"""
+
 # Take year as input
 year = int(input("Enter a year: "))
 

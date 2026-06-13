@@ -1,3 +1,8 @@
+"""
+Question 6:
+Take two numbers and print sum, difference, multiplication, and division.
+"""
+
 # input() is used to take numbers from the user
 num1 = float(input("Enter first number: "))
 num2 = float(input("Enter second number: "))

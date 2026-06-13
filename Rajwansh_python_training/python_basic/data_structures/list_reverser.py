@@ -28,6 +28,7 @@ def main() -> None:
     print(f"Original List: {number_list}")
     print(f"Reversed List: {reversed_numbers}")
 
-
+# Used to execute the main program only when this file
+# is run directly, not when imported as a module.
 if __name__ == "__main__":
     main()

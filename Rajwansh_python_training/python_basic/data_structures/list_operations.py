@@ -9,6 +9,12 @@ def process_number_list(numbers: list[int]) -> None:
     """
     Display sum, maximum value, sorted list,
     and list without duplicates.
+
+    numbers: list[int]
+    Used to indicate that the function expects a list containing integer values.
+
+    -> None
+    Used because the function only displays output and does not return any value.
     """
 
     # Calculate the sum of all numbers in the list.
@@ -36,6 +42,7 @@ def main() -> None:
 
     process_number_list(number_list)
 
-
+# Used to execute the main program only when this file
+# is run directly, not when imported as a module.
 if __name__ == "__main__":
     main()

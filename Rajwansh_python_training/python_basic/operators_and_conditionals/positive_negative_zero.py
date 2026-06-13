@@ -1,3 +1,8 @@
+"""
+Question 8:
+ Check whether a number is positive, negative, or zero.
+"""
+
 # Take a number from the user
 num = float(input("Enter a number: "))
 

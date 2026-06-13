@@ -1,3 +1,8 @@
+"""
+Question 5:
+Write a program to swap two numbers.
+"""
+
 # input() is used to take values from the user
 num1 = int(input("Enter first number: "))
 num2 = int(input("Enter second number: "))

@@ -1,3 +1,8 @@
+"""
+Question 10:
+Calculate grade based on marks (A/B/C/Fail).
+"""
+
 # Take marks as input
 marks = int(input("Enter marks: "))
 

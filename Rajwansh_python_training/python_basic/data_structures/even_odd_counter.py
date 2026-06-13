@@ -8,7 +8,12 @@ DIVISIBILITY_NUMBER = 2
 
 def count_even_and_odd_numbers(numbers: list[int]) -> tuple[int, int]:
     """
-    Count and return total even and odd numbers.
+    numbers: list[int]
+    Used to indicate that the function expects a list of integers as input.
+
+    tuple[int, int]
+    Used to indicate that the function returns two integer values:
+    first = even count, second = odd count.
     """
 
     even_count = 0
@@ -34,6 +39,7 @@ def main() -> None:
     print(f"Even Numbers: {even_count}")
     print(f"Odd Numbers: {odd_count}")
 
-
+# Used to execute the main program only when this file
+# is run directly, not when imported as a module.
 if __name__ == "__main__":
     main()

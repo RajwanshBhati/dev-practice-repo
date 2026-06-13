@@ -3,12 +3,19 @@ Question 39:
 Search a word in a file.
 """
 
+# Store the file name in a constant so it can be reused
+# easily and changed in one place if needed.
 FILE_NAME = "student.txt"
 
 
 def search_word(search_text: str) -> bool:
     """
-    Search for a word in the file.
+    search_text: str
+    Used to accept the word that needs to be searched.
+
+    -> bool
+    Used to return True if the word exists in the file,
+    otherwise False.
     """
 
     # Read the file content before searching.
