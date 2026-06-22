@@ -26,3 +26,7 @@ class DoctorRegisterRequest(BaseModel):
 
     password: str
     confirm_password: str
+
+class LoginRequest(BaseModel):
+    email: EmailStr
+    password: str

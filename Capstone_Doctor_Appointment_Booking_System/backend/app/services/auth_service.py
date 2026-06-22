@@ -2,6 +2,8 @@ from app.constants.roles import UserRole
 from app.models.user import User
 from app.repositories.user_repository import UserRepository
 from app.utils.password import hash_password
+from app.utils.password import verify_password
+from app.core.security import create_access_token
 
 
 class AuthService:
@@ -86,3 +88,38 @@ class AuthService:
         )
 
         return created_user
+
+    async def login(
+        self,
+        payload
+    ):
+
+        user = await self.user_repository.get_by_email(
+            payload.email
+        )
+
+        if not user:
+            raise ValueError(
+                "Invalid email or password"
+            )
+
+        if not verify_password(
+            payload.password,
+            user.password
+        ):
+            raise ValueError(
+                "Invalid email or password"
+            )
+
+        access_token = create_access_token(
+            {
+                "sub": str(user.id),
+                "email": user.email,
+                "role": user.role.value
+            }
+        )
+
+        return {
+            "user": user,
+            "access_token": access_token
+        }

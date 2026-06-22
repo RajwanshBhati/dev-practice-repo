@@ -6,6 +6,14 @@ from app.schemas.request.auth_request import (
     DoctorRegisterRequest
 )
 
+from app.schemas.request.auth_request import (
+    LoginRequest
+)
+
+from app.schemas.response.auth_response import (
+    LoginResponse
+)
+
 from app.schemas.response.auth_response import (
     RegisterResponse,
     UserResponse
@@ -78,5 +86,41 @@ async def register_doctor(
 
         raise HTTPException(
             status_code=400,
+            detail=str(ex)
+        )
+
+@router.post(
+    "/login",
+    response_model=LoginResponse
+)
+async def login(
+    payload: LoginRequest
+):
+
+    try:
+
+        result = await auth_service.login(
+            payload
+        )
+
+        user = result["user"]
+
+        return LoginResponse(
+            message="Login successful",
+            access_token=result["access_token"],
+            token_type="bearer",
+            user=UserResponse(
+                id=str(user.id),
+                full_name=user.full_name,
+                email=user.email,
+                role=user.role.value,
+                created_at=user.created_at
+            )
+        )
+
+    except ValueError as ex:
+
+        raise HTTPException(
+            status_code=401,
             detail=str(ex)
         )
