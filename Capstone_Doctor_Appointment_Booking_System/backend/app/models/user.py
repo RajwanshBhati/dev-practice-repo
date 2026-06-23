@@ -1,39 +1,26 @@
-from datetime import datetime, date
+from datetime import datetime
 from typing import Optional
 
 from beanie import Document
-from pydantic import EmailStr
+from pydantic import EmailStr, Field
 
 from app.constants.roles import UserRole
 
 
 class User(Document):
-    full_name: str
-
-    email: EmailStr
+    full_name: str = Field(..., min_length=2)
+    email: EmailStr = Field(..., unique=True)
     password: str
-
-    phone_number: str
-
+    phone_number: str = Field(..., pattern=r'^[0-9]{10}$')
     role: UserRole
-
-    # Patient Fields
-    gender: Optional[str] = None
-    date_of_birth: Optional[date] = None
-
-    # Doctor Fields
-    qualification: Optional[str] = None
-    specialization: Optional[str] = None
-    experience: Optional[int] = None
-    license_number: Optional[str] = None
-
     is_active: bool = True
-
     created_at: datetime = datetime.utcnow()
+    updated_at: datetime = datetime.utcnow()
 
     class Settings:
         name = "users"
-
         indexes = [
-            "email"
+            "email",
+            "role",
+            "is_active"
         ]
