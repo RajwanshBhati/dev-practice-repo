@@ -1,22 +1,11 @@
-from datetime import datetime
+from typing import Optional
+from ..base.base_schemas import AuthResponseBase, UserResponseBase
 
-from pydantic import BaseModel, EmailStr
+class RegisterResponse(AuthResponseBase):
+    """Registration response schema"""
+    user: UserResponseBase
 
-
-class UserResponse(BaseModel):
-    id: str
-    full_name: str
-    email: EmailStr
-    role: str
-    created_at: datetime
-
-
-class RegisterResponse(BaseModel):
-    message: str
-    user: UserResponse
-
-class LoginResponse(BaseModel):
-    message: str
+class LoginResponse(AuthResponseBase):
+    """Login response schema"""
     access_token: str
-    token_type: str
-    user: UserResponse
+    user: UserResponseBase

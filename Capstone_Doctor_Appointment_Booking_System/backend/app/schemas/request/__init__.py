@@ -6,26 +6,14 @@ from .auth_request import (
 
 # Patient Requests
 from .patient_request import (
-    PatientRegisterRequest,
-    PatientUpdateRequest,
-    PatientSearchRequest
+    PatientRegisterRequest
 )
 
 # Doctor Requests
 from .doctor_request import (
-    DoctorRegisterRequest,
-    DoctorUpdateRequest,
-    DoctorSearchRequest,
-    DoctorAvailabilityRequest,
-    DoctorSlotUpdateRequest
+    DoctorRegisterRequest
 )
 
-# Admin Requests
-from .admin_request import (
-    AdminRegisterRequest,
-    AdminUpdateRequest,
-    AdminFilterRequest
-)
 
 __all__ = [
     # Auth
@@ -33,19 +21,8 @@ __all__ = [
     'RegisterMixin',
 
     # Patient
-    'PatientRegisterRequest',
-    'PatientUpdateRequest',
-    'PatientSearchRequest',
+    'PatientRegisterRequest'
 
     # Doctor
-    'DoctorRegisterRequest',
-    'DoctorUpdateRequest',
-    'DoctorSearchRequest',
-    'DoctorAvailabilityRequest',
-    'DoctorSlotUpdateRequest',
-
-    # Admin
-    'AdminRegisterRequest',
-    'AdminUpdateRequest',
-    'AdminFilterRequest'
+    'DoctorRegisterRequest'
 ]
