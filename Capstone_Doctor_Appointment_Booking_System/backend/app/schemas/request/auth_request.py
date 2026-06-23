@@ -1,32 +1,20 @@
-from datetime import date
-
-from pydantic import BaseModel, EmailStr
-
-
-class PatientRegisterRequest(BaseModel):
-    full_name: str
-    email: EmailStr
-    phone_number: str
-    gender: str
-    date_of_birth: date
-
-    password: str
-    confirm_password: str
-
-
-class DoctorRegisterRequest(BaseModel):
-    full_name: str
-    email: EmailStr
-    phone_number: str
-
-    qualification: str
-    specialization: str
-    experience: int
-    license_number: str
-
-    password: str
-    confirm_password: str
+from pydantic import BaseModel, Field, field_validator
+from ..base.validators import PasswordValidator
 
 class LoginRequest(BaseModel):
-    email: EmailStr
-    password: str
+    """Login request schema"""
+    email: str = Field(..., description="User email")
+    password: str = Field(..., min_length=8, description="User password")
+
+class RegisterMixin:
+    """Mixin for registration schemas with common validations"""
+
+    @field_validator('password')
+    @classmethod
+    def validate_password(cls, v: str) -> str:
+        return PasswordValidator.validate_password(v)
+
+    @field_validator('confirm_password')
+    @classmethod
+    def validate_confirm_password(cls, v: str, info) -> str:
+        return PasswordValidator.validate_confirm_password(v, info)
