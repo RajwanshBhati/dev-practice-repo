@@ -8,6 +8,7 @@ from app.repositories.patient_repository import PatientRepository
 from app.repositories.doctor_repository import DoctorRepository
 from app.utils.password import hash_password, verify_password
 from app.core.security import create_access_token
+from app.utils.email import send_welcome_email
 
 
 class AuthService:
@@ -32,7 +33,9 @@ class AuthService:
             email=payload.email,
             password=hash_password(payload.password),
             phone_number=payload.phone_number,
-            role=UserRole.PATIENT
+            role=UserRole.PATIENT,
+            is_active=True,
+            is_approved=True
         )
 
         created_user = await self.user_repository.create_user(user)
@@ -44,6 +47,11 @@ class AuthService:
             date_of_birth=payload.date_of_birth
         )
         await self.patient_repository.create_patient(patient)
+
+        await send_welcome_email(
+            email=created_user.email,
+            name=created_user.full_name
+        )
 
         return created_user
 
@@ -67,6 +75,7 @@ class AuthService:
             password=hash_password(payload.password),
             phone_number=payload.phone_number,
             role=UserRole.DOCTOR,
+            is_active=True,
             is_approved=False
         )
 
@@ -83,6 +92,11 @@ class AuthService:
             clinic_address=payload.clinic_address
         )
         await self.doctor_repository.create_doctor(doctor)
+
+        await send_welcome_email(
+            email=created_user.email,
+            name=created_user.full_name
+        )
 
         return created_user
 
@@ -106,7 +120,8 @@ class AuthService:
             password=hash_password(payload.password),
             phone_number=payload.phone_number,
             role=UserRole.ADMIN,
-            is_active=True
+            is_active=True,
+            is_approved=True
         )
 
         created_user = await self.user_repository.create_user(user)
@@ -131,7 +146,8 @@ class AuthService:
             password=hash_password(payload.password),
             phone_number=payload.phone_number,
             role=UserRole.ADMIN,
-            is_active=True
+            is_active=True,
+            is_approved=True
         )
 
         created_user = await self.user_repository.create_user(user)
@@ -190,6 +206,7 @@ class AuthService:
             "email": user.email,
             "role": user.role.value,
             "full_name": user.full_name,
+            "is_approved": user.is_approved,
             **profile_info
         })
 

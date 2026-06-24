@@ -1,6 +1,7 @@
 from typing import Optional, List
 from app.models.user import User
 from app.constants.roles import UserRole
+from beanie import PydanticObjectId
 
 
 class UserRepository:
@@ -12,7 +13,10 @@ class UserRepository:
 
     async def get_by_id(self, user_id: str) -> Optional[User]:
         """Get user by ID"""
-        return await User.get(user_id)
+        try:
+            return await User.get(PydanticObjectId(user_id))
+        except:
+            return None
 
     async def get_by_role(self, role: UserRole) -> Optional[User]:
         """Get first user with specific role"""
