@@ -6,14 +6,14 @@ from ..base.validators import DateValidator
 from app.constants.gender import Gender
 
 
-class PatientBase(UserBase):
-    """Base patient schema"""
+class AdminBase(UserBase):
+    """Base admin schema"""
     gender: Gender
     date_of_birth: date
 
 
-class PatientRegisterRequest(PatientBase, RegisterMixin):
-    """Patient registration request"""
+class AdminRegisterRequest(AdminBase, RegisterMixin):
+    """Admin registration request"""
     password: str = Field(..., min_length=8, max_length=12)
     confirm_password: str
 

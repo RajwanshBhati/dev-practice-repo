@@ -1,11 +1,9 @@
-from pydantic import BaseModel, Field, field_validator
-from datetime import date, datetime
-from typing import Optional, List
-
+from pydantic import Field, field_validator
 from .auth_request import RegisterMixin
-from ..base.base_schemas import UserBase, PaginationParams
-from ..base.validators import LicenseValidator, NameValidator, MoneyValidator
+from ..base.base_schemas import UserBase
+from ..base.validators import LicenseValidator, MoneyValidator
 from app.constants.specialization import Specialization
+
 
 class DoctorBase(UserBase):
     """Base doctor schema"""
@@ -15,6 +13,7 @@ class DoctorBase(UserBase):
     license_number: str = Field(..., min_length=3)
     consultation_fee: float = Field(..., gt=0)
     clinic_address: str = Field(..., min_length=5)
+
 
 class DoctorRegisterRequest(DoctorBase, RegisterMixin):
     """Doctor registration request"""
@@ -30,4 +29,3 @@ class DoctorRegisterRequest(DoctorBase, RegisterMixin):
     @classmethod
     def validate_fee(cls, v: float) -> float:
         return MoneyValidator.validate_positive_amount(v)
-

@@ -1,9 +1,10 @@
-from typing import Optional
-from ..base.base_schemas import AuthResponseBase, UserResponseBase
+from ..base.base_schemas import UserResponseBase, AuthResponseBase
+
 
 class RegisterResponse(AuthResponseBase):
     """Registration response schema"""
     user: UserResponseBase
+
 
 class LoginResponse(AuthResponseBase):
     """Login response schema"""

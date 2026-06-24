@@ -1,29 +1,15 @@
-# Auth Responses
-from .auth_response import (
-    RegisterResponse,
-    LoginResponse
-)
+# Import from base schemas
+from ..base.base_schemas import UserResponseBase, AuthResponseBase
 
-# Patient Responses
-from .patient_response import (
-    PatientResponse
-)
-
-# Doctor Responses
-from .doctor_response import (
-    DoctorResponse,
-)
-
+# Import response schemas
+from .auth_response import RegisterResponse, LoginResponse
+from .common_response import APIResponse, ErrorResponse
 
 __all__ = [
-    # Auth
+    'UserResponseBase',
+    'AuthResponseBase',
     'RegisterResponse',
     'LoginResponse',
-
-    # Patient
-    'PatientResponse'
-
-    # Doctor
-    'DoctorResponse'
-
+    'APIResponse',
+    'ErrorResponse'
 ]

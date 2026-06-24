@@ -1,10 +1,12 @@
 from pydantic import BaseModel, Field, field_validator
 from ..base.validators import PasswordValidator
 
+
 class LoginRequest(BaseModel):
     """Login request schema"""
     email: str = Field(..., description="User email")
     password: str = Field(..., min_length=8, description="User password")
+
 
 class RegisterMixin:
     """Mixin for registration schemas with common validations"""

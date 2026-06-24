@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class Specialization(str, Enum):
     CARDIOLOGIST = "Cardiologist"
     DERMATOLOGIST = "Dermatologist"
@@ -11,3 +12,13 @@ class Specialization(str, Enum):
     OPHTHALMOLOGIST = "Ophthalmologist"
     GYNECOLOGIST = "Gynecologist"
     GENERAL_PHYSICIAN = "General Physician"
+
+    @classmethod
+    def get_values(cls):
+        """Get all enum values as list of strings"""
+        return [e.value for e in cls]
+
+    @classmethod
+    def get_keys(cls):
+        """Get all enum keys as list of strings"""
+        return [e.name for e in cls]

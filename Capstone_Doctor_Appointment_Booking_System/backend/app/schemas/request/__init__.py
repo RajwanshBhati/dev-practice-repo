@@ -1,28 +1,12 @@
-# Auth Requests
-from .auth_request import (
-    LoginRequest,
-    RegisterMixin
-)
-
-# Patient Requests
-from .patient_request import (
-    PatientRegisterRequest
-)
-
-# Doctor Requests
-from .doctor_request import (
-    DoctorRegisterRequest
-)
-
+from .auth_request import LoginRequest, RegisterMixin
+from .patient_request import PatientRegisterRequest
+from .doctor_request import DoctorRegisterRequest
+from .admin_request import AdminRegisterRequest
 
 __all__ = [
-    # Auth
     'LoginRequest',
     'RegisterMixin',
-
-    # Patient
-    'PatientRegisterRequest'
-
-    # Doctor
-    'DoctorRegisterRequest'
+    'PatientRegisterRequest',
+    'DoctorRegisterRequest',
+    'AdminRegisterRequest'
 ]
