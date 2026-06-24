@@ -13,6 +13,10 @@ class User(Document):
     phone_number: str = Field(..., pattern=r'^[0-9]{10}$')
     role: UserRole
     is_active: bool = True
+    is_approved: bool = False
+    approved_by: Optional[str] = None
+    approved_at: Optional[datetime] = None
+    rejection_reason: Optional[str] = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
@@ -21,5 +25,6 @@ class User(Document):
         indexes = [
             "email",
             "role",
-            "is_active"
+            "is_active",
+            "is_approved"
         ]

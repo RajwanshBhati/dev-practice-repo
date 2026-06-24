@@ -19,7 +19,7 @@ router = APIRouter()
 auth_service = AuthService()
 
 
-# ================ PUBLIC ENDPOINTS ================
+# Public endpoints
 
 @router.post("/register/patient", response_model=RegisterResponse)
 async def register_patient(payload: PatientRegisterRequest):

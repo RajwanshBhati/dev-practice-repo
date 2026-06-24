@@ -66,7 +66,8 @@ class AuthService:
             email=payload.email,
             password=hash_password(payload.password),
             phone_number=payload.phone_number,
-            role=UserRole.DOCTOR
+            role=UserRole.DOCTOR,
+            is_approved=False
         )
 
         created_user = await self.user_repository.create_user(user)
@@ -153,9 +154,17 @@ class AuthService:
         if not user.is_active:
             raise ValueError("Account is deactivated. Please contact admin")
 
+
+        if user.role == UserRole.DOCTOR and not user.is_approved:
+            raise ValueError(
+            "Your account is pending admin approval. "
+            "You will receive an email notification once approved."
+        )
+
         # Update last login time
         user.updated_at = datetime.utcnow()
         await self.user_repository.update_user(user)
+
 
         # Get role-specific profile info
         profile_info = {}
