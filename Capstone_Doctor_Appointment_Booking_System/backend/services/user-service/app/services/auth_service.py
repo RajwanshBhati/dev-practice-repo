@@ -1,10 +1,12 @@
 from typing import Dict, Any
 from datetime import datetime
 from app.core.security import security
+from app.core.jwt_service import jwt_service
 from app.repositories.user_repository import UserRepository
+from app.repositories.token_blacklist_repository import TokenBlacklistRepository
 from app.models.user import User
 from app.models.profile import PatientProfile, DoctorProfile
-from app.schemas.auth import PatientRegister, DoctorRegister, UserLogin
+from app.schemas.auth import PatientRegister, DoctorRegister, UserLogin, RefreshToken
 from shared.constants import ErrorMessages, SuccessMessages
 from shared.constants.roles import UserRole
 from shared.enums.user_enums import UserStatus
@@ -17,6 +19,7 @@ class AuthService:
 
     def __init__(self):
         self.user_repo = UserRepository()
+        self.blacklist_repo = TokenBlacklistRepository()
 
     async def register_patient(self, user_data: PatientRegister) -> Dict[str, Any]:
         """Register a new patient"""
@@ -46,21 +49,25 @@ class AuthService:
         patient_profile = PatientProfile(
             user_id=created_user.id
         )
-        # Generate token
+        # TODO: Save patient profile
+
+        # Generate tokens
         token_data = {
             "sub": created_user.id,
             "email": created_user.email,
             "role": created_user.role.value
         }
-        token = security.create_access_token(token_data)
+        access_token = jwt_service.create_access_token(token_data)
+        refresh_token = jwt_service.create_refresh_token(token_data)
 
         logger.info(f"Patient registered: {created_user.email}")
 
         return {
             "message": SuccessMessages.REGISTRATION_SUCCESS,
-            "access_token": token,
+            "access_token": access_token,
+            "refresh_token": refresh_token,
             "token_type": "bearer",
-            "expires_in": 1800,
+            "expires_in": settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
             "user": {
                 "id": created_user.id,
                 "email": created_user.email,
@@ -105,21 +112,25 @@ class AuthService:
             clinic_address=user_data.clinic_address,
             bio=user_data.bio
         )
-        # Generate token
+        # TODO: Save doctor profile
+
+        # Generate tokens
         token_data = {
             "sub": created_user.id,
             "email": created_user.email,
             "role": created_user.role.value
         }
-        token = security.create_access_token(token_data)
+        access_token = jwt_service.create_access_token(token_data)
+        refresh_token = jwt_service.create_refresh_token(token_data)
 
         logger.info(f"Doctor registered: {created_user.email}")
 
         return {
             "message": SuccessMessages.REGISTRATION_SUCCESS,
-            "access_token": token,
+            "access_token": access_token,
+            "refresh_token": refresh_token,
             "token_type": "bearer",
-            "expires_in": 1800,
+            "expires_in": settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
             "user": {
                 "id": created_user.id,
                 "email": created_user.email,
@@ -145,21 +156,23 @@ class AuthService:
         # Update last login
         await self.user_repo.update_last_login(user.id)
 
-        # Generate token
+        # Generate tokens
         token_data = {
             "sub": user.id,
             "email": user.email,
             "role": user.role.value
         }
-        token = security.create_access_token(token_data)
+        access_token = jwt_service.create_access_token(token_data)
+        refresh_token = jwt_service.create_refresh_token(token_data)
 
         logger.info(f"User logged in: {user.email}")
 
         return {
             "message": SuccessMessages.LOGIN_SUCCESS,
-            "access_token": token,
+            "access_token": access_token,
+            "refresh_token": refresh_token,
             "token_type": "bearer",
-            "expires_in": 1800,
+            "expires_in": settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
             "user": {
                 "id": user.id,
                 "email": user.email,
@@ -169,10 +182,68 @@ class AuthService:
             }
         }
 
+    async def refresh_token(self, refresh_token_data: RefreshToken) -> Dict[str, Any]:
+        """Refresh access token using refresh token"""
+        try:
+            # Check if refresh token is blacklisted
+            is_blacklisted = await self.blacklist_repo.is_blacklisted(
+                refresh_token_data.refresh_token
+            )
+            if is_blacklisted:
+                raise ValueError("Refresh token has been revoked")
+
+            # Generate new tokens
+            new_tokens = jwt_service.refresh_access_token(
+                refresh_token_data.refresh_token
+            )
+
+            # Blacklist old refresh token
+            try:
+                payload = jwt_service.decode_token(refresh_token_data.refresh_token)
+                await self.blacklist_repo.add_to_blacklist(
+                    refresh_token_data.refresh_token,
+                    payload.get("sub"),
+                    datetime.fromtimestamp(payload.get("exp"))
+                )
+            except:
+                pass
+
+            return new_tokens
+        except ValueError as e:
+            raise
+        except Exception as e:
+            logger.error(f"Token refresh error: {str(e)}")
+            raise ValueError("Invalid refresh token")
+
+    async def logout(self, user_id: str, access_token: str) -> Dict[str, Any]:
+        """Logout user by blacklisting tokens"""
+        try:
+            # Decode token to get expiry
+            payload = jwt_service.decode_token(access_token)
+            expires_at = datetime.fromtimestamp(payload.get("exp"))
+
+            # Add token to blacklist
+            await self.blacklist_repo.add_to_blacklist(
+                access_token,
+                user_id,
+                expires_at
+            )
+
+            logger.info(f"User logged out: {user_id}")
+            return {"message": SuccessMessages.LOGOUT_SUCCESS}
+        except Exception as e:
+            logger.error(f"Logout error: {str(e)}")
+            raise
+
     async def validate_token(self, token: str) -> Dict[str, Any]:
         """Validate JWT token and return user information"""
         try:
-            payload = security.decode_token(token)
+            # Check if token is blacklisted
+            is_blacklisted = await self.blacklist_repo.is_blacklisted(token)
+            if is_blacklisted:
+                raise ValueError("Token has been revoked")
+
+            payload = jwt_service.decode_token(token)
             user_id = payload.get("sub")
 
             if not user_id:

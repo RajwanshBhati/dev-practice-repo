@@ -86,3 +86,10 @@ class TokenResponse(BaseModel):
     expires_in: int = 1800
     user: dict
     message: str
+class RefreshToken(BaseModel):
+    """Refresh token request schema"""
+    refresh_token: str = Field(..., description="Refresh token")
+
+class LogoutRequest(BaseModel):
+    """Logout request schema"""
+    access_token: str = Field(..., description="Access token to invalidate")

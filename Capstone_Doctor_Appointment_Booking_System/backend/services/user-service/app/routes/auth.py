@@ -65,3 +65,42 @@ async def validate_token(current_user: dict = Depends(get_current_user)):
         "valid": True,
         "user": current_user
     }
+
+@router.post("/refresh-token")
+async def refresh_token(refresh_data: RefreshToken):
+    """
+    Refresh access token using refresh token
+
+    - **refresh_token**: Valid refresh token
+    """
+    try:
+        auth_service = AuthService()
+        result = await auth_service.refresh_token(refresh_data)
+        return result
+    except ValueError as e:
+        raise HTTPException(status_code=HttpStatus.UNAUTHORIZED, detail=str(e))
+    except Exception as e:
+        logger.error(f"Token refresh error: {str(e)}")
+        raise HTTPException(
+            status_code=HttpStatus.INTERNAL_SERVER_ERROR,
+            detail="Failed to refresh token"
+        )
+
+@router.post("/logout")
+async def logout(
+    logout_data: LogoutRequest,
+    current_user: dict = Depends(get_current_user)
+):
+    try:
+        auth_service = AuthService()
+        result = await auth_service.logout(
+            current_user["user_id"],
+            logout_data.access_token
+        )
+        return result
+    except Exception as e:
+        logger.error(f"Logout error: {str(e)}")
+        raise HTTPException(
+            status_code=HttpStatus.INTERNAL_SERVER_ERROR,
+            detail="Logout failed"
+        )
