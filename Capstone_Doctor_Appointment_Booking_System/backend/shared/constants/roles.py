@@ -33,28 +33,3 @@ class Permission(str, Enum):
     VIEW_STATISTICS = "VIEW_STATISTICS"
     MANAGE_USERS = "MANAGE_USERS"
     VIEW_ALL_APPOINTMENTS = "VIEW_ALL_APPOINTMENTS"
-
-ROLE_PERMISSIONS = {
-    UserRole.PATIENT: [
-        Permission.VIEW_DOCTORS,
-        Permission.BOOK_APPOINTMENT,
-        Permission.CANCEL_APPOINTMENT,
-        Permission.VIEW_APPOINTMENTS,
-        Permission.MAKE_PAYMENT,
-    ],
-    UserRole.DOCTOR: [
-        Permission.MANAGE_AVAILABILITY,
-        Permission.VIEW_APPOINTMENTS_DOCTOR,
-        Permission.UPDATE_APPOINTMENT_STATUS,
-        Permission.VIEW_PATIENT_INFO,
-        Permission.MANAGE_PROFILE,
-    ],
-    UserRole.ADMIN: [
-        Permission.MANAGE_DOCTORS,
-        Permission.VIEW_STATISTICS,
-        Permission.MANAGE_USERS,
-        Permission.VIEW_ALL_APPOINTMENTS,
-        Permission.VIEW_DOCTORS,
-        Permission.VIEW_APPOINTMENTS,
-    ]
-}
