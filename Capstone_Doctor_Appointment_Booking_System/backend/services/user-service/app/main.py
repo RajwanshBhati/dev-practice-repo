@@ -1,3 +1,11 @@
+import sys
+from pathlib import Path
+
+# Add backend to path at the very top
+backend_path = Path(__file__).parent.parent.parent.parent
+if str(backend_path) not in sys.path:
+    sys.path.insert(0, str(backend_path))
+
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -5,7 +13,6 @@ from contextlib import asynccontextmanager
 from app.core.database import db
 from app.core.config import settings
 from app.routes import auth_router, user_router
-from shared.constants import HttpStatus
 import logging
 from datetime import datetime
 
@@ -18,7 +25,6 @@ logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Application lifespan manager"""
     # Startup
     logger.info(f"Starting {settings.APP_NAME} v{settings.APP_VERSION}")
     await db.connect()
@@ -50,7 +56,7 @@ app.add_middleware(
 @app.exception_handler(ValueError)
 async def value_error_handler(request: Request, exc: ValueError):
     return JSONResponse(
-        status_code=HttpStatus.BAD_REQUEST,
+        status_code=400,
         content={"success": False, "message": str(exc)}
     )
 
@@ -58,7 +64,7 @@ async def value_error_handler(request: Request, exc: ValueError):
 async def general_exception_handler(request: Request, exc: Exception):
     logger.error(f"Unhandled exception: {str(exc)}")
     return JSONResponse(
-        status_code=HttpStatus.INTERNAL_SERVER_ERROR,
+        status_code=500,
         content={"success": False, "message": "Internal server error"}
     )
 
@@ -68,7 +74,6 @@ app.include_router(user_router)
 
 @app.get("/health")
 async def health_check():
-    """Health check endpoint"""
     return {
         "status": "healthy",
         "service": settings.SERVICE_NAME,

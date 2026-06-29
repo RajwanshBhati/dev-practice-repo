@@ -18,14 +18,19 @@ class Validators:
     @staticmethod
     def validate_password(password: str) -> bool:
         """Validate password strength"""
+        # Check length (min 8, max 12)
         if len(password) < 8 or len(password) > 12:
             return False
+        # Check for uppercase
         if not any(c.isupper() for c in password):
             return False
+        # Check for lowercase
         if not any(c.islower() for c in password):
             return False
+        # Check for digit
         if not any(c.isdigit() for c in password):
             return False
+        # Check for special character
         if not any(c in '!@#$%^&*(),.?":{}|<>' for c in password):
             return False
         return True

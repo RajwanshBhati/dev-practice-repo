@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
-from app.schemas.auth import PatientRegister, DoctorRegister, UserLogin
+from app.schemas.auth import PatientRegister, DoctorRegister, UserLogin, RefreshToken, LogoutRequest
 from app.services.auth_service import AuthService
+from app.core.dependencies import get_current_user
 from shared.constants import HttpStatus
 import logging
 
@@ -9,6 +10,9 @@ logger = logging.getLogger(__name__)
 
 @router.post("/register/patient")
 async def register_patient(user_data: PatientRegister):
+    """
+    Register a new patient
+    """
     try:
         auth_service = AuthService()
         result = await auth_service.register_patient(user_data)
@@ -24,6 +28,9 @@ async def register_patient(user_data: PatientRegister):
 
 @router.post("/register/doctor")
 async def register_doctor(user_data: DoctorRegister):
+    """
+    Register a new doctor
+    """
     try:
         auth_service = AuthService()
         result = await auth_service.register_doctor(user_data)
@@ -39,6 +46,9 @@ async def register_doctor(user_data: DoctorRegister):
 
 @router.post("/login")
 async def login(login_data: UserLogin):
+    """
+    Login user
+    """
     try:
         auth_service = AuthService()
         result = await auth_service.login(login_data)
@@ -52,26 +62,10 @@ async def login(login_data: UserLogin):
             detail="Login failed"
         )
 
-@router.post("/logout")
-async def logout():
-    return {"message": "Logged out successfully"}
-
-@router.post("/validate-token")
-async def validate_token(current_user: dict = Depends(get_current_user)):
-    """
-    Validate JWT token and return user info
-    """
-    return {
-        "valid": True,
-        "user": current_user
-    }
-
 @router.post("/refresh-token")
 async def refresh_token(refresh_data: RefreshToken):
     """
     Refresh access token using refresh token
-
-    - **refresh_token**: Valid refresh token
     """
     try:
         auth_service = AuthService()
@@ -91,6 +85,9 @@ async def logout(
     logout_data: LogoutRequest,
     current_user: dict = Depends(get_current_user)
 ):
+    """
+    Logout user by invalidating tokens
+    """
     try:
         auth_service = AuthService()
         result = await auth_service.logout(
@@ -104,3 +101,13 @@ async def logout(
             status_code=HttpStatus.INTERNAL_SERVER_ERROR,
             detail="Logout failed"
         )
+
+@router.post("/validate-token")
+async def validate_token(current_user: dict = Depends(get_current_user)):
+    """
+    Validate JWT token and return user info
+    """
+    return {
+        "valid": True,
+        "user": current_user
+    }

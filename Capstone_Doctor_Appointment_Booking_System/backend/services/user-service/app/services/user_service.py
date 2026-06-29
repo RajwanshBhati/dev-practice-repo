@@ -1,5 +1,5 @@
 from app.repositories.user_repository import UserRepository
-from shared.constants import ErrorMessages
+from shared.constants.error_messages import ErrorMessages
 import logging
 
 logger = logging.getLogger(__name__)

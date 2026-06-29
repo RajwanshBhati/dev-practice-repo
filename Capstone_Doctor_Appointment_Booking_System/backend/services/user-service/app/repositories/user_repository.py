@@ -17,6 +17,8 @@ class UserRepository:
         """Create a new user"""
         try:
             user_dict = user.model_dump(exclude={"id"}, by_alias=True)
+            # Remove None values
+            user_dict = {k: v for k, v in user_dict.items() if v is not None}
             result = await self.collection.insert_one(user_dict)
             user.id = str(result.inserted_id)
             return user
@@ -29,6 +31,11 @@ class UserRepository:
         try:
             user_dict = await self.collection.find_one({"email": email})
             if user_dict:
+                # Convert ObjectId to string
+                if "_id" in user_dict:
+                    user_dict["id"] = str(user_dict["_id"])
+                    # Remove _id to avoid conflict
+                    del user_dict["_id"]
                 return User(**user_dict)
             return None
         except Exception as e:
@@ -42,6 +49,8 @@ class UserRepository:
                 return None
             user_dict = await self.collection.find_one({"_id": ObjectId(user_id)})
             if user_dict:
+                user_dict["id"] = str(user_dict["_id"])
+                del user_dict["_id"]
                 return User(**user_dict)
             return None
         except Exception as e:
@@ -73,4 +82,30 @@ class UserRepository:
             return result.modified_count > 0
         except Exception as e:
             logger.error(f"Error updating last login: {e}")
+            return False
+
+    async def deactivate_user(self, user_id: str) -> bool:
+        """Deactivate user account"""
+        try:
+            from shared.enums.user_enums import UserStatus
+            result = await self.collection.update_one(
+                {"_id": ObjectId(user_id)},
+                {"$set": {"status": UserStatus.INACTIVE, "updated_at": datetime.utcnow()}}
+            )
+            return result.modified_count > 0
+        except Exception as e:
+            logger.error(f"Error deactivating user: {e}")
+            return False
+
+    async def activate_user(self, user_id: str) -> bool:
+        """Activate user account"""
+        try:
+            from shared.enums.user_enums import UserStatus
+            result = await self.collection.update_one(
+                {"_id": ObjectId(user_id)},
+                {"$set": {"status": UserStatus.ACTIVE, "updated_at": datetime.utcnow()}}
+            )
+            return result.modified_count > 0
+        except Exception as e:
+            logger.error(f"Error activating user: {e}")
             return False

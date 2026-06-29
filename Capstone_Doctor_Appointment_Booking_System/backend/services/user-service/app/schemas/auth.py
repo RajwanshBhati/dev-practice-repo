@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, Field, validator, root_validator
+from pydantic import BaseModel, EmailStr, Field, validator, model_validator
 from typing import Optional
 from shared.constants.roles import UserRole
 from shared.enums.user_enums import Gender
@@ -8,7 +8,7 @@ from datetime import datetime
 
 class PatientRegister(BaseModel):
     """Patient registration schema"""
-    full_name: str = Field(..., min_length=2, description="Full Name")
+    full_name: str = Field(..., min_length=2, max_length=100, description="Full Name")
     email: EmailStr = Field(..., description="Email address")
     phone: str = Field(..., min_length=10, max_length=15, description="Phone number")
     gender: Gender = Field(..., description="Gender")
@@ -44,34 +44,22 @@ class PatientRegister(BaseModel):
             raise ValueError('Password must be 8-12 characters with uppercase, lowercase, digit, and special character')
         return v
 
-    @root_validator
-    def validate_passwords_match(cls, values):
-        password = values.get('password')
-        confirm_password = values.get('confirm_password')
-        if password and confirm_password and password != confirm_password:
+    @model_validator(mode='after')
+    def validate_passwords_match(self):
+        """Validate that password and confirm_password match"""
+        if self.password != self.confirm_password:
             raise ValueError('Passwords do not match')
-        return values
+        return self
 
 class DoctorRegister(PatientRegister):
     """Doctor registration schema extends PatientRegister"""
-    qualification: str = Field(..., min_length=2, description="Medical qualification")
+    qualification: str = Field(..., min_length=2, max_length=100, description="Medical qualification")
     specialization: Specialization = Field(..., description="Medical specialization")
     experience_years: int = Field(..., ge=0, le=50, description="Years of experience")
-    license_number: str = Field(..., min_length=3, description="Medical license number")
+    license_number: str = Field(..., min_length=3, max_length=50, description="Medical license number")
     consultation_fee: float = Field(..., gt=0, description="Consultation fee")
-    clinic_address: str = Field(..., min_length=5, description="Clinic address")
-    bio: Optional[str] = Field(None, description="Doctor biography")
-
-    @validator('experience_years')
-    def validate_experience(cls, v, values):
-        if 'date_of_birth' in values:
-            try:
-                age = Validators.calculate_age(values['date_of_birth'])
-                if v > age - 22:
-                    raise ValueError('Experience cannot exceed age minus 22 years')
-            except:
-                pass
-        return v
+    clinic_address: str = Field(..., min_length=5, max_length=500, description="Clinic address")
+    bio: Optional[str] = Field(None, max_length=1000, description="Doctor biography")
 
 class UserLogin(BaseModel):
     """User login schema"""
@@ -79,13 +67,6 @@ class UserLogin(BaseModel):
     password: str = Field(..., description="Password")
     remember_me: bool = Field(default=False, description="Remember me")
 
-class TokenResponse(BaseModel):
-    """Token response schema"""
-    access_token: str
-    token_type: str = "bearer"
-    expires_in: int = 1800
-    user: dict
-    message: str
 class RefreshToken(BaseModel):
     """Refresh token request schema"""
     refresh_token: str = Field(..., description="Refresh token")
@@ -93,3 +74,12 @@ class RefreshToken(BaseModel):
 class LogoutRequest(BaseModel):
     """Logout request schema"""
     access_token: str = Field(..., description="Access token to invalidate")
+
+class TokenResponse(BaseModel):
+    """Token response schema"""
+    access_token: str
+    refresh_token: Optional[str] = None
+    token_type: str = "bearer"
+    expires_in: int = 1800
+    user: Optional[dict] = None
+    message: str

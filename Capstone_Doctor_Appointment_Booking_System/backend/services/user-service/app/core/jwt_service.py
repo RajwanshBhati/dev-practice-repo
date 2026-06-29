@@ -1,6 +1,6 @@
-import jwt
+from jose import jwt
 from datetime import datetime, timedelta
-from typing import Dict, Any, Optional
+from typing import Dict, Any
 from app.core.config import settings
 import logging
 
@@ -47,39 +47,10 @@ class JWTService:
             return payload
         except jwt.ExpiredSignatureError:
             raise ValueError("Token has expired")
-        except jwt.InvalidTokenError as e:
+        except jwt.JWTError as e:
             raise ValueError(f"Invalid token: {str(e)}")
         except Exception as e:
             logger.error(f"Token decoding error: {str(e)}")
-            raise
-
-    @staticmethod
-    def refresh_access_token(refresh_token: str) -> Dict[str, Any]:
-        """Generate new access token using refresh token"""
-        try:
-            payload = JWTService.decode_token(refresh_token)
-
-            # Validate token type
-            if payload.get("type") != "refresh":
-                raise ValueError("Invalid refresh token")
-
-            # Create new access token
-            token_data = {
-                "sub": payload.get("sub"),
-                "email": payload.get("email"),
-                "role": payload.get("role")
-            }
-            new_access_token = JWTService.create_access_token(token_data)
-
-            return {
-                "access_token": new_access_token,
-                "token_type": "bearer",
-                "expires_in": settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60
-            }
-        except ValueError as e:
-            raise
-        except Exception as e:
-            logger.error(f"Token refresh error: {str(e)}")
             raise
 
 jwt_service = JWTService()

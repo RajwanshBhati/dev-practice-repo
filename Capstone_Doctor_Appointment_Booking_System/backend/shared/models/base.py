@@ -1,32 +1,24 @@
 from datetime import datetime
-from typing import Optional
-from pydantic import BaseModel, Field
-from bson import ObjectId
-
-class PyObjectId(ObjectId):
-    @classmethod
-    def __get_validators__(cls):
-        yield cls.validate
-
-    @classmethod
-    def validate(cls, v):
-        if not ObjectId.is_valid(v):
-            raise ValueError("Invalid ObjectId")
-        return ObjectId(v)
-
-    @classmethod
-    def __modify_schema__(cls, field_schema):
-        field_schema.update(type="string")
+from typing import Optional, Any
+from pydantic import BaseModel, Field, field_validator
 
 class BaseDBModel(BaseModel):
-    id: Optional[PyObjectId] = Field(alias="_id", default=None)
+    """Base model for all database models"""
+    id: Optional[str] = Field(alias="_id", default=None)
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
     class Config:
+        populate_by_name = True
         arbitrary_types_allowed = True
         json_encoders = {
-            ObjectId: str,
             datetime: lambda dt: dt.isoformat()
         }
-        populate_by_name = True
+
+    @field_validator('id', mode='before')
+    @classmethod
+    def convert_id_to_str(cls, v):
+        """Convert ObjectId to string if needed"""
+        if v is not None and not isinstance(v, str):
+            return str(v)
+        return v
