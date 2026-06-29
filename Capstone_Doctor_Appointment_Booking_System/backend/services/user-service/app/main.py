@@ -12,9 +12,10 @@ from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
 from app.core.database import db
 from app.core.config import settings
-from app.routes import auth_router, user_router
+from app.routes import auth_router, user_router, protected_router
 import logging
 from datetime import datetime
+
 
 # Configure logging
 logging.basicConfig(
@@ -71,6 +72,7 @@ async def general_exception_handler(request: Request, exc: Exception):
 # Include routers
 app.include_router(auth_router)
 app.include_router(user_router)
+app.include_router(protected_router)
 
 @app.get("/health")
 async def health_check():
