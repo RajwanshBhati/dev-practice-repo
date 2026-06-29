@@ -1,7 +1,9 @@
 from typing import Optional
+from datetime import datetime
 from pydantic import Field
 from shared.models.base import BaseDBModel
 from shared.enums.doctor_enums import Specialization
+from shared.enums.user_enums import DoctorStatus, VerificationStatus
 
 class PatientProfile(BaseDBModel):
     """Patient profile model"""
@@ -16,7 +18,7 @@ class PatientProfile(BaseDBModel):
         collection = "patient_profiles"
 
 class DoctorProfile(BaseDBModel):
-    """Doctor profile model"""
+    """Doctor profile model with approval workflow"""
     user_id: str = Field(..., description="Reference to User ID")
     qualification: str = Field(..., min_length=2, description="Medical qualification")
     specialization: Specialization = Field(..., description="Medical specialization")
@@ -25,8 +27,19 @@ class DoctorProfile(BaseDBModel):
     consultation_fee: float = Field(..., gt=0, description="Consultation fee")
     clinic_address: str = Field(..., min_length=5, description="Clinic address")
     clinic_phone: Optional[str] = Field(None, description="Clinic phone number")
-    bio: Optional[str] = Field(None, description="Doctor biography")
-    is_verified: bool = Field(default=False, description="Verification status")
+    bio: Optional[str] = Field(None, max_length=1000, description="Doctor biography")
+    profile_picture: Optional[str] = Field(None, description="Profile picture URL")
+
+    # Approval fields
+    status: DoctorStatus = Field(default=DoctorStatus.PENDING, description="Doctor approval status")
+    verification_status: VerificationStatus = Field(default=VerificationStatus.PENDING, description="Verification status")
+    approved_by: Optional[str] = Field(None, description="Admin ID who approved")
+    approved_at: Optional[datetime] = Field(None, description="Approval timestamp")
+    rejected_by: Optional[str] = Field(None, description="Admin ID who rejected")
+    rejected_at: Optional[datetime] = Field(None, description="Rejection timestamp")
+    rejection_reason: Optional[str] = Field(None, max_length=500, description="Reason for rejection")
+
+    # Rating fields
     rating: float = Field(default=0.0, ge=0, le=5, description="Average rating")
     total_reviews: int = Field(default=0, description="Total number of reviews")
 

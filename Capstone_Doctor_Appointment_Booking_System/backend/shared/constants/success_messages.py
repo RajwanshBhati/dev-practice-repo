@@ -16,7 +16,22 @@ class SuccessMessages:
 
     # Doctor
     DOCTOR_PROFILE_CREATED = "Doctor profile created successfully"
+    DOCTOR_REGISTRATION_PENDING = "Doctor registered successfully. Please wait for admin approval."
+    DOCTOR_APPROVED = "Doctor approved successfully"
+    DOCTOR_REJECTED = "Doctor rejected successfully"
     AVAILABILITY_ADDED = "Availability slot added successfully"
+    AVAILABILITY_UPDATED = "Availability slot updated successfully"
+    AVAILABILITY_DELETED = "Availability slot deleted successfully"
+
+    # Admin
+    ADMIN_CREATED = "Admin created successfully"
+    ADMIN_DELETED = "Admin deleted successfully"
+    SYSTEM_SETTINGS_UPDATED = "System settings updated successfully"
 
     # Payment
     PAYMENT_SUCCESS = "Payment successful"
+    PAYMENT_REFUNDED = "Payment refunded successfully"
+
+    # Email
+    EMAIL_SENT = "Email sent successfully"
+    EMAIL_NOTIFICATION_SENT = "Notification email sent successfully"

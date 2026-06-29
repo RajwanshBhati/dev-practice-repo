@@ -9,15 +9,22 @@ class Gender(str, Enum):
     def choices(cls):
         return [(gender.value, gender.name) for gender in cls]
 
-    @classmethod
-    def is_valid(cls, gender: str) -> bool:
-        return gender in cls._value2member_map_
-
 class UserStatus(str, Enum):
-    ACTIVE = "ACTIVE"
-    INACTIVE = "INACTIVE"
-    SUSPENDED = "SUSPENDED"
-    DELETED = "DELETED"
+    PENDING = "PENDING"          # Waiting for approval
+    ACTIVE = "ACTIVE"            # Fully active
+    INACTIVE = "INACTIVE"        # Deactivated
+    SUSPENDED = "SUSPENDED"      # Temporarily suspended
+    DELETED = "DELETED"          # Permanently deleted
+
+    @classmethod
+    def choices(cls):
+        return [(status.value, status.name) for status in cls]
+
+class DoctorStatus(str, Enum):
+    PENDING = "PENDING"          # Waiting for admin approval
+    APPROVED = "APPROVED"        # Approved by admin
+    REJECTED = "REJECTED"        # Rejected by admin
+    SUSPENDED = "SUSPENDED"      # Suspended by admin
 
     @classmethod
     def choices(cls):
@@ -31,3 +38,11 @@ class VerificationStatus(str, Enum):
     @classmethod
     def choices(cls):
         return [(status.value, status.name) for status in cls]
+
+class AdminType(str, Enum):
+    SUPER_ADMIN = "SUPER_ADMIN"  # First admin with full permissions
+    SUB_ADMIN = "SUB_ADMIN"      # Admin created by super admin
+
+    @classmethod
+    def choices(cls):
+        return [(admin_type.value, admin_type.name) for admin_type in cls]
