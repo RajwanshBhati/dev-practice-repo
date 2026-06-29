@@ -6,7 +6,7 @@ from app.repositories.admin_repository import AdminRepository
 from app.models.profile import DoctorProfile
 from app.models.admin import AdminAuditLog
 from app.models.user import User
-from app.schemas.doctor import DoctorApproveRequest, DoctorRejectRequest
+from app.schemas.doctor import DoctorProfileUpdate, DoctorApproveRequest, DoctorRejectRequest
 from app.services.email_service import EmailService
 from shared.constants import ErrorMessages, SuccessMessages
 from shared.constants.roles import UserRole
@@ -24,6 +24,8 @@ class DoctorService:
         self.admin_repo = AdminRepository()
         self.email_service = EmailService()
 
+    # Get Doctor Profiles
+
     async def get_doctor_profile(self, user_id: str) -> Dict[str, Any]:
         """Get doctor profile by user ID"""
         doctor = await self.doctor_repo.find_by_user_id(user_id)
@@ -37,6 +39,101 @@ class DoctorService:
         if not doctor:
             raise ValueError(ErrorMessages.DOC_1301)
         return doctor
+
+    async def get_public_doctor_profile(self, doctor_id: str) -> Dict[str, Any]:
+        """Get public doctor profile for patients"""
+        doctor = await self.doctor_repo.find_by_id(doctor_id)
+        if not doctor:
+            raise ValueError(ErrorMessages.DOC_1301)
+
+        # Get user details
+        user = await self.user_repo.find_by_id(doctor.user_id)
+        if not user:
+            raise ValueError(ErrorMessages.USER_1101)
+
+        # Check if doctor is approved and active
+        if doctor.status != DoctorStatus.APPROVED:
+            raise ValueError(ErrorMessages.DOC_1306)
+
+        return {
+            "id": doctor.id,
+            "full_name": user.full_name,
+            "qualification": doctor.qualification,
+            "specialization": doctor.specialization,
+            "experience_years": doctor.experience_years,
+            "consultation_fee": doctor.consultation_fee,
+            "clinic_address": doctor.clinic_address,
+            "clinic_phone": doctor.clinic_phone,
+            "bio": doctor.bio,
+            "profile_picture": doctor.profile_picture,
+            "rating": doctor.rating,
+            "total_reviews": doctor.total_reviews,
+            "is_available": doctor.status == DoctorStatus.APPROVED
+        }
+
+    # Update Doctor Profile
+
+    async def update_doctor_profile(
+        self,
+        user_id: str,
+        update_data: DoctorProfileUpdate
+    ) -> Dict[str, Any]:
+        """Update doctor profile"""
+        # Get doctor profile
+        doctor = await self.doctor_repo.find_by_user_id(user_id)
+        if not doctor:
+            raise ValueError(ErrorMessages.DOC_1303)
+
+        # Check if doctor is approved
+        if doctor.status != DoctorStatus.APPROVED:
+            raise ValueError("Doctor must be approved to update profile")
+
+        # Prepare update data
+        update_dict = update_data.model_dump(exclude_unset=True)
+
+        if not update_dict:
+            raise ValueError("No fields to update")
+
+        # Update doctor profile
+        updated_doctor = await self.doctor_repo.update(doctor.id, update_dict)
+        if not updated_doctor:
+            raise ValueError(ErrorMessages.DOC_1301)
+
+        logger.info(f"Doctor profile updated: {user_id}")
+
+        return {
+            "message": SuccessMessages.PROFILE_UPDATED,
+            "doctor": updated_doctor
+        }
+
+    async def update_profile_picture(
+        self,
+        user_id: str,
+        profile_picture: str
+    ) -> Dict[str, Any]:
+        """Update doctor profile picture"""
+        # Get doctor profile
+        doctor = await self.doctor_repo.find_by_user_id(user_id)
+        if not doctor:
+            raise ValueError(ErrorMessages.DOC_1303)
+
+        # Update profile picture
+        updated_doctor = await self.doctor_repo.update(
+            doctor.id,
+            {"profile_picture": profile_picture}
+        )
+
+        if not updated_doctor:
+            raise ValueError(ErrorMessages.DOC_1301)
+
+        logger.info(f"Doctor profile picture updated: {user_id}")
+
+        return {
+            "message": "Profile picture updated successfully",
+            "profile_picture": profile_picture
+        }
+
+    # Doctor Approval
 
     async def get_pending_doctors(
         self,
@@ -194,6 +291,8 @@ class DoctorService:
             "doctor": updated_doctor
         }
 
+    # Doctor Statistics
+
     async def get_doctor_stats(self, admin_id: str) -> Dict[str, Any]:
         """Get doctor statistics for admin dashboard"""
         try:
@@ -218,4 +317,92 @@ class DoctorService:
                 "approved": 0,
                 "rejected": 0,
                 "suspended": 0
+            }
+
+    # Doctor Search
+
+    async def search_doctors(
+        self,
+        query: Optional[str] = None,
+        specialization: Optional[str] = None,
+        location: Optional[str] = None,
+        min_experience: Optional[int] = None,
+        max_fee: Optional[float] = None,
+        min_rating: Optional[float] = None,
+        limit: int = 20,
+        skip: int = 0
+    ) -> Dict[str, Any]:
+        """Search for approved doctors with filters"""
+        try:
+            # Get all approved doctors
+            doctors = await self.doctor_repo.get_doctors_by_status(DoctorStatus.APPROVED)
+
+            # Apply filters
+            filtered_doctors = []
+
+            for doctor in doctors:
+                # Get user details
+                user = await self.user_repo.find_by_id(doctor.user_id)
+                if not user:
+                    continue
+
+                # Apply search filters
+                if query:
+                    query_lower = query.lower()
+                    if query_lower not in user.full_name.lower() and \
+                       query_lower not in doctor.specialization.value.lower() and \
+                       query_lower not in doctor.qualification.lower():
+                        continue
+
+                if specialization and doctor.specialization.value != specialization:
+                    continue
+
+                if location and location.lower() not in doctor.clinic_address.lower():
+                    continue
+
+                if min_experience and doctor.experience_years < min_experience:
+                    continue
+
+                if max_fee and doctor.consultation_fee > max_fee:
+                    continue
+
+                if min_rating and doctor.rating < min_rating:
+                    continue
+
+                filtered_doctors.append({
+                    "id": doctor.id,
+                    "full_name": user.full_name,
+                    "qualification": doctor.qualification,
+                    "specialization": doctor.specialization,
+                    "experience_years": doctor.experience_years,
+                    "consultation_fee": doctor.consultation_fee,
+                    "clinic_address": doctor.clinic_address,
+                    "clinic_phone": doctor.clinic_phone,
+                    "bio": doctor.bio,
+                    "profile_picture": doctor.profile_picture,
+                    "rating": doctor.rating,
+                    "total_reviews": doctor.total_reviews,
+                    "is_available": True
+                })
+
+            # Apply pagination
+            total = len(filtered_doctors)
+            paginated = filtered_doctors[skip:skip + limit]
+
+            return {
+                "doctors": paginated,
+                "total": total,
+                "skip": skip,
+                "limit": limit,
+                "has_more": skip + limit < total
+            }
+
+        except Exception as e:
+            logger.error(f"Error searching doctors: {e}")
+            return {
+                "doctors": [],
+                "total": 0,
+                "skip": skip,
+                "limit": limit,
+                "has_more": False
             }

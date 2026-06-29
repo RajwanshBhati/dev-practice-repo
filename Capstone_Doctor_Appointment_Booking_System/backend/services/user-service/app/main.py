@@ -12,7 +12,7 @@ from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
 from app.core.database import db
 from app.core.config import settings
-from app.routes import auth_router, user_router, protected_router, admin_router
+from app.routes import auth_router, user_router, protected_router, admin_router,doctor_router
 import logging
 from datetime import datetime
 
@@ -103,6 +103,7 @@ app.include_router(auth_router)
 app.include_router(user_router)
 app.include_router(protected_router)
 app.include_router(admin_router)
+app.include_router(doctor_router)
 
 @app.get("/health", tags=["default"])
 async def health_check():
