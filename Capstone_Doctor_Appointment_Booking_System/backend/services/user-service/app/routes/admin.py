@@ -1,0 +1,256 @@
+from fastapi import APIRouter, HTTPException, Depends
+from typing import Optional, List
+from app.services.admin_service import AdminService
+from app.services.doctor_service import DoctorService
+from app.core.dependencies import get_current_admin, require_permission
+from app.schemas.admin import AdminCreateRequest
+from app.schemas.doctor import DoctorApproveRequest, DoctorRejectRequest
+from shared.constants import HttpStatus, Permission
+from shared.enums.user_enums import DoctorStatus
+import logging
+
+router = APIRouter(prefix="/api/v1/admin", tags=["admin"])
+logger = logging.getLogger(__name__)
+
+
+@router.post("/setup-first-admin")
+async def create_first_admin(admin_data: AdminCreateRequest):
+    """
+    Create the first super admin (only if no admin exists)
+    """
+    try:
+        admin_service = AdminService()
+        result = await admin_service.create_first_admin(admin_data)
+        return result
+    except ValueError as e:
+        raise HTTPException(status_code=HttpStatus.BAD_REQUEST, detail=str(e))
+    except Exception as e:
+        logger.error(f"First admin creation error: {str(e)}")
+        raise HTTPException(
+            status_code=HttpStatus.INTERNAL_SERVER_ERROR,
+            detail="Failed to create first admin"
+        )
+
+@router.post("/create-admin")
+async def create_admin(
+    admin_data: AdminCreateRequest,
+    current_admin: dict = Depends(require_permission(Permission.MANAGE_ADMINS))
+):
+    """
+    Create a new admin (requires super admin)
+    """
+    try:
+        admin_service = AdminService()
+        result = await admin_service.create_admin(
+            admin_data,
+            current_admin["user_id"]
+        )
+        return result
+    except ValueError as e:
+        raise HTTPException(status_code=HttpStatus.BAD_REQUEST, detail=str(e))
+    except Exception as e:
+        logger.error(f"Admin creation error: {str(e)}")
+        raise HTTPException(
+            status_code=HttpStatus.INTERNAL_SERVER_ERROR,
+            detail="Failed to create admin"
+        )
+
+@router.get("/admins")
+async def get_all_admins(
+    current_admin: dict = Depends(require_permission(Permission.MANAGE_ADMINS))
+):
+    """
+    Get all admin users
+    """
+    try:
+        admin_service = AdminService()
+        admins = await admin_service.get_all_admins()
+        return {"admins": admins}
+    except Exception as e:
+        logger.error(f"Error getting admins: {str(e)}")
+        raise HTTPException(
+            status_code=HttpStatus.INTERNAL_SERVER_ERROR,
+            detail="Failed to get admins"
+        )
+
+@router.delete("/admins/{admin_id}")
+async def delete_admin(
+    admin_id: str,
+    current_admin: dict = Depends(require_permission(Permission.MANAGE_ADMINS))
+):
+    """
+    Delete an admin (requires super admin)
+    """
+    try:
+        admin_service = AdminService()
+        result = await admin_service.delete_admin(
+            admin_id,
+            current_admin["user_id"]
+        )
+        return result
+    except ValueError as e:
+        raise HTTPException(status_code=HttpStatus.BAD_REQUEST, detail=str(e))
+    except Exception as e:
+        logger.error(f"Admin deletion error: {str(e)}")
+        raise HTTPException(
+            status_code=HttpStatus.INTERNAL_SERVER_ERROR,
+            detail="Failed to delete admin"
+        )
+
+# Doctor Management
+
+@router.get("/doctors/pending")
+async def get_pending_doctors(
+    limit: int = 100,
+    skip: int = 0,
+    current_admin: dict = Depends(require_permission(Permission.APPROVE_DOCTORS))
+):
+    """
+    Get all pending doctors for approval
+    """
+    try:
+        doctor_service = DoctorService()
+        doctors = await doctor_service.get_pending_doctors(
+            current_admin["user_id"],
+            limit,
+            skip
+        )
+        return {
+            "doctors": doctors,
+            "count": len(doctors)
+        }
+    except Exception as e:
+        logger.error(f"Error getting pending doctors: {str(e)}")
+        raise HTTPException(
+            status_code=HttpStatus.INTERNAL_SERVER_ERROR,
+            detail="Failed to get pending doctors"
+        )
+
+@router.get("/doctors")
+async def get_all_doctors(
+    status: Optional[DoctorStatus] = None,
+    limit: int = 100,
+    skip: int = 0,
+    current_admin: dict = Depends(require_permission(Permission.MANAGE_DOCTORS))
+):
+    """
+    Get all doctors with optional status filter
+    """
+    try:
+        doctor_service = DoctorService()
+        doctors = await doctor_service.get_all_doctors(
+            current_admin["user_id"],
+            limit,
+            skip,
+            status
+        )
+        return {
+            "doctors": doctors,
+            "count": len(doctors)
+        }
+    except Exception as e:
+        logger.error(f"Error getting doctors: {str(e)}")
+        raise HTTPException(
+            status_code=HttpStatus.INTERNAL_SERVER_ERROR,
+            detail="Failed to get doctors"
+        )
+
+@router.post("/doctors/{doctor_id}/approve")
+async def approve_doctor(
+    doctor_id: str,
+    approve_data: DoctorApproveRequest,
+    current_admin: dict = Depends(require_permission(Permission.APPROVE_DOCTORS))
+):
+    """
+    Approve a pending doctor
+    """
+    try:
+        doctor_service = DoctorService()
+        result = await doctor_service.approve_doctor(
+            doctor_id,
+            current_admin["user_id"],
+            approve_data
+        )
+        return result
+    except ValueError as e:
+        raise HTTPException(status_code=HttpStatus.BAD_REQUEST, detail=str(e))
+    except Exception as e:
+        logger.error(f"Doctor approval error: {str(e)}")
+        raise HTTPException(
+            status_code=HttpStatus.INTERNAL_SERVER_ERROR,
+            detail="Failed to approve doctor"
+        )
+
+@router.post("/doctors/{doctor_id}/reject")
+async def reject_doctor(
+    doctor_id: str,
+    reject_data: DoctorRejectRequest,
+    current_admin: dict = Depends(require_permission(Permission.REJECT_DOCTORS))
+):
+    """
+    Reject a pending doctor with reason
+    """
+    try:
+        doctor_service = DoctorService()
+        result = await doctor_service.reject_doctor(
+            doctor_id,
+            current_admin["user_id"],
+            reject_data
+        )
+        return result
+    except ValueError as e:
+        raise HTTPException(status_code=HttpStatus.BAD_REQUEST, detail=str(e))
+    except Exception as e:
+        logger.error(f"Doctor rejection error: {str(e)}")
+        raise HTTPException(
+            status_code=HttpStatus.INTERNAL_SERVER_ERROR,
+            detail="Failed to reject doctor"
+        )
+
+@router.get("/doctors/stats")
+async def get_doctor_stats(
+    current_admin: dict = Depends(require_permission(Permission.VIEW_STATISTICS))
+):
+    """
+    Get doctor statistics for admin dashboard
+    """
+    try:
+        doctor_service = DoctorService()
+        stats = await doctor_service.get_doctor_stats(current_admin["user_id"])
+        return stats
+    except Exception as e:
+        logger.error(f"Error getting doctor stats: {str(e)}")
+        raise HTTPException(
+            status_code=HttpStatus.INTERNAL_SERVER_ERROR,
+            detail="Failed to get doctor statistics"
+        )
+
+# Audit Logs
+
+@router.get("/audit-logs")
+async def get_audit_logs(
+    limit: int = 100,
+    skip: int = 0,
+    current_admin: dict = Depends(require_permission(Permission.VIEW_AUDIT_LOGS))
+):
+    """
+    Get admin audit logs
+    """
+    try:
+        from app.repositories.admin_repository import AdminRepository
+        admin_repo = AdminRepository()
+        logs = await admin_repo.get_audit_logs(
+            admin_id=current_admin["user_id"],
+            limit=limit,
+            skip=skip
+        )
+        return {
+            "logs": logs,
+            "count": len(logs)
+        }
+    except Exception as e:
+        logger.error(f"Error getting audit logs: {str(e)}")
+        raise HTTPException(
+            status_code=HttpStatus.INTERNAL_SERVER_ERROR,
+            detail="Failed to get audit logs"
+        )

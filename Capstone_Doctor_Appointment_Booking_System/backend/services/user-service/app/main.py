@@ -1,7 +1,7 @@
 import sys
 from pathlib import Path
 
-# Add backend to path at the very top
+# Add backend to path
 backend_path = Path(__file__).parent.parent.parent.parent
 if str(backend_path) not in sys.path:
     sys.path.insert(0, str(backend_path))
@@ -12,10 +12,9 @@ from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
 from app.core.database import db
 from app.core.config import settings
-from app.routes import auth_router, user_router, protected_router
+from app.routes import auth_router, user_router, protected_router, admin_router
 import logging
 from datetime import datetime
-
 
 # Configure logging
 logging.basicConfig(
@@ -29,6 +28,14 @@ async def lifespan(app: FastAPI):
     # Startup
     logger.info(f"Starting {settings.APP_NAME} v{settings.APP_VERSION}")
     await db.connect()
+
+    # Check if first admin exists
+    from app.services.admin_service import AdminService
+    admin_service = AdminService()
+    exists = await admin_service.check_first_admin_exists()
+    if not exists:
+        logger.warning("No admin found! Please create the first admin at /api/v1/admin/setup-first-admin")
+
     yield
     # Shutdown
     logger.info(f"Shutting down {settings.APP_NAME}")
@@ -37,11 +44,33 @@ async def lifespan(app: FastAPI):
 # Create FastAPI app
 app = FastAPI(
     title=settings.APP_NAME,
-    description="Authentication and User Management Service",
+    description="Authentication and User Management Service with Doctor Approval",
     version=settings.APP_VERSION,
-    docs_url="/docs" if settings.DEBUG else None,
-    redoc_url="/redoc" if settings.DEBUG else None,
-    lifespan=lifespan
+    docs_url="/docs",
+    redoc_url="/redoc",
+    lifespan=lifespan,
+    openapi_tags=[
+        {
+            "name": "authentication",
+            "description": "Authentication endpoints - Register, Login, Logout"
+        },
+        {
+            "name": "users",
+            "description": "User management endpoints"
+        },
+        {
+            "name": "protected",
+            "description": "Protected endpoints - Role & Permission based access"
+        },
+        {
+            "name": "admin",
+            "description": "Admin endpoints - Doctor approval, Admin management"
+        },
+        {
+            "name": "default",
+            "description": "Default endpoints - Health check"
+        }
+    ]
 )
 
 # CORS middleware
@@ -73,14 +102,26 @@ async def general_exception_handler(request: Request, exc: Exception):
 app.include_router(auth_router)
 app.include_router(user_router)
 app.include_router(protected_router)
+app.include_router(admin_router)
 
-@app.get("/health")
+@app.get("/health", tags=["default"])
 async def health_check():
+    """Health check endpoint"""
     return {
         "status": "healthy",
         "service": settings.SERVICE_NAME,
         "version": settings.APP_VERSION,
         "timestamp": datetime.utcnow().isoformat()
+    }
+
+@app.get("/", tags=["default"])
+async def root():
+    """Root endpoint"""
+    return {
+        "message": f"Welcome to {settings.APP_NAME}",
+        "version": settings.APP_VERSION,
+        "docs": "/docs",
+        "health": "/health"
     }
 
 if __name__ == "__main__":

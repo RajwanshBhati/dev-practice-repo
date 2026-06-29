@@ -33,11 +33,15 @@ class Permission(str, Enum):
 
     # Admin permissions
     MANAGE_DOCTORS = "MANAGE_DOCTORS"
+    APPROVE_DOCTORS = "APPROVE_DOCTORS"
+    REJECT_DOCTORS = "REJECT_DOCTORS"
     VIEW_STATISTICS = "VIEW_STATISTICS"
     MANAGE_USERS = "MANAGE_USERS"
     VIEW_ALL_APPOINTMENTS = "VIEW_ALL_APPOINTMENTS"
-    MANAGE_SYSTEM = "MANAGE_SYSTEM"  # Added this
+    MANAGE_SYSTEM = "MANAGE_SYSTEM"
     VIEW_AUDIT_LOGS = "VIEW_AUDIT_LOGS"
+    MANAGE_ADMINS = "MANAGE_ADMINS"
+    SEND_NOTIFICATIONS = "SEND_NOTIFICATIONS"
 
     # Common permissions
     VIEW_PROFILE = "VIEW_PROFILE"
@@ -79,10 +83,14 @@ ROLE_PERMISSIONS = {
         Permission.VIEW_DOCTOR_DETAILS,
         Permission.VIEW_APPOINTMENTS,
         Permission.MANAGE_DOCTORS,
+        Permission.APPROVE_DOCTORS,
+        Permission.REJECT_DOCTORS,
         Permission.VIEW_STATISTICS,
         Permission.MANAGE_USERS,
         Permission.VIEW_ALL_APPOINTMENTS,
         Permission.MANAGE_SYSTEM,
         Permission.VIEW_AUDIT_LOGS,
+        Permission.MANAGE_ADMINS,
+        Permission.SEND_NOTIFICATIONS,
     ]
 }

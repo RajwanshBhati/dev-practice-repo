@@ -29,11 +29,14 @@ async def register_patient(user_data: PatientRegister):
 @router.post("/register/doctor")
 async def register_doctor(user_data: DoctorRegister):
     """
-    Register a new doctor
+    Register a new doctor (requires admin approval)
+
+    After registration, doctor account will be in PENDING state.
+    Admin needs to approve the doctor before they can login.
     """
     try:
         auth_service = AuthService()
-        result = await auth_service.register_doctor(user_data)
+        result = await auth_service.register_doctor_with_approval(user_data)
         return result
     except ValueError as e:
         raise HTTPException(status_code=HttpStatus.BAD_REQUEST, detail=str(e))
@@ -47,11 +50,13 @@ async def register_doctor(user_data: DoctorRegister):
 @router.post("/login")
 async def login(login_data: UserLogin):
     """
-    Login user
+    Login user with status check
+
+    For doctors: Will check if account is approved before allowing login
     """
     try:
         auth_service = AuthService()
-        result = await auth_service.login(login_data)
+        result = await auth_service.login_with_status_check(login_data)
         return result
     except ValueError as e:
         raise HTTPException(status_code=HttpStatus.UNAUTHORIZED, detail=str(e))
