@@ -4,6 +4,23 @@ from shared.enums.doctor_enums import Specialization
 from shared.enums.user_enums import DoctorStatus
 from shared.utils.validators import Validators
 
+# Doctor Approval Schemas
+
+class DoctorApproveRequest(BaseModel):
+    """Doctor approval request schema"""
+    notes: Optional[str] = Field(None, max_length=500, description="Approval notes")
+
+class DoctorRejectRequest(BaseModel):
+    """Doctor rejection request schema"""
+    reason: str = Field(..., min_length=5, max_length=500, description="Rejection reason")
+
+class DoctorStatusUpdateRequest(BaseModel):
+    """Doctor status update request schema"""
+    status: DoctorStatus = Field(..., description="New doctor status")
+    reason: Optional[str] = Field(None, max_length=500, description="Status change reason")
+
+# Doctor Profile Schemas
+
 class DoctorProfileUpdate(BaseModel):
     """Doctor profile update schema"""
     qualification: Optional[str] = Field(None, min_length=2, max_length=100, description="Medical qualification")
@@ -22,6 +39,12 @@ class DoctorProfileUpdate(BaseModel):
             if not Validators.validate_phone(v):
                 raise ValueError('Clinic phone number must be 10-15 digits')
         return v
+
+class ProfilePictureUpdate(BaseModel):
+    """Profile picture update schema"""
+    profile_picture: str = Field(..., description="Profile picture URL")
+
+# Doctor Response Schemas
 
 class DoctorProfileResponse(BaseModel):
     """Doctor profile response schema"""
@@ -63,7 +86,3 @@ class DoctorProfilePublic(BaseModel):
     rating: float
     total_reviews: int
     is_available: bool = False
-
-class ProfilePictureUpdate(BaseModel):
-    """Profile picture update schema"""
-    profile_picture: str = Field(..., description="Profile picture URL")
