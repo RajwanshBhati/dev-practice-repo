@@ -18,6 +18,11 @@ class ErrorMessages:
     APP_1204 = "Cannot book appointment for past date"
     APP_1205 = "Cannot cancel appointment at this time"
     APP_1206 = "Appointment has already been completed"
+    APP_1207 = "Doctor is not available on this date"
+    APP_1208 = "No available slots found for the selected date"
+    APP_1209 = "Appointment time is outside working hours"
+    APP_1210 = "Cannot book appointment less than 2 hours in advance"
+    APP_1211 = "Concurrent booking attempt detected"
 
     DOC_1301 = "Doctor not found"
     DOC_1302 = "Doctor is not available"
