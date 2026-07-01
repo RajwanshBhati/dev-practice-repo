@@ -7,11 +7,11 @@ import logging
 logger = logging.getLogger(__name__)
 
 class JWTService:
-    """Enhanced JWT service with refresh token support"""
+    """Handles creating and decoding JWT access and refresh tokens."""
 
     @staticmethod
     def create_access_token(data: Dict[str, Any]) -> str:
-        """Create JWT access token"""
+        """Create a short-lived access token used to authenticate normal API requests."""
         to_encode = data.copy()
         expire = datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
 
@@ -26,7 +26,7 @@ class JWTService:
 
     @staticmethod
     def create_refresh_token(data: Dict[str, Any]) -> str:
-        """Create JWT refresh token"""
+        """Create a longer-lived refresh token used to get new access tokens without re-login."""
         to_encode = data.copy()
         expire = datetime.utcnow() + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
 
@@ -41,7 +41,7 @@ class JWTService:
 
     @staticmethod
     def decode_token(token: str) -> Dict[str, Any]:
-        """Decode and validate JWT token"""
+        """Decode a token and verify its signature/expiry. Raises ValueError if it's expired or invalid."""
         try:
             payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
             return payload

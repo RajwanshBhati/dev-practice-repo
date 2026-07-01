@@ -16,7 +16,11 @@ import logging
 logger = logging.getLogger(__name__)
 
 class DoctorService:
-    """Doctor management service with approval workflow"""
+    """
+    Everything related to doctor profiles: fetching them, letting doctors
+    edit their own info, running the admin approval/rejection workflow,
+    and searching/filtering the public doctor directory.
+    """
 
     def __init__(self):
         self.doctor_repo = DoctorRepository()
@@ -24,34 +28,33 @@ class DoctorService:
         self.admin_repo = AdminRepository()
         self.email_service = EmailService()
 
-    # Get Doctor Profiles
-
     async def get_doctor_profile(self, user_id: str) -> Dict[str, Any]:
-        """Get doctor profile by user ID"""
+        """Fetch a doctor's own profile using their linked user ID."""
         doctor = await self.doctor_repo.find_by_user_id(user_id)
         if not doctor:
             raise ValueError(ErrorMessages.DOC_1303)
         return doctor
 
     async def get_doctor_by_id(self, doctor_id: str) -> Dict[str, Any]:
-        """Get doctor profile by ID"""
+        """Fetch a doctor's profile by its own document ID."""
         doctor = await self.doctor_repo.find_by_id(doctor_id)
         if not doctor:
             raise ValueError(ErrorMessages.DOC_1301)
         return doctor
 
     async def get_public_doctor_profile(self, doctor_id: str) -> Dict[str, Any]:
-        """Get public doctor profile for patients"""
+        """
+        Return only the fields patients should see for a doctor, and only
+        if that doctor has actually been approved by an admin.
+        """
         doctor = await self.doctor_repo.find_by_id(doctor_id)
         if not doctor:
             raise ValueError(ErrorMessages.DOC_1301)
 
-        # Get user details
         user = await self.user_repo.find_by_id(doctor.user_id)
         if not user:
             raise ValueError(ErrorMessages.USER_1101)
 
-        # Check if doctor is approved and active
         if doctor.status != DoctorStatus.APPROVED:
             raise ValueError(ErrorMessages.DOC_1306)
 
@@ -71,30 +74,24 @@ class DoctorService:
             "is_available": doctor.status == DoctorStatus.APPROVED
         }
 
-    # Update Doctor Profile
-
     async def update_doctor_profile(
         self,
         user_id: str,
         update_data: DoctorProfileUpdate
     ) -> Dict[str, Any]:
-        """Update doctor profile"""
-        # Get doctor profile
+        """Let an already-approved doctor update their own profile fields."""
         doctor = await self.doctor_repo.find_by_user_id(user_id)
         if not doctor:
             raise ValueError(ErrorMessages.DOC_1303)
 
-        # Check if doctor is approved
         if doctor.status != DoctorStatus.APPROVED:
             raise ValueError("Doctor must be approved to update profile")
 
-        # Prepare update data
         update_dict = update_data.model_dump(exclude_unset=True)
 
         if not update_dict:
             raise ValueError("No fields to update")
 
-        # Update doctor profile
         updated_doctor = await self.doctor_repo.update(doctor.id, update_dict)
         if not updated_doctor:
             raise ValueError(ErrorMessages.DOC_1301)
@@ -111,13 +108,11 @@ class DoctorService:
         user_id: str,
         profile_picture: str
     ) -> Dict[str, Any]:
-        """Update doctor profile picture"""
-        # Get doctor profile
+        """Update just the doctor's profile picture URL."""
         doctor = await self.doctor_repo.find_by_user_id(user_id)
         if not doctor:
             raise ValueError(ErrorMessages.DOC_1303)
 
-        # Update profile picture
         updated_doctor = await self.doctor_repo.update(
             doctor.id,
             {"profile_picture": profile_picture}
@@ -133,15 +128,13 @@ class DoctorService:
             "profile_picture": profile_picture
         }
 
-    # Doctor Approval
-
     async def get_pending_doctors(
         self,
         admin_id: str,
         limit: int = 100,
         skip: int = 0
     ) -> List[Dict[str, Any]]:
-        """Get all pending doctors for admin approval"""
+        """Fetch doctors waiting on approval, for the admin review queue."""
         return await self.doctor_repo.get_pending_doctors(limit, skip)
 
     async def get_doctors_by_status(
@@ -150,7 +143,7 @@ class DoctorService:
         limit: int = 100,
         skip: int = 0
     ) -> List[Dict[str, Any]]:
-        """Get doctors by status"""
+        """Fetch doctors matching a given status."""
         return await self.doctor_repo.get_doctors_by_status(status, limit, skip)
 
     async def get_all_doctors(
@@ -160,7 +153,7 @@ class DoctorService:
         skip: int = 0,
         status: Optional[DoctorStatus] = None
     ) -> List[Dict[str, Any]]:
-        """Get all doctors with optional status filter"""
+        """Fetch all doctors, optionally narrowed down by status, for the admin dashboard."""
         return await self.doctor_repo.get_all_doctors(limit, skip, status)
 
     async def approve_doctor(
@@ -169,8 +162,11 @@ class DoctorService:
         admin_id: str,
         approve_data: DoctorApproveRequest
     ) -> Dict[str, Any]:
-        """Approve a doctor"""
-        # Get doctor profile
+        """
+        Approve a pending doctor: flips both the doctor profile and linked
+        user account to active, emails the doctor the good news, and logs
+        the action for audit purposes.
+        """
         doctor = await self.doctor_repo.find_by_id(doctor_id)
         if not doctor:
             raise ValueError(ErrorMessages.DOC_1301)
@@ -178,7 +174,6 @@ class DoctorService:
         if doctor.status != DoctorStatus.PENDING:
             raise ValueError(f"Doctor is already {doctor.status.value}")
 
-        # Update doctor status
         updated_doctor = await self.doctor_repo.update_status(
             doctor_id,
             DoctorStatus.APPROVED,
@@ -188,7 +183,6 @@ class DoctorService:
         if not updated_doctor:
             raise ValueError(ErrorMessages.DOC_1301)
 
-        # Update user status to ACTIVE
         user = await self.user_repo.find_by_id(doctor.user_id)
         if user:
             await self.user_repo.update(
@@ -196,14 +190,12 @@ class DoctorService:
                 {"status": UserStatus.ACTIVE}
             )
 
-        # Send approval email
         await self.email_service.send_doctor_approval_email(
             user.email,
             user.full_name,
             "APPROVED"
         )
 
-        # Create audit log
         audit_log = AdminAuditLog(
             admin_id=admin_id,
             admin_email=user.email,
@@ -232,8 +224,11 @@ class DoctorService:
         admin_id: str,
         reject_data: DoctorRejectRequest
     ) -> Dict[str, Any]:
-        """Reject a doctor"""
-        # Get doctor profile
+        """
+        Reject a pending doctor: marks the doctor profile and user account
+        accordingly, emails the doctor with the reason, and logs the action
+        for audit purposes.
+        """
         doctor = await self.doctor_repo.find_by_id(doctor_id)
         if not doctor:
             raise ValueError(ErrorMessages.DOC_1301)
@@ -241,7 +236,6 @@ class DoctorService:
         if doctor.status != DoctorStatus.PENDING:
             raise ValueError(f"Doctor is already {doctor.status.value}")
 
-        # Update doctor status
         updated_doctor = await self.doctor_repo.update_status(
             doctor_id,
             DoctorStatus.REJECTED,
@@ -252,7 +246,6 @@ class DoctorService:
         if not updated_doctor:
             raise ValueError(ErrorMessages.DOC_1301)
 
-        # Update user status to INACTIVE
         user = await self.user_repo.find_by_id(doctor.user_id)
         if user:
             await self.user_repo.update(
@@ -260,7 +253,6 @@ class DoctorService:
                 {"status": UserStatus.INACTIVE}
             )
 
-        # Send rejection email
         await self.email_service.send_doctor_approval_email(
             user.email,
             user.full_name,
@@ -268,7 +260,6 @@ class DoctorService:
             reject_data.reason
         )
 
-        # Create audit log
         audit_log = AdminAuditLog(
             admin_id=admin_id,
             admin_email=user.email,
@@ -291,12 +282,9 @@ class DoctorService:
             "doctor": updated_doctor
         }
 
-    # Doctor Statistics
-
     async def get_doctor_stats(self, admin_id: str) -> Dict[str, Any]:
-        """Get doctor statistics for admin dashboard"""
+        """Count doctors in each status bucket for the admin dashboard summary."""
         try:
-            # Get counts by status
             pending = len(await self.doctor_repo.get_doctors_by_status(DoctorStatus.PENDING))
             approved = len(await self.doctor_repo.get_doctors_by_status(DoctorStatus.APPROVED))
             rejected = len(await self.doctor_repo.get_doctors_by_status(DoctorStatus.REJECTED))
@@ -319,8 +307,6 @@ class DoctorService:
                 "suspended": 0
             }
 
-    # Doctor Search
-
     async def search_doctors(
         self,
         query: Optional[str] = None,
@@ -332,21 +318,21 @@ class DoctorService:
         limit: int = 20,
         skip: int = 0
     ) -> Dict[str, Any]:
-        """Search for approved doctors with filters"""
+        """
+        Search approved doctors in memory against the given filters (name/
+        specialization/qualification text match, location, experience, fee
+        cap, rating floor), then paginate the results.
+        """
         try:
-            # Get all approved doctors
             doctors = await self.doctor_repo.get_doctors_by_status(DoctorStatus.APPROVED)
 
-            # Apply filters
             filtered_doctors = []
 
             for doctor in doctors:
-                # Get user details
                 user = await self.user_repo.find_by_id(doctor.user_id)
                 if not user:
                     continue
 
-                # Apply search filters
                 if query:
                     query_lower = query.lower()
                     if query_lower not in user.full_name.lower() and \
@@ -385,7 +371,6 @@ class DoctorService:
                     "is_available": True
                 })
 
-            # Apply pagination
             total = len(filtered_doctors)
             paginated = filtered_doctors[skip:skip + limit]
 

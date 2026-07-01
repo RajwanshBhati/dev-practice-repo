@@ -1,6 +1,7 @@
 from enum import Enum
 
 class Specialization(str, Enum):
+    """Medical specializations a doctor can be registered under."""
     CARDIOLOGIST = "Cardiologist"
     DERMATOLOGIST = "Dermatologist"
     DENTIST = "Dentist"
@@ -19,13 +20,17 @@ class Specialization(str, Enum):
 
     @classmethod
     def choices(cls):
+        """Return (value, name) pairs, handy for dropdowns or model fields."""
         return [(spec.value, spec.name) for spec in cls]
 
     @classmethod
     def is_valid(cls, specialization: str) -> bool:
+        """Check if a given string is a valid specialization."""
         return specialization in cls._value2member_map_
 
+
 class ConsultationType(str, Enum):
+    """Nature of the consultation being booked."""
     FIRST = "FIRST"
     FOLLOW_UP = "FOLLOW_UP"
     EMERGENCY = "EMERGENCY"
@@ -33,4 +38,5 @@ class ConsultationType(str, Enum):
 
     @classmethod
     def choices(cls):
+        """Return (value, name) pairs, handy for dropdowns or model fields."""
         return [(type.value, type.name) for type in cls]

@@ -7,18 +7,18 @@ import logging
 logger = logging.getLogger(__name__)
 
 class RBAC:
-    """Role-Based Access Control utilities"""
+    """Helper methods to check whether a user's role grants certain permissions."""
 
     @staticmethod
     def has_permission(user_role: str, required_permission: Permission) -> bool:
-        """Check if user role has required permission"""
+        """Check if the given role includes this single permission."""
         if user_role not in ROLE_PERMISSIONS:
             return False
         return required_permission in ROLE_PERMISSIONS.get(UserRole(user_role), [])
 
     @staticmethod
     def has_any_permission(user_role: str, required_permissions: List[Permission]) -> bool:
-        """Check if user role has any of the required permissions"""
+        """Check if the given role includes at least one of the listed permissions."""
         if user_role not in ROLE_PERMISSIONS:
             return False
         user_permissions = ROLE_PERMISSIONS.get(UserRole(user_role), [])
@@ -26,7 +26,7 @@ class RBAC:
 
     @staticmethod
     def has_all_permissions(user_role: str, required_permissions: List[Permission]) -> bool:
-        """Check if user role has all required permissions"""
+        """Check if the given role includes every one of the listed permissions."""
         if user_role not in ROLE_PERMISSIONS:
             return False
         user_permissions = ROLE_PERMISSIONS.get(UserRole(user_role), [])

@@ -6,20 +6,24 @@ import logging
 logger = logging.getLogger(__name__)
 
 class Database:
+    """
+    Wraps the MongoDB connection as class-level state so the same client and
+    db instance can be reused across the app instead of opening a new
+    connection per request. AsyncIOMotorClient is used because the app runs
+    on FastAPI's async event loop, and a sync driver would block it.
+    """
     client: Optional[AsyncIOMotorClient] = None
     db = None
 
     @classmethod
     async def connect(cls):
-        """Connect to MongoDB"""
+        """Open the MongoDB connection, verify it's reachable, and set up indexes. Call this once on app startup."""
         try:
             cls.client = AsyncIOMotorClient(settings.MONGODB_URL)
             cls.db = cls.client[settings.DATABASE_NAME]
 
-            # Test connection
             await cls.client.admin.command('ping')
 
-            # Create indexes
             await cls._create_indexes()
 
             logger.info(f"Connected to MongoDB: {settings.DATABASE_NAME}")
@@ -30,16 +34,15 @@ class Database:
 
     @classmethod
     async def disconnect(cls):
-        """Disconnect from MongoDB"""
+        """Close the MongoDB connection cleanly. Call this on app shutdown."""
         if cls.client:
             cls.client.close()
             logger.info("Disconnected from MongoDB")
 
     @classmethod
     async def _create_indexes(cls):
-        """Create indexes for better performance"""
+        """Set up the indexes we rely on for fast lookups, like unique email and role filtering."""
         try:
-            # Users collection indexes
             await cls.db.users.create_index("email", unique=True)
             await cls.db.users.create_index("role")
             await cls.db.users.create_index("is_active")
@@ -50,7 +53,7 @@ class Database:
 
     @classmethod
     def get_db(cls):
-        """Get database instance"""
+        """Return the active database instance. Raises if connect() hasn't been called yet."""
         if cls.db is None:
             raise ValueError("Database not initialized. Call connect() first")
         return cls.db

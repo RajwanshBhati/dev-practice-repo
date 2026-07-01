@@ -2,12 +2,16 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from beanie import init_beanie
 from backend.middleware.config import settings
 
-# MongoDB Client
+"""
+AsyncIOMotorClient is used instead of the sync PyMongo client because the app
+is built on FastAPI, which runs on an async event loop.
+"""
 client = AsyncIOMotorClient(settings.MONGODB_URL)
 database = client[settings.DATABASE_NAME]
 
+
 async def init_database():
-    """Initialize database and create indexes"""
+    """Set up Beanie with our document models and make sure required indexes exist. Called once at app startup."""
     from backend.models.user import User
 
     await init_beanie(
@@ -15,6 +19,5 @@ async def init_database():
         document_models=[User]
     )
 
-    # Create indexes
     await User.ensure_indexes()
     print("User Service Database initialized successfully")

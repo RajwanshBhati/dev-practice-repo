@@ -9,13 +9,13 @@ import logging
 logger = logging.getLogger(__name__)
 
 class DoctorRepository:
-    """Repository for doctor operations"""
+    """Handles all database reads/writes for doctor profiles, including the approval workflow."""
 
     def __init__(self):
         self.collection = db.get_db().doctor_profiles
 
     async def create(self, doctor: DoctorProfile) -> DoctorProfile:
-        """Create a new doctor profile"""
+        """Insert a new doctor profile into the database and attach the generated ID back to it."""
         try:
             doctor_dict = doctor.model_dump(exclude={"id"}, by_alias=True)
             doctor_dict = {k: v for k, v in doctor_dict.items() if v is not None}
@@ -27,7 +27,7 @@ class DoctorRepository:
             raise
 
     async def find_by_user_id(self, user_id: str) -> Optional[DoctorProfile]:
-        """Find doctor profile by user ID"""
+        """Look up a doctor's profile using the linked User ID."""
         try:
             doctor_dict = await self.collection.find_one({"user_id": user_id})
             if doctor_dict:
@@ -39,7 +39,7 @@ class DoctorRepository:
             raise
 
     async def find_by_id(self, doctor_id: str) -> Optional[DoctorProfile]:
-        """Find doctor profile by ID"""
+        """Look up a doctor's profile by its own document ID."""
         try:
             if not ObjectId.is_valid(doctor_id):
                 return None
@@ -53,7 +53,7 @@ class DoctorRepository:
             raise
 
     async def update(self, doctor_id: str, update_data: dict) -> Optional[DoctorProfile]:
-        """Update doctor profile"""
+        """Apply a partial update to a doctor profile and return the refreshed document."""
         try:
             update_data["updated_at"] = datetime.utcnow()
             result = await self.collection.update_one(
@@ -74,7 +74,11 @@ class DoctorRepository:
         admin_id: Optional[str] = None,
         rejection_reason: Optional[str] = None
     ) -> Optional[DoctorProfile]:
-        """Update doctor status with approval/rejection"""
+        """
+        Move a doctor through the approval workflow. Approving stamps who
+        approved it and when, and clears any old rejection reason; rejecting
+        does the same on the rejection side, optionally storing why.
+        """
         try:
             update_data = {
                 "status": status,
@@ -103,7 +107,7 @@ class DoctorRepository:
             raise
 
     async def get_pending_doctors(self, limit: int = 100, skip: int = 0) -> List[DoctorProfile]:
-        """Get all pending doctors"""
+        """Fetch doctors still waiting on admin approval, paginated."""
         try:
             cursor = self.collection.find({"status": DoctorStatus.PENDING}).skip(skip).limit(limit)
             doctors = []
@@ -121,7 +125,7 @@ class DoctorRepository:
         limit: int = 100,
         skip: int = 0
     ) -> List[DoctorProfile]:
-        """Get doctors by status"""
+        """Fetch doctors matching a specific status, paginated."""
         try:
             cursor = self.collection.find({"status": status}).skip(skip).limit(limit)
             doctors = []
@@ -139,7 +143,7 @@ class DoctorRepository:
         skip: int = 0,
         status: Optional[DoctorStatus] = None
     ) -> List[DoctorProfile]:
-        """Get all doctors with optional status filter"""
+        """Fetch all doctors, optionally filtered by status, paginated."""
         try:
             query = {}
             if status:

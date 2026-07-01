@@ -6,7 +6,7 @@ from backend.enums.doctor_enums import Specialization
 from backend.enums.user_enums import DoctorStatus, VerificationStatus
 
 class PatientProfile(BaseDBModel):
-    """Patient profile model"""
+    """Extra patient-specific details linked to a User account, like medical history and emergency contact."""
     user_id: str = Field(..., description="Reference to User ID")
     emergency_contact: Optional[str] = Field(None, description="Emergency contact number")
     address: Optional[str] = Field(None, description="Home address")
@@ -17,8 +17,13 @@ class PatientProfile(BaseDBModel):
     class Config:
         collection = "patient_profiles"
 
+
 class DoctorProfile(BaseDBModel):
-    """Doctor profile model with approval workflow"""
+    """
+    Extra doctor-specific details linked to a User account, including
+    qualifications and clinic info, plus everything needed to track the
+    admin approval and verification workflow before a doctor goes live.
+    """
     user_id: str = Field(..., description="Reference to User ID")
     qualification: str = Field(..., min_length=2, description="Medical qualification")
     specialization: Specialization = Field(..., description="Medical specialization")
@@ -30,7 +35,6 @@ class DoctorProfile(BaseDBModel):
     bio: Optional[str] = Field(None, max_length=1000, description="Doctor biography")
     profile_picture: Optional[str] = Field(None, description="Profile picture URL")
 
-    # Approval fields
     status: DoctorStatus = Field(default=DoctorStatus.PENDING, description="Doctor approval status")
     verification_status: VerificationStatus = Field(default=VerificationStatus.PENDING, description="Verification status")
     approved_by: Optional[str] = Field(None, description="Admin ID who approved")
@@ -39,7 +43,6 @@ class DoctorProfile(BaseDBModel):
     rejected_at: Optional[datetime] = Field(None, description="Rejection timestamp")
     rejection_reason: Optional[str] = Field(None, max_length=500, description="Reason for rejection")
 
-    # Rating fields
     rating: float = Field(default=0.0, ge=0, le=5, description="Average rating")
     total_reviews: int = Field(default=0, description="Total number of reviews")
 

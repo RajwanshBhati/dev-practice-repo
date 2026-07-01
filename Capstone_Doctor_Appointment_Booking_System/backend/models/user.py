@@ -6,7 +6,7 @@ from backend.constants.roles import UserRole
 from backend.enums.user_enums import Gender, UserStatus
 
 class User(BaseDBModel):
-    """User model for authentication and user management"""
+    """Core account record for every user in the system, regardless of role (patient, doctor, or admin)."""
     email: EmailStr = Field(..., description="User email address")
     password_hash: str = Field(..., description="Hashed password")
     full_name: str = Field(..., min_length=2, description="Full name")

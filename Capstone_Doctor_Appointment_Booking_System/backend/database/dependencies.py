@@ -10,10 +10,11 @@ import logging
 security = HTTPBearer()
 logger = logging.getLogger(__name__)
 
+
 async def get_current_user(
     credentials: HTTPAuthorizationCredentials = Security(security)
 ) -> dict:
-    """Get current authenticated user from JWT token"""
+    """Extract and validate the JWT from the request, and return the logged-in user's info. Used as a dependency in protected routes."""
     try:
         auth_service = AuthService()
         user_info = await auth_service.validate_token(credentials.credentials)
@@ -30,8 +31,9 @@ async def get_current_user(
             detail=ErrorMessages.AUTH_1003
         )
 
+
 def require_permission(permission: Permission):
-    """Decorator factory for permission-based access control"""
+    """Build a dependency that only lets the request through if the user has the given permission."""
     def dependency(current_user: dict = Depends(get_current_user)):
         user_role = current_user.get("role")
         if not RBAC.has_permission(user_role, permission):
@@ -42,8 +44,9 @@ def require_permission(permission: Permission):
         return current_user
     return dependency
 
+
 def require_any_permission(permissions: List[Permission]):
-    """Decorator factory for OR permission-based access control"""
+    """Build a dependency that lets the request through if the user has at least one of the given permissions."""
     def dependency(current_user: dict = Depends(get_current_user)):
         user_role = current_user.get("role")
         if not RBAC.has_any_permission(user_role, permissions):
@@ -54,8 +57,9 @@ def require_any_permission(permissions: List[Permission]):
         return current_user
     return dependency
 
+
 def require_role(role: UserRole):
-    """Decorator factory for role-based access control"""
+    """Build a dependency that only lets the request through if the user has the given role."""
     def dependency(current_user: dict = Depends(get_current_user)):
         user_role = current_user.get("role")
         if user_role != role.value:
@@ -66,8 +70,9 @@ def require_role(role: UserRole):
         return current_user
     return dependency
 
+
 def require_any_role(roles: List[UserRole]):
-    """Decorator factory for OR role-based access control"""
+    """Build a dependency that lets the request through if the user has any one of the given roles."""
     def dependency(current_user: dict = Depends(get_current_user)):
         user_role = current_user.get("role")
         if user_role not in [r.value for r in roles]:
@@ -78,12 +83,11 @@ def require_any_role(roles: List[UserRole]):
         return current_user
     return dependency
 
-# Role-specific dependencies
+
 get_current_patient = require_role(UserRole.PATIENT)
 get_current_doctor = require_role(UserRole.DOCTOR)
 get_current_admin = require_role(UserRole.ADMIN)
 
-# Permission-based dependencies
 can_view_doctors = require_permission(Permission.VIEW_DOCTORS)
 can_book_appointment = require_permission(Permission.BOOK_APPOINTMENT)
 can_manage_availability = require_permission(Permission.MANAGE_AVAILABILITY)

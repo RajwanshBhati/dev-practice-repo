@@ -6,18 +6,20 @@ from backend.middleware.config import settings
 logger = logging.getLogger(__name__)
 
 class EmailService:
-    """Email service for sending notifications"""
+    """
+    Sends transactional emails to users. Right now this just logs the
+    email content instead of actually sending it — swap in a real email
+    provider here when one is wired up.
+    """
 
     @staticmethod
     async def send_doctor_approval_email(
         doctor_email: str,
         doctor_name: str,
-        status: str,  # "APPROVED" or "REJECTED"
+        status: str,
         rejection_reason: Optional[str] = None
     ) -> bool:
-        """
-        Send doctor approval/rejection email
-        """
+        """Notify a doctor that their account was approved or rejected, including the reason if rejected."""
         try:
             if status == "APPROVED":
                 subject = "Your Doctor Account Has Been Approved!"
@@ -64,9 +66,7 @@ Healthcare Team
         name: str,
         role: str
     ) -> bool:
-        """
-        Send account created confirmation email
-        """
+        """Let a newly registered user know their account was created and, if applicable, is awaiting approval."""
         try:
             subject = "Account Created Successfully"
             body = f"""
@@ -93,9 +93,7 @@ Healthcare Team
         name: str,
         role: str
     ) -> bool:
-        """
-        Send welcome email to new user
-        """
+        """Send a welcome email once a user's account is fully active and ready to use."""
         try:
             subject = "Welcome to Healthcare Platform!"
             body = f"""

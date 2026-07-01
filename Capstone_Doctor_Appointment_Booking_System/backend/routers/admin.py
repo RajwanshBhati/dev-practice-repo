@@ -18,9 +18,7 @@ logger = logging.getLogger(__name__)
 
 @router.post("/setup-first-admin")
 async def create_first_admin(admin_data: AdminCreateRequest):
-    """
-    Create the first super admin (only if no admin exists)
-    """
+    """Bootstrap endpoint for creating the very first super admin. Only works when no admin exists yet."""
     try:
         admin_service = AdminService()
         result = await admin_service.create_first_admin(admin_data)
@@ -34,14 +32,13 @@ async def create_first_admin(admin_data: AdminCreateRequest):
             detail="Failed to create first admin"
         )
 
+
 @router.post("/create-admin")
 async def create_admin(
     admin_data: AdminCreateRequest,
     current_admin: dict = Depends(require_permission(Permission.MANAGE_ADMINS))
 ):
-    """
-    Create a new admin (requires super admin)
-    """
+    """Create a new sub-admin. Only a super admin can call this."""
     try:
         admin_service = AdminService()
         result = await admin_service.create_admin(
@@ -58,13 +55,12 @@ async def create_admin(
             detail="Failed to create admin"
         )
 
+
 @router.get("/admins")
 async def get_all_admins(
     current_admin: dict = Depends(require_permission(Permission.MANAGE_ADMINS))
 ):
-    """
-    Get all admin users
-    """
+    """List every admin account in the system."""
     try:
         admin_service = AdminService()
         admins = await admin_service.get_all_admins()
@@ -76,14 +72,13 @@ async def get_all_admins(
             detail="Failed to get admins"
         )
 
+
 @router.delete("/admins/{admin_id}")
 async def delete_admin(
     admin_id: str,
     current_admin: dict = Depends(require_permission(Permission.MANAGE_ADMINS))
 ):
-    """
-    Delete an admin (requires super admin)
-    """
+    """Remove an admin account. Only a super admin can call this."""
     try:
         admin_service = AdminService()
         result = await admin_service.delete_admin(
@@ -100,7 +95,6 @@ async def delete_admin(
             detail="Failed to delete admin"
         )
 
-# Doctor Management
 
 @router.get("/doctors/pending")
 async def get_pending_doctors(
@@ -108,9 +102,7 @@ async def get_pending_doctors(
     skip: int = 0,
     current_admin: dict = Depends(require_permission(Permission.APPROVE_DOCTORS))
 ):
-    """
-    Get all pending doctors for approval
-    """
+    """List doctors still waiting on admin approval, paginated."""
     try:
         doctor_service = DoctorService()
         doctors = await doctor_service.get_pending_doctors(
@@ -129,6 +121,7 @@ async def get_pending_doctors(
             detail="Failed to get pending doctors"
         )
 
+
 @router.get("/doctors")
 async def get_all_doctors(
     status: Optional[DoctorStatus] = None,
@@ -136,9 +129,7 @@ async def get_all_doctors(
     skip: int = 0,
     current_admin: dict = Depends(require_permission(Permission.MANAGE_DOCTORS))
 ):
-    """
-    Get all doctors with optional status filter
-    """
+    """List all doctors, optionally filtered by approval status."""
     try:
         doctor_service = DoctorService()
         doctors = await doctor_service.get_all_doctors(
@@ -158,15 +149,14 @@ async def get_all_doctors(
             detail="Failed to get doctors"
         )
 
+
 @router.post("/doctors/{doctor_id}/approve")
 async def approve_doctor(
     doctor_id: str,
     approve_data: DoctorApproveRequest,
     current_admin: dict = Depends(require_permission(Permission.APPROVE_DOCTORS))
 ):
-    """
-    Approve a pending doctor
-    """
+    """Approve a doctor's registration so they can start using the platform."""
     try:
         doctor_service = DoctorService()
         result = await doctor_service.approve_doctor(
@@ -184,15 +174,14 @@ async def approve_doctor(
             detail="Failed to approve doctor"
         )
 
+
 @router.post("/doctors/{doctor_id}/reject")
 async def reject_doctor(
     doctor_id: str,
     reject_data: DoctorRejectRequest,
     current_admin: dict = Depends(require_permission(Permission.REJECT_DOCTORS))
 ):
-    """
-    Reject a pending doctor with reason
-    """
+    """Reject a doctor's registration, recording the reason given by the admin."""
     try:
         doctor_service = DoctorService()
         result = await doctor_service.reject_doctor(
@@ -210,13 +199,12 @@ async def reject_doctor(
             detail="Failed to reject doctor"
         )
 
+
 @router.get("/doctors/stats")
 async def get_doctor_stats(
     current_admin: dict = Depends(require_permission(Permission.VIEW_STATISTICS))
 ):
-    """
-    Get doctor statistics for admin dashboard
-    """
+    """Return aggregate doctor stats for the admin dashboard."""
     try:
         doctor_service = DoctorService()
         stats = await doctor_service.get_doctor_stats(current_admin["user_id"])
@@ -228,7 +216,6 @@ async def get_doctor_stats(
             detail="Failed to get doctor statistics"
         )
 
-# Audit Logs
 
 @router.get("/audit-logs")
 async def get_audit_logs(
@@ -236,9 +223,7 @@ async def get_audit_logs(
     skip: int = 0,
     current_admin: dict = Depends(require_permission(Permission.VIEW_AUDIT_LOGS))
 ):
-    """
-    Get admin audit logs
-    """
+    """Fetch the audit trail of admin actions, paginated."""
     try:
         from backend.repositories.admin_repository import AdminRepository
         admin_repo = AdminRepository()

@@ -7,11 +7,10 @@ import logging
 router = APIRouter(prefix="/api/v1/users", tags=["users"])
 logger = logging.getLogger(__name__)
 
+
 @router.get("/me")
 async def get_current_user_info(current_user: dict = Depends(get_current_user)):
-    """
-    Get current user information
-    """
+    """Return full profile details for whoever is currently logged in."""
     try:
         user_service = UserService()
         user = await user_service.get_user_by_id(current_user["user_id"])
@@ -35,14 +34,13 @@ async def get_current_user_info(current_user: dict = Depends(get_current_user)):
             detail="Failed to get user information"
         )
 
+
 @router.put("/me")
 async def update_current_user(
     update_data: dict,
     current_user: dict = Depends(get_current_user)
 ):
-    """
-    Update current user information
-    """
+    """Let the logged-in user update their own profile fields."""
     try:
         user_service = UserService()
         updated_user = await user_service.update_user(
@@ -67,14 +65,13 @@ async def update_current_user(
             detail="Failed to update user"
         )
 
+
 @router.get("/{user_id}")
 async def get_user_by_id(
     user_id: str,
     current_user: dict = Depends(get_current_admin)
 ):
-    """
-    Get user by ID (Admin only)
-    """
+    """Look up any user by ID. Restricted to admins."""
     try:
         user_service = UserService()
         user = await user_service.get_user_by_id(user_id)

@@ -1,5 +1,5 @@
 from typing import Dict, Any
-from datetime import datetime
+from datetime import datetime, timezone
 from backend.middleware.security import security
 from backend.middleware.jwt_service import jwt_service
 from backend.repositories.user_repository import UserRepository
@@ -20,23 +20,20 @@ import logging
 logger = logging.getLogger(__name__)
 
 class AuthService:
-    """Authentication service for user registration, login, and token management"""
+    """Core auth logic: registering patients and doctors, logging in, validating tokens, and logging out."""
 
     def __init__(self):
         self.user_repo = UserRepository()
         self.blacklist_repo = TokenBlacklistRepository()
 
     async def register_patient(self, user_data: PatientRegister) -> Dict[str, Any]:
-        """Register a new patient"""
-        # Check if user exists
+        """Create a new patient account and immediately log them in by issuing tokens."""
         existing_user = await self.user_repo.find_by_email(user_data.email)
         if existing_user:
             raise ValueError(ErrorMessages.USER_1102)
 
-        # Hash password
         password_hash = security.hash_password(user_data.password)
 
-        # Create user
         user = User(
             email=user_data.email,
             password_hash=password_hash,
@@ -50,13 +47,11 @@ class AuthService:
 
         created_user = await self.user_repo.create(user)
 
-        # Create patient profile
         patient_profile = PatientProfile(
             user_id=created_user.id
         )
         # TODO: Save patient profile
 
-        # Generate tokens
         token_data = {
             "sub": created_user.id,
             "email": created_user.email,
@@ -83,16 +78,17 @@ class AuthService:
         }
 
     async def register_doctor(self, user_data: DoctorRegister) -> Dict[str, Any]:
-        """Register a new doctor"""
-        # Check if user exists
+        """
+        Create a new doctor account and log them in right away. Unlike
+        register_doctor_with_approval, this skips the admin approval step,
+        so it's mainly useful for testing or seeding data.
+        """
         existing_user = await self.user_repo.find_by_email(user_data.email)
         if existing_user:
             raise ValueError(ErrorMessages.USER_1102)
 
-        # Hash password
         password_hash = security.hash_password(user_data.password)
 
-        # Create user
         user = User(
             email=user_data.email,
             password_hash=password_hash,
@@ -106,7 +102,6 @@ class AuthService:
 
         created_user = await self.user_repo.create(user)
 
-        # Create doctor profile
         doctor_profile = DoctorProfile(
             user_id=created_user.id,
             qualification=user_data.qualification,
@@ -118,7 +113,6 @@ class AuthService:
             bio=user_data.bio
         )
 
-        # Generate tokens
         token_data = {
             "sub": created_user.id,
             "email": created_user.email,
@@ -145,7 +139,7 @@ class AuthService:
         }
 
     async def login(self, login_data: UserLogin) -> Dict[str, Any]:
-        """Authenticate user and generate access token"""
+        """Verify email/password and issue a fresh pair of tokens. Simpler variant without doctor-approval checks."""
         user = await self.user_repo.find_by_email(login_data.email)
 
         if not user:
@@ -157,10 +151,8 @@ class AuthService:
         if user.status != UserStatus.ACTIVE:
             raise ValueError(ErrorMessages.AUTH_1004)
 
-        # Update last login
         await self.user_repo.update_last_login(user.id)
 
-        # Generate tokens
         token_data = {
             "sub": user.id,
             "email": user.email,
@@ -187,9 +179,12 @@ class AuthService:
         }
 
     async def validate_token(self, token: str) -> Dict[str, Any]:
-        """Validate JWT token and return user information"""
+        """
+        Decode a JWT, reject it if it's blacklisted or the user is no
+        longer active, and return the minimal user info other parts of the
+        app need for authorization checks.
+        """
         try:
-            # Check if token is blacklisted
             is_blacklisted = await self.blacklist_repo.is_blacklisted(token)
             if is_blacklisted:
                 raise ValueError("Token has been revoked")
@@ -220,16 +215,17 @@ class AuthService:
             raise ValueError(ErrorMessages.AUTH_1003)
 
     async def register_doctor_with_approval(self, user_data: DoctorRegister) -> Dict[str, Any]:
-        """Register a new doctor with pending approval"""
-        # Check if user exists
+        """
+        Create a doctor account that starts out PENDING on both the user
+        and doctor profile, so they can't log in until an admin approves
+        them. Sends a confirmation email once registration is done.
+        """
         existing_user = await self.user_repo.find_by_email(user_data.email)
         if existing_user:
             raise ValueError(ErrorMessages.USER_1102)
 
-        # Hash password
         password_hash = security.hash_password(user_data.password)
 
-        # Create user with PENDING status
         user = User(
             email=user_data.email,
             password_hash=password_hash,
@@ -238,12 +234,11 @@ class AuthService:
             gender=user_data.gender,
             date_of_birth=user_data.date_of_birth,
             role=UserRole.DOCTOR,
-            status=UserStatus.PENDING  # Pending approval
+            status=UserStatus.PENDING
         )
 
         created_user = await self.user_repo.create(user)
 
-        # Create doctor profile with PENDING status
         doctor_profile = DoctorProfile(
             user_id=created_user.id,
             qualification=user_data.qualification,
@@ -253,15 +248,13 @@ class AuthService:
             consultation_fee=user_data.consultation_fee,
             clinic_address=user_data.clinic_address,
             bio=user_data.bio,
-            status=DoctorStatus.PENDING  # Pending approval
+            status=DoctorStatus.PENDING
         )
 
-        # Save doctor profile
         from backend.repositories.doctor_repository import DoctorRepository
         doctor_repo = DoctorRepository()
         await doctor_repo.create(doctor_profile)
 
-        # Send account created email
         from .email_service import EmailService
         await EmailService.send_account_created_email(
             created_user.email,
@@ -284,7 +277,11 @@ class AuthService:
         }
 
     async def login_with_status_check(self, login_data: UserLogin) -> Dict[str, Any]:
-        """Login with status check for approval"""
+        """
+        Full login flow used by the app: verifies credentials, blocks
+        pending/inactive/suspended accounts, and for doctors specifically
+        also checks their separate approval status before letting them in.
+        """
         user = await self.user_repo.find_by_email(login_data.email)
 
         if not user:
@@ -293,7 +290,6 @@ class AuthService:
         if not security.verify_password(login_data.password, user.password_hash):
             raise ValueError(ErrorMessages.AUTH_1001)
 
-        # Check user status
         if user.status == UserStatus.PENDING:
             raise ValueError(ErrorMessages.AUTH_1006)
         elif user.status == UserStatus.INACTIVE:
@@ -301,7 +297,6 @@ class AuthService:
         elif user.status == UserStatus.SUSPENDED:
             raise ValueError("Account has been suspended")
 
-        # If doctor, check doctor status
         if user.role == UserRole.DOCTOR:
             from backend.repositories.doctor_repository import DoctorRepository
             doctor_repo = DoctorRepository()
@@ -314,10 +309,8 @@ class AuthService:
                 elif doctor.status == DoctorStatus.SUSPENDED:
                     raise ValueError("Doctor account has been suspended")
 
-        # Update last login
         await self.user_repo.update_last_login(user.id)
 
-        # Generate tokens
         token_data = {
             "sub": user.id,
             "email": user.email,
@@ -342,3 +335,34 @@ class AuthService:
                 "status": user.status.value
             }
         }
+
+    async def logout(self, user_id: str, access_token: str) -> Dict[str, Any]:
+        """Invalidate the given access token immediately by adding it to the blacklist until its natural expiry."""
+        try:
+            payload = jwt_service.decode_token(access_token)
+
+            exp = payload.get("exp")
+
+            if not exp:
+                raise ValueError("Invalid token")
+
+            expires_at = datetime.fromtimestamp(exp, tz=timezone.utc)
+
+            success = await self.blacklist_repo.add_to_blacklist(
+                token=access_token,
+                user_id=user_id,
+                expires_at=expires_at
+            )
+
+            if not success:
+                raise ValueError("Failed to blacklist token")
+
+            logger.info(f"User logged out successfully: {user_id}")
+
+            return {
+                "message": "Logout successful"
+            }
+
+        except Exception as e:
+            logger.error(f"Logout service error: {str(e)}")
+            raise

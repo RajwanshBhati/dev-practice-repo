@@ -18,10 +18,10 @@ router = APIRouter(prefix="/api/v1/protected", tags=["protected"])
 
 logger = logging.getLogger(__name__)
 
-# Endpoint accessible by any authenticated user
+
 @router.get("/profile", tags=["protected"])
 async def get_profile(current_user: dict = Depends(get_current_user)):
-    """Get user profile (any authenticated user)"""
+    """Return basic profile info for whoever is logged in, regardless of role."""
     try:
         user_service = UserService()
         user = await user_service.get_user_by_id(current_user["user_id"])
@@ -39,43 +39,43 @@ async def get_profile(current_user: dict = Depends(get_current_user)):
             detail="Failed to get profile"
         )
 
-# Endpoint accessible only by patients
+
 @router.get("/patient/dashboard", tags=["protected"])
 async def patient_dashboard(current_user: dict = Depends(get_current_patient)):
-    """Patient dashboard (patient only)"""
+    """Sample dashboard route restricted to patients only."""
     return {
         "message": "Welcome to patient dashboard",
         "user": current_user
     }
 
-# Endpoint accessible only by doctors
+
 @router.get("/doctor/dashboard", tags=["protected"])
 async def doctor_dashboard(current_user: dict = Depends(get_current_doctor)):
-    """Doctor dashboard (doctor only)"""
+    """Sample dashboard route restricted to doctors only."""
     return {
         "message": "Welcome to doctor dashboard",
         "user": current_user
     }
 
-# Endpoint accessible only by admins
+
 @router.get("/admin/dashboard", tags=["protected"])
 async def admin_dashboard(current_user: dict = Depends(get_current_admin)):
-    """Admin dashboard (admin only)"""
+    """Sample dashboard route restricted to admins only."""
     return {
         "message": "Welcome to admin dashboard",
         "user": current_user
     }
 
-# Endpoint with permission-based access
+
 @router.get("/doctors", tags=["protected"])
 async def view_doctors(current_user: dict = Depends(require_permission(Permission.VIEW_DOCTORS))):
-    """View doctors (requires VIEW_DOCTORS permission)"""
+    """Demo route showing permission-based access control in action."""
     return {
         "message": "List of doctors",
         "permission": "VIEW_DOCTORS"
     }
 
-# Endpoint with multiple permission check
+
 @router.post("/appointments", tags=["protected"])
 async def create_appointment(
     current_user: dict = Depends(require_any_permission([
@@ -83,16 +83,16 @@ async def create_appointment(
         Permission.MANAGE_SYSTEM
     ]))
 ):
-    """Create appointment (requires BOOK_APPOINTMENT or MANAGE_SYSTEM)"""
+    """Demo route showing OR-based permission checks (either permission is enough)."""
     return {
         "message": "Appointment created",
         "permissions": ["BOOK_APPOINTMENT", "MANAGE_SYSTEM"]
     }
 
-# Admin only user management
+
 @router.get("/admin/users", tags=["protected"])
 async def get_all_users(current_user: dict = Depends(get_current_admin)):
-    """Get all users (admin only)"""
+    """Admin-only route for listing all users."""
     try:
         return {"message": "List of all users"}
     except Exception as e:
@@ -102,12 +102,13 @@ async def get_all_users(current_user: dict = Depends(get_current_admin)):
             detail="Failed to get users"
         )
 
+
 @router.put("/admin/users/{user_id}/activate", tags=["protected"])
 async def activate_user(
     user_id: str,
     current_user: dict = Depends(require_permission(Permission.MANAGE_USERS))
 ):
-    """Activate user (requires MANAGE_USERS permission)"""
+    """Reactivate a previously deactivated user account."""
     try:
         user_service = UserService()
         await user_service.activate_user(user_id)
@@ -124,12 +125,13 @@ async def activate_user(
             detail="Failed to activate user"
         )
 
+
 @router.put("/admin/users/{user_id}/deactivate", tags=["protected"])
 async def deactivate_user(
     user_id: str,
     current_user: dict = Depends(require_permission(Permission.MANAGE_USERS))
 ):
-    """Deactivate user (requires MANAGE_USERS permission)"""
+    """Deactivate a user account, blocking their access without deleting data."""
     try:
         user_service = UserService()
         await user_service.deactivate_user(user_id)

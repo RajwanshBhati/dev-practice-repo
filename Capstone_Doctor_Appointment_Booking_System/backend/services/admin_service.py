@@ -14,16 +14,15 @@ import logging
 logger = logging.getLogger(__name__)
 
 class AdminService:
-    """Admin management service"""
+    """Handles admin account creation, deletion, and lookups, plus writes an audit log entry for every action taken."""
 
     def __init__(self):
         self.user_repo = UserRepository()
         self.admin_repo = AdminRepository()
 
     async def check_first_admin_exists(self) -> bool:
-        """Check if first admin already exists"""
+        """Check whether an admin account already exists anywhere in the system."""
         try:
-            # Check if any admin exists
             from backend.middleware.database import db
             collection = db.get_db().users
             admin = await collection.find_one({"role": UserRole.ADMIN})
@@ -33,21 +32,20 @@ class AdminService:
             return False
 
     async def create_first_admin(self, admin_data: AdminCreateRequest) -> Dict[str, Any]:
-        """Create the first super admin"""
-        # Check if admin already exists
+        """
+        Bootstrap the very first super admin account. Fails if an admin
+        already exists or if the email is already taken.
+        """
         exists = await self.check_first_admin_exists()
         if exists:
             raise ValueError(ErrorMessages.ADM_1405)
 
-        # Check if user exists
         existing_user = await self.user_repo.find_by_email(admin_data.email)
         if existing_user:
             raise ValueError(ErrorMessages.USER_1102)
 
-        # Hash password
         password_hash = security.hash_password(admin_data.password)
 
-        # Create admin user
         admin_user = User(
             email=admin_data.email,
             password_hash=password_hash,
@@ -63,7 +61,6 @@ class AdminService:
 
         created_admin = await self.user_repo.create(admin_user)
 
-        # Create audit log
         audit_log = AdminAuditLog(
             admin_id=created_admin.id,
             admin_email=created_admin.email,
@@ -95,21 +92,17 @@ class AdminService:
         admin_data: AdminCreateRequest,
         creator_id: str
     ) -> Dict[str, Any]:
-        """Create a new admin (by existing admin)"""
-        # Check if creator is first admin
+        """Create a new sub-admin. Only the first (super) admin is allowed to do this."""
         creator = await self.user_repo.find_by_id(creator_id)
         if not creator or not creator.is_first_admin:
             raise ValueError(ErrorMessages.ADM_1402)
 
-        # Check if user exists
         existing_user = await self.user_repo.find_by_email(admin_data.email)
         if existing_user:
             raise ValueError(ErrorMessages.USER_1102)
 
-        # Hash password
         password_hash = security.hash_password(admin_data.password)
 
-        # Create admin user
         admin_user = User(
             email=admin_data.email,
             password_hash=password_hash,
@@ -125,7 +118,6 @@ class AdminService:
 
         created_admin = await self.user_repo.create(admin_user)
 
-        # Create audit log
         audit_log = AdminAuditLog(
             admin_id=creator_id,
             admin_email=creator.email,
@@ -154,7 +146,7 @@ class AdminService:
         }
 
     async def get_all_admins(self) -> List[Dict[str, Any]]:
-        """Get all admin users"""
+        """List every admin account with basic display fields."""
         try:
             from backend.middleware.database import db
             collection = db.get_db().users
@@ -177,31 +169,29 @@ class AdminService:
             return []
 
     async def delete_admin(self, admin_id: str, deleter_id: str) -> Dict[str, Any]:
-        """Delete an admin (only super admin can delete)"""
-        # Check if deleter is first admin
+        """
+        Soft-delete an admin account. Only the super admin can do this, and
+        we refuse to delete the last remaining super admin so the system
+        never ends up with zero admins.
+        """
         deleter = await self.user_repo.find_by_id(deleter_id)
         if not deleter or not deleter.is_first_admin:
             raise ValueError(ErrorMessages.ADM_1402)
 
-        # Get admin to delete
         admin_to_delete = await self.user_repo.find_by_id(admin_id)
         if not admin_to_delete:
             raise ValueError(ErrorMessages.ADM_1401)
 
-        # Check if trying to delete the last super admin
         if admin_to_delete.is_first_admin:
-            # Count total admins
             admins = await self.get_all_admins()
             if len(admins) <= 1:
                 raise ValueError(ErrorMessages.ADM_1404)
 
-        # Delete admin (soft delete)
         await self.user_repo.update(
             admin_id,
             {"status": UserStatus.DELETED}
         )
 
-        # Create audit log
         audit_log = AdminAuditLog(
             admin_id=deleter_id,
             admin_email=deleter.email,

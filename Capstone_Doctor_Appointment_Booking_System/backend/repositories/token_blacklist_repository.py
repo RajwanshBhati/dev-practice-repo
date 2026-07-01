@@ -6,13 +6,17 @@ import logging
 logger = logging.getLogger(__name__)
 
 class TokenBlacklistRepository:
-    """Repository for token blacklist operations"""
+    """
+    Handles storing and checking blacklisted JWTs, so a token can be
+    invalidated immediately (e.g. on logout) instead of waiting for it
+    to naturally expire.
+    """
 
     def __init__(self):
         self.collection = db.get_db().token_blacklist
 
     async def add_to_blacklist(self, token: str, user_id: str, expires_at: datetime) -> bool:
-        """Add token to blacklist"""
+        """Add a token to the blacklist so it's rejected on future requests."""
         try:
             blacklist_entry = TokenBlacklist(
                 token=token,
@@ -27,7 +31,7 @@ class TokenBlacklistRepository:
             return False
 
     async def is_blacklisted(self, token: str) -> bool:
-        """Check if token is blacklisted"""
+        """Check whether a given token has been blacklisted."""
         try:
             entry = await self.collection.find_one({"token": token})
             return entry is not None
@@ -36,7 +40,7 @@ class TokenBlacklistRepository:
             return False
 
     async def clean_expired_tokens(self) -> int:
-        """Remove expired tokens from blacklist"""
+        """Delete blacklist entries for tokens that have already expired naturally, since they no longer need tracking."""
         try:
             result = await self.collection.delete_many({
                 "expires_at": {"$lt": datetime.utcnow()}

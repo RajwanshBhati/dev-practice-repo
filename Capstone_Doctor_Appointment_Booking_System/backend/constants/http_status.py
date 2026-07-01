@@ -1,11 +1,10 @@
 class HttpStatus:
-    # Success
+    """Standard HTTP status codes used for API responses."""
     OK = 200
     CREATED = 201
     ACCEPTED = 202
     NO_CONTENT = 204
 
-    # Client Error
     BAD_REQUEST = 400
     UNAUTHORIZED = 401
     FORBIDDEN = 403
@@ -13,6 +12,5 @@ class HttpStatus:
     CONFLICT = 409
     UNPROCESSABLE_ENTITY = 422
 
-    # Server Error
     INTERNAL_SERVER_ERROR = 500
     SERVICE_UNAVAILABLE = 503

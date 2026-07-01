@@ -20,13 +20,10 @@ from backend.enums.user_enums import DoctorStatus
 router = APIRouter(prefix="/api/v1/doctor", tags=["doctor"])
 logger = logging.getLogger(__name__)
 
-# Doctor Profile Management
 
 @router.get("/profile")
 async def get_doctor_profile(current_user: dict = Depends(get_current_doctor)):
-    """
-    Get doctor profile (Doctor only)
-    """
+    """Return the logged-in doctor's own profile."""
     try:
         doctor_service = DoctorService()
         profile = await doctor_service.get_doctor_profile(current_user["user_id"])
@@ -40,14 +37,13 @@ async def get_doctor_profile(current_user: dict = Depends(get_current_doctor)):
             detail="Failed to get doctor profile"
         )
 
+
 @router.put("/profile")
 async def update_doctor_profile(
     update_data: DoctorProfileUpdate,
     current_user: dict = Depends(get_current_doctor)
 ):
-    """
-    Update doctor profile (Doctor only)
-    """
+    """Let a doctor update their own profile details."""
     try:
         doctor_service = DoctorService()
         result = await doctor_service.update_doctor_profile(
@@ -64,14 +60,13 @@ async def update_doctor_profile(
             detail="Failed to update doctor profile"
         )
 
+
 @router.put("/profile-picture")
 async def update_profile_picture(
     picture_data: ProfilePictureUpdate,
     current_user: dict = Depends(get_current_doctor)
 ):
-    """
-    Update doctor profile picture (Doctor only)
-    """
+    """Let a doctor update their profile picture."""
     try:
         doctor_service = DoctorService()
         result = await doctor_service.update_profile_picture(
@@ -88,13 +83,10 @@ async def update_profile_picture(
             detail="Failed to update profile picture"
         )
 
-# Public Doctor Profile
 
 @router.get("/public/{doctor_id}")
 async def get_public_doctor_profile(doctor_id: str):
-    """
-    Get public doctor profile for patients
-    """
+    """Return a doctor's public-facing profile, for patients browsing doctors."""
     try:
         doctor_service = DoctorService()
         profile = await doctor_service.get_public_doctor_profile(doctor_id)
@@ -108,7 +100,6 @@ async def get_public_doctor_profile(doctor_id: str):
             detail="Failed to get doctor profile"
         )
 
-# Doctor Search
 
 @router.get("/search")
 async def search_doctors(
@@ -121,9 +112,7 @@ async def search_doctors(
     limit: int = Query(20, ge=1, le=100, description="Number of results per page"),
     skip: int = Query(0, ge=0, description="Number of results to skip")
 ):
-    """
-    Search for doctors with filters
-    """
+    """Search doctors by name/specialization/qualification with optional filters like location, fee, and rating."""
     try:
         doctor_service = DoctorService()
         results = await doctor_service.search_doctors(
@@ -144,31 +133,26 @@ async def search_doctors(
             detail="Failed to search doctors"
         )
 
-# Get All Specializations
 
 @router.get("/specializations")
 async def get_specializations():
-    """
-    Get all available specializations
-    """
+    """Return the full list of specializations doctors can register under, for populating filter dropdowns."""
     from backend.enums.doctor_enums import Specialization
     return {
         "specializations": [spec.value for spec in Specialization]
     }
 
-# Doctor Dashboard Stats
 
 @router.get("/stats")
 async def get_doctor_stats(current_user: dict = Depends(get_current_doctor)):
     """
-    Get doctor statistics for dashboard
+    Return dashboard stats for the logged-in doctor. Appointment counts are
+    placeholders for now until the appointment service is wired in.
     """
     try:
         doctor_service = DoctorService()
-        # Get doctor profile
         profile = await doctor_service.get_doctor_profile(current_user["user_id"])
 
-        # Return basic stats
         return {
             "total_patients": 0,
             "total_appointments": 0,

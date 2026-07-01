@@ -8,16 +8,15 @@ import logging
 logger = logging.getLogger(__name__)
 
 class UserRepository:
-    """Repository for user database operations"""
+    """Handles all database reads/writes for user accounts."""
 
     def __init__(self):
         self.collection = db.get_db().users
 
     async def create(self, user: User) -> User:
-        """Create a new user"""
+        """Insert a new user into the database and attach the generated ID back to it."""
         try:
             user_dict = user.model_dump(exclude={"id"}, by_alias=True)
-            # Remove None values
             user_dict = {k: v for k, v in user_dict.items() if v is not None}
             result = await self.collection.insert_one(user_dict)
             user.id = str(result.inserted_id)
@@ -27,14 +26,12 @@ class UserRepository:
             raise
 
     async def find_by_email(self, email: str) -> Optional[User]:
-        """Find user by email"""
+        """Look up a user by their email address, used mainly during login."""
         try:
             user_dict = await self.collection.find_one({"email": email})
             if user_dict:
-                # Convert ObjectId to string
                 if "_id" in user_dict:
                     user_dict["id"] = str(user_dict["_id"])
-                    # Remove _id to avoid conflict
                     del user_dict["_id"]
                 return User(**user_dict)
             return None
@@ -43,7 +40,7 @@ class UserRepository:
             raise
 
     async def find_by_id(self, user_id: str) -> Optional[User]:
-        """Find user by ID"""
+        """Look up a user by their document ID."""
         try:
             if not ObjectId.is_valid(user_id):
                 return None
@@ -58,7 +55,7 @@ class UserRepository:
             raise
 
     async def update(self, user_id: str, update_data: dict) -> Optional[User]:
-        """Update user"""
+        """Apply a partial update to a user and return the refreshed document."""
         try:
             update_data["updated_at"] = datetime.utcnow()
             result = await self.collection.update_one(
@@ -73,7 +70,7 @@ class UserRepository:
             raise
 
     async def update_last_login(self, user_id: str) -> bool:
-        """Update last login timestamp"""
+        """Stamp the user's last login time to now, e.g. right after a successful login."""
         try:
             result = await self.collection.update_one(
                 {"_id": ObjectId(user_id)},
@@ -85,7 +82,7 @@ class UserRepository:
             return False
 
     async def deactivate_user(self, user_id: str) -> bool:
-        """Deactivate user account"""
+        """Mark a user account as inactive, blocking further access without deleting their data."""
         try:
             from backend.enums.user_enums import UserStatus
             result = await self.collection.update_one(
@@ -98,7 +95,7 @@ class UserRepository:
             return False
 
     async def activate_user(self, user_id: str) -> bool:
-        """Activate user account"""
+        """Mark a previously deactivated user account as active again."""
         try:
             from backend.enums.user_enums import UserStatus
             result = await self.collection.update_one(

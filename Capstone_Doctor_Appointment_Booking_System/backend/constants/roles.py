@@ -1,20 +1,24 @@
 from enum import Enum
 
 class UserRole(str, Enum):
+    """Roles a user can have in the system: patient, doctor, or admin."""
     PATIENT = "PATIENT"
     DOCTOR = "DOCTOR"
     ADMIN = "ADMIN"
 
     @classmethod
     def choices(cls):
+        """Return (value, name) pairs, handy for dropdowns or model fields."""
         return [(role.value, role.name) for role in cls]
 
     @classmethod
     def is_valid(cls, role: str) -> bool:
+        """Check if a given string is a valid role."""
         return role in cls._value2member_map_
 
+
 class Permission(str, Enum):
-    # Patient permissions
+    """All individual permissions a user can be granted, grouped by role type."""
     VIEW_DOCTORS = "VIEW_DOCTORS"
     VIEW_DOCTOR_DETAILS = "VIEW_DOCTOR_DETAILS"
     BOOK_APPOINTMENT = "BOOK_APPOINTMENT"
@@ -23,7 +27,6 @@ class Permission(str, Enum):
     MAKE_PAYMENT = "MAKE_PAYMENT"
     VIEW_PAYMENT_HISTORY = "VIEW_PAYMENT_HISTORY"
 
-    # Doctor permissions
     MANAGE_AVAILABILITY = "MANAGE_AVAILABILITY"
     VIEW_APPOINTMENTS_DOCTOR = "VIEW_APPOINTMENTS_DOCTOR"
     UPDATE_APPOINTMENT_STATUS = "UPDATE_APPOINTMENT_STATUS"
@@ -31,7 +34,6 @@ class Permission(str, Enum):
     MANAGE_DOCTOR_PROFILE = "MANAGE_DOCTOR_PROFILE"
     VIEW_DOCTOR_STATS = "VIEW_DOCTOR_STATS"
 
-    # Admin permissions
     MANAGE_DOCTORS = "MANAGE_DOCTORS"
     APPROVE_DOCTORS = "APPROVE_DOCTORS"
     REJECT_DOCTORS = "REJECT_DOCTORS"
@@ -43,12 +45,12 @@ class Permission(str, Enum):
     MANAGE_ADMINS = "MANAGE_ADMINS"
     SEND_NOTIFICATIONS = "SEND_NOTIFICATIONS"
 
-    # Common permissions
     VIEW_PROFILE = "VIEW_PROFILE"
     UPDATE_PROFILE = "UPDATE_PROFILE"
     CHANGE_PASSWORD = "CHANGE_PASSWORD"
 
-# Role to permissions mapping
+
+"""Maps each role to the list of permissions it's allowed to use."""
 ROLE_PERMISSIONS = {
     UserRole.PATIENT: [
         Permission.VIEW_PROFILE,

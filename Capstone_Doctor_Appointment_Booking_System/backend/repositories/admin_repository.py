@@ -8,15 +8,14 @@ import logging
 logger = logging.getLogger(__name__)
 
 class AdminRepository:
-    """Repository for admin operations"""
+    """Handles database operations for admin audit logs and system-wide settings."""
 
     def __init__(self):
         self.logs_collection = db.get_db().admin_audit_logs
         self.settings_collection = db.get_db().system_settings
 
-
     async def create_audit_log(self, log: AdminAuditLog) -> AdminAuditLog:
-        """Create an admin audit log"""
+        """Save a new audit log entry recording an admin's action."""
         try:
             log_dict = log.model_dump(exclude={"id"}, by_alias=True)
             log_dict = {k: v for k, v in log_dict.items() if v is not None}
@@ -33,7 +32,7 @@ class AdminRepository:
         limit: int = 100,
         skip: int = 0
     ) -> List[AdminAuditLog]:
-        """Get admin audit logs"""
+        """Fetch audit logs, newest first, optionally filtered to a single admin."""
         try:
             query = {}
             if admin_id:
@@ -49,9 +48,8 @@ class AdminRepository:
             logger.error(f"Error getting audit logs: {e}")
             return []
 
-
     async def get_setting(self, key: str) -> Optional[dict]:
-        """Get system setting by key"""
+        """Fetch the current value of a system setting by its key."""
         try:
             setting_dict = await self.settings_collection.find_one({"key": key})
             if setting_dict:
@@ -67,7 +65,7 @@ class AdminRepository:
         value: dict,
         updated_by: str
     ) -> bool:
-        """Update system setting"""
+        """Update a system setting's value, creating it if it doesn't exist yet."""
         try:
             result = await self.settings_collection.update_one(
                 {"key": key},
