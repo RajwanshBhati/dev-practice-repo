@@ -10,13 +10,14 @@ from backend.schemas.request.admin_request import (
 from backend.schemas.request.doctor_request import DoctorApproveRequest, DoctorRejectRequest
 from backend.constants import HttpStatus, Permission
 from backend.enums.user_enums import DoctorStatus
+from backend.schemas.response.admin_response import AdminCreateResponse
 import logging
 
 router = APIRouter(prefix="/api/v1/admin", tags=["admin"])
 logger = logging.getLogger(__name__)
 
 
-@router.post("/setup-first-admin")
+@router.post("/setup-first-admin",response_model=AdminCreateResponse)
 async def create_first_admin(admin_data: AdminCreateRequest):
     """Bootstrap endpoint for creating the very first super admin. Only works when no admin exists yet."""
     try:
@@ -33,7 +34,7 @@ async def create_first_admin(admin_data: AdminCreateRequest):
         )
 
 
-@router.post("/create-admin")
+@router.post("/create-admin",response_model=AdminCreateResponse)
 async def create_admin(
     admin_data: AdminCreateRequest,
     current_admin: dict = Depends(require_permission(Permission.MANAGE_ADMINS))

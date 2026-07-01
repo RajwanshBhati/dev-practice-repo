@@ -9,6 +9,10 @@ from backend.schemas.request.admin_request import AdminCreateRequest
 from backend.constants import ErrorMessages, SuccessMessages
 from backend.constants.roles import UserRole
 from backend.enums.user_enums import UserStatus, AdminType
+from backend.schemas.response.admin_response import (
+    AdminResponse,
+    AdminCreateResponse
+)
 import logging
 
 logger = logging.getLogger(__name__)
@@ -31,7 +35,7 @@ class AdminService:
             logger.error(f"Error checking first admin: {e}")
             return False
 
-    async def create_first_admin(self, admin_data: AdminCreateRequest) -> Dict[str, Any]:
+    async def create_first_admin(self, admin_data: AdminCreateRequest) -> AdminCreateResponse:
         """
         Bootstrap the very first super admin account. Fails if an admin
         already exists or if the email is already taken.
@@ -76,22 +80,24 @@ class AdminService:
 
         logger.info(f"First admin created: {created_admin.email}")
 
-        return {
-            "message": SuccessMessages.ADMIN_CREATED,
-            "admin": {
-                "id": created_admin.id,
-                "email": created_admin.email,
-                "full_name": created_admin.full_name,
-                "role": created_admin.role.value,
-                "is_first_admin": created_admin.is_first_admin
-            }
-        }
+
+        return AdminCreateResponse(
+            message=SuccessMessages.ADMIN_CREATED,
+            admin=AdminResponse(
+                  id=created_admin.id,
+                  email=created_admin.email,
+                  full_name=created_admin.full_name,
+                  role=created_admin.role.value,
+                  is_first_admin=created_admin.is_first_admin
+            )
+        )
+
 
     async def create_admin(
         self,
         admin_data: AdminCreateRequest,
         creator_id: str
-    ) -> Dict[str, Any]:
+    ) -> AdminCreateResponse:
         """Create a new sub-admin. Only the first (super) admin is allowed to do this."""
         creator = await self.user_repo.find_by_id(creator_id)
         if not creator or not creator.is_first_admin:
@@ -134,16 +140,16 @@ class AdminService:
 
         logger.info(f"New admin created: {created_admin.email} by {creator.email}")
 
-        return {
-            "message": SuccessMessages.ADMIN_CREATED,
-            "admin": {
-                "id": created_admin.id,
-                "email": created_admin.email,
-                "full_name": created_admin.full_name,
-                "role": created_admin.role.value,
-                "is_first_admin": created_admin.is_first_admin
-            }
-        }
+        return AdminCreateResponse(
+            message=SuccessMessages.ADMIN_CREATED,
+            admin=AdminResponse(
+                id=created_admin.id,
+                email=created_admin.email,
+                full_name=created_admin.full_name,
+                role=created_admin.role.value,
+                is_first_admin=created_admin.is_first_admin
+            )
+        )
 
     async def get_all_admins(self) -> List[Dict[str, Any]]:
         """List every admin account with basic display fields."""
