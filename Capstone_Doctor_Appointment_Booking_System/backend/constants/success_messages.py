@@ -1,17 +1,16 @@
-class SuccessMessages:
+from enum import Enum
+
+class SuccessMessages(str, Enum):
     """Friendly confirmation messages shown to users after an action succeeds."""
     LOGIN_SUCCESS = "Login successful"
     REGISTRATION_SUCCESS = "Registration successful"
     LOGOUT_SUCCESS = "Logged out successfully"
-
     PROFILE_UPDATED = "Profile updated successfully"
     USER_ACTIVATED = "User activated successfully"
     USER_DEACTIVATED = "User deactivated successfully"
-
     APPOINTMENT_BOOKED = "Appointment booked successfully"
     APPOINTMENT_CANCELLED = "Appointment cancelled successfully"
     APPOINTMENT_COMPLETED = "Appointment marked as completed"
-
     DOCTOR_PROFILE_CREATED = "Doctor profile created successfully"
     DOCTOR_REGISTRATION_PENDING = "Doctor registered successfully. Please wait for admin approval."
     DOCTOR_APPROVED = "Doctor approved successfully"
@@ -19,13 +18,10 @@ class SuccessMessages:
     AVAILABILITY_ADDED = "Availability slot added successfully"
     AVAILABILITY_UPDATED = "Availability slot updated successfully"
     AVAILABILITY_DELETED = "Availability slot deleted successfully"
-
     ADMIN_CREATED = "Admin created successfully"
     ADMIN_DELETED = "Admin deleted successfully"
     SYSTEM_SETTINGS_UPDATED = "System settings updated successfully"
-
     PAYMENT_SUCCESS = "Payment successful"
     PAYMENT_REFUNDED = "Payment refunded successfully"
-
     EMAIL_SENT = "Email sent successfully"
     EMAIL_NOTIFICATION_SENT = "Notification email sent successfully"
