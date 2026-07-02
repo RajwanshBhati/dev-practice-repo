@@ -1,7 +1,7 @@
 from typing import Optional, List, Tuple
 from datetime import datetime
 from bson import ObjectId
-from backend.middleware.database import get_db
+from backend.middleware.database import db
 from backend.models.availability import Availability
 import logging
 
@@ -18,7 +18,7 @@ class AvailabilityRepository:
 
     def __init__(self):
         """Initialize the repository with the availabilities collection."""
-        self.collection = get_db().availabilities
+        self.collection = db.get_db().availabilities
 
     async def create(self, availability: Availability) -> Availability:
         """

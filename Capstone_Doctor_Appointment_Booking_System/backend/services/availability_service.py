@@ -13,7 +13,7 @@ from backend.schemas.response.availability_response import (
     AvailabilityDeleteResponse
 )
 from backend.constants import ErrorMessages, SuccessMessages
-from backend.constants.status import DoctorStatus
+from backend.enums.user_enums import DoctorStatus
 import logging
 
 logger = logging.getLogger(__name__)

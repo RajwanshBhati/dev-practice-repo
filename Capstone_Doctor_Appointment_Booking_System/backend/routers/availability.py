@@ -6,7 +6,7 @@ from backend.schemas.request.availability_request import (
     AvailabilityCreateRequest,
     AvailabilityUpdateRequest
 )
-from backend.constants.status import HttpStatus
+from backend.constants.http_status import HttpStatus
 from backend.constants.error_messages import ErrorMessages
 import logging
 
@@ -73,7 +73,6 @@ async def get_doctor_availability_slots(
                 "date": date
             }
         else:
-            # Get all slots with pagination
             result = await service.get_doctor_slots(
                 current_user["user_id"],
                 limit,
