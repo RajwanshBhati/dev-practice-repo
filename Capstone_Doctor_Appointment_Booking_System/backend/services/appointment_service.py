@@ -297,3 +297,54 @@ class AppointmentService:
             "appointment_id": appt_id
         }
 
+    async def update_appointment_status(
+        self,
+        appt_id: str,
+        doctor_id: str,
+        update_data: AppointmentUpdateRequest
+    ) -> Dict[str, Any]:
+        """Update appointment status (doctor only)."""
+        appointment = await self.appointment_repo.get_appointment_by_id(appt_id)
+        if not appointment:
+            raise ValueError(ErrorMessages.APP_1201)
+
+        if appointment.doctor_id != doctor_id:
+            raise ValueError(ErrorMessages.AUTH_1005)
+
+        # Validate status transition
+        valid_transitions = {
+            AppointmentStatus.SCHEDULED: [AppointmentStatus.CONFIRMED, AppointmentStatus.CANCELLED],
+            AppointmentStatus.CONFIRMED: [AppointmentStatus.COMPLETED, AppointmentStatus.NO_SHOW, AppointmentStatus.CANCELLED],
+            AppointmentStatus.COMPLETED: [],
+            AppointmentStatus.CANCELLED: [],
+            AppointmentStatus.NO_SHOW: [],
+            AppointmentStatus.RESCHEDULED: [AppointmentStatus.CONFIRMED, AppointmentStatus.CANCELLED]
+        }
+
+        current = appointment.status
+        new_status = update_data.status
+
+        if new_status not in valid_transitions.get(current, []):
+            raise ValueError(f"Cannot transition from {current.value} to {new_status.value}")
+
+        await self.appointment_repo.update_appointment(
+            appt_id,
+            {
+                "status": new_status.value,
+                "notes": update_data.notes
+            }
+        )
+
+        logger.info(f"Appointment status updated: {appt_id} to {new_status.value}")
+
+        return {
+            "message": f"Appointment marked as {new_status.value}",
+            "appointment_id": appt_id
+        }
+
+    async def get_appointment_stats(
+        self,
+        doctor_id: Optional[str] = None
+    ) -> Dict[str, Any]:
+        """Get appointment statistics."""
+        return await self.appointment_repo.get_appointment_stats(doctor_id)
