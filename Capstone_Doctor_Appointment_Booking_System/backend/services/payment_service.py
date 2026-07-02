@@ -260,6 +260,92 @@ class PaymentService:
             payment=response
         )
 
+    async def get_payment_status(self, payment_id: str) -> PaymentResponse:
+        """
+        Get payment status by payment ID.
+
+        Args:
+            payment_id: ID of the payment
+
+        Returns:
+            PaymentResponse: Payment details
+
+        Raises:
+            ValueError: If payment not found
+        """
+        payment = await self.payment_repo.find_by_payment_id(payment_id)
+        if not payment:
+            raise ValueError(ErrorMessages.PAY_1502)
+
+        return PaymentResponse(
+            id=payment.id,
+            payment_id=payment.payment_id,
+            transaction_id=payment.transaction_id,
+            appointment_id=payment.appointment_id,
+            patient_id=payment.patient_id,
+            doctor_id=payment.doctor_id,
+            amount=payment.amount,
+            method=payment.method,
+            status=payment.status,
+            card_last_four=payment.card_last_four,
+            upi_id=payment.upi_id,
+            refund_id=payment.refund_id,
+            refund_reason=payment.refund_reason,
+            created_at=payment.created_at.isoformat(),
+            updated_at=payment.updated_at.isoformat()
+        )
+
+    async def get_patient_payments(
+        self,
+        patient_id: str,
+        limit: int = 20,
+        skip: int = 0
+    ) -> Dict[str, Any]:
+        """
+        Get all payments for a patient.
+
+        Args:
+            patient_id: ID of the patient
+            limit: Number of results per page
+            skip: Number of results to skip
+
+        Returns:
+            Dict: List of payments with pagination
+        """
+        payments, total = await self.payment_repo.get_payments_by_patient(
+            patient_id, limit, skip
+        )
+
+        payment_responses = [
+            PaymentResponse(
+                id=p.id,
+                payment_id=p.payment_id,
+                transaction_id=p.transaction_id,
+                appointment_id=p.appointment_id,
+                patient_id=p.patient_id,
+                doctor_id=p.doctor_id,
+                amount=p.amount,
+                method=p.method,
+                status=p.status,
+                card_last_four=p.card_last_four,
+                upi_id=p.upi_id,
+                refund_id=p.refund_id,
+                refund_reason=p.refund_reason,
+                created_at=p.created_at.isoformat(),
+                updated_at=p.updated_at.isoformat()
+            )
+            for p in payments
+        ]
+
+        return {
+            "payments": payment_responses,
+            "total": total,
+            "page": (skip // limit) + 1 if limit > 0 else 1,
+            "per_page": limit,
+            "total_pages": (total + limit - 1) // limit if limit > 0 else 1
+        }
+
+    async def get_revenue_stats(self, doctor_id: Optional[str] = None) -> Dict[str, Any]:
         """
         Get revenue statistics.
 
