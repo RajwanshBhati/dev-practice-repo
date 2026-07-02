@@ -1,16 +1,11 @@
 from datetime import datetime
 from typing import Optional
-from backend.middleware.database import db
 from backend.constants.status import AppointmentStatus, PaymentStatus
-
 
 class Appointment:
     """
     Appointment model representing patient bookings with doctors.
     """
-
-    collection = db.get_db().appointments
-
     def __init__(
         self,
         patient_id: str,

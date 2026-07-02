@@ -13,7 +13,8 @@ from backend.schemas.request.appointment_request import (
     AppointmentRescheduleRequest
 )
 from backend.constants import ErrorMessages, SuccessMessages
-from backend.constants.status import AppointmentStatus, DoctorStatus
+from backend.constants.status import AppointmentStatus
+from backend.enums.user_enums import DoctorStatus
 import logging
 
 logger = logging.getLogger(__name__)
