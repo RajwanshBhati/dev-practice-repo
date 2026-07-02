@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field, validator
 from typing import Optional
-from backend.constants.status import PaymentMethod
+from backend.enums.payment_enums import PaymentMethod
 
 
 class PaymentInitiateRequest(BaseModel):

@@ -1,14 +1,14 @@
 from datetime import datetime
 from typing import Optional
 from backend.middleware.database import db
-from backend.constants.status import PaymentStatus, PaymentMethod
+from backend.constants.status import PaymentStatus
+from backend.enums.payment_enums import PaymentMethod
 
 
 class Payment:
     """
     Payment model representing payment transactions.
     """
-    collection = db.get_db().payments
 
     def __init__(
         self,

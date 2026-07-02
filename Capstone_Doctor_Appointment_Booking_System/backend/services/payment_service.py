@@ -3,7 +3,7 @@ from datetime import datetime
 import random
 import asyncio
 from backend.repositories.payment_repository import PaymentRepository
-from backend.repositories.appointment_repository import AppointmentRepository
+# from backend.repositories.appointment_repository import AppointmentRepository
 from backend.models.payment import Payment
 from backend.schemas.request.payment_request import (
     PaymentInitiateRequest,
@@ -17,7 +17,8 @@ from backend.schemas.response.payment_response import (
     PaymentRefundResponse
 )
 from backend.constants import ErrorMessages, SuccessMessages
-from backend.constants.status import PaymentStatus, PaymentMethod, AppointmentStatus
+from backend.constants.status import PaymentStatus, AppointmentStatus
+from backend.enums.payment_enums import PaymentMethod
 from backend.utils.helpers import Helpers
 import logging
 

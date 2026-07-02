@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional
-from backend.constants.status import PaymentStatus, PaymentMethod
+from backend.constants.status import PaymentStatus
+from backend.enums.payment_enums import PaymentMethod
 
 
 class PaymentResponse(BaseModel):
