@@ -2,7 +2,6 @@ from typing import Optional, List, Tuple
 from datetime import datetime
 from bson import ObjectId
 from backend.middleware.database import db
-from backend.models.availability import Availability
 from backend.models.appointment import Appointment
 from backend.constants.status import AppointmentStatus
 import logging
