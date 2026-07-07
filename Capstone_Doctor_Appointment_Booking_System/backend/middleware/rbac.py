@@ -1,0 +1,33 @@
+from fastapi import HTTPException
+from typing import List, Optional
+from backend.constants.roles import UserRole, Permission, ROLE_PERMISSIONS
+from backend.constants import HttpStatus
+import logging
+
+logger = logging.getLogger(__name__)
+
+class RBAC:
+    """Helper methods to check whether a user's role grants certain permissions."""
+
+    @staticmethod
+    def has_permission(user_role: str, required_permission: Permission) -> bool:
+        """Check if the given role includes this single permission."""
+        if user_role not in ROLE_PERMISSIONS:
+            return False
+        return required_permission in ROLE_PERMISSIONS.get(UserRole(user_role), [])
+
+    @staticmethod
+    def has_any_permission(user_role: str, required_permissions: List[Permission]) -> bool:
+        """Check if the given role includes at least one of the listed permissions."""
+        if user_role not in ROLE_PERMISSIONS:
+            return False
+        user_permissions = ROLE_PERMISSIONS.get(UserRole(user_role), [])
+        return any(perm in user_permissions for perm in required_permissions)
+
+    @staticmethod
+    def has_all_permissions(user_role: str, required_permissions: List[Permission]) -> bool:
+        """Check if the given role includes every one of the listed permissions."""
+        if user_role not in ROLE_PERMISSIONS:
+            return False
+        user_permissions = ROLE_PERMISSIONS.get(UserRole(user_role), [])
+        return all(perm in user_permissions for perm in required_permissions)
