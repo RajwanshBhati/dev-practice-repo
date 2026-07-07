@@ -3,7 +3,8 @@ from datetime import datetime
 import random
 import asyncio
 from backend.repositories.payment_repository import PaymentRepository
-# from backend.repositories.appointment_repository import AppointmentRepository
+from backend.repositories.appointment_repository import AppointmentRepository
+from backend.repositories.doctor_repository import DoctorRepository
 from backend.models.payment import Payment
 from backend.schemas.request.payment_request import (
     PaymentInitiateRequest,
@@ -29,6 +30,7 @@ class PaymentService:
     def __init__(self):
         self.payment_repo = PaymentRepository()
         self.appointment_repo = AppointmentRepository()
+        self.doctor_repo = DoctorRepository()
 
     async def initiate_payment(
         self,
