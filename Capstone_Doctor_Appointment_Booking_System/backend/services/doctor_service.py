@@ -60,6 +60,7 @@ class DoctorService:
 
         return {
             "id": doctor.id,
+            "user_id": doctor.user_id,
             "full_name": user.full_name,
             "qualification": doctor.qualification,
             "specialization": doctor.specialization,
@@ -357,6 +358,7 @@ class DoctorService:
 
                 filtered_doctors.append({
                     "id": doctor.id,
+                    "user_id": doctor.user_id,
                     "full_name": user.full_name,
                     "qualification": doctor.qualification,
                     "specialization": doctor.specialization,
