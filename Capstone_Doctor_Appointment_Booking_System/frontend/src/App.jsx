@@ -4,6 +4,9 @@ import { AuthProvider } from './context/AuthContext';
 import PrivateRoute from './components/common/PrivateRoute';
 import Navbar from './components/common/Navbar';
 import ForgotPassword from './components/auth/ForgotPassword';
+import DoctorSearch from './components/patient/DoctorSearch';
+import DoctorDetails from './components/patient/DoctorDetails';
+import BookAppointment from './components/patient/BookAppointment';
 
 // Auth Components
 import Login from './components/auth/Login';
@@ -35,7 +38,22 @@ function App() {
                   <Home />
                 </PrivateRoute>
               } />
+              <Route path="/search-doctors" element={
+                <PrivateRoute allowedRoles={['PATIENT']}>
+                  <DoctorSearch />
+                </PrivateRoute>
+              } />
 
+               <Route path="/doctors/:doctorId" element={
+                <PrivateRoute allowedRoles={['PATIENT']}>
+                  <DoctorDetails />
+                </PrivateRoute>
+              } />
+              <Route path="/book-appointment/:doctorId" element={
+                <PrivateRoute allowedRoles={['PATIENT']}>
+                  <BookAppointment />
+                </PrivateRoute>
+              } />
               <Route path="/forgot-password" element={<ForgotPassword />} />
             </Routes>
           </main>
