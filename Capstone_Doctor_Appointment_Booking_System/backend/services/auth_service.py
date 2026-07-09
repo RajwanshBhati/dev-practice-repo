@@ -1,5 +1,6 @@
 from typing import Dict, Any
 from datetime import datetime, timezone
+from Capstone_Doctor_Appointment_Booking_System.backend.schemas.response.doctor_response import DoctorRegistrationResponse, DoctorUserResponse, DoctorUserResponse
 from backend.middleware.security import security
 from backend.middleware.jwt_service import jwt_service
 from backend.repositories.user_repository import UserRepository
@@ -13,7 +14,7 @@ from backend.schemas.request.user_request import (
 
 from backend.schemas.request.auth_request import UserLogin
 from backend.constants import ErrorMessages, SuccessMessages
-from backend.constants.roles import UserRole
+from Capstone_Doctor_Appointment_Booking_System.backend.enums.roles import UserRole
 from backend.enums.user_enums import UserStatus, DoctorStatus
 import logging
 
@@ -110,7 +111,7 @@ class AuthService:
             license_number=user_data.license_number,
             consultation_fee=user_data.consultation_fee,
             clinic_address=user_data.clinic_address,
-            bio=user_data.bio
+            profile_bio=user_data.bio
         )
 
         token_data = {
@@ -264,17 +265,17 @@ class AuthService:
 
         logger.info(f"Doctor registered with pending approval: {created_user.email}")
 
-        return {
-            "message": SuccessMessages.DOCTOR_REGISTRATION_PENDING,
-            "user": {
-                "id": created_user.id,
-                "email": created_user.email,
-                "full_name": created_user.full_name,
-                "role": created_user.role.value,
-                "status": created_user.status.value,
-                "doctor_status": doctor_profile.status.value
-            }
-        }
+        return DoctorRegistrationResponse(
+            message=SuccessMessages.DOCTOR_REGISTRATION_PENDING,
+            user=DoctorUserResponse (
+                id=created_user.id,
+                email=created_user.email,
+                full_name=created_user.full_name,
+                role=created_user.role.value,
+                status=created_user.status.value,
+                doctor_status=doctor_profile.status.value
+            )
+        )
 
     async def login_with_status_check(self, login_data: UserLogin) -> Dict[str, Any]:
         """

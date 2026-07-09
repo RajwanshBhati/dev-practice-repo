@@ -3,7 +3,7 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from typing import List
 from backend.services.auth_service import AuthService
 from backend.constants import HttpStatus, ErrorMessages
-from backend.constants.roles import UserRole, Permission
+from Capstone_Doctor_Appointment_Booking_System.backend.enums.roles import UserRole, Permission
 import logging
 
 security = HTTPBearer()
