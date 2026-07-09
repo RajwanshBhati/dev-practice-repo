@@ -13,9 +13,6 @@ import RegisterDoctor from './components/auth/RegisterDoctor';
 // Patient Components
 import Home from './components/patient/Home';
 
-// Pages
-import NotFound from './pages/NotFound';
-
 import './styles/global.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
