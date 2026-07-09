@@ -3,6 +3,7 @@ import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
 import PrivateRoute from './components/common/PrivateRoute';
 import Navbar from './components/common/Navbar';
+import ForgotPassword from './components/auth/ForgotPassword';
 
 // Auth Components
 import Login from './components/auth/Login';
@@ -38,8 +39,7 @@ function App() {
                 </PrivateRoute>
               } />
 
-              {/* 404 Page */}
-              <Route path="*" element={<NotFound />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
             </Routes>
           </main>
           <Toaster

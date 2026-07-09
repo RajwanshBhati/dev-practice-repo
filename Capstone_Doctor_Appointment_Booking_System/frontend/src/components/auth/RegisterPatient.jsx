@@ -1,11 +1,15 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { registerPatient } from '../../api/auth';
-import { isValidEmail, isValidPhone, isValidPassword, getPasswordError } from '../../utils/validators';
+import { isValidEmail, isValidPhone, isValidPassword, getPasswordError, isValidAge } from '../../utils/validators';
 import { Form, Button, Card, Container, Row, Col } from 'react-bootstrap';
 import toast from 'react-hot-toast';
 import { FaUser, FaUserMd } from 'react-icons/fa';
 import { BiShow, BiHide } from 'react-icons/bi';
+import PasswordRequirements from '../common/PasswordRequirements';
+import { Spinner } from 'react-bootstrap';
+
+
 
 const RegisterPatient = () => {
   const navigate = useNavigate();
@@ -46,7 +50,9 @@ const RegisterPatient = () => {
     }
 
     if (!formData.date_of_birth) {
-      newErrors.date_of_birth = 'Please select your date of birth';
+     newErrors.date_of_birth = 'Please select your date of birth';
+     } else if (!isValidAge(formData.date_of_birth, 13)) {
+      newErrors.date_of_birth = 'You must be at least 13 years old to register';
     }
 
     if (!formData.password) {
@@ -106,6 +112,7 @@ const RegisterPatient = () => {
                 </div>
 
                 <Form onSubmit={handleSubmit} noValidate>
+                  <fieldset disabled={loading}>
                   <Row>
                     <Col md={6}>
                       <Form.Group className="mb-3">
@@ -227,6 +234,7 @@ const RegisterPatient = () => {
                             {showPassword ? <BiHide /> : <BiShow />}
                           </span>
                         </div>
+                        <PasswordRequirements password={formData.password} />
                         <Form.Control.Feedback type="invalid">
                           {errors.password}
                         </Form.Control.Feedback>
@@ -261,6 +269,7 @@ const RegisterPatient = () => {
                       onChange={() => setShowPassword(!showPassword)}
                     />
                   </Form.Group>
+                  </fieldset>
 
                   <Button
                     type="submit"
@@ -268,7 +277,12 @@ const RegisterPatient = () => {
                     className="w-100 py-3 fw-semibold"
                     disabled={loading}
                   >
-                    {loading ? 'Creating Account...' : 'Create Patient Account'}
+                    {loading ? (
+                     <>
+                    <Spinner animation="border" size="sm" className="me-2" />
+                    Signing in...
+                     </>
+                    ) : 'Sign in'}
                   </Button>
                 </Form>
               </Card.Body>

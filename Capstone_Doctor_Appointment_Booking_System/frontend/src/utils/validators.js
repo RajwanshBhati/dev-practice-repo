@@ -85,3 +85,57 @@ export const getPasswordError = (password) => {
     }
     return '';
 };
+
+/**
+ * Calculate age in years from a date of birth string.
+ * @param {string} dob - Date of birth (YYYY-MM-DD, from <input type="date">)
+ * @returns {number} Age in years
+ */
+export const calculateAge = (dob) => {
+    const birthDate = new Date(dob);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+    return age;
+};
+
+/**
+ * Check whether a date of birth meets a minimum age requirement.
+ * @param {string} dob
+ * @param {number} minAge
+ * @returns {boolean}
+ */
+export const isValidAge = (dob, minAge) => {
+    if (!dob) return false;
+    return calculateAge(dob) >= minAge;
+};
+
+/**
+ * List of password requirements with individual test functions.
+ * Used to show a live checklist to the user instead of one error at a time.
+ */
+export const PASSWORD_REQUIREMENTS = [
+    { id: 'length', label: '8-12 characters', test: (p) => p.length >= 8 && p.length <= 12 },
+    { id: 'uppercase', label: 'One uppercase letter (A-Z)', test: (p) => /[A-Z]/.test(p) },
+    { id: 'lowercase', label: 'One lowercase letter (a-z)', test: (p) => /[a-z]/.test(p) },
+    { id: 'digit', label: 'One digit (0-9)', test: (p) => /[0-9]/.test(p) },
+    { id: 'special', label: 'One special character (!@#$%^&* etc.)', test: (p) => /[!@#$%^&*(),.?":{}|<>]/.test(p) },
+];
+
+/**
+ * Get a checklist showing which password requirements are met.
+ * @param {string} password
+ * @returns {Array<{id:string, label:string, met:boolean}>}
+ */
+export const getPasswordChecklist = (password) =>
+    PASSWORD_REQUIREMENTS.map((req) => ({
+        id: req.id,
+        label: req.label,
+        met: req.test(password || ''),
+    }));
+
+
+

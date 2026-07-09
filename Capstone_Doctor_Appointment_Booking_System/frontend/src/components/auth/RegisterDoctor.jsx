@@ -1,10 +1,13 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { registerDoctor } from '../../api/auth';
-import { isValidEmail, isValidPhone, isValidPassword, getPasswordError } from '../../utils/validators';
+import { isValidEmail, isValidPhone, isValidPassword, getPasswordError, isValidAge } from '../../utils/validators';
 import { SPECIALIZATIONS } from '../../utils/constants';
 import { Form, Button, Card, Container, Row, Col } from 'react-bootstrap';
+import PasswordRequirements from '../common/PasswordRequirements';
 import toast from 'react-hot-toast';
+import { Spinner } from 'react-bootstrap';
+
 import {
   FaUser,
   FaStethoscope,
@@ -59,8 +62,10 @@ const RegisterDoctor = () => {
     }
 
     if (!formData.date_of_birth) {
-      newErrors.date_of_birth = 'Please select your date of birth';
-    }
+     newErrors.date_of_birth = 'Please select your date of birth';
+     } else if (!isValidAge(formData.date_of_birth, 18)) {
+       newErrors.date_of_birth = 'Doctors must be at least 18 years old';
+     }
 
     if (!formData.password) {
       newErrors.password = 'Please enter a password';
@@ -146,6 +151,7 @@ const RegisterDoctor = () => {
                 </div>
 
                 <Form onSubmit={handleSubmit} noValidate>
+                  <fieldset disabled={loading}>
                   {/* Personal Information Section */}
                   <h5 className="section-title mb-3" style={{ fontSize: '1.1rem', fontWeight: 600, color: '#2d3748', borderBottom: '3px solid #4a90d9', paddingBottom: '0.5rem', display: 'inline-block' }}>
                     <FaUser className="me-2" /> Personal Information
@@ -272,6 +278,7 @@ const RegisterDoctor = () => {
                             {showPassword ? <BiHide size={20} /> : <BiShow size={20} />}
                           </span>
                         </div>
+                        <PasswordRequirements password={formData.password} />
                         <Form.Control.Feedback type="invalid">
                           {errors.password}
                         </Form.Control.Feedback>
@@ -448,7 +455,7 @@ const RegisterDoctor = () => {
                       style={{ padding: '0.75rem 1rem', borderRadius: '10px', border: '2px solid #e2e8f0' }}
                     />
                   </Form.Group>
-
+                  </fieldset>
                   <Button
                     type="submit"
                     variant="success"
@@ -456,7 +463,12 @@ const RegisterDoctor = () => {
                     style={{ borderRadius: '10px', fontSize: '1rem', background: 'linear-gradient(135deg, #48bb78, #38a169)', border: 'none' }}
                     disabled={loading}
                   >
-                    {loading ? 'Creating Account...' : 'Create Doctor Account'}
+                     {loading ? (
+                      <>
+                     <Spinner animation="border" size="sm" className="me-2" />
+                     Signing in...
+                     </>
+                     ) : 'Sign in'}
                   </Button>
                 </Form>
               </Card.Body>

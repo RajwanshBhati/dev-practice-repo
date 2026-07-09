@@ -1,4 +1,31 @@
 import axiosInstance from './axios';
+import { isValidEmail, isValidPhone, isValidPassword } from '../utils/validators';
+
+/**
+ * Basic client-side guard before hitting the registration endpoints.
+ * Throws a plain Error with a user-friendly message if something is invalid.
+ * This is a defense-in-depth check — the actual form components already
+ * validate and show inline errors; this just protects the API layer too.
+ *
+ * @param {Object} data
+ */
+const assertValidRegistration = (data) => {
+    if (!data.full_name || data.full_name.trim().length < 2) {
+        throw new Error('Full name must be at least 2 characters');
+    }
+    if (!isValidEmail(data.email)) {
+        throw new Error('Please enter a valid email address');
+    }
+    if (!isValidPhone(data.phone)) {
+        throw new Error('Please enter a valid phone number');
+    }
+    if (!isValidPassword(data.password)) {
+        throw new Error('Password does not meet the required strength rules');
+    }
+    if (data.password !== data.confirm_password) {
+        throw new Error('Passwords do not match');
+    }
+};
 
 /**
  * Register a new patient.
@@ -15,6 +42,7 @@ import axiosInstance from './axios';
  * @returns {Promise} API response with user data and tokens
  */
 export const registerPatient = async (data) => {
+    assertValidRegistration(data);
     const response = await axiosInstance.post('/auth/register/patient', data);
     return response.data;
 };
@@ -42,6 +70,7 @@ export const registerPatient = async (data) => {
  * @returns {Promise} API response with user data and tokens
  */
 export const registerDoctor = async (data) => {
+    assertValidRegistration(data);
     const response = await axiosInstance.post('/auth/register/doctor', data);
     return response.data;
 };
@@ -57,6 +86,12 @@ export const registerDoctor = async (data) => {
  * @returns {Promise} API response with user data and tokens
  */
 export const loginUser = async (data) => {
+    if (!isValidEmail(data.email)) {
+        throw new Error('Please enter a valid email address');
+    }
+    if (!data.password) {
+        throw new Error('Please enter your password');
+    }
     const response = await axiosInstance.post('/auth/login', data);
     return response.data;
 };
@@ -83,5 +118,33 @@ export const logoutUser = async (accessToken) => {
  */
 export const validateToken = async () => {
     const response = await axiosInstance.post('/auth/validate-token');
+    return response.data;
+};
+
+/**
+ * Request a password reset link/email.
+ * @param {string} email
+ */
+export const forgotPassword = async (email) => {
+    if (!isValidEmail(email)) {
+        throw new Error('Please enter a valid email address');
+    }
+    const response = await axiosInstance.post('/auth/forgot-password', { email });
+    return response.data;
+};
+
+/**
+ * Reset password using the token received via email.
+ * @param {string} token
+ * @param {string} password
+ */
+export const resetPassword = async (token, password) => {
+    if (!token) {
+        throw new Error('Reset token is missing or invalid');
+    }
+    if (!isValidPassword(password)) {
+        throw new Error('Password does not meet the required strength rules');
+    }
+    const response = await axiosInstance.post('/auth/reset-password', { token, password });
     return response.data;
 };
