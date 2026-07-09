@@ -1,0 +1,54 @@
+/**
+ * User roles available in the system.
+ * These roles determine what features and pages a user can access.
+ */
+export const ROLES = {
+    PATIENT: 'PATIENT',
+    DOCTOR: 'DOCTOR',
+    ADMIN: 'ADMIN',
+};
+
+/**
+ * Gender options for user registration.
+ */
+export const GENDERS = ['Male', 'Female', 'Other'];
+
+/**
+ * Medical specializations for doctor registration.
+ */
+export const SPECIALIZATIONS = [
+    'Cardiologist',
+    'Dermatologist',
+    'Dentist',
+    'Neurologist',
+    'Orthopedic',
+    'Pediatrician',
+    'Psychiatrist',
+    'Radiologist',
+    'Surgeon',
+    'Urologist',
+    'Gynecologist',
+    'Ophthalmologist',
+    'ENT Specialist',
+    'General Physician',
+    'Other',
+];
+
+/**
+ * API base URL.
+ * This is the base URL for all API calls.
+ */
+export const API_URL =
+    import.meta.env.VITE_API_URL || "http://localhost:8000/api/v1";
+
+/**
+ * Password validation rules.
+ */
+export const PASSWORD_RULES = {
+    MIN_LENGTH: 8,
+    MAX_LENGTH: 12,
+    REQUIRE_UPPERCASE: true,
+    REQUIRE_LOWERCASE: true,
+    REQUIRE_DIGIT: true,
+    REQUIRE_SPECIAL: true,
+};
