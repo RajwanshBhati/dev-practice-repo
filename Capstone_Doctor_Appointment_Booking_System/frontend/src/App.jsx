@@ -15,6 +15,7 @@ import RegisterDoctor from './components/auth/RegisterDoctor';
 
 // Patient Components
 import Home from './components/patient/Home';
+import MyAppointments from './components/patient/MyAppointments';
 
 import './styles/global.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -54,6 +55,12 @@ function App() {
                   <BookAppointment />
                 </PrivateRoute>
               } />
+
+              <Route path="/my-appointments" element={
+                <PrivateRoute allowedRoles={['PATIENT']}>
+                 <MyAppointments />
+                </PrivateRoute>
+                 } />
               <Route path="/forgot-password" element={<ForgotPassword />} />
             </Routes>
           </main>
