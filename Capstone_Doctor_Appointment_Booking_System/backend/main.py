@@ -4,7 +4,7 @@ from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
 from backend.middleware.database import db
 from backend.middleware.config import settings
-from backend.routers import auth_router, user_router, protected_router, admin_router, doctor_router
+from backend.routers import auth_router, user_router, protected_router, admin_router, doctor_router, availability_router,appointments_router,payments_router
 import logging
 from datetime import datetime
 
@@ -95,6 +95,9 @@ app.include_router(user_router)
 app.include_router(protected_router)
 app.include_router(admin_router)
 app.include_router(doctor_router)
+app.include_router(availability_router, prefix="/api/v1", tags=["availability"])
+app.include_router(appointments_router, prefix="/api/v1", tags=["appointments"])
+app.include_router(payments_router, prefix="/api/v1", tags=["payments"])
 
 @app.get("/health", tags=["default"])
 async def health_check():
