@@ -106,3 +106,44 @@ export const PAYMENT_STATUS_LABELS = {
     FAILED: 'Failed',
     REFUNDED: 'Refunded',
 };
+
+/**
+ * Slot duration options.
+ */
+export const SLOT_DURATIONS = [
+    { label: '30 minutes', value: 30 },
+    { label: '45 minutes', value: 45 },
+    { label: '60 minutes', value: 60 },
+];
+
+/**
+ * Working hours.
+ */
+export const WORKING_HOURS = {
+    START: 9,
+    END: 18,
+};
+
+/**
+ * Appointment status options for doctor actions.
+ */
+export const STATUS_OPTIONS = [
+    { value: 'SCHEDULED', label: 'Scheduled' },
+    { value: 'CONFIRMED', label: 'Confirmed' },
+    { value: 'COMPLETED', label: 'Completed' },
+    { value: 'CANCELLED', label: 'Cancelled' },
+    { value: 'NO_SHOW', label: 'No Show' },
+    { value: 'RESCHEDULED', label: 'Rescheduled' },
+];
+
+/**
+ * Status transition rules for doctors.
+ */
+export const STATUS_TRANSITIONS = {
+    SCHEDULED: ['CONFIRMED', 'CANCELLED'],
+    CONFIRMED: ['COMPLETED', 'NO_SHOW', 'CANCELLED'],
+    COMPLETED: [],
+    CANCELLED: [],
+    NO_SHOW: [],
+    RESCHEDULED: ['CONFIRMED', 'CANCELLED'],
+};

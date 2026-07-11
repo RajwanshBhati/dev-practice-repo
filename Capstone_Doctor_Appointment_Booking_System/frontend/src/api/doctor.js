@@ -55,3 +55,41 @@ export const getDoctorAvailability = async (doctorId, date) => {
     return response.data;
 };
 
+/**
+ * Get doctor profile.
+ * @returns {Promise} Doctor profile data
+ */
+export const getDoctorProfile = async () => {
+    const response = await axiosInstance.get('/doctor/profile');
+    return response.data;
+};
+
+/**
+ * Update doctor profile.
+ * @param {Object} data - Profile update data
+ * @returns {Promise} Updated profile
+ */
+export const updateDoctorProfile = async (data) => {
+    const response = await axiosInstance.put('/doctor/profile', data);
+    return response.data;
+};
+
+/**
+ * Update doctor profile picture.
+ * @param {Object} data - Profile picture data
+ * @param {string} data.profile_picture - Image URL
+ * @returns {Promise} Updated profile
+ */
+export const updateProfilePicture = async (data) => {
+    const response = await axiosInstance.put('/doctor/profile-picture', data);
+    return response.data;
+};
+
+/**
+ * Get doctor statistics.
+ * @returns {Promise} Doctor stats
+ */
+export const getDoctorStats = async () => {
+    const response = await axiosInstance.get('/doctor/stats');
+    return response.data;
+};
