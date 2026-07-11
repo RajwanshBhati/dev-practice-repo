@@ -147,3 +147,47 @@ export const STATUS_TRANSITIONS = {
     NO_SHOW: [],
     RESCHEDULED: ['CONFIRMED', 'CANCELLED'],
 };
+
+/**
+ * Doctor status for admin view.
+ */
+export const DOCTOR_STATUS_OPTIONS = [
+    { value: 'ALL', label: 'All Doctors' },
+    { value: 'PENDING', label: 'Pending' },
+    { value: 'APPROVED', label: 'Approved' },
+    { value: 'REJECTED', label: 'Rejected' },
+    { value: 'SUSPENDED', label: 'Suspended' },
+];
+
+export const DOCTOR_STATUS_COLORS = {
+    PENDING: 'warning',
+    APPROVED: 'success',
+    REJECTED: 'danger',
+    SUSPENDED: 'secondary',
+};
+
+export const DOCTOR_STATUS_LABELS = {
+    PENDING: 'Pending',
+    APPROVED: 'Approved',
+    REJECTED: 'Rejected',
+    SUSPENDED: 'Suspended',
+};
+
+/**
+ * Audit action types and labels.
+ */
+export const AUDIT_ACTIONS = {
+    CREATE_FIRST_ADMIN: 'Create First Admin',
+    CREATE_ADMIN: 'Create Admin',
+    DELETE_ADMIN: 'Delete Admin',
+    APPROVE_DOCTOR: 'Approve Doctor',
+    REJECT_DOCTOR: 'Reject Doctor',
+};
+
+export const AUDIT_ACTION_COLORS = {
+    CREATE_FIRST_ADMIN: 'success',
+    CREATE_ADMIN: 'primary',
+    DELETE_ADMIN: 'danger',
+    APPROVE_DOCTOR: 'success',
+    REJECT_DOCTOR: 'danger',
+};
