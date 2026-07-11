@@ -128,6 +128,13 @@ class DoctorService:
             "profile_picture": profile_picture
         }
 
+    async def _attach_user_info(self, doctor: DoctorProfile) -> Dict[str, Any]:
+        doctor_dict = doctor.model_dump(by_alias=False)
+        user = await self.user_repo.find_by_id(doctor.user_id)
+        doctor_dict["full_name"] = user.full_name if user else None
+        doctor_dict["email"] = user.email if user else None
+        return doctor_dict
+
     async def get_pending_doctors(
         self,
         admin_id: str,
@@ -135,7 +142,8 @@ class DoctorService:
         skip: int = 0
     ) -> List[Dict[str, Any]]:
         """Fetch doctors waiting on approval, for the admin review queue."""
-        return await self.doctor_repo.get_pending_doctors(limit, skip)
+        doctors = await self.doctor_repo.get_pending_doctors(limit, skip)
+        return [await self._attach_user_info(doctor) for doctor in doctors]
 
     async def get_doctors_by_status(
         self,
@@ -154,7 +162,12 @@ class DoctorService:
         status: Optional[DoctorStatus] = None
     ) -> List[Dict[str, Any]]:
         """Fetch all doctors, optionally narrowed down by status, for the admin dashboard."""
-        return await self.doctor_repo.get_all_doctors(limit, skip, status)
+        doctors = await self.doctor_repo.get_all_doctors(limit, skip, status)
+        return [await self._attach_user_info(doctor) for doctor in doctors]
+
+    async def count_all_doctors(self, status: Optional[DoctorStatus] = None) -> int:
+        """Total number of doctors matching an optional status filter, for pagination."""
+        return await self.doctor_repo.count_all_doctors(status)
 
     async def approve_doctor(
         self,
