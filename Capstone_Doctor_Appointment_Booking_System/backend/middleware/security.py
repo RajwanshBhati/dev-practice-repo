@@ -18,7 +18,7 @@ class Security:
     @staticmethod
     def hash_password(password: str) -> str:
         """
-        Hash a plain-text password with bcrypt.
+        Hash a plain-text password with bcrypt. .
         """
         try:
             if len(password.encode('utf-8')) > 72:
