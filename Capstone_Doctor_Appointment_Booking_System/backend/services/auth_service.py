@@ -11,6 +11,7 @@ from backend.schemas.request.user_request import (
     PatientRegister,
     DoctorRegister
 )
+from backend.schemas.response.auth_response import TokenResponse, UserResponse
 
 from backend.schemas.request.auth_request import UserLogin
 from backend.constants import ErrorMessages, SuccessMessages
@@ -63,20 +64,20 @@ class AuthService:
 
         logger.info(f"Patient registered: {created_user.email}")
 
-        return {
-            "message": SuccessMessages.REGISTRATION_SUCCESS,
-            "access_token": access_token,
-            "refresh_token": refresh_token,
-            "token_type": "bearer",
-            "expires_in": 1800,
-            "user": {
-                "id": created_user.id,
-                "email": created_user.email,
-                "full_name": created_user.full_name,
-                "role": created_user.role.value,
-                "status": created_user.status.value
-            }
-        }
+        return TokenResponse(
+            message=SuccessMessages.REGISTRATION_SUCCESS,
+            access_token=access_token,
+            refresh_token=refresh_token,
+            token_type="bearer",
+            expires_in=1800,
+            user=UserResponse(
+                id=created_user.id,
+                email=created_user.email,
+                full_name=created_user.full_name,
+                role=created_user.role.value,
+                status=created_user.status.value
+            )
+        )
 
     async def register_doctor(self, user_data: DoctorRegister) -> Dict[str, Any]:
         """
@@ -124,20 +125,20 @@ class AuthService:
 
         logger.info(f"Doctor registered: {created_user.email}")
 
-        return {
-            "message": SuccessMessages.REGISTRATION_SUCCESS,
-            "access_token": access_token,
-            "refresh_token": refresh_token,
-            "token_type": "bearer",
-            "expires_in": 1800,
-            "user": {
-                "id": created_user.id,
-                "email": created_user.email,
-                "full_name": created_user.full_name,
-                "role": created_user.role.value,
-                "status": created_user.status.value
-            }
-        }
+        return TokenResponse(
+            message=SuccessMessages.REGISTRATION_SUCCESS,
+            access_token=access_token,
+            refresh_token=refresh_token,
+            token_type="bearer",
+            expires_in=1800,
+            user=UserResponse(
+                id=created_user.id,
+                email=created_user.email,
+                full_name=created_user.full_name,
+                role=created_user.role.value,
+                status=created_user.status.value
+            )
+        )
 
     async def login(self, login_data: UserLogin) -> Dict[str, Any]:
         """Verify email/password and issue a fresh pair of tokens. Simpler variant without doctor-approval checks."""
@@ -164,20 +165,22 @@ class AuthService:
 
         logger.info(f"User logged in: {user.email}")
 
-        return {
-            "message": SuccessMessages.LOGIN_SUCCESS,
-            "access_token": access_token,
-            "refresh_token": refresh_token,
-            "token_type": "bearer",
-            "expires_in": 1800,
-            "user": {
-                "id": user.id,
-                "email": user.email,
-                "full_name": user.full_name,
-                "role": user.role.value,
-                "status": user.status.value
-            }
-        }
+        return TokenResponse(
+            message=SuccessMessages.LOGIN_SUCCESS,
+            access_token=access_token,
+            refresh_token=refresh_token,
+            token_type="bearer",
+            expires_in=1800,
+            user=UserResponse(
+                id=user.id,
+                email=user.email,
+                full_name=user.full_name,
+                role=user.role.value,
+                status=user.status.value
+            )
+        )
+
+
 
     async def validate_token(self, token: str) -> Dict[str, Any]:
         """
