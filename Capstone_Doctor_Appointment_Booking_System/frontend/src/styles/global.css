@@ -314,3 +314,16 @@ body {
   transform: translateY(-4px);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1) !important;
 }
+
+
+.booking-card {
+  position: sticky;
+  top: 20px;
+}
+
+@media (max-width: 991.98px) {
+  .booking-card {
+    position: static;
+    top: auto;
+  }
+}
