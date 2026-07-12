@@ -60,12 +60,29 @@ class PaymentService:
             if existing_payment.status == PaymentStatus.COMPLETED:
                 raise ValueError(ErrorMessages.PAY_1503)
             elif existing_payment.status == PaymentStatus.PENDING:
-                raise ValueError("Payment already initiated")
-
-        # Get doctor for consultation fee
-        from backend.repositories.doctor_repository import DoctorRepository
-        doctor_repo = DoctorRepository()
-        doctor = await doctor_repo.find_by_id(appointment.doctor_id)
+                response = PaymentResponse(
+                    id=existing_payment.id,
+                    payment_id=existing_payment.payment_id,
+                    transaction_id=existing_payment.transaction_id,
+                    appointment_id=existing_payment.appointment_id,
+                    patient_id=existing_payment.patient_id,
+                    doctor_id=existing_payment.doctor_id,
+                    amount=existing_payment.amount,
+                    method=existing_payment.method,
+                    status=existing_payment.status,
+                    card_last_four=existing_payment.card_last_four,
+                    upi_id=existing_payment.upi_id,
+                    refund_id=existing_payment.refund_id,
+                    refund_reason=existing_payment.refund_reason,
+                    created_at=existing_payment.created_at.isoformat(),
+                    updated_at=existing_payment.updated_at.isoformat()
+                )
+                return PaymentInitiateResponse(
+                    message=SuccessMessages.PAYMENT_INITIATED,
+                    payment=response,
+                    redirect_url=f"/payment/confirm/{existing_payment.payment_id}"
+                )
+        doctor = await self.doctor_repo.find_by_id(appointment.doctor_id)
         amount = doctor.consultation_fee if doctor else 150.50
 
         # Create payment record
@@ -84,7 +101,6 @@ class PaymentService:
 
         logger.info(f"Payment initiated: {created.payment_id} for appointment {appointment.id}")
 
-        # Build response
         response = PaymentResponse(
             id=created.id,
             payment_id=created.payment_id,
@@ -139,7 +155,6 @@ class PaymentService:
             # Update payment status
             await self.payment_repo.update_status(payment.id, PaymentStatus.COMPLETED)
 
-            # Update appointment status
             await self.appointment_repo.update_appointment(
                 payment.appointment_id,
                 {
@@ -154,7 +169,6 @@ class PaymentService:
 
             logger.info(f"Payment confirmed: {payment.payment_id} for appointment {payment.appointment_id}")
         else:
-            # Update payment status to failed
             await self.payment_repo.update_status(payment.id, PaymentStatus.FAILED)
 
             message = ErrorMessages.PAY_1501
@@ -162,7 +176,6 @@ class PaymentService:
 
             logger.warning(f"Payment failed: {payment.payment_id}")
 
-        # Get updated payment
         updated_payment = await self.payment_repo.find_by_id(payment.id)
 
         response = PaymentResponse(

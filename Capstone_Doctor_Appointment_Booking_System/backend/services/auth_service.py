@@ -1,3 +1,4 @@
+import token
 from typing import Dict, Any
 from datetime import datetime, timezone
 from backend.middleware.security import security
@@ -11,7 +12,7 @@ from backend.schemas.request.user_request import (
     DoctorRegister
 )
 
-from backend.schemas.request.auth_request import UserLogin
+from backend.schemas.request.auth_request import UserLogin, RefreshToken
 from backend.constants import ErrorMessages, SuccessMessages
 from backend.constants.roles import UserRole
 from backend.enums.user_enums import UserStatus, DoctorStatus
@@ -50,7 +51,6 @@ class AuthService:
         patient_profile = PatientProfile(
             user_id=created_user.id
         )
-        # TODO: Save patient profile
 
         token_data = {
             "sub": created_user.id,
@@ -214,6 +214,50 @@ class AuthService:
             logger.error(f"Token validation error: {str(e)}")
             raise ValueError(ErrorMessages.AUTH_1003)
 
+
+    async def refresh_token(self, refresh_data: RefreshToken) -> Dict[str, Any]:
+        """
+        Validate a refresh token, check if it's blacklisted, and issue a
+        new access token if everything checks out.
+        """
+        token = refresh_data.refresh_token
+
+        is_blacklisted = await self.blacklist_repo.is_blacklisted(token)
+        if is_blacklisted:
+           raise ValueError("Token has been revoked")
+
+        try:
+            payload = jwt_service.decode_token(token)
+        except ValueError:
+            raise ValueError(ErrorMessages.AUTH_1003)
+
+        if payload.get("type") != "refresh":
+            raise ValueError(ErrorMessages.AUTH_1003)
+
+        user_id = payload.get("sub")
+        if not user_id:
+            raise ValueError(ErrorMessages.AUTH_1003)
+
+        user = await self.user_repo.find_by_id(user_id)
+        if not user:
+            raise ValueError(ErrorMessages.USER_1101)
+
+        if user.status != UserStatus.ACTIVE:
+            raise ValueError(ErrorMessages.AUTH_1004)
+
+        token_data = {
+            "sub": user.id,
+            "email": user.email,
+            "role": user.role.value
+        }
+        access_token = jwt_service.create_access_token(token_data)
+
+        return {
+            "access_token": access_token,
+            "token_type": "bearer",
+            "expires_in": 1800
+        }
+
     async def register_doctor_with_approval(self, user_data: DoctorRegister) -> Dict[str, Any]:
         """
         Create a doctor account that starts out PENDING on both the user
@@ -277,11 +321,6 @@ class AuthService:
         }
 
     async def login_with_status_check(self, login_data: UserLogin) -> Dict[str, Any]:
-        """
-        Full login flow used by the app: verifies credentials, blocks
-        pending/inactive/suspended accounts, and for doctors specifically
-        also checks their separate approval status before letting them in.
-        """
         user = await self.user_repo.find_by_email(login_data.email)
 
         if not user:
@@ -335,6 +374,56 @@ class AuthService:
                 "status": user.status.value
             }
         }
+
+    async def forgot_password(self, email: str) -> Dict[str, Any]:
+        """
+        Send a password reset email if an active account exists for this
+        email.
+        """
+        user = await self.user_repo.find_by_email(email)
+
+        if user and user.status == UserStatus.ACTIVE:
+            token_data = {"sub": user.id, "email": user.email}
+            reset_token = jwt_service.create_reset_token(token_data)
+
+            from .email_service import EmailService
+            await EmailService.send_password_reset_email(
+                user.email,
+                user.full_name,
+                reset_token
+            )
+            logger.info(f"Password reset email sent to: {user.email}")
+
+        return {
+            "message": "If an account exists for this email, a reset link has been sent."
+        }
+
+    async def reset_password(self, token: str, new_password: str) -> Dict[str, Any]:
+        """Validate a reset token and set the new password hash for that user."""
+        try:
+            payload = jwt_service.decode_token(token)
+        except ValueError:
+            raise ValueError("Reset link is invalid or has expired")
+
+        if payload.get("type") != "reset":
+            raise ValueError("Reset link is invalid or has expired")
+
+        user_id = payload.get("sub")
+        if not user_id:
+            raise ValueError("Reset link is invalid or has expired")
+
+        user = await self.user_repo.find_by_id(user_id)
+        if not user:
+            raise ValueError(ErrorMessages.USER_1101)
+
+        password_hash = security.hash_password(new_password)
+        updated_user = await self.user_repo.update(user.id, {"password_hash": password_hash})
+        if not updated_user:
+            raise ValueError("Failed to reset password")
+
+        logger.info(f"Password reset successful for: {user.email}")
+
+        return {"message": "Password has been reset successfully. Please login with your new password."}
 
     async def logout(self, user_id: str, access_token: str) -> Dict[str, Any]:
         """Invalidate the given access token immediately by adding it to the blacklist until its natural expiry."""

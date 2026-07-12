@@ -40,12 +40,29 @@ async def update_current_user(
     update_data: dict,
     current_user: dict = Depends(get_current_user)
 ):
-    """Let the logged-in user update their own profile fields."""
+    """Let the logged-in user update their own profile fields.
+
+    Only a safe allow-list of fields can be changed here (full_name, phone).
+    Sensitive fields like role/status/email/password are intentionally
+    ignored even if present in the payload, to prevent privilege escalation.
+    """
     try:
+        ALLOWED_FIELDS = {"full_name", "phone"}
+        safe_update_data = {
+            key: value for key, value in update_data.items()
+            if key in ALLOWED_FIELDS and value not in (None, "")
+        }
+
+        if not safe_update_data:
+            raise HTTPException(
+                status_code=HttpStatus.BAD_REQUEST,
+                detail="No valid fields to update. Allowed fields: full_name, phone"
+            )
+
         user_service = UserService()
         updated_user = await user_service.update_user(
             current_user["user_id"],
-            update_data
+            safe_update_data
         )
         return {
             "message": "Profile updated successfully",
@@ -53,7 +70,8 @@ async def update_current_user(
                 "id": updated_user.id,
                 "email": updated_user.email,
                 "full_name": updated_user.full_name,
-                "phone": updated_user.phone
+                "phone": updated_user.phone,
+                "role": updated_user.role.value
             }
         }
     except ValueError as e:

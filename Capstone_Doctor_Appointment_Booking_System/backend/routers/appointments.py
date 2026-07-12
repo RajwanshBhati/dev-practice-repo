@@ -183,9 +183,13 @@ async def get_appointment_stats(
     doctor_id: Optional[str] = Query(None, description="Doctor ID for doctor-specific stats"),
     current_user: dict = Depends(get_current_user)
 ):
-    """Get appointment statistics."""
+    """Get appointment statistics. Doctors always see only their own stats."""
     try:
         service = AppointmentService()
+
+        if current_user.get("role") == "DOCTOR":
+            doctor_id = current_user["user_id"]
+
         stats = await service.get_appointment_stats(doctor_id)
         return stats
     except Exception as e:

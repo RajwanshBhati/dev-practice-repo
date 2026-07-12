@@ -1,6 +1,8 @@
-from fastapi import APIRouter, HTTPException, Depends, Query
+from fastapi import APIRouter, HTTPException, Depends, Query, UploadFile, File
 from typing import Optional
 import logging
+import uuid
+from pathlib import Path
 
 from backend.services.doctor_service import DoctorService
 from backend.database.dependencies import (
@@ -16,9 +18,13 @@ from backend.schemas.request.doctor_request import (
 
 from backend.constants.http_status import HttpStatus
 from backend.enums.user_enums import DoctorStatus
+from backend.middleware.config import settings
 
 router = APIRouter(prefix="/api/v1/doctor", tags=["doctor"])
 logger = logging.getLogger(__name__)
+
+ALLOWED_IMAGE_TYPES = {"image/jpeg", "image/png", "image/webp", "image/gif"}
+MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024  # 5 MB
 
 
 @router.get("/profile")
@@ -63,15 +69,44 @@ async def update_doctor_profile(
 
 @router.put("/profile-picture")
 async def update_profile_picture(
-    picture_data: ProfilePictureUpdate,
+    file: UploadFile = File(...),
     current_user: dict = Depends(get_current_doctor)
 ):
-    """Let a doctor update their profile picture."""
+    """Let a doctor upload a new profile picture (image file, not a URL)."""
+    if file.content_type not in ALLOWED_IMAGE_TYPES:
+        raise HTTPException(
+            status_code=HttpStatus.BAD_REQUEST,
+            detail="Only JPEG, PNG, WEBP or GIF images are allowed"
+        )
+
+    contents = await file.read()
+    if len(contents) > MAX_IMAGE_SIZE_BYTES:
+        raise HTTPException(
+            status_code=HttpStatus.BAD_REQUEST,
+            detail="Image must be smaller than 5MB"
+        )
+
+    extension = Path(file.filename).suffix or ".jpg"
+    filename = f"{current_user['user_id']}_{uuid.uuid4().hex}{extension}"
+    file_path = Path("uploads") / "profile_pictures" / filename
+
+    try:
+        with open(file_path, "wb") as f:
+            f.write(contents)
+    except Exception as e:
+        logger.error(f"Error saving profile picture: {str(e)}")
+        raise HTTPException(
+            status_code=HttpStatus.INTERNAL_SERVER_ERROR,
+            detail="Failed to save uploaded image"
+        )
+
+    picture_url = f"{settings.BACKEND_URL}/uploads/profile_pictures/{filename}"
+
     try:
         doctor_service = DoctorService()
         result = await doctor_service.update_profile_picture(
             current_user["user_id"],
-            picture_data.profile_picture
+            picture_url
         )
         return result
     except ValueError as e:

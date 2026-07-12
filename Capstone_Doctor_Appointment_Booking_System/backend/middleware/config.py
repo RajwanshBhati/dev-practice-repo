@@ -29,11 +29,22 @@ class Settings:
     BCRYPT_ROUNDS: int = int(os.getenv("BCRYPT_ROUNDS", "12"))
 
     LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO")
+    BACKEND_URL: str = os.getenv("BACKEND_URL", "http://localhost:8000")
+
+    EMAIL_ENABLED: bool = os.getenv("EMAIL_ENABLED", "False").lower() == "true"
+    SMTP_HOST: str = os.getenv("SMTP_HOST", "smtp.gmail.com")
+    SMTP_PORT: int = int(os.getenv("SMTP_PORT", "587"))
+    SMTP_USER: str = os.getenv("SMTP_USER", "")
+    SMTP_PASSWORD: str = os.getenv("SMTP_PASSWORD", "")
+    SMTP_USE_TLS: bool = os.getenv("SMTP_USE_TLS", "True").lower() == "true"
+    EMAIL_FROM_NAME: str = os.getenv("EMAIL_FROM_NAME", "HealthBook Team")
+    EMAIL_FROM_ADDRESS: str = os.getenv("EMAIL_FROM_ADDRESS", "") or SMTP_USER
+    FRONTEND_URL: str = os.getenv("FRONTEND_URL", "http://localhost:5173")
 
     @property
     def ALLOWED_ORIGINS(self) -> List[str]:
         """Split the comma-separated ALLOWED_ORIGINS env value into a clean list of origins for CORS."""
-        origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000")
+        origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000,http://localhost:5173,http://127.0.0.1:5173")
         return [origin.strip() for origin in origins.split(",")]
 
 settings = Settings()

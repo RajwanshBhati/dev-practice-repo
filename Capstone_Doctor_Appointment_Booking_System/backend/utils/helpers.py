@@ -59,3 +59,21 @@ class Helpers:
             return (datetime.now() - dob).days // 365
         except ValueError:
             return 0
+
+
+    @staticmethod
+    def generate_payment_id() -> str:
+        """Build a human-readable payment ID like PAY-20260701153000-A1B2C3."""
+        timestamp = datetime.utcnow().strftime("%Y%m%d%H%M%S")
+        random_part = uuid.uuid4().hex[:6].upper()
+        return f"PAY-{timestamp}-{random_part}"
+
+    @staticmethod
+    def generate_transaction_id() -> str:
+        """Build a unique transaction ID like TXN-A1B2C3D4E5F6."""
+        return f"TXN-{uuid.uuid4().hex[:12].upper()}"
+
+    @staticmethod
+    def generate_refund_id() -> str:
+        """Build a unique refund ID like REF-A1B2C3D4E5F6."""
+        return f"REF-{uuid.uuid4().hex[:12].upper()}"

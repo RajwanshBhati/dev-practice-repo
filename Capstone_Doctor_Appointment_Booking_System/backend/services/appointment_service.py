@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from bson import ObjectId
 from backend.repositories.appointment_repository import AppointmentRepository
 from backend.repositories.doctor_repository import DoctorRepository
+from backend.repositories.payment_repository import PaymentRepository
 from backend.repositories.user_repository import UserRepository
 from backend.models.appointment import Appointment
 from backend.schemas.request.appointment_request import (
@@ -26,7 +27,7 @@ class AppointmentService:
         self.appointment_repo = AppointmentRepository()
         self.doctor_repo = DoctorRepository()
         self.user_repo = UserRepository()
-
+        self.payment_repo = PaymentRepository()
     async def book_appointment(
         self,
         patient_id: str,
@@ -38,7 +39,7 @@ class AppointmentService:
         Uses atomic transactions to prevent race conditions when multiple
         patients try to book the same slot simultaneously.
         """
-        doctor = await self.doctor_repo.find_by_user_id(booking_data.doctor_id)
+        doctor = await self.doctor_repo.find_by_id(booking_data.doctor_id)
         if not doctor:
             raise ValueError(ErrorMessages.DOC_1301)
 
@@ -49,12 +50,12 @@ class AppointmentService:
         if not patient:
             raise ValueError(ErrorMessages.USER_1101)
 
-        doctor_user = await self.user_repo.find_by_id(booking_data.doctor_id)
+        doctor_user = await self.user_repo.find_by_id(doctor.user_id)
         if not doctor_user:
             raise ValueError(ErrorMessages.DOC_1301)
         # Check availability
         availabilities = await self.appointment_repo.availability_collection.find({
-            "doctor_id": booking_data.doctor_id,
+            "doctor_id": doctor.user_id,
             "date": booking_data.appointment_date,
             "is_available": True
         }).to_list(None)
@@ -81,7 +82,7 @@ class AppointmentService:
         appointment = Appointment(
             patient_id=patient_id,
             patient_name=patient.full_name,
-            doctor_id=booking_data.doctor_id,
+            doctor_id=doctor.user_id,
             doctor_name=doctor_user.full_name,
             appointment_date=booking_data.appointment_date,
             appointment_time=booking_data.appointment_time,

@@ -39,11 +39,6 @@ class AvailabilityService:
     ) -> AvailabilityCreateResponse:
         """
         Create a new availability slot for a doctor.
-
-        This method validates that:
-        1. The doctor exists and is approved
-        2. The slot doesn't overlap with existing slots
-        3. The time is within working hours
         """
         # Get doctor profile
         doctor = await self.doctor_repo.find_by_user_id(doctor_id)
@@ -113,6 +108,28 @@ class AvailabilityService:
             created_at=availability.created_at.isoformat(),
             updated_at=availability.updated_at.isoformat()
         )
+
+
+    async def get_doctor_slots_by_profile_id(
+        self,
+        profile_id: str,
+        date: Optional[str] = None,
+        include_booked: bool = False
+    ) -> List[AvailabilityResponse]:
+        doctor = await self.doctor_repo.find_by_id(profile_id)
+        if not doctor:
+            doctor = await self.doctor_repo.find_by_user_id(profile_id)
+        if not doctor:
+            raise ValueError(ErrorMessages.DOC_1301)
+
+        if date:
+            return await self.get_doctor_slots_by_date(
+                doctor.user_id, date, include_booked
+            )
+
+        result = await self.get_doctor_slots(doctor.user_id, limit=100, skip=0)
+        return result.get("availabilities", [])
+
 
     async def get_doctor_slots(
         self,
@@ -288,7 +305,6 @@ class AvailabilityService:
         """
         Get availability statistics for a doctor.
         """
-        # Get doctor profile
         doctor = await self.doctor_repo.find_by_user_id(doctor_id)
         if not doctor:
             raise ValueError(ErrorMessages.DOC_1303)

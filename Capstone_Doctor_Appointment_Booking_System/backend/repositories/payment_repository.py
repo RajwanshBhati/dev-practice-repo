@@ -60,7 +60,7 @@ class PaymentRepository:
     async def find_by_appointment_id(self, appointment_id: str) -> Optional[Payment]:
         """Find a payment by appointment ID."""
         try:
-            payment_dict = await self.collection.find_one({"appointment_id": appointment_id})
+            payment_dict = await self.collection.find_one({"appointment_id": appointment_id},sort=[("created_at", -1)])
             if payment_dict:
                 payment_dict["id"] = str(payment_dict["_id"])
                 return Payment(**payment_dict)

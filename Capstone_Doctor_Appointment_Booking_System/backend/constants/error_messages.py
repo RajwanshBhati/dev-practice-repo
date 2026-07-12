@@ -18,6 +18,9 @@ class ErrorMessages:
     APP_1204 = "Cannot book appointment for past date"
     APP_1205 = "Cannot cancel appointment at this time"
     APP_1206 = "Appointment has already been completed"
+    APP_1207 = "Cannot reschedule appointment at this time"
+    APP_1208 = "No available slot found for the selected date and time"
+    APP_1210 = "Appointments must be booked at least 2 hours in advance"
 
     DOC_1301 = "Doctor not found"
     DOC_1302 = "Doctor is not available"
@@ -36,6 +39,9 @@ class ErrorMessages:
     ADM_1406 = "No admin exists. Please create the first admin"
 
     PAY_1501 = "Payment processing failed"
+    PAY_1502 = "Payment not found"
+    PAY_1503 = "Payment has already been completed for this appointment"
+    PAY_1504 = "This payment has already been refunded"
 
     VAL_1601 = "Validation error"
     VAL_1602 = "Invalid input provided"

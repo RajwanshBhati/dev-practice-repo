@@ -88,7 +88,25 @@ async def get_doctor_availability_slots(
             status_code=HttpStatus.INTERNAL_SERVER_ERROR,
             detail=ErrorMessages.GEN_9001
         )
-
+@router.get("/doctors/availability/stats")
+async def get_availability_stats(
+    current_user: dict = Depends(get_current_doctor)
+):
+    """
+    Get availability statistics for the logged-in doctor.
+    """
+    try:
+        service = AvailabilityService()
+        stats = await service.get_stats(current_user["user_id"])
+        return stats
+    except ValueError as e:
+        raise HTTPException(status_code=HttpStatus.BAD_REQUEST, detail=str(e))
+    except Exception as e:
+        logger.error(f"Error getting availability stats: {str(e)}")
+        raise HTTPException(
+            status_code=HttpStatus.INTERNAL_SERVER_ERROR,
+            detail=ErrorMessages.GEN_9001
+        )
 
 @router.get("/doctors/{doctor_id}/availability")
 async def get_doctor_availability_by_id(
@@ -98,19 +116,17 @@ async def get_doctor_availability_by_id(
 ):
     """
     Get availability slots for any doctor.
+
+    `doctor_id` here is the doctor's public profile id (the id returned by
+    doctor search / public-profile endpoints), not the linked user id.
     """
     try:
         service = AvailabilityService()
-
-        if date:
-            slots = await service.get_doctor_slots_by_date(
-                doctor_id,
-                date,
-                include_booked=False
-            )
-        else:
-            result = await service.get_doctor_slots(doctor_id, limit=100, skip=0)
-            slots = result.get("availabilities", [])
+        slots = await service.get_doctor_slots_by_profile_id(
+            doctor_id,
+            date=date,
+            include_booked=False
+        )
 
         return {
             "doctor_id": doctor_id,
@@ -126,7 +142,6 @@ async def get_doctor_availability_by_id(
             status_code=HttpStatus.INTERNAL_SERVER_ERROR,
             detail=ErrorMessages.GEN_9001
         )
-
 
 @router.get("/doctors/availability/{slot_id}")
 async def get_availability_slot_by_id(
@@ -211,22 +226,3 @@ async def delete_availability_slot(
         )
 
 
-@router.get("/doctors/availability/stats")
-async def get_availability_stats(
-    current_user: dict = Depends(get_current_doctor)
-):
-    """
-    Get availability statistics for the logged-in doctor.
-    """
-    try:
-        service = AvailabilityService()
-        stats = await service.get_stats(current_user["user_id"])
-        return stats
-    except ValueError as e:
-        raise HTTPException(status_code=HttpStatus.BAD_REQUEST, detail=str(e))
-    except Exception as e:
-        logger.error(f"Error getting availability stats: {str(e)}")
-        raise HTTPException(
-            status_code=HttpStatus.INTERNAL_SERVER_ERROR,
-            detail=ErrorMessages.GEN_9001
-        )

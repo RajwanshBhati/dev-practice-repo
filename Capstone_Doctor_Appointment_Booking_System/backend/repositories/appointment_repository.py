@@ -3,7 +3,7 @@ from datetime import datetime
 from bson import ObjectId
 from backend.middleware.database import db
 from backend.models.appointment import Appointment
-from backend.constants.status import AppointmentStatus
+from backend.constants.status import AppointmentStatus,PaymentStatus
 import logging
 
 logger = logging.getLogger(__name__)
@@ -28,7 +28,6 @@ class AppointmentRepository:
         the appointment record.
         """
         try:
-            # Atomically update and lock the slot
             updated = await self.availability_collection.find_one_and_update(
                 {
                     "_id": ObjectId(availability_id),
@@ -214,6 +213,7 @@ class AppointmentRepository:
             # Calculate revenue
             pipeline = [
                 {"$match": {**query, "status": AppointmentStatus.COMPLETED.value}},
+                {"$match": {**query, "payment_status": PaymentStatus.COMPLETED.value}},
                 {"$group": {"_id": None, "total": {"$sum": "$payment_amount"}}}
             ]
             revenue_result = await self.appointment_collection.aggregate(pipeline).to_list(None)

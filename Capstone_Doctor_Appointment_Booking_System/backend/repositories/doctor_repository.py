@@ -109,7 +109,7 @@ class DoctorRepository:
     async def get_pending_doctors(self, limit: int = 100, skip: int = 0) -> List[DoctorProfile]:
         """Fetch doctors still waiting on admin approval, paginated."""
         try:
-            cursor = self.collection.find({"status": DoctorStatus.PENDING}).skip(skip).limit(limit)
+            cursor = self.collection.find({"status": DoctorStatus.PENDING}).sort("created_at", -1).skip(skip).limit(limit)
             doctors = []
             async for doctor_dict in cursor:
                 doctor_dict["id"] = str(doctor_dict["_id"])
@@ -137,19 +137,14 @@ class DoctorRepository:
             logger.error(f"Error getting doctors by status: {e}")
             return []
 
-    async def get_all_doctors(
-        self,
-        limit: int = 100,
-        skip: int = 0,
-        status: Optional[DoctorStatus] = None
-    ) -> List[DoctorProfile]:
+    async def get_all_doctors(self, limit: int = 100, skip: int = 0, status: Optional[DoctorStatus] = None) -> List[DoctorProfile]:
         """Fetch all doctors, optionally filtered by status, paginated."""
         try:
             query = {}
             if status:
                 query["status"] = status
 
-            cursor = self.collection.find(query).skip(skip).limit(limit)
+            cursor = self.collection.find(query).sort("created_at", -1).skip(skip).limit(limit)  # 👈 sort added
             doctors = []
             async for doctor_dict in cursor:
                 doctor_dict["id"] = str(doctor_dict["_id"])
@@ -170,3 +165,20 @@ class DoctorRepository:
         except Exception as e:
             logger.error(f"Error counting doctors: {e}")
             return 0
+
+
+    async def find_with_pending_updates(self, limit: int = 100, skip: int = 0) -> List[DoctorProfile]:
+        """Return doctor profiles that currently have a pending_update awaiting admin review."""
+        try:
+            cursor = self.collection.find(
+                {"pending_update": {"$ne": None}}
+            ).skip(skip).limit(limit)
+            doctors = []
+            async for doctor_dict in cursor:
+                doctor_dict["id"] = str(doctor_dict["_id"])
+                doctors.append(DoctorProfile(**doctor_dict))
+            return doctors
+        except Exception as e:
+            logger.error(f"Error finding doctors with pending updates: {e}")
+            raise
+
