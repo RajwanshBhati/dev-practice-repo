@@ -5,6 +5,20 @@ from backend.models.base import BaseDBModel
 from backend.enums.doctor_enums import Specialization
 from backend.enums.user_enums import DoctorStatus, VerificationStatus
 
+from backend.enums.user_enums import DoctorStatus, VerificationStatus
+
+class PatientProfile(BaseDBModel):
+    """Extra patient-specific details linked to a User account, like medical history and emergency contact."""
+    user_id: str = Field(..., description="Reference to User ID")
+    emergency_contact: Optional[str] = Field(None, description="Emergency contact number")
+    address: Optional[str] = Field(None, description="Home address")
+    blood_group: Optional[str] = Field(None, description="Blood group")
+    allergies: Optional[str] = Field(None, description="Known allergies")
+    medical_history: Optional[str] = Field(None, description="Medical history")
+
+    class Config:
+        collection = "patient_profiles"
+
 
 class DoctorProfile(BaseDBModel):
     """
