@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends, Query
 from typing import Optional
+from backend.schemas.response.availability_response import DoctorAvailabilityResponse
 from backend.services.availability_service import AvailabilityService
 from backend.database.dependencies import get_current_user, get_current_doctor
 from backend.schemas.request.availability_request import (
@@ -94,6 +95,8 @@ async def get_doctor_availability_slots(
 async def get_doctor_availability_by_id(
     doctor_id: str,
     date: Optional[str] = Query(None, description="Date in YYYY-MM-DD format"),
+    limit: int = Query(100, ge=1, le=500, description="Results per page (ignored when date is set)"),
+    skip: int = Query(0, ge=0, description="Results to skip (ignored when date is set)"),
     current_user: dict = Depends(get_current_user)
 ):
     """
@@ -109,15 +112,17 @@ async def get_doctor_availability_by_id(
                 include_booked=False
             )
         else:
-            result = await service.get_doctor_slots(doctor_id, limit=100, skip=0)
+            result = await service.get_doctor_slots(doctor_id, limit=limit, skip=skip)
             slots = result.get("availabilities", [])
 
-        return {
-            "doctor_id": doctor_id,
-            "date": date,
-            "availabilities": slots,
-            "total": len(slots)
-        }
+
+        return DoctorAvailabilityResponse(
+            doctor_id=doctor_id,
+            date=date,
+            availabilities=slots,
+            total=len(slots)
+        )
+
     except ValueError as e:
         raise HTTPException(status_code=HttpStatus.BAD_REQUEST, detail=str(e))
     except Exception as e:
