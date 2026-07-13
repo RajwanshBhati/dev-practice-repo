@@ -1,3 +1,12 @@
+import {
+    FaCrown,
+    FaUserPlus,
+    FaUserMinus,
+    FaCheckCircle,
+    FaTimesCircle,
+} from 'react-icons/fa';
+
+
 /**
  * User roles available in the system.
  * These roles determine what features and pages a user can access.
@@ -190,4 +199,12 @@ export const AUDIT_ACTION_COLORS = {
     DELETE_ADMIN: 'danger',
     APPROVE_DOCTOR: 'success',
     REJECT_DOCTOR: 'danger',
+};
+
+export const AUDIT_ACTION_ICONS = {
+    CREATE_FIRST_ADMIN: FaCrown,
+    CREATE_ADMIN: FaUserPlus,
+    DELETE_ADMIN: FaUserMinus,
+    APPROVE_DOCTOR: FaCheckCircle,
+    REJECT_DOCTOR: FaTimesCircle,
 };

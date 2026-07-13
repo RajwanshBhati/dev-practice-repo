@@ -38,7 +38,7 @@ const AdminDashboard = () => {
    * Load doctor statistics from API.
    */
   const loadDashboardData = async () => {
-    setLoading(true);
+    setStats((prev) => ({ ...prev, ...data }));
     try {
       const data = await getDoctorStatsAdmin();
       setStats(data);
@@ -216,8 +216,8 @@ const AdminDashboard = () => {
                 <span className="text-muted">Approval Rate</span>
                 <span className="fw-semibold">
                   {stats.total > 0
-                    ? `${Math.round((stats.approved / stats.total) * 100)}%`
-                    : '0%'}
+                   ? `${Math.round(((stats.approved || 0) / stats.total) * 100)}%`
+                   : '0%'}
                 </span>
               </div>
             </Card.Body>

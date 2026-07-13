@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getAuditLogs, getAllAdmins } from '../../api/admin';
 import { Container, Card, Table, Badge, Button, Form, Row, Col } from 'react-bootstrap';
 import { FaSearch, FaClock, FaUser, FaEnvelope } from 'react-icons/fa';
+import AuditLogFilter from './AuditLogFilter';
 import toast from 'react-hot-toast';
 import Loading from '../common/Loading';
 import {
@@ -197,7 +198,11 @@ const AuditLogs = () => {
                         </td>
                         <td style={{ padding: '12px 16px' }}>
                           <Badge bg={getActionColor(log.action)} className="px-3 py-2">
-                            {getActionIcon(log.action)} {getActionLabel(log.action)}
+                           {(() => {
+                           const Icon = getActionIcon(log.action);
+                           return <Icon className="me-1" />;
+                           })()}
+                          {getActionLabel(log.action)}
                           </Badge>
                         </td>
                         <td style={{ padding: '12px 16px' }}>
