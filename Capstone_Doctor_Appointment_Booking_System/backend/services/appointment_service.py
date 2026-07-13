@@ -2,6 +2,7 @@ from typing import Dict, Any, List, Optional
 from datetime import datetime, timedelta
 
 from bson import ObjectId
+from backend.schemas.response.appointment_response import AppointmentData, BookAppointmentResponse
 from backend.repositories.appointment_repository import AppointmentRepository
 from backend.repositories.doctor_repository import DoctorRepository
 from backend.repositories.user_repository import UserRepository
@@ -34,9 +35,6 @@ class AppointmentService:
     ) -> Dict[str, Any]:
         """
         Book an appointment with double booking prevention.
-
-        Uses atomic transactions to prevent race conditions when multiple
-        patients try to book the same slot simultaneously.
         """
         doctor = await self.doctor_repo.find_by_user_id(booking_data.doctor_id)
         if not doctor:
@@ -96,17 +94,17 @@ class AppointmentService:
 
         logger.info(f"Appointment booked: {created.id} by patient {patient_id}")
 
-        return {
-            "message": SuccessMessages.APPOINTMENT_BOOKED,
-            "appointment": {
-                "id": created.id,
-                "patient_id": created.patient_id,
-                "doctor_id": created.doctor_id,
-                "appointment_date": created.appointment_date,
-                "appointment_time": created.appointment_time,
-                "status": created.status.value if hasattr(created.status, 'value') else created.status
-            }
-        }
+        return BookAppointmentResponse(
+        message=SuccessMessages.APPOINTMENT_BOOKED,
+        appointment=AppointmentData(
+            id=created.id,
+            patient_id=created.patient_id,
+            doctor_id=created.doctor_id,
+            appointment_date=created.appointment_date,
+            appointment_time=created.appointment_time,
+            status=created.status.value if hasattr(created.status, 'value') else created.status
+        )
+    )
 
     async def get_patient_appointments(
         self,
@@ -185,9 +183,6 @@ class AppointmentService:
     ) -> Dict[str, Any]:
         """
         Cancel an appointment and release the availability slot.
-
-        Cancellation allowed only if appointment is not completed
-        and within the cancellation window (2 hours before).
         """
         appointment = await self.appointment_repo.get_appointment_by_id(appt_id)
         if not appointment:
@@ -227,8 +222,6 @@ class AppointmentService:
     ) -> Dict[str, Any]:
         """
         Reschedule an appointment to a new date and time.
-
-        Releases the old slot and books a new one atomically.
         """
         appointment = await self.appointment_repo.get_appointment_by_id(appt_id)
         if not appointment:

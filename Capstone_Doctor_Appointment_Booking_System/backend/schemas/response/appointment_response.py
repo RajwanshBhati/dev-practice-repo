@@ -6,9 +6,6 @@ from backend.constants.status import AppointmentStatus, PaymentStatus
 class AppointmentResponse(BaseModel):
     """
     Response schema for appointments.
-
-    Returns complete appointment information including patient,
-    doctor, status, and payment details.
     """
     id: str
     patient_id: str
@@ -48,3 +45,15 @@ class AppointmentStatsResponse(BaseModel):
     no_show: int
     rescheduled: int
     revenue: float
+
+class AppointmentData(BaseModel):
+    id: str
+    patient_id: str
+    doctor_id: str
+    appointment_date: str
+    appointment_time: str
+    status: str
+
+class BookAppointmentResponse(BaseModel):
+    message: str
+    appointment: AppointmentData

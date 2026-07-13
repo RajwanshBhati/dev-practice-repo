@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends, Query
 from typing import Optional
+from backend.schemas.response.appointment_response import BookAppointmentResponse
 from backend.services.appointment_service import AppointmentService
 from backend.database.dependencies import get_current_user, get_current_patient, get_current_doctor
 from backend.schemas.request.appointment_request import (
@@ -16,15 +17,13 @@ router = APIRouter()
 logger = logging.getLogger(__name__)
 
 
-@router.post("/appointments/book")
+@router.post("/appointments/book",response_model=BookAppointmentResponse)
 async def book_appointment(
     booking_data: AppointmentBookRequest,
     current_user: dict = Depends(get_current_patient)
 ):
     """
     Book an appointment with a doctor.
-
-    Uses transaction to prevent double booking.
     """
     try:
         service = AppointmentService()

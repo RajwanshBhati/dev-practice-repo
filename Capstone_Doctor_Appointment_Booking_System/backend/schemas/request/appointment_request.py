@@ -8,13 +8,6 @@ from backend.utils.validators import Validators
 class AppointmentBookRequest(BaseModel):
     """
     Request schema for booking an appointment.
-
-    Attributes:
-        doctor_id: ID of the doctor to book
-        appointment_date: Date in YYYY-MM-DD format
-        appointment_time: Time in HH:MM format
-        reason: Reason for the visit
-        notes: Additional notes
     """
     doctor_id: str = Field(..., description="ID of the doctor")
     appointment_date: str = Field(..., description="Date in YYYY-MM-DD format")
@@ -47,8 +40,6 @@ class AppointmentBookRequest(BaseModel):
 class AppointmentUpdateRequest(BaseModel):
     """
     Request schema for updating appointment status.
-
-    Used by doctors to update appointment status.
     """
     status: AppointmentStatus = Field(..., description="New status")
     notes: Optional[str] = Field(None, description="Notes about the status update")
