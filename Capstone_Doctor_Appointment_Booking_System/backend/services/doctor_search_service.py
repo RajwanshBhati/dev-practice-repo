@@ -19,9 +19,7 @@ logger = logging.getLogger(__name__)
 
 class DoctorSearchService:
     """
-    Doctor search service.
-
-    Provides methods for searching doctors with filters.
+    Doctor search service Provides methods for searching doctors with filters.
     """
 
     def __init__(self):

@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends, Query
 from typing import Optional
 import logging
 
-from backend.schemas.response.doctor_response import DoctorDashboardStatsResponse
+from backend.schemas.response.doctor_response import DoctorDashboardStatsResponse, SpecializationsResponse
 from backend.services.doctor_service import DoctorService
 from backend.database.dependencies import (
     get_current_user,
@@ -139,17 +139,16 @@ async def search_doctors(
 async def get_specializations():
     """Return the full list of specializations doctors can register under, for populating filter dropdowns."""
     from backend.enums.doctor_enums import Specialization
-    return {
-        "specializations": [spec.value for spec in Specialization]
-    }
+    return SpecializationsResponse(
+        specializations=[spec.value for spec in Specialization]
+    )
 
 
 
 @router.get("/stats", response_model=DoctorDashboardStatsResponse)
 async def get_doctor_stats(current_user: dict = Depends(get_current_doctor)):
     """
-    Return dashboard stats for the logged-in doctor. Appointment counts are
-    placeholders for now until the appointment service is wired in.
+    Return dashboard stats for the logged-in doctor.
     """
     try:
         doctor_service = DoctorService()

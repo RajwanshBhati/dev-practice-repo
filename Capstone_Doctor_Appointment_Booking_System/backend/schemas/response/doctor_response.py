@@ -71,3 +71,8 @@ class DoctorUserResponse(BaseModel):
 class DoctorRegistrationResponse(BaseModel):
     message: str
     user: DoctorUserResponse
+
+class SpecializationsResponse(BaseModel):
+    """Response schema for doctor specializations."""
+
+    specializations: List[str]
