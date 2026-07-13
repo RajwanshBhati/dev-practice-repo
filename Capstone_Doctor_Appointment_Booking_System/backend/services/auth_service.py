@@ -369,6 +369,7 @@ class AuthService:
             "user": {
                 "id": user.id,
                 "email": user.email,
+                "phone": user.phone,
                 "full_name": user.full_name,
                 "role": user.role.value,
                 "status": user.status.value

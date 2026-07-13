@@ -293,6 +293,8 @@ async def get_doctor_stats(
 async def get_audit_logs(
     limit: int = 100,
     skip: int = 0,
+    admin_id: Optional[str] = None,
+    action: Optional[str] = None,
     current_admin: dict = Depends(require_permission(Permission.VIEW_AUDIT_LOGS))
 ):
     """Fetch the audit trail of admin actions, paginated."""
@@ -300,13 +302,17 @@ async def get_audit_logs(
         from backend.repositories.admin_repository import AdminRepository
         admin_repo = AdminRepository()
         logs = await admin_repo.get_audit_logs(
-            admin_id=current_admin["user_id"],
+            admin_id=admin_id,
+            action=action,
             limit=limit,
             skip=skip
         )
+        total = await admin_repo.count_audit_logs(admin_id=admin_id, action=action)
         return {
             "logs": logs,
-            "count": len(logs)
+            "count": len(logs),
+            "total": total,
+            "total_pages": (total + limit - 1) // limit if limit > 0 else 1
         }
     except Exception as e:
         logger.error(f"Error getting audit logs: {str(e)}")
