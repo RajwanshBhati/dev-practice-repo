@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Row, Col } from 'react-bootstrap';
+import { Form, Row, Col,Button} from 'react-bootstrap';
 
 const AuditLogFilter = ({ filters, onFilterChange, admins }) => {
   /**
@@ -40,8 +40,6 @@ const AuditLogFilter = ({ filters, onFilterChange, admins }) => {
             style={{ borderRadius: '8px', border: '2px solid #e2e8f0' }}
           >
             <option value="">All Actions</option>
-            <option value="CREATE_ADMIN">Create Admin</option>
-            <option value="DELETE_ADMIN">Delete Admin</option>
             <option value="APPROVE_DOCTOR">Approve Doctor</option>
             <option value="REJECT_DOCTOR">Reject Doctor</option>
           </Form.Select>

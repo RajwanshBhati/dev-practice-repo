@@ -1,8 +1,3 @@
-/**
- * Doctor Profile page component.
- * Allows doctors to view and update their profile.
- */
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { getDoctorProfile, updateDoctorProfile } from '../../api/doctor';
@@ -18,6 +13,7 @@ const DoctorProfile = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [profile, setProfile] = useState(null);
+  const [pendingUpdate, setPendingUpdate] = useState(false);
   const [formData, setFormData] = useState({
     qualification: '',
     specialization: '',
@@ -46,6 +42,7 @@ const DoctorProfile = () => {
     try {
       const data = await getDoctorProfile();
       setProfile(data);
+      setPendingUpdate(!!data.pending_update);
       setFormData({
         qualification: data.qualification || '',
         specialization: data.specialization || '',
@@ -105,7 +102,8 @@ const DoctorProfile = () => {
       });
 
       const response = await updateDoctorProfile(data);
-      toast.success('Profile updated successfully');
+      toast.success(response?.message || 'Profile changes submitted for admin approval');
+      setPendingUpdate(true);
 
       // Update user context if name changed
       if (data.full_name) {
@@ -125,6 +123,15 @@ const DoctorProfile = () => {
   return (
     <Container className="mt-4">
       <h1 className="fw-bold mb-4" style={{ color: '#1a202c' }}>Doctor Profile</h1>
+
+      {pendingUpdate && (
+        <div
+          className="mb-4 p-3"
+          style={{ borderRadius: '10px', background: '#fff7e6', border: '1px solid #f6c453', color: '#8a5a00' }}
+        >
+          You have profile changes awaiting admin approval. Your public profile still shows your previously approved details until an admin reviews this request.
+        </div>
+      )}
 
       <Row>
         <Col lg={4} className="mb-4">

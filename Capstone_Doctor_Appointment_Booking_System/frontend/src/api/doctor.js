@@ -1,8 +1,3 @@
-/**
- * Doctor API service.
- * Handles doctor search, profile, and availability operations.
- */
-
 import axiosInstance from './axios';
 
 /**
@@ -80,8 +75,10 @@ export const updateDoctorProfile = async (data) => {
  * @param {string} data.profile_picture - Image URL
  * @returns {Promise} Updated profile
  */
-export const updateProfilePicture = async (data) => {
-    const response = await axiosInstance.put('/doctor/profile-picture', data);
+export const updateProfilePicture = async (file) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    const response = await axiosInstance.put('/doctor/profile-picture', formData);
     return response.data;
 };
 

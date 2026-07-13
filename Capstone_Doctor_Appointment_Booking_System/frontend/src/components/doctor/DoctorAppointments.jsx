@@ -184,7 +184,7 @@ const DoctorAppointments = () => {
                 Cancelled
               </Nav.Link>
             </Nav.Item>
-            <Nav.Item>
+            {/* <Nav.Item>
               <Nav.Link
                 active={activeTab === 'no_show'}
                 onClick={() => handleTabChange('no_show')}
@@ -192,7 +192,7 @@ const DoctorAppointments = () => {
               >
                 No Show
               </Nav.Link>
-            </Nav.Item>
+            </Nav.Item> */}
           </Nav>
         </Card.Body>
       </Card>

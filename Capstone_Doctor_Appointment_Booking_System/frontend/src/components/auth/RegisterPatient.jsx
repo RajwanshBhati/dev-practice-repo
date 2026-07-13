@@ -261,14 +261,6 @@ const RegisterPatient = () => {
                     </Col>
                   </Row>
 
-                  <Form.Group className="mb-4">
-                    <Form.Check
-                      type="checkbox"
-                      label="Show password"
-                      checked={showPassword}
-                      onChange={() => setShowPassword(!showPassword)}
-                    />
-                  </Form.Group>
                   </fieldset>
 
                   <Button

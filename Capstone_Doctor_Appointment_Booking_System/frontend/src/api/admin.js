@@ -58,6 +58,11 @@ export const rejectDoctor = async (doctorId, data) => {
     return response.data;
 };
 
+export const getAllAdmins = async () => {
+    const response = await axiosInstance.get('/admin/admins');
+    return response.data;
+};
+
 /**
  * Get audit logs.
  * @param {Object} params - Query parameters
@@ -68,5 +73,21 @@ export const rejectDoctor = async (doctorId, data) => {
  */
 export const getAuditLogs = async (params) => {
     const response = await axiosInstance.get('/admin/audit-logs', { params });
+    return response.data;
+};
+
+
+export const getPendingProfileUpdates = async () => {
+    const response = await axiosInstance.get('/admin/doctors/profile-updates');
+    return response.data;
+};
+
+export const approveProfileUpdate = async (doctorId) => {
+    const response = await axiosInstance.post(`/admin/doctors/${doctorId}/approve-update`);
+    return response.data;
+};
+
+export const rejectProfileUpdate = async (doctorId, data) => {
+    const response = await axiosInstance.post(`/admin/doctors/${doctorId}/reject-update`, data);
     return response.data;
 };

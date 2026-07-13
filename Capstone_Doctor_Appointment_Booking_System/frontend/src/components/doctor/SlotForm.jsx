@@ -61,6 +61,16 @@ const SlotForm = ({ show, onHide, slot, onSave }) => {
       toast.error('End time must be after start time');
       return false;
     }
+
+    const today = new Date().toISOString().split('T')[0];
+    if (formData.date === today) {
+      const nowTime = new Date().toTimeString().slice(0, 5);
+      if (formData.start_time <= nowTime) {
+        toast.error('Start time cannot be in the past for today\'s date');
+        return false;
+      }
+    }
+
     return true;
   };
 
@@ -138,7 +148,7 @@ const SlotForm = ({ show, onHide, slot, onSave }) => {
           </Row>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={onHide} disabled={loading}>
+          <Button type="button" variant="secondary" onClick={onHide} disabled={loading}>
             Cancel
           </Button>
           <Button variant="primary" type="submit" disabled={loading}>
