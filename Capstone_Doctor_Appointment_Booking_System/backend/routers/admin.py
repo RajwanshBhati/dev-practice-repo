@@ -3,6 +3,7 @@ from typing import Optional, List
 from backend.services.admin_service import AdminService
 from backend.services.doctor_service import DoctorService
 from backend.database.dependencies import get_current_admin, require_permission
+from backend.repositories.admin_repository import AdminRepository
 from backend.schemas.request.admin_request import (
     AdminCreateRequest,
     AdminLoginRequest
@@ -236,7 +237,6 @@ async def get_audit_logs(
 ):
     """Fetch the audit trail of admin actions, paginated."""
     try:
-        from backend.repositories.admin_repository import AdminRepository
         admin_repo = AdminRepository()
         logs = await admin_repo.get_audit_logs(
             admin_id=current_admin["user_id"],

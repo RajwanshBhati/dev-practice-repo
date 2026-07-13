@@ -4,7 +4,7 @@ from pydantic import Field
 from backend.models.base import BaseDBModel
 
 class AdminAuditLog(BaseDBModel):
-    """Records every sensitive action an admin takes, so we can trace who did what and when if something goes wrong."""
+    """Records every sensitive action an admin takes"""
     admin_id: str = Field(..., description="Admin user ID")
     admin_email: str = Field(..., description="Admin email")
     action: str = Field(..., description="Action performed")
@@ -19,7 +19,7 @@ class AdminAuditLog(BaseDBModel):
 
 
 class SystemSettings(BaseDBModel):
-    """Stores app-wide configurable settings as key-value pairs, editable by admins without a code deploy."""
+    """Stores app-wide configurable settings as key-value pairs."""
     key: str = Field(..., description="Setting key")
     value: dict = Field(..., description="Setting value")
     description: Optional[str] = Field(None, description="Setting description")
