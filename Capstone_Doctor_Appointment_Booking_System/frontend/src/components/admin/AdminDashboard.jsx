@@ -64,7 +64,7 @@ const AdminDashboard = () => {
   }, []);
 
   const loadDashboardData = async () => {
-    setLoading(true);
+    setStats((prev) => ({ ...prev, ...data }));
     try {
       const data = await getDoctorStatsAdmin();
       setStats(data);
