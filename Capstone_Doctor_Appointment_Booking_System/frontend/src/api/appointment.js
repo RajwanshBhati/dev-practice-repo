@@ -55,6 +55,42 @@ export const rescheduleAppointment = async (appointmentId, data) => {
 };
 
 /**
+ * Get appointment statistics (for doctor dashboard).
+ * @param {string} doctorId - Optional doctor ID
+ * @returns {Promise} Appointment stats
+ */
+export const getAppointmentStats = async (doctorId) => {
+    const response = await axiosInstance.get('/appointments/stats', {
+        params: { doctor_id: doctorId },
+    });
+    return response.data;
+};
+
+
+/**
+ * Get doctor appointments with filters.
+ * @param {Object} params - Query parameters
+ * @param {string} params.status - Filter by status
+ * @param {number} params.limit - Results per page
+ * @param {number} params.skip - Results to skip
+ * @returns {Promise} List of appointments
+ */
+export const getDoctorAppointments = async (params) => {
+    const response = await axiosInstance.get('/doctors/appointments', { params });
+    return response.data;
+};
+
+/**
+ * Get appointment by ID.
+ * @param {string} appointmentId - Appointment ID
+ * @returns {Promise} Appointment details
+ */
+export const getAppointmentById = async (appointmentId) => {
+    const response = await axiosInstance.get(`/appointments/${appointmentId}`);
+    return response.data;
+};
+
+/**
  * Update appointment status (Doctor only).
  * @param {string} appointmentId - Appointment ID
  * @param {Object} data - Status update data

@@ -1,9 +1,4 @@
-/**
- * Doctor Search page component.
- * Allows patients to search for doctors with various filters.
- */
-
-import { useState, useEffect,useRef,useMemo} from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { searchDoctors, getSpecializations } from '../../api/doctor';
 import { Form, Button, Card, Row, Col, Container, Badge } from 'react-bootstrap';
@@ -42,7 +37,6 @@ const DoctorSearch = () => {
     location: '',
     min_experience: '',
     max_fee: '',
-    min_rating: '',
     limit: 10,
     skip: 0,
   });
@@ -84,7 +78,11 @@ const DoctorSearch = () => {
         }
       });
       const data = await searchDoctors(params);
-      setDoctors((prev) => (isLoadMore ? [...prev, ...(data.doctors || [])] : data.doctors || []));
+      if (params.skip && params.skip > 0) {
+        setDoctors((prev) => [...prev, ...(data.doctors || [])]);
+      } else {
+        setDoctors(data.doctors || []);
+      }
       setTotal(data.total || 0);
       setHasMore(data.has_more || false);
     } catch (error) {
@@ -93,7 +91,7 @@ const DoctorSearch = () => {
     } finally {
       isLoadMore ? setLoadingMore(false) : setLoading(false);
     }
-  };
+};
 
   /**
    * Load specializations on component mount.
@@ -148,31 +146,6 @@ const DoctorSearch = () => {
    */
   const handleDoctorClick = (doctorId) => {
     navigate(`/doctors/${doctorId}`);
-  };
-
-  /**
-   * Render star rating display.
-   * @param {number} rating - Rating value (0-5)
-   * @returns {JSX.Element} Star icons
-   */
-  const renderStars = (rating) => {
-    const fullStars = Math.floor(rating);
-    const hasHalfStar = rating % 1 >= 0.5;
-    const stars = [];
-    for (let i = 0; i < fullStars; i++) {
-      stars.push(<FaStar key={i} className="text-warning" style={{ fontSize: '14px' }} />);
-    }
-    if (hasHalfStar) {
-      stars.push(<FaStar key="half" className="text-warning" style={{ fontSize: '14px', opacity: 0.5 }} />);
-    }
-    if (stars.length === 0) {
-      stars.push(
-        <span key="no-stars" className="text-muted" style={{ fontSize: '13px' }}>
-          No ratings
-        </span>
-      );
-    }
-    return stars;
   };
 
   if (loading && doctors.length === 0) {
@@ -351,12 +324,12 @@ const DoctorSearch = () => {
                     </p>
                   </Col>
                   <Col md={4} className="text-end">
-                    <div className="mb-2">
+                    {/* <div className="mb-2">
                       {renderStars(doctor.rating)}
                       <span className="ms-1 text-muted" style={{ fontSize: '0.85rem' }}>
                         ({doctor.total_reviews})
                       </span>
-                    </div>
+                    </div> */}
                     <h4 className="text-primary fw-bold" style={{ fontSize: '1.5rem' }}>
                       ${doctor.consultation_fee}
                     </h4>

@@ -316,14 +316,173 @@ body {
 }
 
 
-.booking-card {
-  position: sticky;
-  top: 20px;
+
+/* Hero Section */
+.hero-section {
+  padding: 60px 0;
+  background: white;
 }
 
-@media (max-width: 991.98px) {
-  .booking-card {
-    position: static;
-    top: auto;
+.hero-title {
+  line-height: 1.2;
+}
+
+
+.step-icon {
+  transition: transform 0.3s ease;
+}
+
+.card-hover:hover .step-icon {
+  transform: scale(1.1);
+}
+
+.card-hover {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Stats Section */
+.stats-section {
+  background: white;
+  border-top: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+/* CTA Section */
+.cta-section {
+  color: white;
+}
+
+.cta-section .btn-light {
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 12px 40px;
+}
+
+.cta-section .btn-light:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Hero Image */
+.hero-image-placeholder {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+  100% { transform: translateY(0px); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2.2rem !important;
   }
+
+  .hero-image-placeholder {
+    width: 250px !important;
+    height: 250px !important;
+  }
+
+  .hero-image-placeholder svg {
+    font-size: 70px !important;
+  }
+
+  .stats-section h2 {
+    font-size: 1.8rem !important;
+  }
+}
+
+/* Dashboard sidebar layout (Admin / Doctor / Patient) */
+.dashboard-layout {
+  display: flex;
+}
+
+.dashboard-sidebar {
+  width: 250px;
+  min-height: calc(100vh - 80px);
+  flex-shrink: 0;
+  background: #ffffff;
+  border-right: 1px solid #edf2f7;
+  padding: 24px 16px;
+}
+
+.dashboard-sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dashboard-sidebar-content {
+  flex: 1;
+  min-width: 0;
+}
+
+@media (max-width: 768px) {
+  .dashboard-layout {
+    flex-direction: column;
+  }
+
+  .dashboard-sidebar {
+    width: 100%;
+    min-height: auto;
+    border-right: none;
+    border-bottom: 1px solid #edf2f7;
+    padding: 12px;
+  }
+
+  .dashboard-sidebar-title {
+    display: none;
+  }
+
+  .dashboard-sidebar-nav {
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 8px;
+    padding-bottom: 4px;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .dashboard-sidebar-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .dashboard-sidebar-nav a {
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+}
+
+/* Dashboard sidebar layout (Admin / Doctor / Patient) */
+.dashboard-layout { display: flex; }
+
+.dashboard-sidebar {
+  width: 250px;
+  min-height: calc(100vh - 80px);
+  flex-shrink: 0;
+  background: #ffffff;
+  border-right: 1px solid #edf2f7;
+  padding: 24px 16px;
+}
+
+.dashboard-sidebar-nav { display: flex; flex-direction: column; gap: 4px; }
+.dashboard-sidebar-content { flex: 1; min-width: 0; }
+
+@media (max-width: 768px) {
+  .dashboard-layout { flex-direction: column; }
+  .dashboard-sidebar { width: 100%; min-height: auto; border-right: none; border-bottom: 1px solid #edf2f7; padding: 12px; }
+  .dashboard-sidebar-title { display: none; }
+  .dashboard-sidebar-nav {
+    flex-direction: row; overflow-x: auto; gap: 8px; padding-bottom: 4px;
+    -ms-overflow-style: none; scrollbar-width: none;
+  }
+  .dashboard-sidebar-nav::-webkit-scrollbar { display: none; }
+  .dashboard-sidebar-nav a { white-space: nowrap; flex-shrink: 0; }
 }
