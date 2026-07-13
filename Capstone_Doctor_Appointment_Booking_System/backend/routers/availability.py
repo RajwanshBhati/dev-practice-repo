@@ -22,10 +22,6 @@ async def create_availability_slot(
 ):
     """
     Create a new availability slot for the logged-in doctor.
-
-    This endpoint allows a doctor to create an availability slot
-    for a specific date and time range. The doctor must be
-    approved before creating availability.
     """
     try:
         service = AvailabilityService()
@@ -54,9 +50,6 @@ async def get_doctor_availability_slots(
 ):
     """
     Get availability slots for the logged-in doctor.
-
-    This endpoint returns all availability slots for the current
-    doctor. Optional filters include date and booking status.
     """
     try:
         service = AvailabilityService()
@@ -163,10 +156,6 @@ async def update_availability_slot(
 ):
     """
     Update an availability slot.
-
-    This endpoint allows a doctor to update an existing
-    availability slot. Only available (non-booked) slots
-    can be updated.
     """
     try:
         service = AvailabilityService()
@@ -193,11 +182,6 @@ async def delete_availability_slot(
 ):
     """
     Delete an availability slot.
-
-    This endpoint allows a doctor to delete an existing
-    availability slot. Only available (non-booked) slots
-    can be deleted.
-
     """
     try:
         service = AvailabilityService()
