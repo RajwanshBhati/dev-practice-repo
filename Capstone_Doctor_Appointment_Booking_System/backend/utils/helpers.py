@@ -7,19 +7,12 @@ import random
 class Helpers:
     """
     Collection of helper utility functions.
-
-    Provides methods for ID generation, formatting, and masking.
     """
 
     @staticmethod
     def generate_id() -> str:
         """Generate a random UUID4 string."""
         return str(uuid.uuid4())
-
-    @staticmethod
-    def generate_otp() -> str:
-        """Generate a random 6-digit OTP."""
-        return str(random.randint(100000, 999999))
 
     @staticmethod
     def generate_booking_reference() -> str:

@@ -12,10 +12,12 @@ from backend.schemas.request.payment_request import (
     PaymentRefundRequest
 )
 from backend.schemas.response.payment_response import (
+    PaymentListResponse,
     PaymentResponse,
     PaymentInitiateResponse,
     PaymentConfirmResponse,
-    PaymentRefundResponse
+    PaymentRefundResponse,
+    RevenueStatsResponse
 )
 from backend.constants import ErrorMessages, SuccessMessages
 from backend.constants.status import PaymentStatus, AppointmentStatus
@@ -39,9 +41,6 @@ class PaymentService:
     ) -> PaymentInitiateResponse:
         """
         Initiate a payment for an appointment.
-
-        Creates a pending payment record with a unique payment ID
-        and transaction ID.
         """
         appointment = await self.appointment_repo.get_appointment_by_id(
             payment_data.appointment_id
@@ -197,9 +196,6 @@ class PaymentService:
     ) -> PaymentRefundResponse:
         """
         Refund a completed payment.
-
-        Only payments in COMPLETED status can be refunded.
-        Creates a refund ID and updates payment status.
         """
         # Get payment
         payment = await self.payment_repo.find_by_payment_id(payment_id)
@@ -266,15 +262,6 @@ class PaymentService:
     async def get_payment_status(self, payment_id: str) -> PaymentResponse:
         """
         Get payment status by payment ID.
-
-        Args:
-            payment_id: ID of the payment
-
-        Returns:
-            PaymentResponse: Payment details
-
-        Raises:
-            ValueError: If payment not found
         """
         payment = await self.payment_repo.find_by_payment_id(payment_id)
         if not payment:
@@ -306,14 +293,6 @@ class PaymentService:
     ) -> Dict[str, Any]:
         """
         Get all payments for a patient.
-
-        Args:
-            patient_id: ID of the patient
-            limit: Number of results per page
-            skip: Number of results to skip
-
-        Returns:
-            Dict: List of payments with pagination
         """
         payments, total = await self.payment_repo.get_payments_by_patient(
             patient_id, limit, skip
@@ -340,27 +319,21 @@ class PaymentService:
             for p in payments
         ]
 
-        return {
-            "payments": payment_responses,
-            "total": total,
-            "page": (skip // limit) + 1 if limit > 0 else 1,
-            "per_page": limit,
-            "total_pages": (total + limit - 1) // limit if limit > 0 else 1
-        }
+        return PaymentListResponse(
+        payments=payment_responses,
+        total=total,
+        page=(skip // limit) + 1 if limit > 0 else 1,
+        per_page=limit,
+        total_pages=(total + limit - 1) // limit if limit > 0 else 1,
+        )
 
     async def get_revenue_stats(self, doctor_id: Optional[str] = None) -> Dict[str, Any]:
         """
         Get revenue statistics.
-
-        Args:
-            doctor_id: Optional doctor ID for doctor-specific stats
-
-        Returns:
-            Dict: Revenue statistics
         """
         total_revenue = await self.payment_repo.get_total_revenue(doctor_id)
 
-        return {
-            "total_revenue": total_revenue,
-            "currency": "USD"
-        }
+        return RevenueStatsResponse(
+        total_revenue=total_revenue,
+        currency="USD",
+        )

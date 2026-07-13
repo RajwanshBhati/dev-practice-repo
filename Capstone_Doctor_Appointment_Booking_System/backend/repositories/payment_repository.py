@@ -12,9 +12,6 @@ logger = logging.getLogger(__name__)
 class PaymentRepository:
     """
     Repository for payment database operations.
-
-    Provides methods for creating, reading, updating, and deleting
-    payment records.
     """
 
     def __init__(self):

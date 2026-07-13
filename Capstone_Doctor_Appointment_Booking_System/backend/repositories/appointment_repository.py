@@ -23,9 +23,6 @@ class AppointmentRepository:
     ) -> Optional[Appointment]:
         """
         Create appointment with transaction to prevent double booking.
-
-        Atomically checks slot availability, marks it as booked, and creates
-        the appointment record.
         """
         try:
             # Atomically update and lock the slot
@@ -155,8 +152,6 @@ class AppointmentRepository:
     async def cancel_appointment(self, appt_id: str) -> bool:
         """
         Cancel appointment and release the availability slot.
-
-        Updates appointment status to CANCELLED and makes the slot available.
         """
         try:
             appointment = await self.get_appointment_by_id(appt_id)
@@ -192,8 +187,6 @@ class AppointmentRepository:
     async def get_appointment_stats(self, doctor_id: Optional[str] = None) -> dict:
         """
         Get appointment statistics.
-
-        Returns counts by status and total revenue for completed appointments.
         """
         try:
             query = {}

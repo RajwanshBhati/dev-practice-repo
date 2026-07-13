@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends, Query
 from typing import Optional
+from backend.schemas.response.payment_response import PaymentConfirmResponse, PaymentInitiateResponse, PaymentListResponse, PaymentRefundResponse, RevenueStatsResponse
 from backend.services.payment_service import PaymentService
 from backend.database.dependencies import get_current_user, get_current_patient
 from backend.schemas.request.payment_request import (
@@ -15,22 +16,13 @@ router = APIRouter()
 logger = logging.getLogger(__name__)
 
 
-@router.post("/payments/initiate")
+@router.post("/payments/initiate",response_model=PaymentInitiateResponse)
 async def initiate_payment(
     payment_data: PaymentInitiateRequest,
     current_user: dict = Depends(get_current_patient)
 ):
     """
     Initiate a payment for an appointment.
-
-    Creates a pending payment record with a unique payment ID.
-    The patient can then confirm the payment.
-
-    Args:
-        payment_data: Payment initiation data
-
-    Returns:
-        Payment initiation details with redirect URL
     """
     try:
         service = PaymentService()
@@ -49,22 +41,13 @@ async def initiate_payment(
         )
 
 
-@router.post("/payments/confirm")
+@router.post("/payments/confirm",response_model=PaymentConfirmResponse)
 async def confirm_payment(
     confirm_data: PaymentConfirmRequest,
     current_user: dict = Depends(get_current_patient)
 ):
     """
     Confirm and process a pending payment.
-
-    Simulates payment processing with success/failure scenarios.
-    On success, confirms the appointment.
-
-    Args:
-        confirm_data: Payment confirmation data
-
-    Returns:
-        Payment confirmation details
     """
     try:
         service = PaymentService()
@@ -83,7 +66,7 @@ async def confirm_payment(
         )
 
 
-@router.post("/payments/{payment_id}/refund")
+@router.post("/payments/{payment_id}/refund",response_model=PaymentRefundResponse)
 async def refund_payment(
     payment_id: str,
     refund_data: PaymentRefundRequest,
@@ -91,16 +74,6 @@ async def refund_payment(
 ):
     """
     Refund a completed payment.
-
-    Only completed payments can be refunded.
-    Updates payment status to REFUNDED and cancels the appointment.
-
-    Args:
-        payment_id: ID of the payment to refund
-        refund_data: Refund request data
-
-    Returns:
-        Refund confirmation details
     """
     try:
         service = PaymentService()
@@ -127,12 +100,6 @@ async def get_payment_status(
 ):
     """
     Get payment status by payment ID.
-
-    Args:
-        payment_id: ID of the payment
-
-    Returns:
-        Payment details and status
     """
     try:
         service = PaymentService()
@@ -148,7 +115,7 @@ async def get_payment_status(
         )
 
 
-@router.get("/patients/payments")
+@router.get("/patients/payments",response_model=PaymentListResponse)
 async def get_patient_payments(
     limit: int = Query(20, ge=1, le=100, description="Results per page"),
     skip: int = Query(0, ge=0, description="Results to skip"),
@@ -156,13 +123,6 @@ async def get_patient_payments(
 ):
     """
     Get all payments for the logged-in patient.
-
-    Args:
-        limit: Number of results per page
-        skip: Number of results to skip
-
-    Returns:
-        List of payments with pagination
     """
     try:
         service = PaymentService()
@@ -180,19 +140,13 @@ async def get_patient_payments(
         )
 
 
-@router.get("/payments/revenue")
+@router.get("/payments/revenue",response_model=RevenueStatsResponse)
 async def get_revenue_stats(
     doctor_id: Optional[str] = Query(None, description="Doctor ID for doctor-specific stats"),
     current_user: dict = Depends(get_current_user)
 ):
     """
     Get revenue statistics.
-
-    Args:
-        doctor_id: Optional doctor ID for doctor-specific stats
-
-    Returns:
-        Revenue statistics
     """
     try:
         service = PaymentService()

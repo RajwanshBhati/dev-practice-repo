@@ -6,10 +6,6 @@ from backend.enums.payment_enums import PaymentMethod
 class PaymentInitiateRequest(BaseModel):
     """
     Request schema for initiating a payment.
-
-    Attributes:
-        appointment_id: ID of the appointment to pay for
-        method: Payment method (credit_card, debit_card, upi, net_banking, wallet)
     """
     appointment_id: str = Field(..., description="ID of the appointment")
     method: PaymentMethod = Field(..., description="Payment method")
@@ -26,11 +22,6 @@ class PaymentInitiateRequest(BaseModel):
 class PaymentConfirmRequest(BaseModel):
     """
     Request schema for confirming a payment.
-
-    Attributes:
-        payment_id: ID of the payment to confirm
-        card_last_four: Last 4 digits of card (if credit/debit card)
-        upi_id: UPI ID (if UPI payment)
     """
     payment_id: str = Field(..., description="ID of the payment")
     card_last_four: Optional[str] = Field(None, description="Last 4 digits of card")
