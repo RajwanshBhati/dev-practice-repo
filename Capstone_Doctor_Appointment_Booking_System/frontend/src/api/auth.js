@@ -43,7 +43,8 @@ const assertValidRegistration = (data) => {
  */
 export const registerPatient = async (data) => {
     assertValidRegistration(data);
-    const response = await axiosInstance.post('/auth/register/patient', data);
+    const payload = { ...data, date_of_birth: toBackendDateFormat(data.date_of_birth) };
+    const response = await axiosInstance.post('/auth/register/patient', payload);
     return response.data;
 };
 
@@ -71,8 +72,16 @@ export const registerPatient = async (data) => {
  */
 export const registerDoctor = async (data) => {
     assertValidRegistration(data);
-    const response = await axiosInstance.post('/auth/register/doctor', data);
+    const payload = { ...data, date_of_birth: toBackendDateFormat(data.date_of_birth) };
+    const response = await axiosInstance.post('/auth/register/doctor', payload);
     return response.data;
+};
+
+const toBackendDateFormat = (isoDate) => {
+    if (!isoDate) return isoDate;
+    const [year, month, day] = isoDate.split('-');
+    if (!year || !month || !day) return isoDate;
+    return `${day}-${month}-${year}`;
 };
 
 /**
