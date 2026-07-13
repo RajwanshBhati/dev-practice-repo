@@ -23,6 +23,11 @@ import DoctorProfile from './components/doctor/DoctorProfile';
 import DoctorAppointments from './components/doctor/DoctorAppointments';
 import ManageAvailability from './components/doctor/ManageAvailability';
 
+//admin Components
+import AdminDashboard from './components/admin/AdminDashboard';
+import ManageDoctors from './components/admin/ManageDoctors';
+import AuditLogs from './components/admin/AuditLogs';
+
 import './styles/global.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -90,6 +95,25 @@ function App() {
                 <PrivateRoute allowedRoles={['DOCTOR']}>
                 <ManageAvailability />
                  </PrivateRoute>
+                } />
+
+                {/* Admin Routes */}
+                <Route path="/admin/dashboard" element={
+                 <PrivateRoute allowedRoles={['ADMIN']}>
+                 <AdminDashboard />
+                </PrivateRoute>
+                } />
+                <Route path="/admin/doctors" element={
+                <PrivateRoute allowedRoles={['ADMIN']}>
+                <ManageDoctors />
+               </PrivateRoute>
+                } />
+
+
+                <Route path="/admin/audit-logs" element={
+                <PrivateRoute allowedRoles={['ADMIN']}>
+                <AuditLogs />
+               </PrivateRoute>
                 } />
               <Route path="/forgot-password" element={<ForgotPassword />} />
             </Routes>
