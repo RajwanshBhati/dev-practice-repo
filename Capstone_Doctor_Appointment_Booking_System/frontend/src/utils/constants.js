@@ -95,26 +95,9 @@ export const STATUS_LABELS = {
     CONFIRMED: 'Confirmed',
     COMPLETED: 'Completed',
     CANCELLED: 'Cancelled',
-    NO_SHOW: 'No Show',
     RESCHEDULED: 'Rescheduled',
 };
 
-/**
- * Payment status constants.
- */
-export const PAYMENT_STATUS = {
-    PENDING: 'PENDING',
-    COMPLETED: 'COMPLETED',
-    FAILED: 'FAILED',
-    REFUNDED: 'REFUNDED',
-};
-
-export const PAYMENT_STATUS_LABELS = {
-    PENDING: 'Pending',
-    COMPLETED: 'Completed',
-    FAILED: 'Failed',
-    REFUNDED: 'Refunded',
-};
 
 /**
  * Slot duration options.
@@ -141,7 +124,6 @@ export const STATUS_OPTIONS = [
     { value: 'CONFIRMED', label: 'Confirmed' },
     { value: 'COMPLETED', label: 'Completed' },
     { value: 'CANCELLED', label: 'Cancelled' },
-    { value: 'NO_SHOW', label: 'No Show' },
     { value: 'RESCHEDULED', label: 'Rescheduled' },
 ];
 
@@ -164,22 +146,19 @@ export const DOCTOR_STATUS_OPTIONS = [
     { value: 'ALL', label: 'All Doctors' },
     { value: 'PENDING', label: 'Pending' },
     { value: 'APPROVED', label: 'Approved' },
-    { value: 'REJECTED', label: 'Rejected' },
-    { value: 'SUSPENDED', label: 'Suspended' },
+    { value: 'REJECTED', label: 'Rejected' }
 ];
 
 export const DOCTOR_STATUS_COLORS = {
     PENDING: 'warning',
     APPROVED: 'success',
-    REJECTED: 'danger',
-    SUSPENDED: 'secondary',
+    REJECTED: 'danger'
 };
 
 export const DOCTOR_STATUS_LABELS = {
     PENDING: 'Pending',
     APPROVED: 'Approved',
-    REJECTED: 'Rejected',
-    SUSPENDED: 'Suspended',
+    REJECTED: 'Rejected'
 };
 
 /**
@@ -187,24 +166,46 @@ export const DOCTOR_STATUS_LABELS = {
  */
 export const AUDIT_ACTIONS = {
     CREATE_FIRST_ADMIN: 'Create First Admin',
-    CREATE_ADMIN: 'Create Admin',
-    DELETE_ADMIN: 'Delete Admin',
     APPROVE_DOCTOR: 'Approve Doctor',
     REJECT_DOCTOR: 'Reject Doctor',
 };
 
 export const AUDIT_ACTION_COLORS = {
     CREATE_FIRST_ADMIN: 'success',
-    CREATE_ADMIN: 'primary',
-    DELETE_ADMIN: 'danger',
     APPROVE_DOCTOR: 'success',
     REJECT_DOCTOR: 'danger',
 };
+/**
+ * Payment method options.
+ */
+export const PAYMENT_METHODS = [
+    { value: 'CREDIT_CARD', label: 'Credit Card' },
+    { value: 'DEBIT_CARD', label: 'Debit Card' },
+    { value: 'UPI', label: 'UPI' },
+    { value: 'NET_BANKING', label: 'Net Banking' },
+    { value: 'WALLET', label: 'Wallet' },
+];
 
-export const AUDIT_ACTION_ICONS = {
-    CREATE_FIRST_ADMIN: FaCrown,
-    CREATE_ADMIN: FaUserPlus,
-    DELETE_ADMIN: FaUserMinus,
-    APPROVE_DOCTOR: FaCheckCircle,
-    REJECT_DOCTOR: FaTimesCircle,
+/**
+ * Payment status.
+ */
+export const PAYMENT_STATUS = {
+    PENDING: 'PENDING',
+    COMPLETED: 'COMPLETED',
+    FAILED: 'FAILED',
+    REFUNDED: 'REFUNDED',
+};
+
+export const PAYMENT_STATUS_LABELS = {
+    PENDING: 'Pending',
+    COMPLETED: 'Completed',
+    FAILED: 'Failed',
+    REFUNDED: 'Refunded',
+};
+
+export const PAYMENT_STATUS_COLORS = {
+    PENDING: 'warning',
+    COMPLETED: 'success',
+    FAILED: 'danger',
+    REFUNDED: 'secondary',
 };

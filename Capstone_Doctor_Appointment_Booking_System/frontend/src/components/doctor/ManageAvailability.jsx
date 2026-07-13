@@ -6,7 +6,7 @@ import {
   deleteAvailabilitySlot,
   getAvailabilityStats,
 } from '../../api/availability';
-import { Container, Row, Col, Card, Button, Badge } from 'react-bootstrap';
+import { Container, Row, Col, Card, Button, Badge,Form} from 'react-bootstrap';
 import { FaPlus, FaEdit, FaTrash, FaClock, FaCalendarAlt } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 import Loading from '../common/Loading';

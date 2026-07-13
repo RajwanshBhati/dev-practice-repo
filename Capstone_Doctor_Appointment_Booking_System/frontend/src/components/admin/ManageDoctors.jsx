@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getAllDoctorsAdmin, getPendingDoctors, approveDoctor, rejectDoctor } from '../../api/admin';
 import { Container, Card, Row, Col, Button, Badge, Form } from 'react-bootstrap';
-import { FaCheck, FaTimes, FaEye, FaUserMd, FaMapMarkerAlt, FaClock } from 'react-icons/fa';
+import { FaCheck, FaTimes, FaEye, FaUserMd, FaMapMarkerAlt, FaClock,FaEdit } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 import Loading from '../common/Loading';
 import DoctorApproval from './DoctorApproval';
@@ -10,6 +10,7 @@ import {
   DOCTOR_STATUS_COLORS,
   DOCTOR_STATUS_LABELS,
 } from '../../utils/constants';
+import { getPendingProfileUpdates, approveProfileUpdate, rejectProfileUpdate } from '../../api/admin';
 
 const ManageDoctors = () => {
   const [loading, setLoading] = useState(true);
@@ -20,6 +21,7 @@ const ManageDoctors = () => {
   const [showApprovalModal, setShowApprovalModal] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
+  const [pendingUpdates, setPendingUpdates] = useState([]);
   const limit = 10;
 
   /**
@@ -30,6 +32,39 @@ const ManageDoctors = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [statusFilter, page]);
 
+
+useEffect(() => { loadPendingUpdates(); }, []);
+
+const loadPendingUpdates = async () => {
+  try {
+    const data = await getPendingProfileUpdates();
+    setPendingUpdates(data.doctors || []);
+  } catch (error) {
+    console.error('Error loading pending profile updates:', error);
+  }
+};
+
+const handleApproveUpdate = async (doctorId) => {
+  try {
+    await approveProfileUpdate(doctorId);
+    toast.success('Profile update approved');
+    setPendingUpdates((prev) => prev.filter((d) => d.id !== doctorId));
+    loadDoctors();
+  } catch (error) {}
+};
+
+const handleRejectUpdate = async (doctorId) => {
+  const reason = window.prompt('Reason for rejecting this profile update (min 5 characters):');
+  if (!reason || reason.trim().length < 5) {
+    toast.error('Please provide a valid reason (min 5 characters)');
+    return;
+  }
+  try {
+    await rejectProfileUpdate(doctorId, { reason });
+    toast.success('Profile update rejected');
+    setPendingUpdates((prev) => prev.filter((d) => d.id !== doctorId));
+  } catch (error) {}
+};
   /**
    * Load doctors from API.
    */
@@ -164,7 +199,7 @@ const ManageDoctors = () => {
       {/* Doctor List */}
       {doctors.length === 0 ? (
         <div className="text-center py-5">
-          <div style={{ fontSize: '48px', marginBottom: '20px' }}>👨‍⚕️</div>
+          <div style={{ fontSize: '48px', marginBottom: '20px' }}></div>
           <h4>No doctors found</h4>
           <p className="text-muted">No doctors match the current filter.</p>
         </div>
@@ -258,6 +293,36 @@ const ManageDoctors = () => {
               </Card.Body>
             </Card>
           ))}
+
+
+          {/* UI — Pending Profile Updates */}
+{pendingUpdates.length > 0 && (
+  <Card className="shadow-sm mb-4 border-0" style={{ borderRadius: '12px', borderLeft: '4px solid #f59e0b' }}>
+    <Card.Body className="p-3">
+      <h6 className="fw-bold mb-3">
+        <FaEdit className="me-2 text-warning" /> Pending Profile Updates ({pendingUpdates.length})
+      </h6>
+      {pendingUpdates.map((doc) => (
+        <div key={doc.id} className="d-flex justify-content-between align-items-center flex-wrap gap-2 py-2 border-bottom">
+          <div>
+            <strong>{doc.full_name || doc.qualification}</strong>
+            <div className="text-muted" style={{ fontSize: '0.8rem' }}>
+              Requested changes: {Object.keys(doc.pending_update || {}).join(', ')}
+            </div>
+          </div>
+          <div className="d-flex gap-2">
+            <Button size="sm" variant="success" onClick={() => handleApproveUpdate(doc.id)} style={{ borderRadius: '8px' }}>
+              <FaCheck className="me-1" /> Approve
+            </Button>
+            <Button size="sm" variant="danger" onClick={() => handleRejectUpdate(doc.id)} style={{ borderRadius: '8px' }}>
+              <FaTimes className="me-1" /> Reject
+            </Button>
+          </div>
+        </div>
+      ))}
+    </Card.Body>
+  </Card>
+)}
 
           {/* Load More */}
           {hasMore && (

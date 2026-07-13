@@ -9,7 +9,6 @@ import {
   FaCalendarTimes,
   FaStar,
   FaMoneyBillWave,
-  FaClock,
   FaUserMd,
 } from 'react-icons/fa';
 import toast from 'react-hot-toast';
@@ -55,7 +54,7 @@ const DoctorDashboard = () => {
     try {
       const [stats, appointments] = await Promise.all([
         getDoctorStats(),
-        getAppointmentStats(),
+        getAppointmentStats(user?.id),
       ]);
 
       setDoctorStats(stats);
@@ -73,37 +72,49 @@ const DoctorDashboard = () => {
   }
 
   return (
-    <Container className="mt-4">
-      <div className="mb-4">
-        <h1 className="fw-bold" style={{ color: '#1a202c' }}>
-          Welcome, Dr. {user?.full_name}!
-        </h1>
-        <p className="text-muted">Here's an overview of your practice</p>
+    <Container className="mt-4 mb-5">
+      {/* Hero header */}
+      <div
+        className="mb-4 p-4 p-md-5 text-white"
+        style={{
+          borderRadius: '20px',
+          background: 'linear-gradient(135deg, #4a90d9, #2d5faa)',
+          boxShadow: '0 10px 30px rgba(74, 144, 217, 0.25)',
+        }}
+      >
+        <div className="d-flex align-items-center justify-content-between flex-wrap gap-3">
+          <div>
+            <h1 className="fw-bold mb-1">Welcome, Dr. {user?.full_name?.split(' ')[0] || ''} </h1>
+            <p className="mb-0" style={{ opacity: 0.9 }}>
+              Here's an overview of your practice today.
+            </p>
+          </div>
+          <div
+            className="rounded-circle d-flex align-items-center justify-content-center"
+            style={{ width: '64px', height: '64px', background: 'rgba(255,255,255,0.15)', fontSize: '28px' }}
+          >
+            <FaUserMd />
+          </div>
+        </div>
       </div>
 
       {/* Stats Cards */}
       <Row className="mb-4">
         <Col lg={3} md={6} className="mb-3">
-          <Card className="shadow-sm h-100" style={{ borderRadius: '12px', border: 'none' }}>
+          <Card className="shadow-sm h-100 border-0" style={{ borderRadius: '16px' }}>
             <Card.Body className="p-4">
               <div className="d-flex justify-content-between align-items-start">
                 <div>
-                  <p className="text-muted mb-0" style={{ fontSize: '0.85rem' }}>
+                  <p className="text-muted mb-1 text-uppercase" style={{ fontSize: '0.75rem', letterSpacing: '0.05em', fontWeight: 600 }}>
                     Total Patients
                   </p>
-                  <h2 className="fw-bold mb-0" style={{ color: '#1a202c' }}>
+                  <h2 className="fw-bold mb-0" style={{ color: '#1a202c', fontSize: '2rem' }}>
                     {doctorStats.total_patients || 0}
                   </h2>
                 </div>
                 <div
                   className="rounded-circle d-flex align-items-center justify-content-center"
-                  style={{
-                    width: '48px',
-                    height: '48px',
-                    background: 'rgba(74, 144, 217, 0.1)',
-                    color: '#4a90d9',
-                    fontSize: '20px',
-                  }}
+                  style={{ width: '52px', height: '52px', background: 'rgba(74, 144, 217, 0.12)', color: '#4a90d9', fontSize: '22px' }}
                 >
                   <FaUsers />
                 </div>
@@ -113,26 +124,20 @@ const DoctorDashboard = () => {
         </Col>
 
         <Col lg={3} md={6} className="mb-3">
-          <Card className="shadow-sm h-100" style={{ borderRadius: '12px', border: 'none' }}>
+          <Card className="shadow-sm h-100 border-0" style={{ borderRadius: '16px' }}>
             <Card.Body className="p-4">
               <div className="d-flex justify-content-between align-items-start">
                 <div>
-                  <p className="text-muted mb-0" style={{ fontSize: '0.85rem' }}>
+                  <p className="text-muted mb-1 text-uppercase" style={{ fontSize: '0.75rem', letterSpacing: '0.05em', fontWeight: 600 }}>
                     Total Appointments
                   </p>
-                  <h2 className="fw-bold mb-0" style={{ color: '#1a202c' }}>
+                  <h2 className="fw-bold mb-0" style={{ color: '#1a202c', fontSize: '2rem' }}>
                     {appointmentStats.total || 0}
                   </h2>
                 </div>
                 <div
                   className="rounded-circle d-flex align-items-center justify-content-center"
-                  style={{
-                    width: '48px',
-                    height: '48px',
-                    background: 'rgba(72, 187, 120, 0.1)',
-                    color: '#48bb78',
-                    fontSize: '20px',
-                  }}
+                  style={{ width: '52px', height: '52px', background: 'rgba(72, 187, 120, 0.12)', color: '#48bb78', fontSize: '22px' }}
                 >
                   <FaCalendarCheck />
                 </div>
@@ -142,26 +147,20 @@ const DoctorDashboard = () => {
         </Col>
 
         <Col lg={3} md={6} className="mb-3">
-          <Card className="shadow-sm h-100" style={{ borderRadius: '12px', border: 'none' }}>
+          <Card className="shadow-sm h-100 border-0" style={{ borderRadius: '16px' }}>
             <Card.Body className="p-4">
               <div className="d-flex justify-content-between align-items-start">
                 <div>
-                  <p className="text-muted mb-0" style={{ fontSize: '0.85rem' }}>
+                  <p className="text-muted mb-1 text-uppercase" style={{ fontSize: '0.75rem', letterSpacing: '0.05em', fontWeight: 600 }}>
                     Completed
                   </p>
-                  <h2 className="fw-bold mb-0" style={{ color: '#1a202c' }}>
+                  <h2 className="fw-bold mb-0" style={{ color: '#1a202c', fontSize: '2rem' }}>
                     {appointmentStats.completed || 0}
                   </h2>
                 </div>
                 <div
                   className="rounded-circle d-flex align-items-center justify-content-center"
-                  style={{
-                    width: '48px',
-                    height: '48px',
-                    background: 'rgba(72, 187, 120, 0.1)',
-                    color: '#48bb78',
-                    fontSize: '20px',
-                  }}
+                  style={{ width: '52px', height: '52px', background: 'rgba(72, 187, 120, 0.12)', color: '#48bb78', fontSize: '22px' }}
                 >
                   <FaCalendarCheck />
                 </div>
@@ -171,26 +170,20 @@ const DoctorDashboard = () => {
         </Col>
 
         <Col lg={3} md={6} className="mb-3">
-          <Card className="shadow-sm h-100" style={{ borderRadius: '12px', border: 'none' }}>
+          <Card className="shadow-sm h-100 border-0" style={{ borderRadius: '16px' }}>
             <Card.Body className="p-4">
               <div className="d-flex justify-content-between align-items-start">
                 <div>
-                  <p className="text-muted mb-0" style={{ fontSize: '0.85rem' }}>
+                  <p className="text-muted mb-1 text-uppercase" style={{ fontSize: '0.75rem', letterSpacing: '0.05em', fontWeight: 600 }}>
                     Revenue
                   </p>
-                  <h2 className="fw-bold mb-0" style={{ color: '#4a90d9' }}>
+                  <h2 className="fw-bold mb-0" style={{ color: '#4a90d9', fontSize: '2rem' }}>
                     ${appointmentStats.revenue || 0}
                   </h2>
                 </div>
                 <div
                   className="rounded-circle d-flex align-items-center justify-content-center"
-                  style={{
-                    width: '48px',
-                    height: '48px',
-                    background: 'rgba(74, 144, 217, 0.1)',
-                    color: '#4a90d9',
-                    fontSize: '20px',
-                  }}
+                  style={{ width: '52px', height: '52px', background: 'rgba(74, 144, 217, 0.12)', color: '#4a90d9', fontSize: '22px' }}
                 >
                   <FaMoneyBillWave />
                 </div>
@@ -202,63 +195,67 @@ const DoctorDashboard = () => {
 
       {/* Appointment Status Breakdown */}
       <Row>
-        <Col lg={6} className="mb-3">
-          <Card className="shadow-sm" style={{ borderRadius: '12px', border: 'none' }}>
+        <Col lg={7} className="mb-3">
+          <Card className="shadow-sm h-100 border-0" style={{ borderRadius: '16px' }}>
             <Card.Body className="p-4">
               <h5 className="fw-bold mb-3">Appointment Status</h5>
-              <div className="d-flex flex-wrap gap-3">
-                <div className="flex-grow-1">
+              <div className="d-flex flex-column gap-3">
+                <div>
                   <div className="d-flex justify-content-between mb-1">
                     <span className="text-muted">Scheduled</span>
                     <span className="fw-semibold">{appointmentStats.scheduled || 0}</span>
                   </div>
-                  <div className="progress" style={{ height: '6px' }}>
+                  <div className="progress" style={{ height: '8px', borderRadius: '6px' }}>
                     <div
                       className="progress-bar bg-warning"
                       style={{
                         width: `${(appointmentStats.scheduled / (appointmentStats.total || 1)) * 100}%`,
+                        borderRadius: '6px',
                       }}
                     />
                   </div>
                 </div>
-                <div className="flex-grow-1">
+                <div>
                   <div className="d-flex justify-content-between mb-1">
                     <span className="text-muted">Confirmed</span>
                     <span className="fw-semibold">{appointmentStats.confirmed || 0}</span>
                   </div>
-                  <div className="progress" style={{ height: '6px' }}>
+                  <div className="progress" style={{ height: '8px', borderRadius: '6px' }}>
                     <div
                       className="progress-bar bg-info"
                       style={{
                         width: `${(appointmentStats.confirmed / (appointmentStats.total || 1)) * 100}%`,
+                        borderRadius: '6px',
                       }}
                     />
                   </div>
                 </div>
-                <div className="flex-grow-1">
+                <div>
                   <div className="d-flex justify-content-between mb-1">
                     <span className="text-muted">Completed</span>
                     <span className="fw-semibold">{appointmentStats.completed || 0}</span>
                   </div>
-                  <div className="progress" style={{ height: '6px' }}>
+                  <div className="progress" style={{ height: '8px', borderRadius: '6px' }}>
                     <div
                       className="progress-bar bg-success"
                       style={{
                         width: `${(appointmentStats.completed / (appointmentStats.total || 1)) * 100}%`,
+                        borderRadius: '6px',
                       }}
                     />
                   </div>
                 </div>
-                <div className="flex-grow-1">
+                <div>
                   <div className="d-flex justify-content-between mb-1">
                     <span className="text-muted">Cancelled</span>
                     <span className="fw-semibold">{appointmentStats.cancelled || 0}</span>
                   </div>
-                  <div className="progress" style={{ height: '6px' }}>
+                  <div className="progress" style={{ height: '8px', borderRadius: '6px' }}>
                     <div
                       className="progress-bar bg-danger"
                       style={{
                         width: `${(appointmentStats.cancelled / (appointmentStats.total || 1)) * 100}%`,
+                        borderRadius: '6px',
                       }}
                     />
                   </div>
@@ -268,32 +265,40 @@ const DoctorDashboard = () => {
           </Card>
         </Col>
 
-        <Col lg={6} className="mb-3">
-          <Card className="shadow-sm" style={{ borderRadius: '12px', border: 'none' }}>
-            <Card.Body className="p-4">
-              <h5 className="fw-bold mb-3">Quick Actions</h5>
-              <div className="d-flex flex-wrap gap-2">
-                <a href="/doctor/availability" className="btn btn-primary w-100 mb-2">
-                  <FaClock className="me-2" /> Manage Availability
-                </a>
-                <a href="/doctor/profile" className="btn btn-outline-primary w-100">
-                  <FaUserMd className="me-2" /> Update Profile
-                </a>
-              </div>
-              <hr />
-              <div className="d-flex align-items-center">
-                <div className="me-3">
-                  <FaStar className="text-warning" />
-                  <FaStar className="text-warning" />
-                  <FaStar className="text-warning" />
-                  <FaStar className="text-warning" />
-                  <FaStar className="text-warning" />
+        {/* Rating & Today's Snapshot */}
+        <Col lg={5} className="mb-3">
+          <Card
+            className="shadow-sm h-100 border-0 text-white"
+            style={{
+              borderRadius: '16px',
+              background: 'linear-gradient(135deg, #48bb78, #38a169)',
+            }}
+          >
+            <Card.Body className="p-4 d-flex flex-column justify-content-between h-100">
+              <div>
+                <div
+                  className="rounded-circle d-flex align-items-center justify-content-center mb-3"
+                  style={{ width: '52px', height: '52px', background: 'rgba(255,255,255,0.2)', fontSize: '22px' }}
+                >
+                  <FaStar />
                 </div>
-                <span className="fw-semibold">{doctorStats.rating || 0}</span>
-                <span className="text-muted ms-1">
-                  ({doctorStats.total_reviews || 0} reviews)
-                </span>
+                <h5 className="fw-bold mb-1">
+                  {doctorStats.rating || 0} / 5 Rating
+                </h5>
+                <p className="mb-0" style={{ opacity: 0.9, fontSize: '0.9rem' }}>
+                  Based on {doctorStats.total_reviews || 0} patient review{doctorStats.total_reviews === 1 ? '' : 's'}.
+                </p>
               </div>
+              <Row className="text-center mt-4">
+                <Col xs={6}>
+                  <h4 className="fw-bold mb-0">{doctorStats.today_appointments || 0}</h4>
+                  <p className="mb-0" style={{ fontSize: '0.8rem', opacity: 0.9 }}>Today</p>
+                </Col>
+                <Col xs={6}>
+                  <h4 className="fw-bold mb-0">{doctorStats.upcoming_appointments || 0}</h4>
+                  <p className="mb-0" style={{ fontSize: '0.8rem', opacity: 0.9 }}>Upcoming</p>
+                </Col>
+              </Row>
             </Card.Body>
           </Card>
         </Col>

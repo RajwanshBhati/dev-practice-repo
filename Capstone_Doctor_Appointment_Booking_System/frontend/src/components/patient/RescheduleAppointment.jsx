@@ -162,7 +162,7 @@ const RescheduleAppointment = ({ show, onHide, appointment, onSuccess }) => {
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose} disabled={loading}>
+          <Button type="button" variant="secondary" onClick={handleClose} disabled={loading}>
             Cancel
           </Button>
           <Button variant="primary" type="submit" disabled={loading}>

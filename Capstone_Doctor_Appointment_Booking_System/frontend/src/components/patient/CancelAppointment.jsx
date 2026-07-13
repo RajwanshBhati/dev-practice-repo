@@ -72,7 +72,7 @@ const CancelAppointment = ({ show, onHide, appointment, onSuccess }) => {
           <Button variant="secondary" onClick={handleClose} disabled={loading}>
             Keep Appointment
           </Button>
-          <Button variant="danger" type="submit" disabled={loading}>
+          <Button type="button" variant="danger" type="submit" disabled={loading}>
             {loading ? 'Cancelling...' : 'Yes, Cancel'}
           </Button>
         </Modal.Footer>

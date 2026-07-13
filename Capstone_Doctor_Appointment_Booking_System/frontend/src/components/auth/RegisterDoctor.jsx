@@ -136,7 +136,7 @@ const RegisterDoctor = () => {
               <Card.Body className="p-4 p-md-5">
                 <div className="text-center mb-4">
                   <div className="register-icon-wrapper mx-auto mb-3"
-                       style={{ width: '70px', height: '70px', borderRadius: '50%', background: 'linear-gradient(135deg, #48bb78, #38a169)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                       style={{ width: '70px', height: '70px', borderRadius: '50%', background: 'linear-gradient(135deg, #4a90d9, #357abd)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <FaStethoscope style={{ fontSize: '32px', color: 'white' }} />
                   </div>
                   <h2 className="fw-bold mb-1" style={{ color: '#1a202c', fontSize: '1.8rem' }}>Create Doctor Account</h2>
@@ -145,8 +145,8 @@ const RegisterDoctor = () => {
                   </p>
                 </div>
 
-                <div className="role-badge d-inline-block px-3 py-1 rounded-pill bg-success-soft text-success mb-4"
-                     style={{ background: '#e6f7e6', color: '#38a169', fontSize: '0.9rem' }}>
+                <div className="role-badge d-inline-block px-3 py-1 rounded-pill bg-primary-soft text-primary mb-4"
+                     style={{ background: '#eaf2fc', color: '#357abd', fontSize: '0.9rem' }}>
                   <FaStethoscope className="me-1" /> Registering as: <strong>Doctor</strong>
                 </div>
 
@@ -308,18 +308,8 @@ const RegisterDoctor = () => {
                     </Col>
                   </Row>
 
-                  <Form.Group className="mb-4">
-                    <Form.Check
-                      type="checkbox"
-                      label="Show password"
-                      checked={showPassword}
-                      onChange={() => setShowPassword(!showPassword)}
-                      style={{ fontSize: '0.9rem' }}
-                    />
-                  </Form.Group>
-
                   {/* Professional Information Section */}
-                  <h5 className="section-title mb-3 mt-4" style={{ fontSize: '1.1rem', fontWeight: 600, color: '#2d3748', borderBottom: '3px solid #48bb78', paddingBottom: '0.5rem', display: 'inline-block' }}>
+                  <h5 className="section-title mb-3 mt-4" style={{ fontSize: '1.1rem', fontWeight: 600, color: '#2d3748', borderBottom: '3px solid #4a90d9', paddingBottom: '0.5rem', display: 'inline-block' }}>
                     <FaHospital className="me-2" /> Professional Information
                   </h5>
 
@@ -458,9 +448,9 @@ const RegisterDoctor = () => {
                   </fieldset>
                   <Button
                     type="submit"
-                    variant="success"
+                    variant="primary"
                     className="w-100 py-3 fw-semibold"
-                    style={{ borderRadius: '10px', fontSize: '1rem', background: 'linear-gradient(135deg, #48bb78, #38a169)', border: 'none' }}
+                    style={{ borderRadius: '10px', fontSize: '1rem', background: 'linear-gradient(135deg, #4a90d9, #357abd)', border: 'none' }}
                     disabled={loading}
                   >
                      {loading ? (

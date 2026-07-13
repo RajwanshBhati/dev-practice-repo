@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getPatientAppointments } from '../../api/appointment';
 import { Container, Row, Col, Card, Nav, Button, Badge } from 'react-bootstrap';
 import { FaCalendarAlt, FaClock, FaUserMd, FaMoneyBillWave } from 'react-icons/fa';
@@ -10,6 +11,7 @@ import RescheduleAppointment from './RescheduleAppointment';
 import { APPOINTMENT_STATUS, STATUS_LABELS, STATUS_COLORS } from '../../utils/constants';
 
 const MyAppointments = () => {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [appointments, setAppointments] = useState([]);
   const [total, setTotal] = useState(0);
@@ -193,7 +195,7 @@ const MyAppointments = () => {
           <p className="text-muted">
             You don't have any {activeTab !== 'all' ? activeTab : ''} appointments.
           </p>
-          <Button variant="primary" href="/search-doctors">
+          <Button variant="primary" onClick={() => navigate('/search-doctors')}>
             Search Doctors
           </Button>
         </div>

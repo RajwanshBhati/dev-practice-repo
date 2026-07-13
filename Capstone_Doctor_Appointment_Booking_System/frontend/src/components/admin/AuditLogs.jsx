@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { getAuditLogs, getAllAdmins } from '../../api/admin';
 import { Container, Card, Table, Badge, Button, Form, Row, Col } from 'react-bootstrap';
 import { FaSearch, FaClock, FaUser, FaEnvelope } from 'react-icons/fa';
 import AuditLogFilter from './AuditLogFilter';
@@ -7,9 +6,11 @@ import toast from 'react-hot-toast';
 import Loading from '../common/Loading';
 import {
   AUDIT_ACTION_COLORS,
-  AUDIT_ACTION_ICONS,
-  AUDIT_ACTIONS,
+  AUDIT_ACTIONS
 } from '../../utils/constants';
+
+import { getAuditLogs, getAllAdmins } from '../../api/admin';
+import AuditLogFilter from './AuditLogFilter';
 
 const AuditLogs = () => {
   const [loading, setLoading] = useState(true);
@@ -65,7 +66,9 @@ const AuditLogs = () => {
       if (filters.admin_id) {
         params.admin_id = filters.admin_id;
       }
-
+      if (filters.action) {
+       params.action = filters.action;
+      }
       const data = await getAuditLogs(params);
       if (page === 1) {
         setLogs(data.logs || []);
@@ -126,12 +129,6 @@ const AuditLogs = () => {
     return AUDIT_ACTION_COLORS[action] || 'secondary';
   };
 
-  /**
-   * Get action icon.
-   */
-  const getActionIcon = (action) => {
-    return AUDIT_ACTION_ICONS[action] || '📋';
-  };
 
   if (loading && logs.length === 0) {
     return <Loading message="Loading audit logs..." />;
@@ -162,7 +159,7 @@ const AuditLogs = () => {
       {/* Logs Table */}
       {logs.length === 0 ? (
         <div className="text-center py-5">
-          <div style={{ fontSize: '48px', marginBottom: '20px' }}>📝</div>
+          <div style={{ fontSize: '48px', marginBottom: '20px' }}></div>
           <h4>No audit logs found</h4>
           <p className="text-muted">No admin actions have been recorded yet.</p>
         </div>
@@ -198,11 +195,7 @@ const AuditLogs = () => {
                         </td>
                         <td style={{ padding: '12px 16px' }}>
                           <Badge bg={getActionColor(log.action)} className="px-3 py-2">
-                           {(() => {
-                           const Icon = getActionIcon(log.action);
-                           return <Icon className="me-1" />;
-                           })()}
-                          {getActionLabel(log.action)}
+                            {getActionLabel(log.action)}
                           </Badge>
                         </td>
                         <td style={{ padding: '12px 16px' }}>
