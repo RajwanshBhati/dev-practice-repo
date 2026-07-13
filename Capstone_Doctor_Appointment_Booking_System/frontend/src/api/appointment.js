@@ -66,3 +66,5 @@ export const updateAppointmentStatus = async (appointmentId, data) => {
     const response = await axiosInstance.put(`/appointments/${appointmentId}/status`, data);
     return response.data;
 };
+
+

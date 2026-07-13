@@ -52,3 +52,57 @@ export const PASSWORD_RULES = {
     REQUIRE_DIGIT: true,
     REQUIRE_SPECIAL: true,
 };
+
+
+/**
+ * Appointment status constants.
+ */
+export const APPOINTMENT_STATUS = {
+    SCHEDULED: 'SCHEDULED',
+    CONFIRMED: 'CONFIRMED',
+    COMPLETED: 'COMPLETED',
+    CANCELLED: 'CANCELLED',
+    NO_SHOW: 'NO_SHOW',
+    RESCHEDULED: 'RESCHEDULED',
+};
+
+/**
+ * Appointment status colors for badges.
+ */
+export const STATUS_COLORS = {
+    SCHEDULED: 'warning',
+    CONFIRMED: 'info',
+    COMPLETED: 'success',
+    CANCELLED: 'danger',
+    NO_SHOW: 'secondary',
+    RESCHEDULED: 'primary',
+};
+
+/**
+ * Appointment status labels for display.
+ */
+export const STATUS_LABELS = {
+    SCHEDULED: 'Scheduled',
+    CONFIRMED: 'Confirmed',
+    COMPLETED: 'Completed',
+    CANCELLED: 'Cancelled',
+    NO_SHOW: 'No Show',
+    RESCHEDULED: 'Rescheduled',
+};
+
+/**
+ * Payment status constants.
+ */
+export const PAYMENT_STATUS = {
+    PENDING: 'PENDING',
+    COMPLETED: 'COMPLETED',
+    FAILED: 'FAILED',
+    REFUNDED: 'REFUNDED',
+};
+
+export const PAYMENT_STATUS_LABELS = {
+    PENDING: 'Pending',
+    COMPLETED: 'Completed',
+    FAILED: 'Failed',
+    REFUNDED: 'Refunded',
+};
