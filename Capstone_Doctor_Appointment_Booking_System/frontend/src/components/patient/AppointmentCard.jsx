@@ -1,9 +1,11 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, Row, Col, Badge, Button } from 'react-bootstrap';
 import { FaCalendarAlt, FaClock, FaUserMd, FaMoneyBillWave } from 'react-icons/fa';
 import { STATUS_LABELS, STATUS_COLORS, PAYMENT_STATUS_LABELS } from '../../utils/constants';
 
 const AppointmentCard = ({ appointment, onCancel, onReschedule }) => {
+  const navigate = useNavigate();
   const {
     id,
     doctor_name,
@@ -58,6 +60,9 @@ const AppointmentCard = ({ appointment, onCancel, onReschedule }) => {
     return ['SCHEDULED', 'CONFIRMED'].includes(status);
   };
 
+  const canPay = () => {
+    return payment_status !== 'COMPLETED' && status !== 'CANCELLED';
+  };
   /**
    * Check if appointment can be rescheduled.
    */
@@ -154,6 +159,18 @@ const AppointmentCard = ({ appointment, onCancel, onReschedule }) => {
                 Reschedule
               </Button>
             )}
+
+            {canPay() && (
+              <Button
+                variant="success"
+                size="sm"
+                className="mb-2 w-100"
+                style={{ borderRadius: '8px' }}
+                onClick={() => navigate(`/payment/${id}`)}
+              >
+             <FaMoneyBillWave className="me-1" /> Pay Now
+             </Button>
+              )}
           </Col>
         </Row>
       </Card.Body>

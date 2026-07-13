@@ -16,6 +16,9 @@ axiosInstance.interceptors.request.use(
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
+        if (typeof FormData !== 'undefined' && config.data instanceof FormData) {
+            delete config.headers['Content-Type'];
+        }
         return config;
     },
     (error) => Promise.reject(error)
@@ -24,7 +27,7 @@ axiosInstance.interceptors.request.use(
 // Concurrent refresh handling
 let isRefreshing = false;
 let failedQueue = [];
-const MAX_REFRESH_ATTEMPTS = 1; // one refresh attempt per request, no retry loop
+const MAX_REFRESH_ATTEMPTS = 1;
 
 const processQueue = (error, token = null) => {
     failedQueue.forEach(({ resolve, reject }) => {
@@ -34,17 +37,55 @@ const processQueue = (error, token = null) => {
     failedQueue = [];
 };
 
+
+const AUTH_ENDPOINTS = ['/auth/login', '/auth/register', '/auth/refresh-token'];
+
+
+const extractErrorMessage = (error) => {
+    const detail = error.response?.data?.detail;
+    const clean = (msg) => (typeof msg === 'string' ? msg.replace(/^Value error,\s*/i, '') : msg);
+
+    if (Array.isArray(detail)) {
+        const messages = detail
+            .map((item) => {
+                if (typeof item === 'string') return item;
+                if (item && typeof item === 'object' && item.msg) {
+                    const field = Array.isArray(item.loc) ? item.loc[item.loc.length - 1] : null;
+                    const msg = clean(item.msg);
+                    return field ? `${field}: ${item.msg}` : item.msg;
+                }
+                return null;
+            })
+            .filter(Boolean);
+        if (messages.length) return messages.join(', ');
+    }
+
+    if (typeof detail === 'string' && detail) return clean(detail);
+
+    if (detail && typeof detail === 'object' && detail.msg) {
+        return clean(detail.msg);
+    }
+
+    const message = error.response?.data?.message;
+    if (typeof message === 'string' && message) return message;
+
+    return 'Something went wrong. Please try again.';
+};
+
 axiosInstance.interceptors.response.use(
     (response) => response,
     async (error) => {
         const originalRequest = error.config;
+        const isAuthEndpoint = AUTH_ENDPOINTS.some((path) =>
+            originalRequest?.url?.includes(path)
+        );
 
         if (error.code === 'ECONNABORTED') {
             toast.error('Request timed out. Please try again.');
             return Promise.reject(error);
         }
 
-        if (error.response?.status === 401 && !originalRequest._retry) {
+        if (error.response?.status === 401 && !originalRequest._retry && !isAuthEndpoint) {
             if (isRefreshing) {
                 return new Promise((resolve, reject) => {
                     failedQueue.push({ resolve, reject });
@@ -95,10 +136,7 @@ axiosInstance.interceptors.response.use(
             }
         }
 
-        const message =
-            error.response?.data?.detail ||
-            error.response?.data?.message ||
-            'Something went wrong. Please try again.';
+        const message = extractErrorMessage(error);
         toast.error(message);
 
         return Promise.reject(error);

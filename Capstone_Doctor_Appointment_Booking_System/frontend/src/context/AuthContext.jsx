@@ -104,6 +104,15 @@ export const AuthProvider = ({ children }) => {
   }
 };
 
+
+const updateUser = (updates) => {
+  setUser((prevUser) => {
+    const updatedUser = { ...prevUser, ...updates };
+    localStorage.setItem('user', JSON.stringify(updatedUser));
+    return updatedUser;
+  });
+};
+
   /**
    * Logout function.
    * Invalidates the session and clears all stored data.
@@ -163,6 +172,7 @@ export const AuthProvider = ({ children }) => {
     isAuthenticated,
     login,
     logout,
+    updateUser,
     isPatient: user?.role === 'PATIENT',
     isDoctor: user?.role === 'DOCTOR',
     isAdmin: user?.role === 'ADMIN',

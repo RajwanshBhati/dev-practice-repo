@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { Form, Button, Card, Container, Row, Col, Spinner } from 'react-bootstrap';
@@ -13,8 +13,27 @@ const Login = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const { login } = useAuth();
+  const { login, isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
+
+  const dashboardPathFor = (role) => {
+    if (role === 'DOCTOR') return '/doctor/dashboard';
+    if (role === 'ADMIN') return '/admin/dashboard';
+    return '/home';
+  };
+
+  /**
+   * If the user is already logged in (e.g. they hit the browser Back
+   * button after logging in, or opened /login directly in another tab),
+   * send them straight to their dashboard instead of showing the login
+   * form again.
+   */
+  useEffect(() => {
+    if (isAuthenticated && user?.role) {
+      navigate(dashboardPathFor(user.role), { replace: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthenticated]);
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -57,14 +76,7 @@ const Login = () => {
       }
 
       const role = data.user.role;
-
-      if (role === 'PATIENT') {
-        navigate('/');
-      } else if (role === 'DOCTOR') {
-        navigate('/doctor/dashboard');
-      } else if (role === 'ADMIN') {
-        navigate('/admin/dashboard');
-      }
+      navigate(dashboardPathFor(role), { replace: true });
     } catch {
       // Error toast handled by axios interceptor / AuthContext
     } finally {

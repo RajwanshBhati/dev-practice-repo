@@ -176,10 +176,10 @@ const DoctorDetails = () => {
                   <p className="text-muted mb-2">
                     {doctor.qualification} • {doctor.specialization}
                   </p>
-                  <div className="mb-2">
+                  {/* <div className="mb-2">
                     {renderStars(doctor.rating)}
                     <span className="ms-2 text-muted">({doctor.total_reviews} reviews)</span>
-                  </div>
+                  </div> */}
                   <p className="text-muted mb-1">
                     <FaMapMarkerAlt className="me-2" style={{ color: '#4a90d9' }} />
                     {doctor.clinic_address}

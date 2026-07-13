@@ -1,10 +1,10 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap';
-import { FaUserMd, FaUser, FaSignOutAlt, FaUserPlus, FaSignInAlt } from 'react-icons/fa';
+import { FaUserMd, FaUser, FaSignOutAlt, FaUserPlus, FaSignInAlt, FaHome } from 'react-icons/fa';
 
 const AppNavbar = () => {
-  const { user, isAuthenticated, isPatient, isDoctor, isAdmin, logout } = useAuth();
+  const { user, isAuthenticated, isPatient, isDoctor, isAdmin, logout,loading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -16,6 +16,9 @@ const AppNavbar = () => {
   const isActive = (path) => {
     return location.pathname === path ? 'active' : '';
   };
+
+  const homePath = isAdmin ? '/admin/dashboard' : isDoctor ? '/doctor/dashboard' : isPatient ? '/home' : '/';
+
 
   return (
     <Navbar expand="lg" className="navbar-custom py-3" style={{ background: 'white', boxShadow: '0 2px 20px rgba(0,0,0,0.06)' }}>
@@ -33,46 +36,13 @@ const AppNavbar = () => {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto align-items-lg-center">
-            {isAuthenticated ? (
+            {loading ? null : isAuthenticated ? (
               <>
-                {/* Patient Links */}
-                {isPatient && (
-                  <>
-                    <Nav.Link as={Link} to="/search-doctors" className={`nav-link-custom ${isActive('/search-doctors')}`}>
-                      Find Doctors
-                    </Nav.Link>
-                    <Nav.Link as={Link} to="/my-appointments" className={`nav-link-custom ${isActive('/my-appointments')}`}>
-                      My Appointments
-                    </Nav.Link>
-                  </>
-                )}
+                <Nav.Link as={Link} to={homePath} className={`nav-link-custom ${isActive(homePath)}`}>
+                  <FaHome className="me-1" /> Home
+                </Nav.Link>
 
-                {/* Doctor Links */}
-                {isDoctor && (
-                  <>
-                    <Nav.Link as={Link} to="/doctor/dashboard" className={`nav-link-custom ${isActive('/doctor/dashboard')}`}>
-                      Dashboard
-                    </Nav.Link>
-                    <Nav.Link as={Link} to="/doctor/availability" className={`nav-link-custom ${isActive('/doctor/availability')}`}>
-                      Availability
-                    </Nav.Link>
-                    <Nav.Link as={Link} to="/doctor/appointments" className={`nav-link-custom ${isActive('/doctor/appointments')}`}>
-                      Appointments
-                    </Nav.Link>
-                  </>
-                )}
-
-                {/* Admin Links */}
-                {isAdmin && (
-                  <>
-                    <Nav.Link as={Link} to="/admin/dashboard" className={`nav-link-custom ${isActive('/admin/dashboard')}`}>
-                      Dashboard
-                    </Nav.Link>
-                    <Nav.Link as={Link} to="/admin/doctors" className={`nav-link-custom ${isActive('/admin/doctors')}`}>
-                      Manage Doctors
-                    </Nav.Link>
-                  </>
-                )}
+                {/* Role-specific navigation now lives in the left sidebar */}
 
                 {/* User Dropdown */}
                 <NavDropdown
@@ -102,6 +72,9 @@ const AppNavbar = () => {
               </>
             ) : (
               <>
+                <Nav.Link as={Link} to={homePath} className={`nav-link-custom ${isActive(homePath)}`}>
+                  <FaHome className="me-1" /> Home
+                </Nav.Link>
                 <Nav.Link as={Link} to="/login" className={`btn btn-outline-primary me-2 px-4 ${isActive('/login')}`}>
                   <FaSignInAlt className="me-1" /> Login
                 </Nav.Link>
