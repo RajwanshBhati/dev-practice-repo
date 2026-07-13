@@ -7,7 +7,9 @@ from backend.schemas.request.doctor_profile_request import (
 )
 from backend.schemas.response.doctor_profile_response import (
     DoctorProfileResponse,
-    DoctorStatsResponse
+    DoctorProfileUpdateResponse,
+    DoctorStatsResponse,
+    ProfilePictureResponse
 )
 from backend.constants import ErrorMessages, SuccessMessages
 from backend.constants.status import DoctorStatus
@@ -19,8 +21,6 @@ logger = logging.getLogger(__name__)
 class DoctorProfileService:
     """
     Doctor profile management service.
-
-    Provides methods for managing doctor profiles.
     """
 
     def __init__(self):
@@ -84,10 +84,10 @@ class DoctorProfileService:
 
         logger.info(f"Doctor profile updated: {user_id}")
 
-        return {
-            "message": SuccessMessages.PROFILE_UPDATED,
-            "doctor_id": doctor.id
-        }
+        return DoctorProfileUpdateResponse(
+        message=SuccessMessages.PROFILE_UPDATED,
+        doctor_id=str(doctor.id)
+        )
 
     async def update_profile_picture(
         self,
@@ -108,10 +108,10 @@ class DoctorProfileService:
 
         logger.info(f"Doctor profile picture updated: {user_id}")
 
-        return {
-            "message": "Profile picture updated successfully",
-            "profile_picture": picture_data.profile_picture
-        }
+        return ProfilePictureResponse(
+        message="Profile picture updated successfully",
+        profile_picture=picture_data.profile_picture
+        )
 
     async def get_stats(self, user_id: str) -> DoctorStatsResponse:
         """

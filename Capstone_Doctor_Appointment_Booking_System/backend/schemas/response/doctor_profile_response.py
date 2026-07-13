@@ -43,3 +43,16 @@ class DoctorStatsResponse(BaseModel):
     cancelled_appointments: int
     rating: float
     total_reviews: int
+
+class ProfilePictureResponse(BaseModel):
+    """Response schema for profile picture update."""
+
+    message: str
+    profile_picture: str
+
+
+class DoctorProfileUpdateResponse(BaseModel):
+    """Response schema for doctor profile update."""
+
+    message: str
+    doctor_id: str
