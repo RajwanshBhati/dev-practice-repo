@@ -58,15 +58,24 @@ const DoctorDetails = () => {
    * Load availability for selected date.
    */
   const loadAvailability = async () => {
-    try {
-      const data = await getDoctorAvailability(doctorId, selectedDate);
-      setAvailability(data.availabilities || []);
-      setSelectedSlot(null);
-    } catch (error) {
-      console.error('Error loading availability:', error);
-      toast.error('Failed to load availability');
-    }
-  };
+  const todayStr = new Date().toISOString().split('T')[0];
+  if (selectedDate < todayStr) {
+    toast.error('Selected date is in the past. Resetting to today.');
+    setSelectedDate(todayStr);
+    setAvailability([]);
+    setSelectedSlot(null);
+    return;
+  }
+
+  try {
+    const data = await getDoctorAvailability(doctorId, selectedDate);
+    setAvailability(data.availabilities || []);
+    setSelectedSlot(null);
+  } catch (error) {
+    console.error('Error loading availability:', error);
+    toast.error('Failed to load availability');
+  }
+};
 
   /**
    * Handle slot selection.
@@ -205,7 +214,7 @@ const DoctorDetails = () => {
 
         {/* Booking Section */}
         <Col lg={4}>
-          <Card className="shadow-sm" style={{ borderRadius: '12px', border: 'none', position: 'sticky', top: '20px' }}>
+          <Card className="shadow-sm booking-card" style={{ borderRadius: '12px', border: 'none' }}>
             <Card.Body className="p-4">
               <h5 className="fw-bold mb-3">Book Appointment</h5>
 

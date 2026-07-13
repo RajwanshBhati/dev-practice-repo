@@ -6,12 +6,30 @@ import { FaSearch, FaMapMarkerAlt, FaStar, FaClock } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 import Loading from '../common/Loading';
 
+
+function debounce(fn, delay) {
+  let timer;
+  const debounced = (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), delay);
+  };
+  debounced.cancel = () => clearTimeout(timer);
+  return debounced;
+}
+
 const DoctorSearch = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [doctors, setDoctors] = useState([]);
   const [specializations, setSpecializations] = useState([]);
+  const [specializationsError, setSpecializationsError] = useState(false);
   const [total, setTotal] = useState(0);
+   const [searchText, setSearchText] = useState({
+    query: '', location: '', min_experience: '', max_fee: '',
+  });
+
+
   const [hasMore, setHasMore] = useState(false);
   const [filters, setFilters] = useState({
     query: '',
@@ -23,24 +41,35 @@ const DoctorSearch = () => {
     skip: 0,
   });
 
+  const isLoadMoreRef = useRef(false);
+  const debouncedCommit = useMemo(
+    () => debounce((name, value) => {
+      setFilters((prev) => ({ ...prev, [name]: value, skip: 0 }));
+    }, 400),
+    []
+  );
+  useEffect(() => () => debouncedCommit.cancel(), [debouncedCommit]);
+
   /**
    * Load specializations from the API.
    */
   const loadSpecializations = async () => {
+    setSpecializationsError(false);
     try {
       const data = await getSpecializations();
       setSpecializations(data.specializations || []);
     } catch (error) {
       console.error('Error loading specializations:', error);
       toast.error('Failed to load specializations');
+      setSpecializationsError(true);
     }
   };
 
   /**
    * Load doctors with current filters.
    */
-  const loadDoctors = async () => {
-    setLoading(true);
+  const loadDoctors = async (isLoadMore = false) => {
+    isLoadMore ? setLoadingMore(true) : setLoading(true);
     try {
       const params = { ...filters };
       Object.keys(params).forEach((key) => {
@@ -60,7 +89,7 @@ const DoctorSearch = () => {
       console.error('Error searching doctors:', error);
       toast.error('Failed to search doctors');
     } finally {
-      setLoading(false);
+      isLoadMore ? setLoadingMore(false) : setLoading(false);
     }
 };
 
@@ -77,7 +106,8 @@ const DoctorSearch = () => {
    */
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    loadDoctors();
+    loadDoctors(isLoadMoreRef.current);
+    isLoadMoreRef.current = false;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters]);
 
@@ -86,7 +116,12 @@ const DoctorSearch = () => {
    */
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
-    setFilters((prev) => ({ ...prev, [name]: value, skip: 0 }));
+    if (name === 'specialization' || name === 'min_rating') {
+      setFilters((prev) => ({ ...prev, [name]: value, skip: 0 }));
+      return;
+    }
+    setSearchText((prev) => ({ ...prev, [name]: value }));
+    debouncedCommit(name, value);
   };
 
   /**
@@ -94,13 +129,15 @@ const DoctorSearch = () => {
    */
   const handleSearch = (e) => {
     e.preventDefault();
-    setFilters((prev) => ({ ...prev, skip: 0 }));
+    debouncedCommit.cancel();
+    setFilters((prev) => ({ ...prev, ...searchText, skip: 0 }));
   };
 
   /**
    * Load more doctors for pagination.
    */
   const handleLoadMore = () => {
+    isLoadMoreRef.current = true;
     setFilters((prev) => ({ ...prev, skip: prev.skip + prev.limit }));
   };
 
@@ -110,31 +147,6 @@ const DoctorSearch = () => {
   const handleDoctorClick = (doctorId) => {
     navigate(`/doctors/${doctorId}`);
   };
-
-  /**
-   * Render star rating display.
-   * @param {number} rating - Rating value (0-5)
-   * @returns {JSX.Element} Star icons
-   */
-  // const renderStars = (rating) => {
-  //   const fullStars = Math.floor(rating);
-  //   const hasHalfStar = rating % 1 >= 0.5;
-  //   const stars = [];
-  //   for (let i = 0; i < fullStars; i++) {
-  //     stars.push(<FaStar key={i} className="text-warning" style={{ fontSize: '14px' }} />);
-  //   }
-  //   if (hasHalfStar) {
-  //     stars.push(<FaStar key="half" className="text-warning" style={{ fontSize: '14px', opacity: 0.5 }} />);
-  //   }
-  //   if (stars.length === 0) {
-  //     stars.push(
-  //       <span key="no-stars" className="text-muted" style={{ fontSize: '13px' }}>
-  //         No ratings
-  //       </span>
-  //     );
-  //   }
-  //   return stars;
-  // };
 
   if (loading && doctors.length === 0) {
     return <Loading message="Searching for doctors..." />;
@@ -165,16 +177,22 @@ const DoctorSearch = () => {
                   name="specialization"
                   value={filters.specialization}
                   onChange={handleFilterChange}
+                  disabled={specializationsError}
                   style={{ padding: '0.7rem 1rem', borderRadius: '8px', border: '2px solid #e2e8f0' }}
                 >
-                  <option value="">All Specializations</option>
+                   <option value="">
+                    {specializationsError ? 'Unable to load specializations' : 'All Specializations'}
+                   </option>
                   {specializations.map((spec) => (
-                    <option key={spec} value={spec}>
-                      {spec}
-                    </option>
-                  ))}
-                </Form.Select>
-              </Col>
+                    <option key={spec} value={spec}>{spec}</option>
+                   ))}
+                  </Form.Select>
+                  {specializationsError && (
+                    <Button variant="link" size="sm" className="p-0 mt-1" onClick={loadSpecializations}>
+                      Retry loading specializations
+                    </Button>
+                  )}
+                </Col>
               <Col lg={2} md={6} className="mb-3">
                 <Form.Control
                   type="text"
@@ -245,16 +263,10 @@ const DoctorSearch = () => {
           <Button
             variant="outline-primary"
             onClick={() => {
-              setFilters({
-                query: '',
-                specialization: '',
-                location: '',
-                min_experience: '',
-                max_fee: '',
-                min_rating: '',
-                limit: 10,
-                skip: 0,
-              });
+              debouncedCommit.cancel();
+              const cleared = { query: '', specialization: '', location: '', min_experience: '', max_fee: '', min_rating: '', limit: 10, skip: 0 };
+              setSearchText({ query: '', location: '', min_experience: '', max_fee: '' });
+              setFilters(cleared);
             }}
           >
             Clear Filters
@@ -345,7 +357,7 @@ const DoctorSearch = () => {
               <Button
                 variant="outline-primary"
                 onClick={handleLoadMore}
-                disabled={loading}
+                disabled={loadingMore}
                 style={{ borderRadius: '8px', padding: '0.6rem 2rem' }}
               >
                 {loading ? 'Loading...' : 'Load More'}
