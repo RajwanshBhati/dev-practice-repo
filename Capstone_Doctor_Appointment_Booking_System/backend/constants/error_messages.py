@@ -22,6 +22,11 @@ class ErrorMessages:
     APP_1208 = "No available slot found for the selected date and time"
     APP_1210 = "Appointments must be booked at least 2 hours in advance"
 
+    AVAIL_1001 = "Availability slot not found"
+    AVAIL_1003 = "Cannot delete a booked slot"
+    AVAIL_1004 = "Cannot update a booked slot"
+    AVAIL_1005 = "Overlapping slot exists"
+
     DOC_1301 = "Doctor not found"
     DOC_1302 = "Doctor is not available"
     DOC_1303 = "Doctor profile not found"
