@@ -15,34 +15,49 @@ import {
 import toast from 'react-hot-toast';
 import Loading from '../common/Loading';
 
+const STATS_CACHE_TTL = 60 * 1000;
+let statsCache = null;
+
 const DoctorDashboard = () => {
   const { user } = useAuth();
-  const [loading, setLoading] = useState(true);
-  const [doctorStats, setDoctorStats] = useState({
-    total_patients: 0,
-    total_appointments: 0,
-    today_appointments: 0,
-    upcoming_appointments: 0,
-    completed_appointments: 0,
-    cancelled_appointments: 0,
-    rating: 0,
-    total_reviews: 0,
-  });
-  const [appointmentStats, setAppointmentStats] = useState({
-    total: 0,
-    scheduled: 0,
-    confirmed: 0,
-    completed: 0,
-    cancelled: 0,
-    no_show: 0,
-    rescheduled: 0,
-    revenue: 0,
-  });
+  const [loading, setLoading] = useState(!statsCache);
+  const [doctorStats, setDoctorStats] = useState(
+    statsCache?.doctorStats || {
+      total_patients: 0,
+      total_appointments: 0,
+      today_appointments: 0,
+      upcoming_appointments: 0,
+      completed_appointments: 0,
+      cancelled_appointments: 0,
+      rating: 0,
+      total_reviews: 0,
+    }
+  );
+  const [appointmentStats, setAppointmentStats] = useState(
+    statsCache?.appointmentStats || {
+      total: 0,
+      scheduled: 0,
+      confirmed: 0,
+      completed: 0,
+      cancelled: 0,
+      no_show: 0,
+      rescheduled: 0,
+      revenue: 0,
+    }
+  );
 
   /**
    * Load dashboard data.
    */
   useEffect(() => {
+    const isCacheFresh =
+      statsCache && Date.now() - statsCache.timestamp < STATS_CACHE_TTL;
+
+    if (isCacheFresh) {
+      setLoading(false);
+      return;
+    }
+
     loadDashboardData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -60,6 +75,12 @@ const DoctorDashboard = () => {
 
       setDoctorStats(stats);
       setAppointmentStats(appointments);
+
+      statsCache = {
+        doctorStats: stats,
+        appointmentStats: appointments,
+        timestamp: Date.now(),
+      };
     } catch (error) {
       console.error('Error loading dashboard data:', error);
       toast.error('Failed to load dashboard data');
