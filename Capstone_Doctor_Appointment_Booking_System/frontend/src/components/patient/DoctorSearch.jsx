@@ -1,4 +1,9 @@
-import { useState, useEffect } from 'react';
+/**
+ * Doctor Search page component.
+ * Allows patients to search for doctors with various filters.
+ */
+
+import { useState, useEffect,useRef,useMemo} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { searchDoctors, getSpecializations } from '../../api/doctor';
 import { Form, Button, Card, Row, Col, Container, Badge } from 'react-bootstrap';
@@ -78,11 +83,7 @@ const DoctorSearch = () => {
         }
       });
       const data = await searchDoctors(params);
-      if (params.skip && params.skip > 0) {
-        setDoctors((prev) => [...prev, ...(data.doctors || [])]);
-      } else {
-        setDoctors(data.doctors || []);
-      }
+      setDoctors((prev) => (isLoadMore ? [...prev, ...(data.doctors || [])] : data.doctors || []));
       setTotal(data.total || 0);
       setHasMore(data.has_more || false);
     } catch (error) {
