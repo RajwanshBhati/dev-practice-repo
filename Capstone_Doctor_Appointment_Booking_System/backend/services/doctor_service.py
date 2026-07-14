@@ -17,9 +17,7 @@ logger = logging.getLogger(__name__)
 
 class DoctorService:
     """
-    Everything related to doctor profiles: fetching them, letting doctors
-    edit their own info, running the admin approval/rejection workflow,
-    and searching/filtering the public doctor directory.
+    Doctor profile management operations
     """
 
     def __init__(self):
@@ -44,8 +42,7 @@ class DoctorService:
 
     async def get_public_doctor_profile(self, doctor_id: str) -> Dict[str, Any]:
         """
-        Return only the fields patients should see for a doctor, and only
-        if that doctor has actually been approved by an admin.
+        Return only the fields patients should see for a doctor
         """
         doctor = await self.doctor_repo.find_by_id(doctor_id)
         if not doctor:
@@ -79,9 +76,7 @@ class DoctorService:
         user_id: str,
         update_data: DoctorProfileUpdate
     ) -> Dict[str, Any]:
-        """
-        Let an already-approved doctor request a profile update.
-        """
+        """Let an already-approved doctor update their own profile fields."""
         doctor = await self.doctor_repo.find_by_user_id(user_id)
         if not doctor:
             raise ValueError(ErrorMessages.DOC_1303)
@@ -94,94 +89,14 @@ class DoctorService:
         if not update_dict:
             raise ValueError("No fields to update")
 
-        updated_doctor = await self.doctor_repo.update(doctor.id, {"pending_update": update_dict})
+        updated_doctor = await self.doctor_repo.update(doctor.id, update_dict)
         if not updated_doctor:
             raise ValueError(ErrorMessages.DOC_1301)
 
-        logger.info(f"Doctor profile update submitted for approval: {user_id}")
+        logger.info(f"Doctor profile updated: {user_id}")
 
         return {
-            "message": "Your profile changes have been submitted and are pending admin approval.",
-            "doctor": updated_doctor
-        }
-
-    async def get_pending_profile_updates(self, limit: int = 100, skip: int = 0) -> Dict[str, Any]:
-        """Return all doctor profiles that currently have a pending update awaiting admin review."""
-        doctors = await self.doctor_repo.find_with_pending_updates(limit, skip)
-        doctors_with_info = [await self._attach_user_info(doctor) for doctor in doctors]
-        return {
-            "doctors": doctors_with_info,
-            "total": len(doctors_with_info)
-        }
-
-    async def approve_profile_update(self, doctor_id: str, admin_id: str) -> Dict[str, Any]:
-        """Apply a doctor's pending profile changes and clear the pending flag."""
-        doctor = await self.doctor_repo.find_by_id(doctor_id)
-        if not doctor:
-            raise ValueError(ErrorMessages.DOC_1301)
-
-        if not doctor.pending_update:
-            raise ValueError("This doctor has no pending profile update")
-
-        changes = dict(doctor.pending_update)
-        changes["pending_update"] = None
-
-        updated_doctor = await self.doctor_repo.update(doctor.id, changes)
-
-        admin_user = await self.user_repo.find_by_id(admin_id)
-        doctor_user = await self.user_repo.find_by_id(doctor.user_id)
-
-        audit_log = AdminAuditLog(
-            admin_id=admin_id,
-            admin_email=admin_user.email if admin_user else "unknown",
-            action="APPROVE_PROFILE_UPDATE",
-            target_id=doctor.id,
-            target_email=doctor_user.email if doctor_user else None,
-            details={
-                "doctor_name": doctor_user.full_name if doctor_user else None,
-                "changes": changes
-            }
-        )
-        await self.admin_repo.create_audit_log(audit_log)
-
-        logger.info(f"Doctor profile update approved: {doctor_id} by admin {admin_id}")
-
-        return {
-            "message": "Profile update approved and applied",
-            "doctor": updated_doctor
-        }
-
-    async def reject_profile_update(self, doctor_id: str, admin_id: str, reason: Optional[str] = None) -> Dict[str, Any]:
-        """Discard a doctor's pending profile changes without applying them."""
-        doctor = await self.doctor_repo.find_by_id(doctor_id)
-        if not doctor:
-            raise ValueError(ErrorMessages.DOC_1301)
-
-        if not doctor.pending_update:
-            raise ValueError("This doctor has no pending profile update")
-
-        updated_doctor = await self.doctor_repo.update(doctor.id, {"pending_update": None})
-
-        admin_user = await self.user_repo.find_by_id(admin_id)
-        doctor_user = await self.user_repo.find_by_id(doctor.user_id)
-
-        audit_log = AdminAuditLog(
-            admin_id=admin_id,
-            admin_email=admin_user.email if admin_user else "unknown",
-            action="REJECT_PROFILE_UPDATE",
-            target_id=doctor.id,
-            target_email=doctor_user.email if doctor_user else None,
-            details={
-                "doctor_name": doctor_user.full_name if doctor_user else None,
-                "rejection_reason": reason or "Not specified"
-            }
-        )
-        await self.admin_repo.create_audit_log(audit_log)
-
-        logger.info(f"Doctor profile update rejected: {doctor_id} by admin {admin_id}")
-
-        return {
-            "message": "Profile update rejected",
+            "message": SuccessMessages.PROFILE_UPDATED,
             "doctor": updated_doctor
         }
 
@@ -258,9 +173,7 @@ class DoctorService:
         approve_data: DoctorApproveRequest
     ) -> Dict[str, Any]:
         """
-        Approve a pending doctor: flips both the doctor profile and linked
-        user account to active, emails the doctor the good news, and logs
-        the action for audit purposes.
+        Approve a pending doctor
         """
         doctor = await self.doctor_repo.find_by_id(doctor_id)
         if not doctor:
@@ -320,9 +233,7 @@ class DoctorService:
         reject_data: DoctorRejectRequest
     ) -> Dict[str, Any]:
         """
-        Reject a pending doctor: marks the doctor profile and user account
-        accordingly, emails the doctor with the reason, and logs the action
-        for audit purposes.
+        Reject a pending doctor
         """
         doctor = await self.doctor_repo.find_by_id(doctor_id)
         if not doctor:
@@ -414,9 +325,7 @@ class DoctorService:
         skip: int = 0
     ) -> Dict[str, Any]:
         """
-        Search approved doctors in memory against the given filters (name/
-        specialization/qualification text match, location, experience, fee
-        cap, rating floor), then paginate the results.
+        Search approved doctors
         """
         try:
             doctors = await self.doctor_repo.get_doctors_by_status(DoctorStatus.APPROVED)
