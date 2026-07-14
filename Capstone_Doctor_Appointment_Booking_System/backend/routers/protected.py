@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
 from typing import List
+from backend.schemas.response.user_response import UserProfileResponse
 from backend.database.dependencies import (
     get_current_user,
     get_current_patient,
@@ -25,13 +26,13 @@ async def get_profile(current_user: dict = Depends(get_current_user)):
     try:
         user_service = UserService()
         user = await user_service.get_user_by_id(current_user["user_id"])
-        return {
-            "id": user.id,
-            "email": user.email,
-            "full_name": user.full_name,
-            "role": user.role.value,
-            "status": user.status.value
-        }
+        return UserProfileResponse(
+            id=user.id,
+            email=user.email,
+            full_name=user.full_name,
+            role=user.role.value,
+            status=user.status.value
+        )
     except Exception as e:
         logger.error(f"Error getting profile: {str(e)}")
         raise HTTPException(

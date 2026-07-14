@@ -1,8 +1,6 @@
 from typing import Optional
 from datetime import datetime
 from pydantic import Field
-from backend.models.base import BaseDBModel
-from backend.enums.doctor_enums import Specialization
 from backend.enums.user_enums import DoctorStatus, VerificationStatus
 
 class PatientProfile(BaseDBModel):

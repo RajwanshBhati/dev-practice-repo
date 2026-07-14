@@ -1,6 +1,5 @@
 from datetime import datetime
 from pydantic import Field
-from backend.models.base import BaseDBModel
 
 class TokenBlacklist(BaseDBModel):
     """Keeps track of JWTs that have been invalidated (e.g. on logout) so they're rejected even before they expire."""
