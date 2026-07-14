@@ -205,6 +205,73 @@ async def reject_doctor(
         )
 
 
+@router.get("/doctors/profile-updates")
+async def get_pending_profile_updates(
+    limit: int = 100,
+    skip: int = 0,
+    current_admin: dict = Depends(require_permission(Permission.MANAGE_DOCTORS))
+):
+    """List doctors who have a profile update waiting on admin review."""
+    try:
+        doctor_service = DoctorService()
+        result = await doctor_service.get_pending_profile_updates(limit, skip)
+        return result
+    except Exception as e:
+        logger.error(f"Error getting pending profile updates: {str(e)}")
+        raise HTTPException(
+            status_code=HttpStatus.INTERNAL_SERVER_ERROR,
+            detail="Failed to get pending profile updates"
+        )
+
+
+@router.post("/doctors/{doctor_id}/approve-update")
+async def approve_profile_update(
+    doctor_id: str,
+    current_admin: dict = Depends(require_permission(Permission.MANAGE_DOCTORS))
+):
+    """Approve and apply a doctor's pending profile update."""
+    try:
+        doctor_service = DoctorService()
+        result = await doctor_service.approve_profile_update(
+            doctor_id,
+            current_admin["user_id"]
+        )
+        return result
+    except ValueError as e:
+        raise HTTPException(status_code=HttpStatus.BAD_REQUEST, detail=str(e))
+    except Exception as e:
+        logger.error(f"Profile update approval error: {str(e)}")
+        raise HTTPException(
+            status_code=HttpStatus.INTERNAL_SERVER_ERROR,
+            detail="Failed to approve profile update"
+        )
+
+
+@router.post("/doctors/{doctor_id}/reject-update")
+async def reject_profile_update(
+    doctor_id: str,
+    reject_data: DoctorRejectRequest,
+    current_admin: dict = Depends(require_permission(Permission.MANAGE_DOCTORS))
+):
+    """Reject a doctor's pending profile update, discarding the proposed changes."""
+    try:
+        doctor_service = DoctorService()
+        result = await doctor_service.reject_profile_update(
+            doctor_id,
+            current_admin["user_id"],
+            reject_data.reason
+        )
+        return result
+    except ValueError as e:
+        raise HTTPException(status_code=HttpStatus.BAD_REQUEST, detail=str(e))
+    except Exception as e:
+        logger.error(f"Profile update rejection error: {str(e)}")
+        raise HTTPException(
+            status_code=HttpStatus.INTERNAL_SERVER_ERROR,
+            detail="Failed to reject profile update"
+        )
+
+
 @router.get("/doctors/stats")
 async def get_doctor_stats(
     current_admin: dict = Depends(require_permission(Permission.VIEW_STATISTICS))
@@ -226,6 +293,8 @@ async def get_doctor_stats(
 async def get_audit_logs(
     limit: int = 100,
     skip: int = 0,
+    admin_id: Optional[str] = None,
+    action: Optional[str] = None,
     current_admin: dict = Depends(require_permission(Permission.VIEW_AUDIT_LOGS))
 ):
     """Fetch the audit trail of admin actions, paginated."""
@@ -233,13 +302,17 @@ async def get_audit_logs(
         from backend.repositories.admin_repository import AdminRepository
         admin_repo = AdminRepository()
         logs = await admin_repo.get_audit_logs(
-            admin_id=current_admin["user_id"],
+            admin_id=admin_id,
+            action=action,
             limit=limit,
             skip=skip
         )
+        total = await admin_repo.count_audit_logs(admin_id=admin_id, action=action)
         return {
             "logs": logs,
-            "count": len(logs)
+            "count": len(logs),
+            "total": total,
+            "total_pages": (total + limit - 1) // limit if limit > 0 else 1
         }
     except Exception as e:
         logger.error(f"Error getting audit logs: {str(e)}")

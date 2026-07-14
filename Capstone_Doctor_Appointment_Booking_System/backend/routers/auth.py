@@ -9,6 +9,16 @@ from backend.schemas.request.auth_request import (
     RefreshToken,
     LogoutRequest
 )
+from pydantic import BaseModel, EmailStr
+
+
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+
+class ResetPasswordRequest(BaseModel):
+    token: str
+    password: str
 from backend.services.auth_service import AuthService
 from backend.database.dependencies import get_current_user
 from backend.constants import HttpStatus
@@ -110,6 +120,36 @@ async def logout(
         raise HTTPException(
             status_code=HttpStatus.INTERNAL_SERVER_ERROR,
             detail="Logout failed"
+        )
+
+
+@router.post("/forgot-password")
+async def forgot_password(data: ForgotPasswordRequest):
+    """Send a password reset link to the given email if an account exists."""
+    try:
+        auth_service = AuthService()
+        result = await auth_service.forgot_password(data.email)
+        return result
+    except Exception as e:
+        logger.error(f"Forgot password error: {str(e)}")
+        # Still return a generic success response to avoid leaking user existence
+        return {"message": "If an account exists for this email, a reset link has been sent."}
+
+
+@router.post("/reset-password")
+async def reset_password(data: ResetPasswordRequest):
+    """Reset a user's password using the token they received via email."""
+    try:
+        auth_service = AuthService()
+        result = await auth_service.reset_password(data.token, data.password)
+        return result
+    except ValueError as e:
+        raise HTTPException(status_code=HttpStatus.BAD_REQUEST, detail=str(e))
+    except Exception as e:
+        logger.error(f"Reset password error: {str(e)}")
+        raise HTTPException(
+            status_code=HttpStatus.INTERNAL_SERVER_ERROR,
+            detail="Failed to reset password"
         )
 
 

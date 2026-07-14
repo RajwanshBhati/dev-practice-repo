@@ -24,6 +24,7 @@ class SuccessMessages(str, Enum):
     ADMIN_CREATED = "Admin created successfully"
     ADMIN_DELETED = "Admin deleted successfully"
     SYSTEM_SETTINGS_UPDATED = "System settings updated successfully"
+    APPOINTMENT_RESCHEDULED = "Appointment rescheduled successfully"
     PAYMENT_SUCCESS = "Payment successful"
     PAYMENT_REFUNDED = "Payment refunded successfully"
     PAYMENT_INITIATED = "Payment initiated successfully"

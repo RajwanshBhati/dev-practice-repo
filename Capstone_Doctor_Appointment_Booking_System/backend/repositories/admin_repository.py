@@ -29,6 +29,7 @@ class AdminRepository:
     async def get_audit_logs(
         self,
         admin_id: Optional[str] = None,
+        action: Optional[str] = None,
         limit: int = 100,
         skip: int = 0
     ) -> List[AdminAuditLog]:
@@ -37,7 +38,8 @@ class AdminRepository:
             query = {}
             if admin_id:
                 query["admin_id"] = admin_id
-
+            if action:
+                query["action"] = action
             cursor = self.logs_collection.find(query).sort("created_at", -1).skip(skip).limit(limit)
             logs = []
             async for log_dict in cursor:
@@ -47,6 +49,19 @@ class AdminRepository:
         except Exception as e:
             logger.error(f"Error getting audit logs: {e}")
             return []
+
+    async def count_audit_logs(
+        self,
+        admin_id: Optional[str] = None,
+        action: Optional[str] = None,
+    ) -> int:
+        query = {}
+        if admin_id:
+            query["admin_id"] = admin_id
+        if action:
+            query["action"] = action
+        return await self.logs_collection.count_documents(query)
+
 
     async def get_setting(self, key: str) -> Optional[dict]:
         """Fetch the current value of a system setting by its key."""

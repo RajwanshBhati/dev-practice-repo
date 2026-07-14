@@ -218,6 +218,50 @@ class AuthService:
             logger.error(f"Token validation error: {str(e)}")
             raise ValueError(ErrorMessages.AUTH_1003)
 
+
+    async def refresh_token(self, refresh_data: RefreshToken) -> Dict[str, Any]:
+        """
+        Validate a refresh token, check if it's blacklisted, and issue a
+        new access token if everything checks out.
+        """
+        token = refresh_data.refresh_token
+
+        is_blacklisted = await self.blacklist_repo.is_blacklisted(token)
+        if is_blacklisted:
+           raise ValueError("Token has been revoked")
+
+        try:
+            payload = jwt_service.decode_token(token)
+        except ValueError:
+            raise ValueError(ErrorMessages.AUTH_1003)
+
+        if payload.get("type") != "refresh":
+            raise ValueError(ErrorMessages.AUTH_1003)
+
+        user_id = payload.get("sub")
+        if not user_id:
+            raise ValueError(ErrorMessages.AUTH_1003)
+
+        user = await self.user_repo.find_by_id(user_id)
+        if not user:
+            raise ValueError(ErrorMessages.USER_1101)
+
+        if user.status != UserStatus.ACTIVE:
+            raise ValueError(ErrorMessages.AUTH_1004)
+
+        token_data = {
+            "sub": user.id,
+            "email": user.email,
+            "role": user.role.value
+        }
+        access_token = jwt_service.create_access_token(token_data)
+
+        return {
+            "access_token": access_token,
+            "token_type": "bearer",
+            "expires_in": 1800
+        }
+
     async def register_doctor_with_approval(self, user_data: DoctorRegister) -> Dict[str, Any]:
         """
         Create a doctor account that starts out PENDING on both the user
@@ -281,11 +325,6 @@ class AuthService:
         )
 
     async def login_with_status_check(self, login_data: UserLogin) -> Dict[str, Any]:
-        """
-        Full login flow used by the app: verifies credentials, blocks
-        pending/inactive/suspended accounts, and for doctors specifically
-        also checks their separate approval status before letting them in.
-        """
         user = await self.user_repo.find_by_email(login_data.email)
 
         if not user:

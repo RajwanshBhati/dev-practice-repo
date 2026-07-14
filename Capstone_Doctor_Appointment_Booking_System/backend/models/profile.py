@@ -46,5 +46,10 @@ class DoctorProfile(BaseDBModel):
     rating: float = Field(default=0.0, ge=0, le=5, description="Average rating")
     total_reviews: int = Field(default=0, description="Total number of reviews")
 
+    pending_update: Optional[dict] = Field(
+        default=None,
+        description="Profile field changes awaiting admin approval, if any"
+    )
+
     class Config:
         collection = "doctor_profiles"

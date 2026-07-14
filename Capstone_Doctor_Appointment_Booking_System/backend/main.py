@@ -13,6 +13,8 @@ from backend.middleware.config import settings
 from backend.routers import auth_router, user_router, protected_router, admin_router, doctor_router,appointments_router
 import logging
 from datetime import datetime
+from fastapi.staticfiles import StaticFiles
+from pathlib import Path
 
 logging.basicConfig(
     level=getattr(logging, settings.LOG_LEVEL),
@@ -83,6 +85,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+UPLOADS_DIR = Path("uploads")
+UPLOADS_DIR.mkdir(exist_ok=True)
+(UPLOADS_DIR / "profile_pictures").mkdir(exist_ok=True)
+
+app.mount("/uploads", StaticFiles(directory=UPLOADS_DIR), name="uploads")
 
 
 

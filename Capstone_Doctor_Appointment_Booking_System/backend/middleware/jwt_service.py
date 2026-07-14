@@ -40,6 +40,21 @@ class JWTService:
         return token
 
     @staticmethod
+    def create_reset_token(data: Dict[str, Any]) -> str:
+        """Create a short-lived token (30 min) used only for password-reset links."""
+        to_encode = data.copy()
+        expire = datetime.utcnow() + timedelta(minutes=30)
+
+        to_encode.update({
+            "exp": expire,
+            "iat": datetime.utcnow(),
+            "type": "reset"
+        })
+
+        token = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+        return token
+
+    @staticmethod
     def decode_token(token: str) -> Dict[str, Any]:
         """Decode a token and verify its signature/expiry. Raises ValueError if it's expired or invalid."""
         try:
