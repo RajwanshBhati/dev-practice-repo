@@ -18,6 +18,11 @@ class ErrorMessages:
     APP_1204 = "Cannot book appointment for past date"
     APP_1205 = "Cannot cancel appointment at this time"
     APP_1206 = "Appointment has already been completed"
+    APP_1207 = "Doctor is not available on this date"
+    APP_1208 = "No available slots found for the selected date"
+    APP_1209 = "Appointment time is outside working hours"
+    APP_1210 = "Cannot book appointment less than 2 hours in advance"
+    APP_1211 = "Concurrent booking attempt detected"
 
     DOC_1301 = "Doctor not found"
     DOC_1302 = "Doctor is not available"
@@ -34,6 +39,13 @@ class ErrorMessages:
     ADM_1404 = "Cannot delete the last super admin"
     ADM_1405 = "First admin already exists"
     ADM_1406 = "No admin exists. Please create the first admin"
+
+    AVAIL_1001 = "Availability slot not found"
+    AVAIL_1002 = "Availability slot is already booked"
+    AVAIL_1003 = "Cannot delete booked slot"
+    AVAIL_1004 = "Cannot update booked slot"
+    AVAIL_1005 = "Slot overlaps with existing availability"
+    AVAIL_1006 = "Invalid time range"
 
     PAY_1501 = "Payment processing failed"
 
