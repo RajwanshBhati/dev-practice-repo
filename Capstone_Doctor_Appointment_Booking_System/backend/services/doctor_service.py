@@ -17,9 +17,7 @@ logger = logging.getLogger(__name__)
 
 class DoctorService:
     """
-    Everything related to doctor profiles: fetching them, letting doctors
-    edit their own info, running the admin approval/rejection workflow,
-    and searching/filtering the public doctor directory.
+    Doctor profile management operations
     """
 
     def __init__(self):
@@ -44,8 +42,7 @@ class DoctorService:
 
     async def get_public_doctor_profile(self, doctor_id: str) -> Dict[str, Any]:
         """
-        Return only the fields patients should see for a doctor, and only
-        if that doctor has actually been approved by an admin.
+        Return only the fields patients should see for a doctor
         """
         doctor = await self.doctor_repo.find_by_id(doctor_id)
         if not doctor:
@@ -60,7 +57,6 @@ class DoctorService:
 
         return {
             "id": doctor.id,
-            "user_id": doctor.user_id,
             "full_name": user.full_name,
             "qualification": doctor.qualification,
             "specialization": doctor.specialization,
@@ -177,9 +173,7 @@ class DoctorService:
         approve_data: DoctorApproveRequest
     ) -> Dict[str, Any]:
         """
-        Approve a pending doctor: flips both the doctor profile and linked
-        user account to active, emails the doctor the good news, and logs
-        the action for audit purposes.
+        Approve a pending doctor
         """
         doctor = await self.doctor_repo.find_by_id(doctor_id)
         if not doctor:
@@ -239,9 +233,7 @@ class DoctorService:
         reject_data: DoctorRejectRequest
     ) -> Dict[str, Any]:
         """
-        Reject a pending doctor: marks the doctor profile and user account
-        accordingly, emails the doctor with the reason, and logs the action
-        for audit purposes.
+        Reject a pending doctor
         """
         doctor = await self.doctor_repo.find_by_id(doctor_id)
         if not doctor:
@@ -333,9 +325,7 @@ class DoctorService:
         skip: int = 0
     ) -> Dict[str, Any]:
         """
-        Search approved doctors in memory against the given filters (name/
-        specialization/qualification text match, location, experience, fee
-        cap, rating floor), then paginate the results.
+        Search approved doctors
         """
         try:
             doctors = await self.doctor_repo.get_doctors_by_status(DoctorStatus.APPROVED)
@@ -371,7 +361,6 @@ class DoctorService:
 
                 filtered_doctors.append({
                     "id": doctor.id,
-                    "user_id": doctor.user_id,
                     "full_name": user.full_name,
                     "qualification": doctor.qualification,
                     "specialization": doctor.specialization,

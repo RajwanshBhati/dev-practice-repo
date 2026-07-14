@@ -75,9 +75,7 @@ class DoctorRepository:
         rejection_reason: Optional[str] = None
     ) -> Optional[DoctorProfile]:
         """
-        Move a doctor through the approval workflow. Approving stamps who
-        approved it and when, and clears any old rejection reason; rejecting
-        does the same on the rejection side, optionally storing why.
+        Manage doctor approval workflow
         """
         try:
             update_data = {
