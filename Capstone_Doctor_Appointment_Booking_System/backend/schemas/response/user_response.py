@@ -1,11 +1,12 @@
-from datetime import datetime
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
-class UserResponse(BaseModel):
+
+class UserProfileResponse(BaseModel):
+    """Response schema for the /protected/profile endpoint."""
+    model_config = ConfigDict(from_attributes=True)
+
     id: str
     email: str
     full_name: str
-    phone: str | None
     role: str
     status: str
-    created_at: datetime
