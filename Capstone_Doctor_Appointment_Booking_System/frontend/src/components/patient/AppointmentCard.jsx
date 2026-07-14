@@ -152,7 +152,7 @@ const AppointmentCard = ({ appointment, onCancel, onReschedule }) => {
               <Button
                 variant="outline-primary"
                 size="sm"
-                className="w-100"
+                className="mb-2 w-100"
                 style={{ borderRadius: '8px' }}
                 onClick={() => onReschedule(appointment)}
               >
@@ -164,7 +164,7 @@ const AppointmentCard = ({ appointment, onCancel, onReschedule }) => {
               <Button
                 variant="success"
                 size="sm"
-                className="mb-2 w-100"
+                className="w-100"
                 style={{ borderRadius: '8px' }}
                 onClick={() => navigate(`/payment/${id}`)}
               >

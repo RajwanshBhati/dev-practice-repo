@@ -12,6 +12,8 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [emailFocused, setEmailFocused] = useState(false);
+  const [passwordFocused, setPasswordFocused] = useState(false);
   const { login, isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
 
@@ -115,9 +117,10 @@ const Login = () => {
                       <div
                         className="input-group"
                         style={{
-                          border: error ? '2px solid #dc3545' : '2px solid #e2e8f0',
+                          border: error ? '2px solid #dc3545' : emailFocused ? '2px solid #4a90d9' : '2px solid #e2e8f0',
                           borderRadius: '10px',
                           overflow: 'hidden',
+                          transition: 'border-color 0.2s ease',
                         }}
                       >
                         <span className="input-group-text bg-white border-0" style={{ paddingRight: '0' }}>
@@ -128,7 +131,9 @@ const Login = () => {
                           placeholder="you@example.com"
                           value={email}
                           onChange={handleEmailChange}
-                          style={{ border: 'none', padding: '0.85rem 1rem', fontSize: '0.95rem' }}
+                          onFocus={() => setEmailFocused(true)}
+                          onBlur={() => setEmailFocused(false)}
+                          style={{ border: 'none', padding: '0.85rem 1rem', fontSize: '0.95rem', boxShadow: 'none' }}
                           required
                         />
                       </div>
@@ -141,9 +146,10 @@ const Login = () => {
                       <div
                         className="input-group"
                         style={{
-                          border: error ? '2px solid #dc3545' : '2px solid #e2e8f0',
+                          border: error ? '2px solid #dc3545' : passwordFocused ? '2px solid #4a90d9' : '2px solid #e2e8f0',
                           borderRadius: '10px',
                           overflow: 'hidden',
+                          transition: 'border-color 0.2s ease',
                         }}
                       >
                         <span className="input-group-text bg-white border-0" style={{ paddingRight: '0' }}>
@@ -154,7 +160,9 @@ const Login = () => {
                           placeholder="Enter your password"
                           value={password}
                           onChange={handlePasswordChange}
-                          style={{ border: 'none', padding: '0.85rem 1rem', fontSize: '0.95rem' }}
+                          onFocus={() => setPasswordFocused(true)}
+                          onBlur={() => setPasswordFocused(false)}
+                          style={{ border: 'none', padding: '0.85rem 1rem', fontSize: '0.95rem', boxShadow: 'none' }}
                           required
                         />
                         <span

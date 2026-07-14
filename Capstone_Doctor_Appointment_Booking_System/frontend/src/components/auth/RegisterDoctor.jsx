@@ -12,11 +12,17 @@ import {
   FaUser,
   FaStethoscope,
   FaHospital,
+  FaArrowLeft,
+  FaArrowRight,
+  FaCheck,
 } from 'react-icons/fa';
 import { BiShow, BiHide } from 'react-icons/bi';
 
+const inputStyle = { padding: '0.75rem 1rem', borderRadius: '10px', border: '2px solid #e2e8f0' };
+
 const RegisterDoctor = () => {
   const navigate = useNavigate();
+  const [step, setStep] = useState(1); // 1 = Personal Information, 2 = Professional Information
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -45,10 +51,9 @@ const RegisterDoctor = () => {
     }
   };
 
-  const validateForm = () => {
+  const validatePersonalInfo = () => {
     const newErrors = {};
 
-    // Personal Information
     if (!formData.full_name || formData.full_name.length < 2) {
       newErrors.full_name = 'Full name must be at least 2 characters';
     }
@@ -62,10 +67,10 @@ const RegisterDoctor = () => {
     }
 
     if (!formData.date_of_birth) {
-     newErrors.date_of_birth = 'Please select your date of birth';
-     } else if (!isValidAge(formData.date_of_birth, 18)) {
-       newErrors.date_of_birth = 'Doctors must be at least 18 years old';
-     }
+      newErrors.date_of_birth = 'Please select your date of birth';
+    } else if (!isValidAge(formData.date_of_birth, 18)) {
+      newErrors.date_of_birth = 'Doctors must be at least 18 years old';
+    }
 
     if (!formData.password) {
       newErrors.password = 'Please enter a password';
@@ -77,7 +82,12 @@ const RegisterDoctor = () => {
       newErrors.confirm_password = 'Passwords do not match';
     }
 
-    // Professional Information
+    return newErrors;
+  };
+
+  const validateProfessionalInfo = () => {
+    const newErrors = {};
+
     if (!formData.qualification || formData.qualification.length < 2) {
       newErrors.qualification = 'Please enter your qualification';
     }
@@ -105,10 +115,27 @@ const RegisterDoctor = () => {
     return newErrors;
   };
 
+  const handleNext = () => {
+    const validationErrors = validatePersonalInfo();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+    setErrors({});
+    setStep(2);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleBack = () => {
+    setErrors({});
+    setStep(1);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const validationErrors = validateForm();
+    const validationErrors = validateProfessionalInfo();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
@@ -126,6 +153,50 @@ const RegisterDoctor = () => {
       setLoading(false);
     }
   };
+
+  const StepIndicator = () => (
+    <div className="d-flex align-items-center justify-content-center mb-4" style={{ gap: '0.5rem' }}>
+      <div className="d-flex align-items-center" style={{ gap: '0.5rem' }}>
+        <div
+          className="d-flex align-items-center justify-content-center"
+          style={{
+            width: '32px',
+            height: '32px',
+            borderRadius: '50%',
+            fontWeight: 600,
+            fontSize: '0.9rem',
+            color: 'white',
+            background: step >= 1 ? 'linear-gradient(135deg, #4a90d9, #357abd)' : '#cbd5e1',
+          }}
+        >
+          {step > 1 ? <FaCheck size={14} /> : 1}
+        </div>
+        <span className={`fw-semibold ${step === 1 ? 'text-dark' : 'text-muted'}`} style={{ fontSize: '0.9rem' }}>
+          Personal Info
+        </span>
+      </div>
+      <div style={{ width: '40px', height: '2px', background: step >= 2 ? '#4a90d9' : '#cbd5e1' }} />
+      <div className="d-flex align-items-center" style={{ gap: '0.5rem' }}>
+        <div
+          className="d-flex align-items-center justify-content-center"
+          style={{
+            width: '32px',
+            height: '32px',
+            borderRadius: '50%',
+            fontWeight: 600,
+            fontSize: '0.9rem',
+            color: 'white',
+            background: step >= 2 ? 'linear-gradient(135deg, #4a90d9, #357abd)' : '#cbd5e1',
+          }}
+        >
+          2
+        </div>
+        <span className={`fw-semibold ${step === 2 ? 'text-dark' : 'text-muted'}`} style={{ fontSize: '0.9rem' }}>
+          Professional Info
+        </span>
+      </div>
+    </div>
+  );
 
   return (
     <div style={{ background: '#f0f4ff', minHeight: 'calc(100vh - 80px)', padding: '40px 0' }}>
@@ -150,316 +221,353 @@ const RegisterDoctor = () => {
                   <FaStethoscope className="me-1" /> Registering as: <strong>Doctor</strong>
                 </div>
 
+                <StepIndicator />
+
                 <Form onSubmit={handleSubmit} noValidate>
                   <fieldset disabled={loading}>
-                  {/* Personal Information Section */}
-                  <h5 className="section-title mb-3" style={{ fontSize: '1.1rem', fontWeight: 600, color: '#2d3748', borderBottom: '3px solid #4a90d9', paddingBottom: '0.5rem', display: 'inline-block' }}>
-                    <FaUser className="me-2" /> Personal Information
-                  </h5>
 
-                  <Row>
-                    <Col md={6}>
+                  {step === 1 && (
+                    <>
+                      {/* Personal Information Section */}
+                      <h5 className="section-title mb-3" style={{ fontSize: '1.1rem', fontWeight: 600, color: '#2d3748', borderBottom: '3px solid #4a90d9', paddingBottom: '0.5rem', display: 'inline-block' }}>
+                        <FaUser className="me-2" /> Personal Information
+                      </h5>
+
+                      <Row>
+                        <Col md={6}>
+                          <Form.Group className="mb-3">
+                            <Form.Label className="fw-semibold text-secondary" style={{ fontSize: '0.9rem' }}>
+                              Full Name <span className="text-danger">*</span>
+                            </Form.Label>
+                            <Form.Control
+                              type="text"
+                              name="full_name"
+                              placeholder="Dr. John Doe"
+                              value={formData.full_name}
+                              onChange={handleChange}
+                              isInvalid={!!errors.full_name}
+                              style={inputStyle}
+                            />
+                            <Form.Control.Feedback type="invalid">
+                              {errors.full_name}
+                            </Form.Control.Feedback>
+                          </Form.Group>
+                        </Col>
+                        <Col md={6}>
+                          <Form.Group className="mb-3">
+                            <Form.Label className="fw-semibold text-secondary" style={{ fontSize: '0.9rem' }}>
+                              Email <span className="text-danger">*</span>
+                            </Form.Label>
+                            <Form.Control
+                              type="email"
+                              name="email"
+                              placeholder="you@example.com"
+                              value={formData.email}
+                              onChange={handleChange}
+                              isInvalid={!!errors.email}
+                              style={inputStyle}
+                            />
+                            <Form.Control.Feedback type="invalid">
+                              {errors.email}
+                            </Form.Control.Feedback>
+                          </Form.Group>
+                        </Col>
+                      </Row>
+
+                      <Row>
+                        <Col md={6}>
+                          <Form.Group className="mb-3">
+                            <Form.Label className="fw-semibold text-secondary" style={{ fontSize: '0.9rem' }}>
+                              Phone <span className="text-danger">*</span>
+                            </Form.Label>
+                            <Form.Control
+                              type="tel"
+                              name="phone"
+                              placeholder="+1234567890"
+                              value={formData.phone}
+                              onChange={handleChange}
+                              isInvalid={!!errors.phone}
+                              style={inputStyle}
+                            />
+                            <Form.Control.Feedback type="invalid">
+                              {errors.phone}
+                            </Form.Control.Feedback>
+                          </Form.Group>
+                        </Col>
+                        <Col md={6}>
+                          <Form.Group className="mb-3">
+                            <Form.Label className="fw-semibold text-secondary" style={{ fontSize: '0.9rem' }}>
+                              Gender <span className="text-danger">*</span>
+                            </Form.Label>
+                            <Form.Select
+                              name="gender"
+                              value={formData.gender}
+                              onChange={handleChange}
+                              style={inputStyle}
+                            >
+                              <option value="Male">Male</option>
+                              <option value="Female">Female</option>
+                              <option value="Other">Other</option>
+                            </Form.Select>
+                          </Form.Group>
+                        </Col>
+                      </Row>
+
                       <Form.Group className="mb-3">
                         <Form.Label className="fw-semibold text-secondary" style={{ fontSize: '0.9rem' }}>
-                          Full Name <span className="text-danger">*</span>
+                          Date of Birth <span className="text-danger">*</span>
+                        </Form.Label>
+                        <Form.Control
+                          type="date"
+                          name="date_of_birth"
+                          value={formData.date_of_birth}
+                          onChange={handleChange}
+                          isInvalid={!!errors.date_of_birth}
+                          style={inputStyle}
+                        />
+                        <Form.Control.Feedback type="invalid">
+                          {errors.date_of_birth}
+                        </Form.Control.Feedback>
+                      </Form.Group>
+
+                      <Row>
+                        <Col md={6}>
+                          <Form.Group className="mb-3">
+                            <Form.Label className="fw-semibold text-secondary" style={{ fontSize: '0.9rem' }}>
+                              Password <span className="text-danger">*</span>
+                            </Form.Label>
+                            <div className="position-relative">
+                              <Form.Control
+                                type={showPassword ? 'text' : 'password'}
+                                name="password"
+                                placeholder="Min 8 characters"
+                                value={formData.password}
+                                onChange={handleChange}
+                                isInvalid={!!errors.password}
+                                style={{ ...inputStyle, paddingRight: '45px', backgroundImage: 'none' }}
+                              />
+                              <span
+                                className="position-absolute top-50 end-0 translate-middle-y me-3"
+                                onClick={() => setShowPassword(!showPassword)}
+                                style={{ cursor: 'pointer' }}
+                              >
+                                {showPassword ? <BiHide size={20} /> : <BiShow size={20} />}
+                              </span>
+                            </div>
+                            <PasswordRequirements password={formData.password} />
+                            <Form.Control.Feedback type="invalid">
+                              {errors.password}
+                            </Form.Control.Feedback>
+                            <Form.Text className="text-muted" style={{ fontSize: '0.8rem' }}>
+                              8-12 characters with uppercase, lowercase, digit &amp; special character
+                            </Form.Text>
+                          </Form.Group>
+                        </Col>
+                        <Col md={6}>
+                          <Form.Group className="mb-3">
+                            <Form.Label className="fw-semibold text-secondary" style={{ fontSize: '0.9rem' }}>
+                              Confirm Password <span className="text-danger">*</span>
+                            </Form.Label>
+                            <Form.Control
+                              type="password"
+                              name="confirm_password"
+                              placeholder="Confirm password"
+                              value={formData.confirm_password}
+                              onChange={handleChange}
+                              isInvalid={!!errors.confirm_password}
+                              style={inputStyle}
+                            />
+                            <Form.Control.Feedback type="invalid">
+                              {errors.confirm_password}
+                            </Form.Control.Feedback>
+                          </Form.Group>
+                        </Col>
+                      </Row>
+                    </>
+                  )}
+
+                  {step === 2 && (
+                    <>
+                      {/* Professional Information Section */}
+                      <h5 className="section-title mb-3" style={{ fontSize: '1.1rem', fontWeight: 600, color: '#2d3748', borderBottom: '3px solid #4a90d9', paddingBottom: '0.5rem', display: 'inline-block' }}>
+                        <FaHospital className="me-2" /> Professional Information
+                      </h5>
+
+                      <Form.Group className="mb-3">
+                        <Form.Label className="fw-semibold text-secondary" style={{ fontSize: '0.9rem' }}>
+                          Qualification <span className="text-danger">*</span>
                         </Form.Label>
                         <Form.Control
                           type="text"
-                          name="full_name"
-                          placeholder="Dr. John Doe"
-                          value={formData.full_name}
+                          name="qualification"
+                          placeholder="MD, MBBS, etc."
+                          value={formData.qualification}
                           onChange={handleChange}
-                          isInvalid={!!errors.full_name}
-                          style={{ padding: '0.75rem 1rem', borderRadius: '10px', border: '2px solid #e2e8f0' }}
+                          isInvalid={!!errors.qualification}
+                          style={inputStyle}
                         />
                         <Form.Control.Feedback type="invalid">
-                          {errors.full_name}
+                          {errors.qualification}
                         </Form.Control.Feedback>
                       </Form.Group>
-                    </Col>
-                    <Col md={6}>
-                      <Form.Group className="mb-3">
-                        <Form.Label className="fw-semibold text-secondary" style={{ fontSize: '0.9rem' }}>
-                          Email <span className="text-danger">*</span>
-                        </Form.Label>
-                        <Form.Control
-                          type="email"
-                          name="email"
-                          placeholder="you@example.com"
-                          value={formData.email}
-                          onChange={handleChange}
-                          isInvalid={!!errors.email}
-                          style={{ padding: '0.75rem 1rem', borderRadius: '10px', border: '2px solid #e2e8f0' }}
-                        />
-                        <Form.Control.Feedback type="invalid">
-                          {errors.email}
-                        </Form.Control.Feedback>
-                      </Form.Group>
-                    </Col>
-                  </Row>
 
-                  <Row>
-                    <Col md={6}>
                       <Form.Group className="mb-3">
                         <Form.Label className="fw-semibold text-secondary" style={{ fontSize: '0.9rem' }}>
-                          Phone <span className="text-danger">*</span>
-                        </Form.Label>
-                        <Form.Control
-                          type="tel"
-                          name="phone"
-                          placeholder="+1234567890"
-                          value={formData.phone}
-                          onChange={handleChange}
-                          isInvalid={!!errors.phone}
-                          style={{ padding: '0.75rem 1rem', borderRadius: '10px', border: '2px solid #e2e8f0' }}
-                        />
-                        <Form.Control.Feedback type="invalid">
-                          {errors.phone}
-                        </Form.Control.Feedback>
-                      </Form.Group>
-                    </Col>
-                    <Col md={6}>
-                      <Form.Group className="mb-3">
-                        <Form.Label className="fw-semibold text-secondary" style={{ fontSize: '0.9rem' }}>
-                          Gender <span className="text-danger">*</span>
+                          Specialization <span className="text-danger">*</span>
                         </Form.Label>
                         <Form.Select
-                          name="gender"
-                          value={formData.gender}
+                          name="specialization"
+                          value={formData.specialization}
                           onChange={handleChange}
-                          style={{ padding: '0.75rem 1rem', borderRadius: '10px', border: '2px solid #e2e8f0' }}
+                          isInvalid={!!errors.specialization}
+                          style={inputStyle}
                         >
-                          <option value="Male">Male</option>
-                          <option value="Female">Female</option>
-                          <option value="Other">Other</option>
+                          {SPECIALIZATIONS.map((spec) => (
+                            <option key={spec} value={spec}>{spec}</option>
+                          ))}
                         </Form.Select>
-                      </Form.Group>
-                    </Col>
-                  </Row>
-
-                  <Form.Group className="mb-3">
-                    <Form.Label className="fw-semibold text-secondary" style={{ fontSize: '0.9rem' }}>
-                      Date of Birth <span className="text-danger">*</span>
-                    </Form.Label>
-                    <Form.Control
-                      type="date"
-                      name="date_of_birth"
-                      value={formData.date_of_birth}
-                      onChange={handleChange}
-                      isInvalid={!!errors.date_of_birth}
-                      style={{ padding: '0.75rem 1rem', borderRadius: '10px', border: '2px solid #e2e8f0' }}
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      {errors.date_of_birth}
-                    </Form.Control.Feedback>
-                  </Form.Group>
-
-                  <Row>
-                    <Col md={6}>
-                      <Form.Group className="mb-3">
-                        <Form.Label className="fw-semibold text-secondary" style={{ fontSize: '0.9rem' }}>
-                          Password <span className="text-danger">*</span>
-                        </Form.Label>
-                        <div className="position-relative">
-                          <Form.Control
-                            type={showPassword ? 'text' : 'password'}
-                            name="password"
-                            placeholder="Min 8 characters"
-                            value={formData.password}
-                            onChange={handleChange}
-                            isInvalid={!!errors.password}
-                            style={{ padding: '0.75rem 1rem', borderRadius: '10px', border: '2px solid #e2e8f0', paddingRight: '45px' }}
-                          />
-                          <span
-                            className="position-absolute top-50 end-0 translate-middle-y me-3"
-                            onClick={() => setShowPassword(!showPassword)}
-                            style={{ cursor: 'pointer' }}
-                          >
-                            {showPassword ? <BiHide size={20} /> : <BiShow size={20} />}
-                          </span>
-                        </div>
-                        <PasswordRequirements password={formData.password} />
                         <Form.Control.Feedback type="invalid">
-                          {errors.password}
+                          {errors.specialization}
                         </Form.Control.Feedback>
-                        <Form.Text className="text-muted" style={{ fontSize: '0.8rem' }}>
-                          8-12 characters with uppercase, lowercase, digit &amp; special character
-                        </Form.Text>
                       </Form.Group>
-                    </Col>
-                    <Col md={6}>
+
+                      <Row>
+                        <Col md={6}>
+                          <Form.Group className="mb-3">
+                            <Form.Label className="fw-semibold text-secondary" style={{ fontSize: '0.9rem' }}>
+                              Experience (years) <span className="text-danger">*</span>
+                            </Form.Label>
+                            <Form.Control
+                              type="number"
+                              name="experience_years"
+                              placeholder="5"
+                              value={formData.experience_years}
+                              onChange={handleChange}
+                              isInvalid={!!errors.experience_years}
+                              style={inputStyle}
+                            />
+                            <Form.Control.Feedback type="invalid">
+                              {errors.experience_years}
+                            </Form.Control.Feedback>
+                          </Form.Group>
+                        </Col>
+                        <Col md={6}>
+                          <Form.Group className="mb-3">
+                            <Form.Label className="fw-semibold text-secondary" style={{ fontSize: '0.9rem' }}>
+                              License Number <span className="text-danger">*</span>
+                            </Form.Label>
+                            <Form.Control
+                              type="text"
+                              name="license_number"
+                              placeholder="LIC-12345"
+                              value={formData.license_number}
+                              onChange={handleChange}
+                              isInvalid={!!errors.license_number}
+                              style={inputStyle}
+                            />
+                            <Form.Control.Feedback type="invalid">
+                              {errors.license_number}
+                            </Form.Control.Feedback>
+                          </Form.Group>
+                        </Col>
+                      </Row>
+
+                      <Row>
+                        <Col md={6}>
+                          <Form.Group className="mb-3">
+                            <Form.Label className="fw-semibold text-secondary" style={{ fontSize: '0.9rem' }}>
+                              Consultation Fee ($) <span className="text-danger">*</span>
+                            </Form.Label>
+                            <Form.Control
+                              type="number"
+                              name="consultation_fee"
+                              placeholder="150"
+                              value={formData.consultation_fee}
+                              onChange={handleChange}
+                              isInvalid={!!errors.consultation_fee}
+                              style={inputStyle}
+                            />
+                            <Form.Control.Feedback type="invalid">
+                              {errors.consultation_fee}
+                            </Form.Control.Feedback>
+                          </Form.Group>
+                        </Col>
+                        <Col md={6}>
+                          <Form.Group className="mb-3">
+                            <Form.Label className="fw-semibold text-secondary" style={{ fontSize: '0.9rem' }}>
+                              Clinic Address <span className="text-danger">*</span>
+                            </Form.Label>
+                            <Form.Control
+                              type="text"
+                              name="clinic_address"
+                              placeholder="123 Healthcare Ave"
+                              value={formData.clinic_address}
+                              onChange={handleChange}
+                              isInvalid={!!errors.clinic_address}
+                              style={inputStyle}
+                            />
+                            <Form.Control.Feedback type="invalid">
+                              {errors.clinic_address}
+                            </Form.Control.Feedback>
+                          </Form.Group>
+                        </Col>
+                      </Row>
+
                       <Form.Group className="mb-3">
-                        <Form.Label className="fw-semibold text-secondary" style={{ fontSize: '0.9rem' }}>
-                          Confirm Password <span className="text-danger">*</span>
-                        </Form.Label>
+                        <Form.Label className="fw-semibold text-secondary" style={{ fontSize: '0.9rem' }}>Bio (Optional)</Form.Label>
                         <Form.Control
-                          type="password"
-                          name="confirm_password"
-                          placeholder="Confirm password"
-                          value={formData.confirm_password}
+                          as="textarea"
+                          rows={3}
+                          name="bio"
+                          placeholder="Brief description about yourself"
+                          value={formData.bio}
                           onChange={handleChange}
-                          isInvalid={!!errors.confirm_password}
-                          style={{ padding: '0.75rem 1rem', borderRadius: '10px', border: '2px solid #e2e8f0' }}
+                          style={inputStyle}
                         />
-                        <Form.Control.Feedback type="invalid">
-                          {errors.confirm_password}
-                        </Form.Control.Feedback>
                       </Form.Group>
-                    </Col>
-                  </Row>
+                    </>
+                  )}
 
-                  {/* Professional Information Section */}
-                  <h5 className="section-title mb-3 mt-4" style={{ fontSize: '1.1rem', fontWeight: 600, color: '#2d3748', borderBottom: '3px solid #4a90d9', paddingBottom: '0.5rem', display: 'inline-block' }}>
-                    <FaHospital className="me-2" /> Professional Information
-                  </h5>
-
-                  <Form.Group className="mb-3">
-                    <Form.Label className="fw-semibold text-secondary" style={{ fontSize: '0.9rem' }}>
-                      Qualification <span className="text-danger">*</span>
-                    </Form.Label>
-                    <Form.Control
-                      type="text"
-                      name="qualification"
-                      placeholder="MD, MBBS, etc."
-                      value={formData.qualification}
-                      onChange={handleChange}
-                      isInvalid={!!errors.qualification}
-                      style={{ padding: '0.75rem 1rem', borderRadius: '10px', border: '2px solid #e2e8f0' }}
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      {errors.qualification}
-                    </Form.Control.Feedback>
-                  </Form.Group>
-
-                  <Form.Group className="mb-3">
-                    <Form.Label className="fw-semibold text-secondary" style={{ fontSize: '0.9rem' }}>
-                      Specialization <span className="text-danger">*</span>
-                    </Form.Label>
-                    <Form.Select
-                      name="specialization"
-                      value={formData.specialization}
-                      onChange={handleChange}
-                      isInvalid={!!errors.specialization}
-                      style={{ padding: '0.75rem 1rem', borderRadius: '10px', border: '2px solid #e2e8f0' }}
-                    >
-                      {SPECIALIZATIONS.map((spec) => (
-                        <option key={spec} value={spec}>{spec}</option>
-                      ))}
-                    </Form.Select>
-                    <Form.Control.Feedback type="invalid">
-                      {errors.specialization}
-                    </Form.Control.Feedback>
-                  </Form.Group>
-
-                  <Row>
-                    <Col md={6}>
-                      <Form.Group className="mb-3">
-                        <Form.Label className="fw-semibold text-secondary" style={{ fontSize: '0.9rem' }}>
-                          Experience (years) <span className="text-danger">*</span>
-                        </Form.Label>
-                        <Form.Control
-                          type="number"
-                          name="experience_years"
-                          placeholder="5"
-                          value={formData.experience_years}
-                          onChange={handleChange}
-                          isInvalid={!!errors.experience_years}
-                          style={{ padding: '0.75rem 1rem', borderRadius: '10px', border: '2px solid #e2e8f0' }}
-                        />
-                        <Form.Control.Feedback type="invalid">
-                          {errors.experience_years}
-                        </Form.Control.Feedback>
-                      </Form.Group>
-                    </Col>
-                    <Col md={6}>
-                      <Form.Group className="mb-3">
-                        <Form.Label className="fw-semibold text-secondary" style={{ fontSize: '0.9rem' }}>
-                          License Number <span className="text-danger">*</span>
-                        </Form.Label>
-                        <Form.Control
-                          type="text"
-                          name="license_number"
-                          placeholder="LIC-12345"
-                          value={formData.license_number}
-                          onChange={handleChange}
-                          isInvalid={!!errors.license_number}
-                          style={{ padding: '0.75rem 1rem', borderRadius: '10px', border: '2px solid #e2e8f0' }}
-                        />
-                        <Form.Control.Feedback type="invalid">
-                          {errors.license_number}
-                        </Form.Control.Feedback>
-                      </Form.Group>
-                    </Col>
-                  </Row>
-
-                  <Row>
-                    <Col md={6}>
-                      <Form.Group className="mb-3">
-                        <Form.Label className="fw-semibold text-secondary" style={{ fontSize: '0.9rem' }}>
-                          Consultation Fee ($) <span className="text-danger">*</span>
-                        </Form.Label>
-                        <Form.Control
-                          type="number"
-                          name="consultation_fee"
-                          placeholder="150"
-                          value={formData.consultation_fee}
-                          onChange={handleChange}
-                          isInvalid={!!errors.consultation_fee}
-                          style={{ padding: '0.75rem 1rem', borderRadius: '10px', border: '2px solid #e2e8f0' }}
-                        />
-                        <Form.Control.Feedback type="invalid">
-                          {errors.consultation_fee}
-                        </Form.Control.Feedback>
-                      </Form.Group>
-                    </Col>
-                    <Col md={6}>
-                      <Form.Group className="mb-3">
-                        <Form.Label className="fw-semibold text-secondary" style={{ fontSize: '0.9rem' }}>
-                          Clinic Address <span className="text-danger">*</span>
-                        </Form.Label>
-                        <Form.Control
-                          type="text"
-                          name="clinic_address"
-                          placeholder="123 Healthcare Ave"
-                          value={formData.clinic_address}
-                          onChange={handleChange}
-                          isInvalid={!!errors.clinic_address}
-                          style={{ padding: '0.75rem 1rem', borderRadius: '10px', border: '2px solid #e2e8f0' }}
-                        />
-                        <Form.Control.Feedback type="invalid">
-                          {errors.clinic_address}
-                        </Form.Control.Feedback>
-                      </Form.Group>
-                    </Col>
-                  </Row>
-
-                  <Form.Group className="mb-3">
-                    <Form.Label className="fw-semibold text-secondary" style={{ fontSize: '0.9rem' }}>Bio (Optional)</Form.Label>
-                    <Form.Control
-                      as="textarea"
-                      rows={3}
-                      name="bio"
-                      placeholder="Brief description about yourself"
-                      value={formData.bio}
-                      onChange={handleChange}
-                      style={{ padding: '0.75rem 1rem', borderRadius: '10px', border: '2px solid #e2e8f0' }}
-                    />
-                  </Form.Group>
                   </fieldset>
-                  <Button
-                    type="submit"
-                    variant="primary"
-                    className="w-100 py-3 fw-semibold"
-                    style={{ borderRadius: '10px', fontSize: '1rem', background: 'linear-gradient(135deg, #4a90d9, #357abd)', border: 'none' }}
-                    disabled={loading}
-                  >
-                     {loading ? (
-                      <>
-                     <Spinner animation="border" size="sm" className="me-2" />
-                     Signing in...
-                     </>
-                     ) : 'Sign in'}
-                  </Button>
+
+                  {step === 1 ? (
+                    <Button
+                      type="button"
+                      variant="primary"
+                      className="w-100 py-3 fw-semibold"
+                      style={{ borderRadius: '10px', fontSize: '1rem', background: 'linear-gradient(135deg, #4a90d9, #357abd)', border: 'none' }}
+                      onClick={handleNext}
+                    >
+                      Next: Professional Info <FaArrowRight className="ms-2" />
+                    </Button>
+                  ) : (
+                    <div className="d-flex" style={{ gap: '0.75rem' }}>
+                      <Button
+                        type="button"
+                        variant="outline-secondary"
+                        className="py-3 fw-semibold"
+                        style={{ borderRadius: '10px', fontSize: '1rem', flex: '0 0 35%' }}
+                        onClick={handleBack}
+                        disabled={loading}
+                      >
+                        <FaArrowLeft className="me-2" /> Back
+                      </Button>
+                      <Button
+                        type="submit"
+                        variant="primary"
+                        className="py-3 fw-semibold"
+                        style={{ borderRadius: '10px', fontSize: '1rem', background: 'linear-gradient(135deg, #4a90d9, #357abd)', border: 'none', flex: '1' }}
+                        disabled={loading}
+                      >
+                        {loading ? (
+                          <>
+                            <Spinner animation="border" size="sm" className="me-2" />
+                            Registering...
+                          </>
+                        ) : 'Create Account'}
+                      </Button>
+                    </div>
+                  )}
                 </Form>
               </Card.Body>
             </Card>
