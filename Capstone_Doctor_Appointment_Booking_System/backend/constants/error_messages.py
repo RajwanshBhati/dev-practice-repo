@@ -48,6 +48,11 @@ class ErrorMessages:
     AVAIL_1006 = "Invalid time range"
 
     PAY_1501 = "Payment processing failed"
+    PAY_1502 = "Payment not found"
+    PAY_1503 = "Payment already completed"
+    PAY_1504 = "Payment already refunded"
+    PAY_1505 = "Insufficient payment amount"
+    PAY_1506 = "Invalid payment method"
 
     VAL_1601 = "Validation error"
     VAL_1602 = "Invalid input provided"

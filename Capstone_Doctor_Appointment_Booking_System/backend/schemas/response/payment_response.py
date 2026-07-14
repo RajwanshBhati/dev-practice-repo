@@ -1,0 +1,71 @@
+from decimal import Decimal
+
+from pydantic import BaseModel
+from typing import List, Optional
+from backend.constants.status import PaymentStatus
+from backend.enums.payment_enums import PaymentMethod
+
+
+class PaymentResponse(BaseModel):
+    """
+    Response schema for payments.
+    """
+    id: str
+    payment_id: str
+    transaction_id: str
+    appointment_id: str
+    patient_id: str
+    doctor_id: str
+    amount: float
+    method: PaymentMethod
+    status: PaymentStatus
+    card_last_four: Optional[str] = None
+    upi_id: Optional[str] = None
+    refund_id: Optional[str] = None
+    refund_reason: Optional[str] = None
+    created_at: str
+    updated_at: str
+
+
+class PaymentInitiateResponse(BaseModel):
+    """
+    Response schema for initiating a payment.
+    """
+    message: str
+    payment: PaymentResponse
+    redirect_url: Optional[str] = None
+
+
+class PaymentConfirmResponse(BaseModel):
+    """
+    Response schema for confirming a payment.
+    """
+    message: str
+    payment: PaymentResponse
+    appointment_status: str
+
+
+class PaymentRefundResponse(BaseModel):
+    """
+    Response schema for refunding a payment.
+    """
+    message: str
+    refund_id: str
+    payment: PaymentResponse
+
+
+class PaymentListResponse(BaseModel):
+    """Response schema for paginated payment list."""
+
+    payments: List[PaymentResponse]
+    total: int
+    page: int
+    per_page: int
+    total_pages: int
+
+
+class RevenueStatsResponse(BaseModel):
+    """Response schema for revenue statistics."""
+
+    total_revenue: Decimal
+    currency: str

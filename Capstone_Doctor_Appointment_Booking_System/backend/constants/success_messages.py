@@ -26,5 +26,6 @@ class SuccessMessages(str, Enum):
     SYSTEM_SETTINGS_UPDATED = "System settings updated successfully"
     PAYMENT_SUCCESS = "Payment successful"
     PAYMENT_REFUNDED = "Payment refunded successfully"
+    PAYMENT_INITIATED = "Payment initiated successfully"
     EMAIL_SENT = "Email sent successfully"
     EMAIL_NOTIFICATION_SENT = "Notification email sent successfully"
