@@ -1,6 +1,6 @@
-import token
 from typing import Dict, Any
 from datetime import datetime, timezone
+from Capstone_Doctor_Appointment_Booking_System.backend.schemas.response.doctor_response import DoctorRegistrationResponse, DoctorUserResponse, DoctorUserResponse
 from backend.middleware.security import security
 from backend.middleware.jwt_service import jwt_service
 from backend.repositories.user_repository import UserRepository
@@ -11,10 +11,11 @@ from backend.schemas.request.user_request import (
     PatientRegister,
     DoctorRegister
 )
+from backend.schemas.response.auth_response import TokenResponse, UserResponse
 
-from backend.schemas.request.auth_request import UserLogin, RefreshToken
+from backend.schemas.request.auth_request import UserLogin
 from backend.constants import ErrorMessages, SuccessMessages
-from backend.constants.roles import UserRole
+from Capstone_Doctor_Appointment_Booking_System.backend.enums.roles import UserRole
 from backend.enums.user_enums import UserStatus, DoctorStatus
 import logging
 
@@ -51,6 +52,7 @@ class AuthService:
         patient_profile = PatientProfile(
             user_id=created_user.id
         )
+        # TODO: Save patient profile
 
         token_data = {
             "sub": created_user.id,
@@ -62,20 +64,20 @@ class AuthService:
 
         logger.info(f"Patient registered: {created_user.email}")
 
-        return {
-            "message": SuccessMessages.REGISTRATION_SUCCESS,
-            "access_token": access_token,
-            "refresh_token": refresh_token,
-            "token_type": "bearer",
-            "expires_in": 1800,
-            "user": {
-                "id": created_user.id,
-                "email": created_user.email,
-                "full_name": created_user.full_name,
-                "role": created_user.role.value,
-                "status": created_user.status.value
-            }
-        }
+        return TokenResponse(
+            message=SuccessMessages.REGISTRATION_SUCCESS,
+            access_token=access_token,
+            refresh_token=refresh_token,
+            token_type="bearer",
+            expires_in=1800,
+            user=UserResponse(
+                id=created_user.id,
+                email=created_user.email,
+                full_name=created_user.full_name,
+                role=created_user.role.value,
+                status=created_user.status.value
+            )
+        )
 
     async def register_doctor(self, user_data: DoctorRegister) -> Dict[str, Any]:
         """
@@ -110,7 +112,7 @@ class AuthService:
             license_number=user_data.license_number,
             consultation_fee=user_data.consultation_fee,
             clinic_address=user_data.clinic_address,
-            bio=user_data.bio
+            profile_bio=user_data.bio
         )
 
         token_data = {
@@ -163,20 +165,22 @@ class AuthService:
 
         logger.info(f"User logged in: {user.email}")
 
-        return {
-            "message": SuccessMessages.LOGIN_SUCCESS,
-            "access_token": access_token,
-            "refresh_token": refresh_token,
-            "token_type": "bearer",
-            "expires_in": 1800,
-            "user": {
-                "id": user.id,
-                "email": user.email,
-                "full_name": user.full_name,
-                "role": user.role.value,
-                "status": user.status.value
-            }
-        }
+        return TokenResponse(
+            message=SuccessMessages.LOGIN_SUCCESS,
+            access_token=access_token,
+            refresh_token=refresh_token,
+            token_type="bearer",
+            expires_in=1800,
+            user=UserResponse(
+                id=user.id,
+                email=user.email,
+                full_name=user.full_name,
+                role=user.role.value,
+                status=user.status.value
+            )
+        )
+
+
 
     async def validate_token(self, token: str) -> Dict[str, Any]:
         """
@@ -369,62 +373,11 @@ class AuthService:
             "user": {
                 "id": user.id,
                 "email": user.email,
-                "phone": user.phone,
                 "full_name": user.full_name,
                 "role": user.role.value,
                 "status": user.status.value
             }
         }
-
-    async def forgot_password(self, email: str) -> Dict[str, Any]:
-        """
-        Send a password reset email if an active account exists for this
-        email.
-        """
-        user = await self.user_repo.find_by_email(email)
-
-        if user and user.status == UserStatus.ACTIVE:
-            token_data = {"sub": user.id, "email": user.email}
-            reset_token = jwt_service.create_reset_token(token_data)
-
-            from .email_service import EmailService
-            await EmailService.send_password_reset_email(
-                user.email,
-                user.full_name,
-                reset_token
-            )
-            logger.info(f"Password reset email sent to: {user.email}")
-
-        return {
-            "message": "If an account exists for this email, a reset link has been sent."
-        }
-
-    async def reset_password(self, token: str, new_password: str) -> Dict[str, Any]:
-        """Validate a reset token and set the new password hash for that user."""
-        try:
-            payload = jwt_service.decode_token(token)
-        except ValueError:
-            raise ValueError("Reset link is invalid or has expired")
-
-        if payload.get("type") != "reset":
-            raise ValueError("Reset link is invalid or has expired")
-
-        user_id = payload.get("sub")
-        if not user_id:
-            raise ValueError("Reset link is invalid or has expired")
-
-        user = await self.user_repo.find_by_id(user_id)
-        if not user:
-            raise ValueError(ErrorMessages.USER_1101)
-
-        password_hash = security.hash_password(new_password)
-        updated_user = await self.user_repo.update(user.id, {"password_hash": password_hash})
-        if not updated_user:
-            raise ValueError("Failed to reset password")
-
-        logger.info(f"Password reset successful for: {user.email}")
-
-        return {"message": "Password has been reset successfully. Please login with your new password."}
 
     async def logout(self, user_id: str, access_token: str) -> Dict[str, Any]:
         """Invalidate the given access token immediately by adding it to the blacklist until its natural expiry."""
