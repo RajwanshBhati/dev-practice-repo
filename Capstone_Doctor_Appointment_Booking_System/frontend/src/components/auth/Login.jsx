@@ -10,7 +10,6 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const { login, isAuthenticated, user } = useAuth();
@@ -61,19 +60,6 @@ const Login = () => {
 
     try {
       const data = await login(email, password);
-
-      if (rememberMe) {
-        localStorage.setItem('remember_me', 'true');
-      } else {
-        localStorage.setItem('remember_me', 'false');
-        window.addEventListener('beforeunload', () => {
-          if (localStorage.getItem('remember_me') !== 'true') {
-            localStorage.removeItem('access_token');
-            localStorage.removeItem('refresh_token');
-            localStorage.removeItem('user');
-          }
-        });
-      }
 
       const role = data.user.role;
       navigate(dashboardPathFor(role), { replace: true });
@@ -182,14 +168,7 @@ const Login = () => {
                     </Form.Group>
                   </fieldset>
 
-                  <div className="d-flex justify-content-between align-items-center mb-4">
-                    <Form.Check
-                      type="checkbox"
-                      label="Remember me"
-                      checked={rememberMe}
-                      onChange={(e) => setRememberMe(e.target.checked)}
-                      style={{ fontSize: '0.9rem' }}
-                    />
+                  <div className="d-flex justify-content-end align-items-center mb-4">
                     <Link to="/forgot-password" className="text-decoration-none text-primary fw-semibold" style={{ fontSize: '0.9rem' }}>
                       Forgot password?
                     </Link>

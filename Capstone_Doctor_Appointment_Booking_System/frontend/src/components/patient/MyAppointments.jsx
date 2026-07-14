@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getPatientAppointments } from '../../api/appointment';
-import { Container, Row, Col, Card, Nav, Button, Badge } from 'react-bootstrap';
+import { Container, Row, Col, Card, Nav, Button, Badge, Modal } from 'react-bootstrap';
 import { FaCalendarAlt, FaClock, FaUserMd, FaMoneyBillWave } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 import Loading from '../common/Loading';
@@ -21,6 +21,7 @@ const MyAppointments = () => {
   const [showRescheduleModal, setShowRescheduleModal] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
+  const [refundInfo, setRefundInfo] = useState({ show: false, amount: null });
   const limit = 10;
 
   /**
@@ -232,10 +233,19 @@ const MyAppointments = () => {
           show={showCancelModal}
           onHide={() => setShowCancelModal(false)}
           appointment={selectedAppointment}
-          onSuccess={(appointmentId) => {
+          onSuccess={(appointmentId, { refundInitiated, amount } = {}) => {
             setShowCancelModal(false);
-            handleAppointmentUpdate(appointmentId, { status: 'CANCELLED' });
-            toast.success('Appointment cancelled successfully');
+            handleAppointmentUpdate(appointmentId, {
+              status: 'CANCELLED',
+              ...(refundInitiated ? { payment_status: 'REFUND_INITIATED' } : {}),
+            });
+
+            if (refundInitiated) {
+              // Popup confirming the refund timeline instead of an instant "refunded" message.
+              setRefundInfo({ show: true, amount });
+            } else {
+              toast.success('Appointment cancelled successfully');
+            }
           }}
         />
       )}
@@ -253,6 +263,34 @@ const MyAppointments = () => {
           }}
         />
       )}
+
+      {/* Refund Initiated Popup */}
+      <Modal
+        show={refundInfo.show}
+        onHide={() => setRefundInfo({ show: false, amount: null })}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Appointment Cancelled</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p className="mb-2">Your appointment has been cancelled successfully.</p>
+          <p className="mb-0">
+            A refund of <strong>${refundInfo.amount}</strong> has been initiated and will be
+            credited to your original payment method within{' '}
+            <strong>3-5 business days</strong>.
+          </p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="primary"
+            onClick={() => setRefundInfo({ show: false, amount: null })}
+            style={{ borderRadius: '8px' }}
+          >
+            Okay
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Container>
   );
 };

@@ -241,7 +241,7 @@ const ManageAvailability = () => {
                       bg={slot.is_available ? 'success' : 'danger'}
                       className="px-3 py-2"
                     >
-                      {slot.is_available ? 'Available' : 'Booked'}
+                      {slot.is_available ? 'Not Booked' : 'Booked'}
                     </Badge>
                     <div className="d-flex gap-2">
                       {slot.is_available && (
