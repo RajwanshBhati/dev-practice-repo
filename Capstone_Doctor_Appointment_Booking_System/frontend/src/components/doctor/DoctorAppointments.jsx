@@ -28,11 +28,19 @@ const DoctorAppointments = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, page]);
 
+  useEffect(() => {
+  const interval = setInterval(() => {
+    if (page === 1) {
+      loadAppointments({ silent: true });
+    }
+  }, 20000);
+  return () => clearInterval(interval);
+}, [activeTab, page]);
   /**
    * Load appointments from API.
    */
-  const loadAppointments = async () => {
-    setLoading(true);
+  const loadAppointments = async ({ silent = false } = {}) => {
+    if (!silent) setLoading(true);
     try {
       const skip = (page - 1) * limit;
       const params = { limit, skip };
@@ -51,9 +59,9 @@ const DoctorAppointments = () => {
       setHasMore(data.total_pages > page);
     } catch (error) {
       console.error('Error loading appointments:', error);
-      toast.error('Failed to load appointments');
+      if (!silent) toast.error('Failed to load appointments');
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   };
 
@@ -112,6 +120,17 @@ const DoctorAppointments = () => {
   const getStatusLabel = (status) => {
     return STATUS_LABELS[status] || status;
   };
+
+  const todayStr = new Date().toISOString().split('T')[0];
+const sortedAppointments = [...appointments].sort((a, b) => {
+  const aIsPast = a.appointment_date < todayStr;
+  const bIsPast = b.appointment_date < todayStr;
+  if (aIsPast !== bIsPast) return aIsPast ? 1 : -1;
+
+  const aKey = `${a.appointment_date}T${a.appointment_time || '00:00'}`;
+  const bKey = `${b.appointment_date}T${b.appointment_time || '00:00'}`;
+  return aIsPast ? bKey.localeCompare(aKey) : aKey.localeCompare(bKey);
+});
 
   /**
    * Format date for display.
@@ -184,7 +203,7 @@ const DoctorAppointments = () => {
                 Cancelled
               </Nav.Link>
             </Nav.Item>
-            {/* <Nav.Item>
+            <Nav.Item>
               <Nav.Link
                 active={activeTab === 'no_show'}
                 onClick={() => handleTabChange('no_show')}
@@ -192,7 +211,7 @@ const DoctorAppointments = () => {
               >
                 No Show
               </Nav.Link>
-            </Nav.Item> */}
+            </Nav.Item>
           </Nav>
         </Card.Body>
       </Card>

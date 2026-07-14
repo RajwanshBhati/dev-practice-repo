@@ -225,6 +225,7 @@ const RegisterPatient = () => {
                             onChange={handleChange}
                             isInvalid={!!errors.password}
                             className="py-2 pe-5"
+                            style={{ backgroundImage: 'none' }}
                           />
                           <span
                             className="position-absolute top-50 end-0 translate-middle-y me-3"

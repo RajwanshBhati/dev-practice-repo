@@ -95,6 +95,7 @@ export const STATUS_LABELS = {
     CONFIRMED: 'Confirmed',
     COMPLETED: 'Completed',
     CANCELLED: 'Cancelled',
+    NO_SHOW: 'No Show',
     RESCHEDULED: 'Rescheduled',
 };
 
@@ -124,6 +125,7 @@ export const STATUS_OPTIONS = [
     { value: 'CONFIRMED', label: 'Confirmed' },
     { value: 'COMPLETED', label: 'Completed' },
     { value: 'CANCELLED', label: 'Cancelled' },
+    { value: 'NO_SHOW', label: 'No Show' },
     { value: 'RESCHEDULED', label: 'Rescheduled' },
 ];
 
@@ -193,6 +195,7 @@ export const PAYMENT_STATUS = {
     PENDING: 'PENDING',
     COMPLETED: 'COMPLETED',
     FAILED: 'FAILED',
+    REFUND_INITIATED: 'REFUND_INITIATED',
     REFUNDED: 'REFUNDED',
 };
 
@@ -200,6 +203,7 @@ export const PAYMENT_STATUS_LABELS = {
     PENDING: 'Pending',
     COMPLETED: 'Completed',
     FAILED: 'Failed',
+    REFUND_INITIATED: 'Refund Initiated',
     REFUNDED: 'Refunded',
 };
 
@@ -207,5 +211,6 @@ export const PAYMENT_STATUS_COLORS = {
     PENDING: 'warning',
     COMPLETED: 'success',
     FAILED: 'danger',
+    REFUND_INITIATED: 'info',
     REFUNDED: 'secondary',
 };

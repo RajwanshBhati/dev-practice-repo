@@ -10,9 +10,10 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [emailFocused, setEmailFocused] = useState(false);
+  const [passwordFocused, setPasswordFocused] = useState(false);
   const { login, isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
 
@@ -61,19 +62,6 @@ const Login = () => {
 
     try {
       const data = await login(email, password);
-
-      if (rememberMe) {
-        localStorage.setItem('remember_me', 'true');
-      } else {
-        localStorage.setItem('remember_me', 'false');
-        window.addEventListener('beforeunload', () => {
-          if (localStorage.getItem('remember_me') !== 'true') {
-            localStorage.removeItem('access_token');
-            localStorage.removeItem('refresh_token');
-            localStorage.removeItem('user');
-          }
-        });
-      }
 
       const role = data.user.role;
       navigate(dashboardPathFor(role), { replace: true });
@@ -129,9 +117,10 @@ const Login = () => {
                       <div
                         className="input-group"
                         style={{
-                          border: error ? '2px solid #dc3545' : '2px solid #e2e8f0',
+                          border: error ? '2px solid #dc3545' : emailFocused ? '2px solid #4a90d9' : '2px solid #e2e8f0',
                           borderRadius: '10px',
                           overflow: 'hidden',
+                          transition: 'border-color 0.2s ease',
                         }}
                       >
                         <span className="input-group-text bg-white border-0" style={{ paddingRight: '0' }}>
@@ -142,7 +131,9 @@ const Login = () => {
                           placeholder="you@example.com"
                           value={email}
                           onChange={handleEmailChange}
-                          style={{ border: 'none', padding: '0.85rem 1rem', fontSize: '0.95rem' }}
+                          onFocus={() => setEmailFocused(true)}
+                          onBlur={() => setEmailFocused(false)}
+                          style={{ border: 'none', padding: '0.85rem 1rem', fontSize: '0.95rem', boxShadow: 'none' }}
                           required
                         />
                       </div>
@@ -155,9 +146,10 @@ const Login = () => {
                       <div
                         className="input-group"
                         style={{
-                          border: error ? '2px solid #dc3545' : '2px solid #e2e8f0',
+                          border: error ? '2px solid #dc3545' : passwordFocused ? '2px solid #4a90d9' : '2px solid #e2e8f0',
                           borderRadius: '10px',
                           overflow: 'hidden',
+                          transition: 'border-color 0.2s ease',
                         }}
                       >
                         <span className="input-group-text bg-white border-0" style={{ paddingRight: '0' }}>
@@ -168,7 +160,9 @@ const Login = () => {
                           placeholder="Enter your password"
                           value={password}
                           onChange={handlePasswordChange}
-                          style={{ border: 'none', padding: '0.85rem 1rem', fontSize: '0.95rem' }}
+                          onFocus={() => setPasswordFocused(true)}
+                          onBlur={() => setPasswordFocused(false)}
+                          style={{ border: 'none', padding: '0.85rem 1rem', fontSize: '0.95rem', boxShadow: 'none' }}
                           required
                         />
                         <span
@@ -182,14 +176,7 @@ const Login = () => {
                     </Form.Group>
                   </fieldset>
 
-                  <div className="d-flex justify-content-between align-items-center mb-4">
-                    <Form.Check
-                      type="checkbox"
-                      label="Remember me"
-                      checked={rememberMe}
-                      onChange={(e) => setRememberMe(e.target.checked)}
-                      style={{ fontSize: '0.9rem' }}
-                    />
+                  <div className="d-flex justify-content-end align-items-center mb-4">
                     <Link to="/forgot-password" className="text-decoration-none text-primary fw-semibold" style={{ fontSize: '0.9rem' }}>
                       Forgot password?
                     </Link>

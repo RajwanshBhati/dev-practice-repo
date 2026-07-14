@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { cancelAppointment } from '../../api/appointment';
+import { refundPayment } from '../../api/payment';
 import toast from 'react-hot-toast';
 
 const CancelAppointment = ({ show, onHide, appointment, onSuccess }) => {
@@ -22,7 +23,19 @@ const CancelAppointment = ({ show, onHide, appointment, onSuccess }) => {
 
     try {
       await cancelAppointment(appointment.id, { reason });
-      onSuccess(appointment.id);
+
+      let refundInitiated = false;
+      // If the patient had already paid, initiate the refund (credited in 3-5 business days).
+      if (appointment.payment_status === 'COMPLETED' && appointment.payment_id) {
+        try {
+          await refundPayment(appointment.payment_id, { reason: `Appointment cancelled: ${reason}` });
+          refundInitiated = true;
+        } catch (refundError) {
+          toast.error('Appointment cancelled, but we could not initiate the refund. Please contact support.');
+        }
+      }
+
+      onSuccess(appointment.id, { refundInitiated, amount: appointment?.payment_amount });
       onHide();
     } catch (error) {
       // Error handled by axios interceptor
@@ -53,6 +66,14 @@ const CancelAppointment = ({ show, onHide, appointment, onSuccess }) => {
             <strong>{appointment?.appointment_time}</strong>?
           </p>
 
+          {appointment?.payment_status === 'COMPLETED' && (
+            <p className="text-muted" style={{ fontSize: '0.85rem' }}>
+              You've already paid for this appointment. Your payment of{' '}
+              <strong>${appointment?.payment_amount}</strong> will be refunded to your original
+              payment method within <strong>3-5 business days</strong>.
+            </p>
+          )}
+
           <Form.Group className="mt-3">
             <Form.Label className="fw-semibold">
               Reason for cancellation <span className="text-danger">*</span>
@@ -72,7 +93,7 @@ const CancelAppointment = ({ show, onHide, appointment, onSuccess }) => {
           <Button variant="secondary" onClick={handleClose} disabled={loading}>
             Keep Appointment
           </Button>
-          <Button type="button" variant="danger" type="submit" disabled={loading}>
+          <Button variant="danger" type="submit" disabled={loading}>
             {loading ? 'Cancelling...' : 'Yes, Cancel'}
           </Button>
         </Modal.Footer>

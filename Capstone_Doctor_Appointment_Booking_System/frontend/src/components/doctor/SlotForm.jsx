@@ -62,14 +62,33 @@ const SlotForm = ({ show, onHide, slot, onSave }) => {
       return false;
     }
 
-    const today = new Date().toISOString().split('T')[0];
+    const now = new Date();
+    const today = now.toISOString().split('T')[0];
     if (formData.date === today) {
-      const nowTime = new Date().toTimeString().slice(0, 5);
-      if (formData.start_time <= nowTime) {
-        toast.error('Start time cannot be in the past for today\'s date');
+      // Doctors must give at least 2 hours' notice when creating a slot
+      // for today, so patients have a fair chance to see and book it.
+      const minStart = new Date(now.getTime() + 2 * 60 * 60 * 1000);
+      const minStartTime = minStart.toTimeString().slice(0, 5);
+      if (formData.start_time < minStartTime) {
+        toast.error('For today, the start time must be at least 2 hours from now');
         return false;
       }
     }
+
+    if (formData.start_time >= formData.end_time) {
+  toast.error('End time must be after start time');
+  return false;
+}
+
+// Slot must be at least 15 minutes long (no 5-minute slots etc.)
+const MIN_SLOT_DURATION_MINUTES = 15;
+const [startH, startM] = formData.start_time.split(':').map(Number);
+const [endH, endM] = formData.end_time.split(':').map(Number);
+const durationMinutes = (endH * 60 + endM) - (startH * 60 + startM);
+if (durationMinutes < MIN_SLOT_DURATION_MINUTES) {
+  toast.error(`Slot duration must be at least ${MIN_SLOT_DURATION_MINUTES} minutes`);
+  return false;
+}
 
     return true;
   };
@@ -112,6 +131,9 @@ const SlotForm = ({ show, onHide, slot, onSave }) => {
               min={new Date().toISOString().split('T')[0]}
               style={{ borderRadius: '8px', border: '2px solid #e2e8f0' }}
             />
+            <Form.Text className="text-muted">
+              For today's date, the start time must be at least 2 hours from now.
+            </Form.Text>
           </Form.Group>
 
           <Row>

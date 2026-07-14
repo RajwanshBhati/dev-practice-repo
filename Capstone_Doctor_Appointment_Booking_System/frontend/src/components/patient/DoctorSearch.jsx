@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { searchDoctors, getSpecializations } from '../../api/doctor';
+import { getPatientAppointments } from '../../api/appointment';
 import { Form, Button, Card, Row, Col, Container, Badge } from 'react-bootstrap';
 import { FaSearch, FaMapMarkerAlt, FaStar, FaClock } from 'react-icons/fa';
 import toast from 'react-hot-toast';
@@ -10,6 +11,7 @@ const DoctorSearch = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [doctors, setDoctors] = useState([]);
+  const [myDoctorIds, setMyDoctorIds] = useState(new Set());
   const [specializations, setSpecializations] = useState([]);
   const [total, setTotal] = useState(0);
   const [hasMore, setHasMore] = useState(false);
@@ -22,6 +24,20 @@ const DoctorSearch = () => {
     limit: 10,
     skip: 0,
   });
+
+  /**
+   * Load the doctor ids the patient already has appointments with, so we
+   * can show "your" doctor(s) first in the search results.
+   */
+  const loadMyDoctorIds = async () => {
+    try {
+      const data = await getPatientAppointments({ limit: 100, skip: 0 });
+      const ids = new Set((data.appointments || []).map((a) => a.doctor_id));
+      setMyDoctorIds(ids);
+    } catch (error) {
+      // Non-critical — search results just won't be re-prioritized.
+    }
+  };
 
   /**
    * Load specializations from the API.
@@ -62,7 +78,7 @@ const DoctorSearch = () => {
     } finally {
       setLoading(false);
     }
-};
+  };
 
   /**
    * Load specializations on component mount.
@@ -70,6 +86,8 @@ const DoctorSearch = () => {
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     loadSpecializations();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    loadMyDoctorIds();
   }, []);
 
   /**
@@ -112,29 +130,14 @@ const DoctorSearch = () => {
   };
 
   /**
-   * Render star rating display.
-   * @param {number} rating - Rating value (0-5)
-   * @returns {JSX.Element} Star icons
+   * Doctors the patient already has an appointment with are shown first,
+   * so they're easy to find again (e.g. for a follow-up booking).
    */
-  // const renderStars = (rating) => {
-  //   const fullStars = Math.floor(rating);
-  //   const hasHalfStar = rating % 1 >= 0.5;
-  //   const stars = [];
-  //   for (let i = 0; i < fullStars; i++) {
-  //     stars.push(<FaStar key={i} className="text-warning" style={{ fontSize: '14px' }} />);
-  //   }
-  //   if (hasHalfStar) {
-  //     stars.push(<FaStar key="half" className="text-warning" style={{ fontSize: '14px', opacity: 0.5 }} />);
-  //   }
-  //   if (stars.length === 0) {
-  //     stars.push(
-  //       <span key="no-stars" className="text-muted" style={{ fontSize: '13px' }}>
-  //         No ratings
-  //       </span>
-  //     );
-  //   }
-  //   return stars;
-  // };
+  const sortedDoctors = [...doctors].sort((a, b) => {
+    const aMine = myDoctorIds.has(a.id) ? 1 : 0;
+    const bMine = myDoctorIds.has(b.id) ? 1 : 0;
+    return bMine - aMine;
+  });
 
   if (loading && doctors.length === 0) {
     return <Loading message="Searching for doctors..." />;
@@ -262,7 +265,7 @@ const DoctorSearch = () => {
         </div>
       ) : (
         <>
-          {doctors.map((doctor) => (
+          {sortedDoctors.map((doctor) => (
             <Card
               key={doctor.id}
               className="mb-3 shadow-sm doctor-card"
@@ -270,7 +273,7 @@ const DoctorSearch = () => {
               style={{
                 cursor: 'pointer',
                 borderRadius: '12px',
-                border: 'none',
+                border: myDoctorIds.has(doctor.id) ? '2px solid #4a90d9' : 'none',
                 transition: 'transform 0.2s, box-shadow 0.2s',
               }}
             >
@@ -289,6 +292,11 @@ const DoctorSearch = () => {
                     >
                       {doctor.full_name?.charAt(0) || 'D'}
                     </div>
+                    {myDoctorIds.has(doctor.id) && (
+                      <Badge bg="primary" className="mt-2 d-block" style={{ fontSize: '0.75rem', padding: '4px 10px' }}>
+                        Your Doctor
+                      </Badge>
+                    )}
                     {doctor.is_available ? (
                       <Badge bg="success" className="mt-2" style={{ fontSize: '0.8rem', padding: '4px 12px' }}>
                         <FaClock className="me-1" /> Available
@@ -312,12 +320,6 @@ const DoctorSearch = () => {
                     </p>
                   </Col>
                   <Col md={4} className="text-end">
-                    {/* <div className="mb-2">
-                      {renderStars(doctor.rating)}
-                      <span className="ms-1 text-muted" style={{ fontSize: '0.85rem' }}>
-                        ({doctor.total_reviews})
-                      </span>
-                    </div> */}
                     <h4 className="text-primary fw-bold" style={{ fontSize: '1.5rem' }}>
                       ${doctor.consultation_fee}
                     </h4>

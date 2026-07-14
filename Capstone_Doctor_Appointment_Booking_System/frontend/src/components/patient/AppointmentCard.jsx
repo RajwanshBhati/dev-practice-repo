@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, Row, Col, Badge, Button } from 'react-bootstrap';
 import { FaCalendarAlt, FaClock, FaUserMd, FaMoneyBillWave } from 'react-icons/fa';
-import { STATUS_LABELS, STATUS_COLORS, PAYMENT_STATUS_LABELS } from '../../utils/constants';
+import { STATUS_LABELS, STATUS_COLORS, PAYMENT_STATUS_LABELS, PAYMENT_STATUS_COLORS } from '../../utils/constants';
 
 const AppointmentCard = ({ appointment, onCancel, onReschedule }) => {
   const navigate = useNavigate();
@@ -98,7 +98,7 @@ const AppointmentCard = ({ appointment, onCancel, onReschedule }) => {
                     {getStatusLabel(status)}
                   </Badge>
                   <Badge
-                    bg={payment_status === 'COMPLETED' ? 'success' : 'warning'}
+                    bg={PAYMENT_STATUS_COLORS[payment_status] || 'warning'}
                     className="px-3 py-2"
                   >
                     {getPaymentStatusLabel(payment_status)}
@@ -152,7 +152,7 @@ const AppointmentCard = ({ appointment, onCancel, onReschedule }) => {
               <Button
                 variant="outline-primary"
                 size="sm"
-                className="w-100"
+                className="mb-2 w-100"
                 style={{ borderRadius: '8px' }}
                 onClick={() => onReschedule(appointment)}
               >
@@ -164,7 +164,7 @@ const AppointmentCard = ({ appointment, onCancel, onReschedule }) => {
               <Button
                 variant="success"
                 size="sm"
-                className="mb-2 w-100"
+                className="w-100"
                 style={{ borderRadius: '8px' }}
                 onClick={() => navigate(`/payment/${id}`)}
               >

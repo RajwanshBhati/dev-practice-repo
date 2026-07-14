@@ -4,6 +4,7 @@ import { Container, Card, Button, Badge } from 'react-bootstrap';
 import { FaCheck, FaTimes, FaEdit, FaUserMd } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 import Loading from '../common/Loading';
+import { useDashboardRefresh } from './DashboardLayout';
 
 const FIELD_LABELS = {
   qualification: 'Qualification',
@@ -20,6 +21,7 @@ const FIELD_LABELS = {
 const ProfileUpdateRequests = () => {
   const [loading, setLoading] = useState(true);
   const [requests, setRequests] = useState([]);
+  const refreshSidebarBadge = useDashboardRefresh();
 
   useEffect(() => {
     loadRequests();
@@ -43,6 +45,7 @@ const ProfileUpdateRequests = () => {
       await approveProfileUpdate(doctorId);
       toast.success('Profile update approved and applied');
       setRequests((prev) => prev.filter((d) => d.id !== doctorId));
+      refreshSidebarBadge();
     } catch (error) {
       // handled by axios interceptor
     }
@@ -58,6 +61,7 @@ const ProfileUpdateRequests = () => {
       await rejectProfileUpdate(doctorId, { reason });
       toast.success('Profile update rejected');
       setRequests((prev) => prev.filter((d) => d.id !== doctorId));
+      refreshSidebarBadge();
     } catch (error) {
       // handled by axios interceptor
     }

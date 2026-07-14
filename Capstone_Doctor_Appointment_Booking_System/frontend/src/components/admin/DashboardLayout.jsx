@@ -1,10 +1,16 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, createContext, useContext } from 'react';
 import Sidebar from './Sidebar';
 import { getPendingProfileUpdates } from '../../api/admin';
 import {
   FaTachometerAlt, FaUserMd, FaClipboardList, FaUserShield,
   FaSearch, FaCalendarCheck, FaMoneyBillWave, FaUserCircle, FaClock, FaEdit,
 } from 'react-icons/fa';
+
+/**
+ * Lets pages nested inside the Admin dashboard
+ */
+const DashboardRefreshContext = createContext(() => {});
+export const useDashboardRefresh = () => useContext(DashboardRefreshContext);
 
 const buildSidebarConfig = (pendingUpdateCount) => ({
   ADMIN: {
@@ -50,37 +56,38 @@ const buildSidebarConfig = (pendingUpdateCount) => ({
 const DashboardLayout = ({ role, children }) => {
   const [pendingUpdateCount, setPendingUpdateCount] = useState(0);
 
+  const loadPendingCount = useCallback(async () => {
+    if (role !== 'ADMIN') return;
+    try {
+      const data = await getPendingProfileUpdates();
+      setPendingUpdateCount((data.doctors || []).length);
+    } catch (error) {
+      // Silently ignore — badge just won't show a count.
+    }
+  }, [role]);
+
   useEffect(() => {
     if (role !== 'ADMIN') return;
-
-    let cancelled = false;
-    const loadPendingCount = async () => {
-      try {
-        const data = await getPendingProfileUpdates();
-        if (!cancelled) setPendingUpdateCount((data.doctors || []).length);
-      } catch (error) {
-        // Silently ignore — badge just won't show a count.
-      }
-    };
 
     loadPendingCount();
     // Re-check periodically so the badge stays fresh while the admin is browsing.
     const interval = setInterval(loadPendingCount, 30000);
     return () => {
-      cancelled = true;
       clearInterval(interval);
     };
-  }, [role]);
+  }, [role, loadPendingCount]);
 
   const config = buildSidebarConfig(pendingUpdateCount)[role];
 
   if (!config) return children;
 
   return (
-    <div className="dashboard-layout" style={{ margin: '0 -1.5rem' }}>
-      <Sidebar title={config.title} items={config.items} />
-      <div className="dashboard-sidebar-content">{children}</div>
-    </div>
+    <DashboardRefreshContext.Provider value={loadPendingCount}>
+      <div className="dashboard-layout" style={{ margin: '0 -1.5rem' }}>
+        <Sidebar title={config.title} items={config.items} />
+        <div className="dashboard-sidebar-content">{children}</div>
+      </div>
+    </DashboardRefreshContext.Provider>
   );
 };
 
