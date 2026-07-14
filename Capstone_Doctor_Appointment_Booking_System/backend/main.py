@@ -10,7 +10,7 @@ from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
 from backend.middleware.database import db
 from backend.middleware.config import settings
-from backend.routers import auth_router, user_router, protected_router, admin_router, doctor_router, payments_router
+from backend.routers import auth_router, user_router, protected_router, admin_router, doctor_router,appointments_router
 import logging
 from datetime import datetime
 
@@ -118,7 +118,7 @@ app.include_router(user_router)
 app.include_router(protected_router)
 app.include_router(admin_router)
 app.include_router(doctor_router)
-app.include_router(payments_router, prefix="/api/v1")
+app.include_router(appointments_router, prefix="/api/v1")
 
 app.include_router(auth_router, prefix="/api/v1")
 app.include_router(user_router, prefix="/api/v1")

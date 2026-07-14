@@ -68,3 +68,14 @@ class Validators:
             return min_age <= age <= max_age
         except ValueError:
             return False
+
+    @staticmethod
+    def validate_time_format(time_str: str) -> bool:
+        """
+        Validate time format (HH:MM)
+        """
+        try:
+            datetime.strptime(time_str, "%H:%M")
+            return True
+        except ValueError:
+            return False
