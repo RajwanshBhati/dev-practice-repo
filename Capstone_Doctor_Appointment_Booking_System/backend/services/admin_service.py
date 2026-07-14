@@ -37,7 +37,8 @@ class AdminService:
 
     async def create_first_admin(self, admin_data: AdminCreateRequest) -> AdminCreateResponse:
         """
-        Bootstrap the very first super admin account.
+        Bootstrap the very first super admin account. Fails if an admin
+        already exists or if the email is already taken.
         """
         exists = await self.check_first_admin_exists()
         if exists:
@@ -175,7 +176,9 @@ class AdminService:
 
     async def delete_admin(self, admin_id: str, deleter_id: str) -> Dict[str, Any]:
         """
-        Soft-delete admin accounts securely
+        Soft-delete an admin account. Only the super admin can do this, and
+        we refuse to delete the last remaining super admin so the system
+        never ends up with zero admins.
         """
         deleter = await self.user_repo.find_by_id(deleter_id)
         if not deleter or not deleter.is_first_admin:

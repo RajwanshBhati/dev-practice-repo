@@ -2,7 +2,7 @@ from typing import Optional
 from datetime import datetime
 from pydantic import EmailStr, Field
 from backend.models.base import BaseDBModel
-from Capstone_Doctor_Appointment_Booking_System.backend.enums.roles import UserRole
+from backend.constants.roles import UserRole
 from backend.enums.user_enums import Gender, UserStatus
 
 class User(BaseDBModel):
