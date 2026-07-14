@@ -1,12 +1,27 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, EmailStr
+from typing import Optional
+from datetime import datetime
+from backend.constants.roles import UserRole
+from backend.enums.user_enums import Gender, UserStatus
 
 
-class UserProfileResponse(BaseModel):
-    """Response schema for the /protected/profile endpoint."""
-    model_config = ConfigDict(from_attributes=True)
+class UserResponse(BaseModel):
+    """User response schema"""
 
     id: str
-    email: str
+    email: EmailStr
     full_name: str
-    role: str
-    status: str
+    phone: str
+    gender: Gender
+    role: UserRole
+    status: UserStatus
+    is_verified: bool
+    created_at: datetime
+
+
+class UserUpdate(BaseModel):
+    """User update schema"""
+
+    full_name: Optional[str] = None
+    phone: Optional[str] = None
+    gender: Optional[Gender] = None
