@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Card, Table, Badge, Button, Form, Row, Col } from 'react-bootstrap';
 import { FaSearch, FaClock, FaUser, FaEnvelope } from 'react-icons/fa';
+import AuditLogFilter from './AuditLogFilter';
 import toast from 'react-hot-toast';
 import Loading from '../common/Loading';
 import {
