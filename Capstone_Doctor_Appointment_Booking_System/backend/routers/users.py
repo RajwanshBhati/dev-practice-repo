@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends
+from Capstone_Doctor_Appointment_Booking_System.backend.schemas.response.user_response import UserResponse
 from backend.services.user_service import UserService
 from backend.database.dependencies import get_current_user, get_current_admin
 from backend.constants import HttpStatus
@@ -35,7 +36,7 @@ async def get_current_user_info(current_user: dict = Depends(get_current_user)):
         )
 
 
-@router.put("/me")
+@router.put("/profile")
 async def update_current_user(
     update_data: dict,
     current_user: dict = Depends(get_current_user)

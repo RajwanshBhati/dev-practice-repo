@@ -3,7 +3,7 @@ from datetime import datetime
 from bson import ObjectId
 from backend.middleware.database import db
 from backend.models.appointment import Appointment
-from backend.constants.status import AppointmentStatus,PaymentStatus
+from backend.constants.status import AppointmentStatus
 import logging
 
 logger = logging.getLogger(__name__)
@@ -23,11 +23,9 @@ class AppointmentRepository:
     ) -> Optional[Appointment]:
         """
         Create appointment with transaction to prevent double booking.
-
-        Atomically checks slot availability, marks it as booked, and creates
-        the appointment record.
         """
         try:
+            # Atomically update and lock the slot
             updated = await self.availability_collection.find_one_and_update(
                 {
                     "_id": ObjectId(availability_id),
@@ -153,9 +151,7 @@ class AppointmentRepository:
 
     async def cancel_appointment(self, appt_id: str) -> bool:
         """
-        Cancel appointment and release the availability slot.
-
-        Updates appointment status to CANCELLED and makes the slot available.
+        Cancel appointment and release the availability slot.Updates appointment status to CANCELLED and makes the slot available.
         """
         try:
             appointment = await self.get_appointment_by_id(appt_id)
@@ -191,8 +187,6 @@ class AppointmentRepository:
     async def get_appointment_stats(self, doctor_id: Optional[str] = None) -> dict:
         """
         Get appointment statistics.
-
-        Returns counts by status and total revenue for completed appointments.
         """
         try:
             query = {}
@@ -213,7 +207,6 @@ class AppointmentRepository:
             # Calculate revenue
             pipeline = [
                 {"$match": {**query, "status": AppointmentStatus.COMPLETED.value}},
-                {"$match": {**query, "payment_status": PaymentStatus.COMPLETED.value}},
                 {"$group": {"_id": None, "total": {"$sum": "$payment_amount"}}}
             ]
             revenue_result = await self.appointment_collection.aggregate(pipeline).to_list(None)

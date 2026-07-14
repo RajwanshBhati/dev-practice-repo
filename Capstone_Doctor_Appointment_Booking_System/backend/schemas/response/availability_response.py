@@ -66,3 +66,26 @@ class AvailabilityDeleteResponse(BaseModel):
 
     message: str
     availability_id: str
+
+class DoctorAvailabilityByDateResponse(BaseModel):
+    """Date-filtered listing — single day, no pagination needed."""
+    availabilities: list[AvailabilityResponse]
+    total: int
+    date: str
+
+
+class DoctorAvailabilityResponse(BaseModel):
+    """Lookup by doctor_id — supports optional pagination + date filter."""
+    doctor_id: str
+    date: Optional[str] = None
+    availabilities: list[AvailabilityResponse]
+    total: int
+    page: Optional[int] = None
+    per_page: Optional[int] = None
+    total_pages: Optional[int] = None
+
+
+class AvailabilityStatsResponse(BaseModel):
+    total_slots: int
+    available_slots: int
+    booked_slots: int

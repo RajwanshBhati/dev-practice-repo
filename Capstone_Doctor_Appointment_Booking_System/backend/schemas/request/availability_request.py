@@ -29,48 +29,34 @@ class AvailabilityCreateRequest(BaseModel):
         """
         try:
             date_obj = datetime.strptime(v, '%Y-%m-%d').date()
+            today = datetime.now().date()
+            if date_obj < today:
+                raise ValueError('Date cannot be in the past')
+            return v
         except ValueError:
             raise ValueError('Invalid date format. Use YYYY-MM-DD')
 
-        today = datetime.now().date()
-        if date_obj < today:
-            raise ValueError('Date cannot be in the past')
-        return v
-
     @validator('start_time')
-    def validate_start_time(cls, v, values):
+    def validate_start_time(cls, v):
         """
-        Validate time format, working hours, and that the slot isn't
-        already in the past when the date being booked is today.
+        Validate time format and working hours.
 
         Working hours are from 09:00 AM to 06:00 PM.
 
         Args:
             v: Time string in HH:MM format
-            values: Previously validated fields (used to check today's date)
 
         Returns:
             str: Validated time string
 
         Raises:
-            ValueError: If time format is invalid, outside working hours,
-                or the time has already passed today
+            ValueError: If time format is invalid or outside working hours
         """
         if not Validators.validate_time_format(v):
             raise ValueError('Invalid time format. Use HH:MM')
         hour = int(v.split(':')[0])
         if hour < 9 or hour >= 18:
             raise ValueError('Start time must be between 09:00 and 18:00')
-
-        slot_date = values.get('date')
-        if slot_date:
-            today = datetime.now().date()
-            try:
-                date_obj = datetime.strptime(slot_date, '%Y-%m-%d').date()
-            except ValueError:
-                date_obj = None
-            if date_obj == today and v <= datetime.now().strftime('%H:%M'):
-                raise ValueError("Start time cannot be in the past for today's date")
         return v
 
     @validator('end_time')

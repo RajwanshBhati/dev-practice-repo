@@ -125,20 +125,20 @@ class AuthService:
 
         logger.info(f"Doctor registered: {created_user.email}")
 
-        return {
-            "message": SuccessMessages.REGISTRATION_SUCCESS,
-            "access_token": access_token,
-            "refresh_token": refresh_token,
-            "token_type": "bearer",
-            "expires_in": 1800,
-            "user": {
-                "id": created_user.id,
-                "email": created_user.email,
-                "full_name": created_user.full_name,
-                "role": created_user.role.value,
-                "status": created_user.status.value
-            }
-        }
+        return TokenResponse(
+            message=SuccessMessages.REGISTRATION_SUCCESS,
+            access_token=access_token,
+            refresh_token=refresh_token,
+            token_type="bearer",
+            expires_in=1800,
+            user=UserResponse(
+                id=created_user.id,
+                email=created_user.email,
+                full_name=created_user.full_name,
+                role=created_user.role.value,
+                status=created_user.status.value
+            )
+        )
 
     async def login(self, login_data: UserLogin) -> Dict[str, Any]:
         """Verify email/password and issue a fresh pair of tokens. Simpler variant without doctor-approval checks."""
@@ -312,17 +312,17 @@ class AuthService:
 
         logger.info(f"Doctor registered with pending approval: {created_user.email}")
 
-        return {
-            "message": SuccessMessages.DOCTOR_REGISTRATION_PENDING,
-            "user": {
-                "id": created_user.id,
-                "email": created_user.email,
-                "full_name": created_user.full_name,
-                "role": created_user.role.value,
-                "status": created_user.status.value,
-                "doctor_status": doctor_profile.status.value
-            }
-        }
+        return DoctorRegistrationResponse(
+            message=SuccessMessages.DOCTOR_REGISTRATION_PENDING,
+            user=DoctorUserResponse (
+                id=created_user.id,
+                email=created_user.email,
+                full_name=created_user.full_name,
+                role=created_user.role.value,
+                status=created_user.status.value,
+                doctor_status=doctor_profile.status.value
+            )
+        )
 
     async def login_with_status_check(self, login_data: UserLogin) -> Dict[str, Any]:
         user = await self.user_repo.find_by_email(login_data.email)

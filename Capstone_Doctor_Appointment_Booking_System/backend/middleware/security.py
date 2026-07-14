@@ -18,9 +18,7 @@ class Security:
     @staticmethod
     def hash_password(password: str) -> str:
         """
-        Hash a plain-text password with bcrypt. Bcrypt silently ignores
-        anything past 72 bytes, so we truncate first to avoid surprises,
-        and fall back to pbkdf2_sha256 if bcrypt hashing fails for some reason.
+        Hash a plain-text password with bcrypt. .
         """
         try:
             if len(password.encode('utf-8')) > 72:

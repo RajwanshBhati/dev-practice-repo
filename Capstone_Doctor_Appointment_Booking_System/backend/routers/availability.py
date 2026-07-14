@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends, Query
 from typing import Optional
+from backend.schemas.response.availability_response import DoctorAvailabilityResponse
 from backend.services.availability_service import AvailabilityService
 from backend.database.dependencies import get_current_user, get_current_doctor
 from backend.schemas.request.availability_request import (
@@ -21,10 +22,6 @@ async def create_availability_slot(
 ):
     """
     Create a new availability slot for the logged-in doctor.
-
-    This endpoint allows a doctor to create an availability slot
-    for a specific date and time range. The doctor must be
-    approved before creating availability.
     """
     try:
         service = AvailabilityService()
@@ -53,9 +50,6 @@ async def get_doctor_availability_slots(
 ):
     """
     Get availability slots for the logged-in doctor.
-
-    This endpoint returns all availability slots for the current
-    doctor. Optional filters include date and booking status.
     """
     try:
         service = AvailabilityService()
@@ -88,52 +82,40 @@ async def get_doctor_availability_slots(
             status_code=HttpStatus.INTERNAL_SERVER_ERROR,
             detail=ErrorMessages.GEN_9001
         )
-@router.get("/doctors/availability/stats")
-async def get_availability_stats(
-    current_user: dict = Depends(get_current_doctor)
-):
-    """
-    Get availability statistics for the logged-in doctor.
-    """
-    try:
-        service = AvailabilityService()
-        stats = await service.get_stats(current_user["user_id"])
-        return stats
-    except ValueError as e:
-        raise HTTPException(status_code=HttpStatus.BAD_REQUEST, detail=str(e))
-    except Exception as e:
-        logger.error(f"Error getting availability stats: {str(e)}")
-        raise HTTPException(
-            status_code=HttpStatus.INTERNAL_SERVER_ERROR,
-            detail=ErrorMessages.GEN_9001
-        )
+
 
 @router.get("/doctors/{doctor_id}/availability")
 async def get_doctor_availability_by_id(
     doctor_id: str,
     date: Optional[str] = Query(None, description="Date in YYYY-MM-DD format"),
+    limit: int = Query(100, ge=1, le=500, description="Results per page (ignored when date is set)"),
+    skip: int = Query(0, ge=0, description="Results to skip (ignored when date is set)"),
     current_user: dict = Depends(get_current_user)
 ):
     """
     Get availability slots for any doctor.
-
-    `doctor_id` here is the doctor's public profile id (the id returned by
-    doctor search / public-profile endpoints), not the linked user id.
     """
     try:
         service = AvailabilityService()
-        slots = await service.get_doctor_slots_by_profile_id(
-            doctor_id,
+
+        if date:
+            slots = await service.get_doctor_slots_by_date(
+                doctor_id,
+                date,
+                include_booked=False
+            )
+        else:
+            result = await service.get_doctor_slots(doctor_id, limit=limit, skip=skip)
+            slots = result.get("availabilities", [])
+
+
+        return DoctorAvailabilityResponse(
+            doctor_id=doctor_id,
             date=date,
-            include_booked=False
+            availabilities=slots,
+            total=len(slots)
         )
 
-        return {
-            "doctor_id": doctor_id,
-            "date": date,
-            "availabilities": slots,
-            "total": len(slots)
-        }
     except ValueError as e:
         raise HTTPException(status_code=HttpStatus.BAD_REQUEST, detail=str(e))
     except Exception as e:
@@ -142,6 +124,7 @@ async def get_doctor_availability_by_id(
             status_code=HttpStatus.INTERNAL_SERVER_ERROR,
             detail=ErrorMessages.GEN_9001
         )
+
 
 @router.get("/doctors/availability/{slot_id}")
 async def get_availability_slot_by_id(
@@ -173,10 +156,6 @@ async def update_availability_slot(
 ):
     """
     Update an availability slot.
-
-    This endpoint allows a doctor to update an existing
-    availability slot. Only available (non-booked) slots
-    can be updated.
     """
     try:
         service = AvailabilityService()
@@ -203,11 +182,6 @@ async def delete_availability_slot(
 ):
     """
     Delete an availability slot.
-
-    This endpoint allows a doctor to delete an existing
-    availability slot. Only available (non-booked) slots
-    can be deleted.
-
     """
     try:
         service = AvailabilityService()
@@ -226,3 +200,22 @@ async def delete_availability_slot(
         )
 
 
+@router.get("/doctors/availability/stats")
+async def get_availability_stats(
+    current_user: dict = Depends(get_current_doctor)
+):
+    """
+    Get availability statistics for the logged-in doctor.
+    """
+    try:
+        service = AvailabilityService()
+        stats = await service.get_stats(current_user["user_id"])
+        return stats
+    except ValueError as e:
+        raise HTTPException(status_code=HttpStatus.BAD_REQUEST, detail=str(e))
+    except Exception as e:
+        logger.error(f"Error getting availability stats: {str(e)}")
+        raise HTTPException(
+            status_code=HttpStatus.INTERNAL_SERVER_ERROR,
+            detail=ErrorMessages.GEN_9001
+        )

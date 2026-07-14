@@ -59,13 +59,28 @@ class DoctorDashboardStatsResponse(BaseModel):
     rating: float
     total_reviews: int
 
-class DoctorUserResponse(BaseModel):
     id: str
-    email: str
-    full_name: str
-    role: str
-    status: str
-    doctor_status: str
+    user_id: str
+    qualification: str
+    specialization: Specialization
+    experience_years: int
+    license_number: str
+    consultation_fee: float
+    clinic_address: str
+    clinic_phone: Optional[str] = None
+    bio: Optional[str] = None
+    profile_picture: Optional[str] = None
+    status: DoctorStatus
+    verification_status: str
+    approved_by: Optional[str] = None
+    approved_at: Optional[str] = None
+    rejected_by: Optional[str] = None
+    rejected_at: Optional[str] = None
+    rejection_reason: Optional[str] = None
+    rating: float
+    total_reviews: int
+    created_at: str
+    updated_at: str
 
 
 class DoctorRegistrationResponse(BaseModel):

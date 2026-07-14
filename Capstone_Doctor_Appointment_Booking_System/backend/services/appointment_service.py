@@ -2,9 +2,9 @@ from typing import Dict, Any, List, Optional
 from datetime import datetime, timedelta
 
 from bson import ObjectId
+from backend.schemas.response.appointment_response import AppointmentData, BookAppointmentResponse
 from backend.repositories.appointment_repository import AppointmentRepository
 from backend.repositories.doctor_repository import DoctorRepository
-from backend.repositories.payment_repository import PaymentRepository
 from backend.repositories.user_repository import UserRepository
 from backend.models.appointment import Appointment
 from backend.schemas.request.appointment_request import (
@@ -14,7 +14,7 @@ from backend.schemas.request.appointment_request import (
     AppointmentRescheduleRequest
 )
 from backend.constants import ErrorMessages, SuccessMessages
-from backend.constants.status import AppointmentStatus, PaymentStatus
+from backend.constants.status import AppointmentStatus
 from backend.enums.user_enums import DoctorStatus
 import logging
 
@@ -27,7 +27,7 @@ class AppointmentService:
         self.appointment_repo = AppointmentRepository()
         self.doctor_repo = DoctorRepository()
         self.user_repo = UserRepository()
-        self.payment_repo = PaymentRepository()
+
     async def book_appointment(
         self,
         patient_id: str,
@@ -35,11 +35,8 @@ class AppointmentService:
     ) -> Dict[str, Any]:
         """
         Book an appointment with double booking prevention.
-
-        Uses atomic transactions to prevent race conditions when multiple
-        patients try to book the same slot simultaneously.
         """
-        doctor = await self.doctor_repo.find_by_id(booking_data.doctor_id)
+        doctor = await self.doctor_repo.find_by_user_id(booking_data.doctor_id)
         if not doctor:
             raise ValueError(ErrorMessages.DOC_1301)
 
@@ -50,12 +47,12 @@ class AppointmentService:
         if not patient:
             raise ValueError(ErrorMessages.USER_1101)
 
-        doctor_user = await self.user_repo.find_by_id(doctor.user_id)
+        doctor_user = await self.user_repo.find_by_id(booking_data.doctor_id)
         if not doctor_user:
             raise ValueError(ErrorMessages.DOC_1301)
         # Check availability
         availabilities = await self.appointment_repo.availability_collection.find({
-            "doctor_id": doctor.user_id,
+            "doctor_id": booking_data.doctor_id,
             "date": booking_data.appointment_date,
             "is_available": True
         }).to_list(None)
@@ -82,7 +79,7 @@ class AppointmentService:
         appointment = Appointment(
             patient_id=patient_id,
             patient_name=patient.full_name,
-            doctor_id=doctor.user_id,
+            doctor_id=booking_data.doctor_id,
             doctor_name=doctor_user.full_name,
             appointment_date=booking_data.appointment_date,
             appointment_time=booking_data.appointment_time,
@@ -97,17 +94,17 @@ class AppointmentService:
 
         logger.info(f"Appointment booked: {created.id} by patient {patient_id}")
 
-        return {
-            "message": SuccessMessages.APPOINTMENT_BOOKED,
-            "appointment": {
-                "id": created.id,
-                "patient_id": created.patient_id,
-                "doctor_id": created.doctor_id,
-                "appointment_date": created.appointment_date,
-                "appointment_time": created.appointment_time,
-                "status": created.status.value if hasattr(created.status, 'value') else created.status
-            }
-        }
+        return BookAppointmentResponse(
+        message=SuccessMessages.APPOINTMENT_BOOKED,
+        appointment=AppointmentData(
+            id=created.id,
+            patient_id=created.patient_id,
+            doctor_id=created.doctor_id,
+            appointment_date=created.appointment_date,
+            appointment_time=created.appointment_time,
+            status=created.status.value if hasattr(created.status, 'value') else created.status
+        )
+    )
 
     async def get_patient_appointments(
         self,
@@ -178,101 +175,44 @@ class AppointmentService:
             "total_pages": (total + limit - 1) // limit if limit > 0 else 1
         }
 
-    # async def cancel_appointment(
-    #     self,
-    #     appt_id: str,
-    #     patient_id: str,
-    #     cancel_data: AppointmentCancelRequest
-    # ) -> Dict[str, Any]:
-    #     """
-    #     Cancel an appointment and release the availability slot.
-
-    #     Cancellation allowed only if appointment is not completed
-    #     and within the cancellation window (2 hours before).
-    #     """
-    #     appointment = await self.appointment_repo.get_appointment_by_id(appt_id)
-    #     if not appointment:
-    #         raise ValueError(ErrorMessages.APP_1201)
-
-    #     if appointment.patient_id != patient_id:
-    #         raise ValueError(ErrorMessages.AUTH_1005)
-
-    #     if appointment.status == AppointmentStatus.COMPLETED:
-    #         raise ValueError(ErrorMessages.APP_1206)
-
-    #     if appointment.status == AppointmentStatus.CANCELLED:
-    #         raise ValueError("Appointment is already cancelled")
-
-    #     # Check cancellation window (2 hours)
-    #     appt_datetime = datetime.strptime(
-    #         f"{appointment.appointment_date} {appointment.appointment_time}",
-    #         "%Y-%m-%d %H:%M"
-    #     )
-    #     if appt_datetime - datetime.now() < timedelta(hours=2):
-    #         raise ValueError(ErrorMessages.APP_1205)
-
-    #     await self.appointment_repo.cancel_appointment(appt_id)
-
-    #     logger.info(f"Appointment cancelled: {appt_id} by patient {patient_id}")
-
-    #     return {
-    #         "message": SuccessMessages.APPOINTMENT_CANCELLED,
-    #         "appointment_id": appt_id
-    #     }
-
-
     async def cancel_appointment(
-      self,
-      appt_id: str,
-      patient_id: str,
-      cancel_data: AppointmentCancelRequest
-  ) -> Dict[str, Any]:
-      appointment = await self.appointment_repo.get_appointment_by_id(appt_id)
-      if not appointment:
-          raise ValueError(ErrorMessages.APP_1201)
+        self,
+        appt_id: str,
+        patient_id: str,
+        cancel_data: AppointmentCancelRequest
+    ) -> Dict[str, Any]:
+        """
+        Cancel an appointment and release the availability slot.
+        """
+        appointment = await self.appointment_repo.get_appointment_by_id(appt_id)
+        if not appointment:
+            raise ValueError(ErrorMessages.APP_1201)
 
-      if appointment.patient_id != patient_id:
-          raise ValueError(ErrorMessages.AUTH_1005)
+        if appointment.patient_id != patient_id:
+            raise ValueError(ErrorMessages.AUTH_1005)
 
-      if appointment.status == AppointmentStatus.COMPLETED:
-          raise ValueError(ErrorMessages.APP_1206)
+        if appointment.status == AppointmentStatus.COMPLETED:
+            raise ValueError(ErrorMessages.APP_1206)
 
-      if appointment.status == AppointmentStatus.CANCELLED:
-          raise ValueError("Appointment is already cancelled")
+        if appointment.status == AppointmentStatus.CANCELLED:
+            raise ValueError("Appointment is already cancelled")
 
-      appt_datetime = datetime.strptime(
-          f"{appointment.appointment_date} {appointment.appointment_time}",
-          "%Y-%m-%d %H:%M"
-      )
-      if appt_datetime - datetime.now() < timedelta(hours=2):
-          raise ValueError(ErrorMessages.APP_1205)
+        # Check cancellation window (2 hours)
+        appt_datetime = datetime.strptime(
+            f"{appointment.appointment_date} {appointment.appointment_time}",
+            "%Y-%m-%d %H:%M"
+        )
+        if appt_datetime - datetime.now() < timedelta(hours=2):
+            raise ValueError(ErrorMessages.APP_1205)
 
-      await self.appointment_repo.cancel_appointment(appt_id)
+        await self.appointment_repo.cancel_appointment(appt_id)
 
-      refund_message = ""
-      payment = await self.payment_repo.find_by_appointment_id(appt_id)
-      if payment and payment.status == PaymentStatus.COMPLETED:
-          from backend.utils.helpers import Helpers
-          refund_id = Helpers.generate_refund_id()
-          await self.payment_repo.update(
-              payment.id,
-              {
-                  "status": PaymentStatus.REFUNDED.value,
-                  "refund_id": refund_id,
-                  "refund_reason": "Appointment cancelled by patient"
-              }
-          )
-          await self.appointment_repo.update_appointment(
-                appt_id, {"payment_status": PaymentStatus.REFUNDED.value}
-          )
-          refund_message = " Your payment has been refunded."
+        logger.info(f"Appointment cancelled: {appt_id} by patient {patient_id}")
 
-      logger.info(f"Appointment cancelled: {appt_id} by patient {patient_id}")
-
-      return {
-          "message": str(SuccessMessages.APPOINTMENT_CANCELLED) + refund_message,
-          "appointment_id": appt_id
-      }
+        return {
+            "message": SuccessMessages.APPOINTMENT_CANCELLED,
+            "appointment_id": appt_id
+        }
 
     async def reschedule_appointment(
         self,
@@ -282,8 +222,6 @@ class AppointmentService:
     ) -> Dict[str, Any]:
         """
         Reschedule an appointment to a new date and time.
-
-        Releases the old slot and books a new one atomically.
         """
         appointment = await self.appointment_repo.get_appointment_by_id(appt_id)
         if not appointment:

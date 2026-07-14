@@ -12,9 +12,6 @@ logger = logging.getLogger(__name__)
 class PaymentRepository:
     """
     Repository for payment database operations.
-
-    Provides methods for creating, reading, updating, and deleting
-    payment records.
     """
 
     def __init__(self):
@@ -60,7 +57,7 @@ class PaymentRepository:
     async def find_by_appointment_id(self, appointment_id: str) -> Optional[Payment]:
         """Find a payment by appointment ID."""
         try:
-            payment_dict = await self.collection.find_one({"appointment_id": appointment_id},sort=[("created_at", -1)])
+            payment_dict = await self.collection.find_one({"appointment_id": appointment_id})
             if payment_dict:
                 payment_dict["id"] = str(payment_dict["_id"])
                 return Payment(**payment_dict)
