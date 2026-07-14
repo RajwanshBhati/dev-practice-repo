@@ -1,3 +1,9 @@
+import sys
+from pathlib import Path
+
+# Add backend to path
+sys.path.insert(0, str(Path(__file__).parent))
+
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -14,16 +20,14 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """
-    Runs once when the app starts and once when it shuts down. On startup,
-    connects to the database and warns in the logs if no admin account
-    exists yet. On shutdown, closes the database connection cleanly.
-    """
+
     logger.info(f"Starting {settings.APP_NAME} v{settings.APP_VERSION}")
     await db.connect()
 
+    # Check if admin exists
     from backend.services.admin_service import AdminService
     admin_service = AdminService()
     exists = await admin_service.check_first_admin_exists()
@@ -34,9 +38,11 @@ async def lifespan(app: FastAPI):
     logger.info(f"Shutting down {settings.APP_NAME}")
     await db.disconnect()
 
+
+# Create FastAPI application
 app = FastAPI(
     title=settings.APP_NAME,
-    description="Authentication and User Management Service with Doctor Approval",
+    description="Doctor Appointment System with Doctor Approval and Availability Management",
     version=settings.APP_VERSION,
     docs_url="/docs",
     redoc_url="/redoc",
@@ -59,11 +65,16 @@ app = FastAPI(
             "description": "Admin endpoints - Doctor approval, Admin management"
         },
         {
+            "name": "doctor",
+            "description": "Doctor endpoints - Profile management, Availability"
+        },
+        {
             "name": "default",
             "description": "Default endpoints - Health check"
         }
     ]
 )
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -73,17 +84,29 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+
 @app.exception_handler(ValueError)
 async def value_error_handler(request: Request, exc: ValueError):
-    """Turn any uncaught ValueError (used throughout the app for expected business-logic errors) into a clean 400 response."""
+    """
+    Handle ValueError exceptions.
+
+    These are used throughout the app for expected business-logic
+    errors and return a clean 400 response.
+    """
     return JSONResponse(
         status_code=400,
         content={"success": False, "message": str(exc)}
     )
 
+
 @app.exception_handler(Exception)
 async def general_exception_handler(request: Request, exc: Exception):
-    """Catch-all for anything unexpected, so the client always gets a JSON response instead of a raw stack trace."""
+    """
+    Handle all other exceptions.
+
+    Returns a clean 500 response instead of a raw stack trace.
+    """
     logger.error(f"Unhandled exception: {str(exc)}")
     return JSONResponse(
         status_code=500,
@@ -97,19 +120,24 @@ app.include_router(admin_router)
 app.include_router(doctor_router)
 app.include_router(payments_router, prefix="/api/v1")
 
-@app.get("/health", tags=["default"])
-async def health_check():
-    """Basic liveness check used by monitoring/load balancers to confirm the service is up."""
-    return {
-        "status": "healthy",
-        "service": settings.SERVICE_NAME,
-        "version": settings.APP_VERSION,
-        "timestamp": datetime.utcnow().isoformat()
-    }
+app.include_router(auth_router, prefix="/api/v1")
+app.include_router(user_router, prefix="/api/v1")
+app.include_router(protected_router, prefix="/api/v1")
+app.include_router(admin_router, prefix="/api/v1")
+app.include_router(doctor_router, prefix="/api/v1")
+app.include_router(availability_router, prefix="/api/v1")
+
+
+
 
 @app.get("/", tags=["default"])
 async def root():
-    """Landing endpoint with a friendly welcome message and links to the docs and health check."""
+    """
+    Root endpoint with service information.
+
+    Returns a welcome message with links to documentation
+    and health check.
+    """
     return {
         "message": f"Welcome to {settings.APP_NAME}",
         "version": settings.APP_VERSION,
@@ -117,12 +145,29 @@ async def root():
         "health": "/health"
     }
 
+
+@app.get("/health", tags=["default"])
+async def health_check():
+    """
+    Health check endpoint for monitoring.
+
+    Used by load balancers and monitoring systems to verify
+    the service is running properly.
+    """
+    return {
+        "status": "healthy",
+        "service": settings.APP_NAME,
+        "version": settings.APP_VERSION,
+        "timestamp": datetime.utcnow().isoformat()
+    }
+
+
 if __name__ == "__main__":
     import uvicorn
 
     uvicorn.run(
         "backend.main:app",
         host="0.0.0.0",
-        port=settings.SERVICE_PORT,
+        port=settings.PORT,
         reload=settings.DEBUG
     )

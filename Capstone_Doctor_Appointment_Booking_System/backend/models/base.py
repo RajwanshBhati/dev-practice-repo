@@ -8,7 +8,7 @@ class BaseDBModel(BaseModel):
     and auto-tracked created/updated timestamps. Other models inherit from
     this instead of repeating the same boilerplate.
     """
-    id: Optional[str] = Field(alias="_id", default=None)
+    id: Optional[str] = Field(validation_alias="_id", serialization_alias="id", default=None)
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
