@@ -139,9 +139,13 @@ async def get_all_doctors(
             skip,
             status
         )
+        total = await doctor_service.count_all_doctors(status)
+        total_pages = (total // limit) + (1 if total % limit else 0)
         return {
             "doctors": doctors,
-            "count": len(doctors)
+            "count": len(doctors),
+            "total": total,
+            "total_pages": total_pages
         }
     except Exception as e:
         logger.error(f"Error getting doctors: {str(e)}")

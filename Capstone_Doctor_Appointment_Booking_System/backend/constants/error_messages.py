@@ -40,6 +40,13 @@ class ErrorMessages:
     ADM_1405 = "First admin already exists"
     ADM_1406 = "No admin exists. Please create the first admin"
 
+    AVAIL_1001 = "Availability slot not found"
+    AVAIL_1002 = "Availability slot is already booked"
+    AVAIL_1003 = "Cannot delete booked slot"
+    AVAIL_1004 = "Cannot update booked slot"
+    AVAIL_1005 = "Slot overlaps with existing availability"
+    AVAIL_1006 = "Invalid time range"
+
     PAY_1501 = "Payment processing failed"
 
     VAL_1601 = "Validation error"

@@ -158,3 +158,15 @@ class DoctorRepository:
         except Exception as e:
             logger.error(f"Error getting all doctors: {e}")
             return []
+
+
+    async def count_all_doctors(self, status: Optional[DoctorStatus] = None) -> int:
+        """Count doctors matching an optional status filter, for pagination totals."""
+        try:
+            query = {}
+            if status:
+                query["status"] = status
+            return await self.collection.count_documents(query)
+        except Exception as e:
+            logger.error(f"Error counting doctors: {e}")
+            return 0
