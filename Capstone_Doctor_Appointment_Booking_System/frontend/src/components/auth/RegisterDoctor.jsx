@@ -323,7 +323,7 @@ const RegisterDoctor = () => {
                           value={formData.date_of_birth}
                           onChange={handleChange}
                           isInvalid={!!errors.date_of_birth}
-                          style={inputStyle}
+                          style={{ ...inputStyle, backgroundImage: 'none' }}
                         />
                         <Form.Control.Feedback type="invalid">
                           {errors.date_of_birth}
@@ -353,11 +353,12 @@ const RegisterDoctor = () => {
                               >
                                 {showPassword ? <BiHide size={20} /> : <BiShow size={20} />}
                               </span>
-                            </div>
-                            <PasswordRequirements password={formData.password} />
-                            <Form.Control.Feedback type="invalid">
+                              <Form.Control.Feedback type="invalid">
                               {errors.password}
                             </Form.Control.Feedback>
+                            </div>
+                            <PasswordRequirements password={formData.password} />
+
                             <Form.Text className="text-muted" style={{ fontSize: '0.8rem' }}>
                               8-12 characters with uppercase, lowercase, digit &amp; special character
                             </Form.Text>

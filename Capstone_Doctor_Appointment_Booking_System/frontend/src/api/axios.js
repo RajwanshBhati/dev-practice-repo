@@ -52,7 +52,7 @@ const extractErrorMessage = (error) => {
                 if (item && typeof item === 'object' && item.msg) {
                     const field = Array.isArray(item.loc) ? item.loc[item.loc.length - 1] : null;
                     const msg = clean(item.msg);
-                    return field ? `${field}: ${item.msg}` : item.msg;
+                    return field ? `${field}: ${msg}` : msg;
                 }
                 return null;
             })
